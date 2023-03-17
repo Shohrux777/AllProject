@@ -1,0 +1,4 @@
+[
+    { "title": "CovidExpress", "icon": "clinic-medical", "url": "/covidExpress", "view": false, "color": "#FF7F50" },
+    { "title": "CovidQon", "icon": "hospital-alt", "url": "/covidQon", "view": false, "color": "#4B0082" }
+]
