@@ -1,0 +1,23 @@
+{
+  "submit": "Kirish",
+  "user": "Xodimlar",
+  "otdel": "Bo'lim",
+	"company": "Kompaniya",
+  "report" : "Hisobot",
+  "menu_setting": "Sozlamalar",
+  "logout": "Chiqish",
+  "devices": "Qurilmalar",
+  "dashboard": "Boshqaruv paneli",
+  "report_user": "Xodimlar haqida hisobot",
+  "report_details": "Hisobot tafsilotlari",
+  "report_devices": "Qurilmalar haqida hisobot",
+  "devices_info": "Qurilmalar haqida ma'lumot",
+  "device_door": "Kirish qurilmasi",
+  "login_or_parol_invalid": "Login yoki parol noto'g'ri",
+  "search_here": "Qidirish ...",
+  "name": "Nomi",
+  "checktype": "Status",
+  "date": "Kun",
+  "time": "Vaqt"
+
+}
