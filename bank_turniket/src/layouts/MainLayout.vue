@@ -160,10 +160,10 @@
       };
     },
     mounted() {
-      this.show_title = localStorage.sidebar;
+      // this.show_title = localStorage.sidebar;
       console.log(this.show_title)
-      console.log(localStorage.sidebar)
-      this.name = localStorage.Name;
+      // console.log(localStorage.sidebar)
+      // this.name = localStorage.Name;
       for (let j = 0; j < this.links.length; j++) {
         if(this.links[j].url == this.$route.fullPath){
           this.links[j].view = true;
@@ -185,7 +185,7 @@
     data() {
       return {
         name: 'sidebar',
-        show_title: localStorage.sidebar,
+        show_title: true,
         indexMain: -1,
         langList: [
           {
@@ -220,7 +220,7 @@
               down_list:[]
             },
             { title: "otdel", icon: 'users', url: '/department', view: false, color: '#ddd', down_list:[] },
-            { title: 'company', icon: 'landmark', url: '/', view: false, color: '#ddd', down_list:[] },
+            { title: 'company', icon: 'landmark', url: '/company', view: false, color: '#ddd', down_list:[] },
             
             { title: 'report', icon: 'clipboard', url: '', view: false, color: '#ddd', down_list:[
               { title: "report_user", url: '/aboutweb', dview: false, color: '#ddd', down_list:[] },
@@ -271,8 +271,8 @@
       },
       backMenu(a){
         this.show_title = a
-        localStorage.sidebar = this.show_title
-        console.log(localStorage.sidebar)
+        // localStorage.sidebar = this.show_title
+        // console.log(localStorage.sidebar)
       },
       selectLang(lang){
         this.activLang = lang;

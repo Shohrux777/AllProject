@@ -7,13 +7,13 @@
       :label="$t('name')"
       v-model="dept_name"
     >
-      <MDBIcon icon="exclamation-circle" class="trailing"></MDBIcon>
+      <!-- <MDBIcon icon="exclamation-circle" class="trailing"></MDBIcon> -->
     </MDBInput>
 
     <erpSelect
-      :options = "get_deparment_list.rows" 
-      @select="sub_debt_select"
-      :selected="subdept_name"
+      :options = "get_company_list.rows"
+      @select="sub_comp_select"
+      :selected="company_name"
       :label="$t('otdel')"
       class="mt-2"
     />
@@ -50,21 +50,21 @@ export default {
         ],
         dept_name: '',
         id: 0,
-        subdept_name: '',
-        subdept_id: null,
+        company_name: '',
+        company_id: null,
       }
     },
-    computed: mapGetters(['get_deparment_list']),
+    computed: mapGetters(['get_deparment_list', 'get_company_list']),
     async mounted(){
-        await this.fetch_Department();
+        await this.fetch_Company();
     },
     methods:{
-      ...mapActions(['fetch_Department']),
+      ...mapActions(['fetch_Department', 'fetch_Company']),
 
-      sub_debt_select(option){
+      sub_comp_select(option){
         console.log(option)
-        this.subdept_name = option.name;
-        this.subdept_id = option.id;
+        this.company_name = option.name;
+        this.company_id = option.id;
       },
       async submit_add(){
         try{
@@ -74,7 +74,7 @@ export default {
           body: JSON.stringify({
             "deptid": this.id,
             "deptname" : this.dept_name,
-            "supdeptid": this.subdept_id,
+            "skudCompanyid": this.company_id,
             })
           };
           const response = await fetch(this.$store.state.hostname + "/SkudMyDepartments", requestOptions);

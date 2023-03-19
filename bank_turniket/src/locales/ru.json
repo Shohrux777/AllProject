@@ -17,9 +17,11 @@
   "search_here": "Искать здесь ...",
   "name": "Названия",
   "FIO": "ФИО",
-  "User ID": "Ид",
+  "ism": "ФИО",
+	"familiya": "Отдел",
+  "userid": "Ид",
   "id": "Ид",
-  "Card number": "Номер карты",
+  "cardno": "Номер карты",
   "checktype": "Статус",
   "date": "Дата",
   "time": "Время"

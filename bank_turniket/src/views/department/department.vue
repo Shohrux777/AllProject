@@ -2,26 +2,9 @@
   <div class="deparment_page">
     <navbar :title = "$t('otdel')" @add="addDept"/>
     <div class="mainpage">
-        <div class="main_table ">
-            <MDBTable class="align-middle mb-0 bg-white">
-                <thead class="table_header">
-                    <tr>
-                        <th v-for="(column, i) in get_deparment_list.columns" :key="i">{{$t(column)}}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <tr v-for="(row, index) in get_deparment_list.rows" :key="index">
-                    <td>
-                        {{ row.id }}
-                    </td>
-                    <td>
-                        {{ row.name }}
-                    </td>
-                    <!-- <td>{{row.code}}</td> -->
-                </tr>
-                </tbody>
-            </MDBTable>
-        </div>
+        <mdbtabled
+        :options = get_deparment_list
+        />
     </div>
     <MDBModal
         id="exampleModal"
@@ -37,14 +20,12 @@
         <MDBModalBody>
             <dept_add @close="exampleModal = false"></dept_add>
         </MDBModalBody>
-        
     </MDBModal>
   </div>
 </template>
 
 <script>
   import {
-    MDBTable,
     MDBBtn,
     MDBBadge,
     MDBIcon,
@@ -55,6 +36,7 @@
   } from 'mdb-vue-ui-kit';
   import { ref } from 'vue';
   import navbar from '@/components/navbar.vue'
+  import mdbtabled from '@/components/mdbtable.vue'
   import dept_add from './department_add.vue'
   import {mapActions, mapGetters} from 'vuex'
   export default {
@@ -65,7 +47,6 @@
       };
     },
     components: {
-        MDBTable,
         MDBBtn,
         MDBBadge,
         MDBIcon,
@@ -74,7 +55,8 @@
         MDBModalTitle,
         MDBModalBody,
         navbar,
-        dept_add
+        dept_add,
+        mdbtabled
     },
     data(){
         return{
@@ -105,20 +87,5 @@
     overflow-y: scroll;
     padding:25px 15px;
 }
-.main_table{
-    padding: 15px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-    border-radius: 5px;
-}
-.table_header{
-    /* position:sticky; 
-    top:-25px;
-    z-index: 2; */
-    background:#e2e2e2;
-    
-}
-th,td{
-    padding: 5px !important;
-    font-size: 12.5px;
-}
+
 </style>

@@ -42,9 +42,6 @@
 
     </div>
     <div>
-      <massage_box :hide="modal_status" :detail_info="modal_info"
-      :m_text="$t('Failed_to_add')" @to_hide_modal = "modal_status= false"/>
-     
     </div>
   </div>
 </template>

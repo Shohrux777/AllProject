@@ -32,6 +32,8 @@ export default {
     },
     methods:{
         Check_login(){
+            // localStorage.sidebar = true;
+            // localStorage.Name = 'Firdavs'
             if(this.login == 'admin' && this.parol == 'admin'){
                 this.$router.push('/department')
                 this.invalid_status = false;

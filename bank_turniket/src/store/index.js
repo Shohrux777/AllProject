@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 import department from './moduls/department'
 import user from './moduls/user'
 import dashboard from './moduls/dashboard'
+import company from './moduls/company'
 
 export default createStore({
   state: {
@@ -17,6 +18,7 @@ export default createStore({
   modules: {
     department,
     user,
-    dashboard
+    dashboard,
+    company
   }
 })

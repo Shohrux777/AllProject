@@ -2,27 +2,9 @@
     <div class="deparment_page">
       <navbar :title = "$t('user')" @add="addDept"/>
       <div class="mainpage">
-          <div class="main_table ">
-              <MDBTable class="align-middle mb-0 bg-white">
-                  <thead class="table_header">
-                      <tr>
-                          <th v-for="(column, i) in get_user_list.columns" :key="i">{{$t(column)}}</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                  <tr v-for="(row, index) in get_user_list.rows" :key="index">
-                      <td>
-                          {{ row.userid }}
-                      </td>
-                      <td>
-                          {{ row.ism }}
-                      </td>
-                      <td>{{row.cardno}}</td>
-                      <td>{{row.familiya}}</td>
-                  </tr>
-                  </tbody>
-              </MDBTable>
-          </div>
+          <mdbtabled
+           :options="get_user_list"
+           ></mdbtabled>
       </div>
       <MDBModal
           id="exampleModal"
@@ -45,7 +27,6 @@
   
   <script>
     import {
-      MDBTable,
       MDBBtn,
       MDBBadge,
       MDBIcon,
@@ -55,6 +36,7 @@
       MDBModalBody,
     } from 'mdb-vue-ui-kit';
     import { ref } from 'vue';
+    import mdbtabled from '@/components/mdbtable.vue'
     import navbar from '@/components/navbar.vue'
     import dept_add from './user_add.vue'
     import {mapActions, mapGetters} from 'vuex'
@@ -66,7 +48,6 @@
         };
       },
       components: {
-          MDBTable,
           MDBBtn,
           MDBBadge,
           MDBIcon,
@@ -75,7 +56,8 @@
           MDBModalTitle,
           MDBModalBody,
           navbar,
-          dept_add
+          dept_add,
+          mdbtabled
       },
       data(){
           return{
