@@ -1,51 +1,116 @@
 <template>
   <div class="bg-white">
     <loader v-if="loading"/>
-    <div class="p-4">
+    <div class="">
       <div class="bg-white p-4 mb-5 pt-4 shadow" style="border-radius:5px; position:relative;">
+        <div class="border-bottom">
+          <h5 class="mx-1 pb-0 ">Дневники касса</h5>
+        </div>
         <form @submit.prevent="submit">
-          <div style="height: 60px;" class="d-flex justify-content-between border-bottom align-items-center  ">
+          <div style="height: 60px;" class="d-flex justify-content-between border-bottom align-items-center ">
             <div class="title w-75 row align-items-center">
-              <div  class="col-5">
-                <div style="position: relative; margin-top: 40px;"> 
-                  <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -8px; color: #757575;">
+              <div  class="col-4">
+                <div style="position: relative; margin-top: 30px;"> 
+                  <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -11px; color: #757575;">
                     {{$t('start_time')}}
                   </small>
-                  <mdb-input type="date"  v-model="Start_time" outline/>
+                  <mdb-input type="date" size="sm" v-model="Start_time" outline/>
+                </div>
+              </div>
+              <div  class="col-4">
+                <div style="position: relative; margin-top: 30px;"> 
+                  <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -11px; color: #757575;">
+                    {{$t('end_time')}}
+                  </small>
+                  <mdb-input type="date" size="sm" v-model="End_time" outline/>
                 </div>
               </div>
             </div>
             <div class="plus">
-              <mdb-btn @click="print" color="info py-2 px-4"  style="font-size:10px;" >
+              <mdb-btn @click="print" color="info py-2 px-3"  style="font-size:10px;" >
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-printer mr-0" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" />
+                  <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" />
+                  <rect x="7" y="13" width="10" height="8" rx="2" />
+                </svg>
                 {{$t('print')}}
               </mdb-btn>
-              <mdb-btn type="submit" color="primary py-2 px-4" style="font-size:10px;"  >
+              <mdb-btn type="submit" color="primary py-2 px-3" style="font-size:10px;"  >
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M5 12l5 5l10 -10" />
+                </svg>
                 {{$t('apply')}}
               </mdb-btn>
             </div>
           </div>
         </form>
-        <div class="TablePatientDocIdset p-3">
+        <div class="all_price border-bottom pb-2"> 
+          <div class="row mt-2">
+            <div class="col-3 pr-0">
+              <div class="price_all_item card">
+                <div class="qty borderSolder py-2">
+                    <span class="ml-3">{{$t('cash')}}</span>
+                    <div class="text-right px-3 mt-1">
+                      <p>{{cash.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} сум</p>
+                    </div>
+                  </div>
+              </div>
+            </div>
+            <div class="col-3 pr-0">
+              <div class="price_all_item card">
+                <div class="qty borderSolder py-2">
+                    <span class="ml-3">{{$t('card')}}</span>
+                    <div class="text-right px-3 mt-1">
+                      <p>{{card.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} сум</p>
+                    </div>
+                  </div>
+              </div>
+            </div>
+            <div class="col-3 pr-0">
+              <div class="price_all_item card">
+                <div class="qty borderSolder py-2">
+                    <span class="ml-3">РACXOДЫ </span>
+                    <div class="text-right px-3 mt-1">
+                      <p>{{get_money.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} сум</p>
+                    </div>
+                  </div>
+              </div>
+            </div>
+            <div class="col-3 ">
+              <div class="price_all_item card">
+                <div class="qty borderSolder py-2">
+                    <span class="ml-3">В кассе есть деньги</span>
+                    <div class="text-right px-3 mt-1">
+                      <p>{{(cash - get_money).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} сум</p>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="TablePatientDocIdset mt-1">
           <table class="myTable">
-            <thead>
-              <tr class="header ">
+            <thead class="bg_header">
+              <tr class="header text-white ">
                 <th >{{$t('service_group')}}</th>
                 <!-- <th >{{$t('user')}}</th> -->
                 <th >{{$t('date')}}</th>
                 <th >{{$t('cash')}}</th>
                 <th >{{$t('card')}}</th>
                 <th>{{$t('qty')}}</th>
-                <td> <span class="text-primary">Общий</span> </td>
+                <td> <span class="text-white">Общий</span> </td>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(row,rowIndex) in get_daily_report_list" :key="rowIndex" >
                 <td> <span >{{row.service_group}}</span> </td>
                 <td> <span >{{row.date}}</span> </td>
-                <td> <span >{{row.cash}}</span> </td>
-                <td> <span >{{row.card}}</span> </td>
+                <td> <span >{{row.cash.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                <td> <span >{{row.card.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
                 <td> <span >{{row.qty}}</span> </td>
-                <td> <span >{{row.cash + row.card}}</span> </td>
+                <td> <span >{{(row.cash + row.card).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
               </tr>
               
             </tbody>
@@ -64,21 +129,21 @@
                 </td>
                 <!-- <td> <span >{{item.authorization.users.fio}}</span> </td> -->
                 <td> <span >{{item.createdDateTime.slice(0,10)}}</span> </td>
-                <td> <span >{{item.cashSumm}}</span> </td>
-                <td> <span >{{item.cardSumm}}</span> </td>
+                <td> <span >{{item.cashSumm.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                <td> <span >{{item.cardSumm.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
                 <td> <span >{{item.count}}</span> </td>
-                <td> <span >{{item.cashSumm + item.cardSumm}}</span> </td>
+                <td> <span >{{(item.cashSumm + item.cardSumm).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
               </tr>
               <tr >
                 <td> <span class="text-success">Общий</span> </td>
                 <td> <span ></span></td>
                 <!-- <td> <span ></span></td> -->
-                <td> <span  class="text-success">{{cash - get_money}}</span></td>
-                <td> <span  class="text-success">{{card}}</span></td>
+                <td> <span  class="text-success">{{(cash - get_money).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span></td>
+                <td> <span  class="text-success">{{card.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span></td>
                 <td> <span  class="text-success">{{qtys}}</span></td>
-                <td> <span  class="text-success">{{cash + card - get_money}}</span></td>
+                <td> <span  class="text-success">{{(cash + card - get_money).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span></td>
               </tr>
-              <tr >
+              <!-- <tr >
                 <td> <span class="text-success"></span>{{$t('cash')}} </td>
                 <td> <span  class="text-primary">{{cash}} сум </span></td>
               </tr>
@@ -93,7 +158,7 @@
               <tr >
                 <td> <span class="text-success"></span>В кассе есть деньги </td>
                 <td> <span  class="text-primary">{{cash - get_money}} сум </span></td>
-              </tr>
+              </tr> -->
             </tbody>
           </table>
         </div>
@@ -337,7 +402,7 @@
           {
 
           let a = this.Start_time + 'T00:00:00.000Z' ;    
-          let b = this.Start_time + 'T23:59:59.000Z';
+          let b = this.End_time + 'T23:59:59.000Z';
           let c = {
             time1: '',
             time2: '',
@@ -460,5 +525,25 @@
 .delIcon{
   color: rgb(251, 70, 70);
   font-size: 13px;
+}
+.price_all_item .borderSolder{
+    // border: 0.5px dashed #D0D3D8;
+    background-image: linear-gradient( 65.9deg,  rgba(85,228,224,1) 5.5%, rgba(75,68,224,0.74) 54.2%, rgba(64,198,238,1) 55.2%, rgba(177,36,224,1) 98.4% );
+
+    span{
+      color:#000000;
+      font-size: 21px;
+      font-weight: 450;
+    }
+    p{
+      color:#ffffff;
+      font-weight:bold;
+      font-size: 23px;
+      margin:0;
+      padding:0;
+    }
+  }
+.bg_header{
+  background-image: linear-gradient( 65.9deg,  rgba(85,228,224,1) 5.5%, rgba(75,68,224,0.74) 54.2%, rgba(64,198,238,1) 55.2%, rgba(177,36,224,1) 98.4% );
 }
 </style>

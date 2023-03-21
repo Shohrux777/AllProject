@@ -218,11 +218,15 @@ export default {
         else{
           this.labGroup_id = this.labGroup_id.toString();
         }
+        
           if(this.$v.$invalid )
           {
             this.$v.$touch();
             this.$refs.message.warning('please_fill')
             return false;
+          }
+          if(this.labLink_link == null){
+            this.labLink_link = '';
           }
            const requestOptions = {
             method: "POST",

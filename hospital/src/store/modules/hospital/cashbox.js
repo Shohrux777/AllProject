@@ -1,6 +1,7 @@
 export default {
     state: {
         unpay_patient_list: [],
+        last_patient_list: [],
         service_pay_list: [],
         summ: 0,
         inArray: [],
@@ -62,6 +63,7 @@ export default {
 
         },
         UpdateUnpayedPatient(state, data) {
+            // console.log('refresh')
             state.unpay_patient_list = data;
         },
         UpdateServicePay(state, data) {

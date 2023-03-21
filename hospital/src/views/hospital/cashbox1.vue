@@ -2,203 +2,82 @@
   <div class="cashbox bg-white">
     <check v-show="check_show" @close="closeCheck" :indexItem="checkIndex" @closeNext = "closeNext" ref="checkP"/>
     <div v-show="!check_show" class="cash-header  pt-2">
-      <div class="cashbox_page border-bottom pb-3 px-3">
-        <div class="row ">
-          <div class="col-3 pl-3 pr-0">
-            <lineSelect
-              class="mt-1 ml-0 mr-3"
-              :options="get_unpay_patient_list"
-              :searchshow="true"
-              @select="selectPatient"
-              :selected="patient_name"
-              :label="$t('patient list')"
-            />
-            <small class="mt-1 " style="color:#67676C;">
-              Последние 5 пациентов
-            </small>
-            <div class=" last_unpay_patient">
-              <div class="choosePatientLast px-1" v-for="option in get_unpay_patient_list" :key="option.id" 
-                  :class="{'activ_last_patient': activ_id == option.id}"
-                  @click="selectOption(option)"
-              >
-                <div class="d-flex align-items-center">
-                  <div class="picture_back_last">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="30" height="30" viewBox="0 0 24 24" stroke-width="1" stroke="#fff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                      <circle cx="12" cy="7" r="4" />
-                      <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                    </svg>
-                  </div>
-                  <div class="ml-2">
-                    <h6 style="font-size: 13px;" class="m-0 p-0">{{option.fio}}</h6>
-                    <span style="font-size:11px; padding-top:-15px;" class="text-primary">{{option.phoneNumber}}</span>
-                  </div>
-                </div>
-              </div>
+      <div class="cash-pay row m-0">
+        <div class="col-6 m-0 p-0">
+          <div class="row">
+            <div class="col-6" @click="updatePatients">
+              <h4 class="text-primary mt-3 ml-4 pb-1 border-bottom">{{patient_name}}</h4>
+              <lineSelect
+                  class="mt-1 ml-3"
+                  :options="get_unpay_patient_list"
+                  :searchshow="true"
+                  @select="selectPatient"
+                  :selected="patient_name"
+                  :label="$t('patient list')"
+              />
             </div>
-            
-          </div>
-          <div class="col-4 px-2 pl-4 mt-1">
-            <div class="summa_content">
-              <div class="w-100">
-                <div class="qty borderSolder py-2">
-                  <span class="ml-3">Пациент</span>
-                  <div class="text-right px-3 mt-1">
-                    <p>{{ patient_name }}</p>
-                  </div>
-                </div>
-              </div>
-              <div class="d-flex">
-                <div class="w-50">
-                  <div class="qty borderSolder py-2">
-                    <span class="ml-3">{{$t('summ')}}</span>
-                    <div class="text-right px-3 mt-1">
-                      <p>{{summaString}}</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="w-50">
-                  <div class="qty borderSolder py-2">
-                    <span class="ml-3">{{$t('discount')}}</span>
-                    <div class="text-right px-3 mt-1">
-                      <p>0</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
+            <div class="col-6 d-flex align-items-center">
+              <h3 class="text-danger mt-2 ml-4">Сумма: <span class="ml-2 text-dark">{{summaString}}</span></h3>
             </div>
           </div>
-          <div class="col-5 px-4 ">
-            <div class="row">
-              <div class="col-4 mt-1 px-1">
-                <div class="btn_pay bg-success" @click="payCash">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-cash" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.2" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <rect x="7" y="9" width="14" height="10" rx="2" />
-                    <circle cx="14" cy="14" r="2" />
-                    <path d="M17 9v-2a2 2 0 0 0 -2 -2h-10a2 2 0 0 0 -2 2v6a2 2 0 0 0 2 2h2" />
-                  </svg>
-                  <small class="ml-1">
-                    {{$t('cash')}}
-                  </small>
-                </div>
-              </div>
-              <div class="col-4 mt-1 px-1" @click="payCard">
-                <div class="btn_pay bg-primary">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-credit-card" width="22" height="22" viewBox="0 0 24 24" stroke-width="1" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <rect x="3" y="5" width="18" height="14" rx="3" />
-                    <line x1="3" y1="10" x2="21" y2="10" />
-                    <line x1="7" y1="15" x2="7.01" y2="15" />
-                    <line x1="11" y1="15" x2="13" y2="15" />
-                  </svg>
-                  <small class="ml-1">
-                    {{$t('card')}}
-                  </small>
-                </div>
-              </div>
-              <div class="col-4 mt-1 px-1">
-                <div class="btn_pay bg_dolg" @click="debit">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-cash-banknote-off" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M9.88 9.878a3 3 0 1 0 4.242 4.243m.58 -3.425a3.012 3.012 0 0 0 -1.412 -1.405" />
-                    <path d="M10 6h9a2 2 0 0 1 2 2v8c0 .294 -.064 .574 -.178 .825m-2.822 1.175h-13a2 2 0 0 1 -2 -2v-8a2 2 0 0 1 2 -2h1" />
-                    <line x1="18" y1="12" x2="18.01" y2="12" />
-                    <line x1="6" y1="12" x2="6.01" y2="12" />
-                    <line x1="3" y1="3" x2="21" y2="21" />
-                  </svg>
-                  <small class="ml-1">
-                    {{$t('debit')}}
-                  </small>
-                </div>
-              </div>
-              <div class="col-4 mt-1 px-1">
-                <div class="btn_pay bg-info" @click="infocash">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-coin" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M14.8 9a2 2 0 0 0 -1.8 -1h-2a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4h-2a2 2 0 0 1 -1.8 -1" />
-                    <path d="M12 6v2m0 8v2" />
-                  </svg>
-                  <small class="ml-1">
-                    Инфо касса
-                  </small>
-                </div>
-              </div>
-              <div class="col-4 mt-1 px-1">
-                <div class="btn_pay bg_rasxod" @click="returnMoney">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-registered" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M9 16v-8h4a2 2 0 0 1 0 4h-4m3 0l3 4" />
-                  </svg>
-                  <small class="ml-1">
-                    {{$t('returnMoney')}}
-                  </small>
-                </div>
-              </div>
-              <div class="col-4 mt-1 px-1">
-                <div class="btn_pay bg_return" @click="returnPatient">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-receipt-refund" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16l-3 -2l-2 2l-2 -2l-2 2l-2 -2l-3 2" />
-                    <path d="M15 14v-2a2 2 0 0 0 -2 -2h-4l2 -2m0 4l-2 -2" />
-                  </svg>
-                  <small class="ml-1">
-                    Возврат
-                  </small>
-                </div>
-              </div>
-              <div class="col-4 mt-1 px-1">
-                <div class="btn_pay bg_bron">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-bed" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M3 7v11m0 -4h18m0 4v-8a2 2 0 0 0 -2 -2h-8v6" />
-                    <circle cx="7" cy="10" r="1" />
-                  </svg>
-                  <small class="ml-1">
-                    Стационар
-                  </small>
-                </div>
-              </div>
-              <div class="col-4 mt-1 px-1">
-                <div class="btn_pay bg_paydebit" @click="debit_pay">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-wallet" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M17 8v-3a1 1 0 0 0 -1 -1h-10a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1 -1 1h-12a2 2 0 0 1 -2 -2v-12" />
-                    <path d="M20 12v4h-4a2 2 0 0 1 0 -4h4" />
-                  </svg>
-                  <small class="ml-1">
-                    {{$t('pay_debit')}}
-                  </small>
-                </div>
-              </div>
-              <div class="col-4 mt-1 px-1">
-                <div class="btn_pay bg-primary" >
-                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chart-infographic" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <circle cx="7" cy="7" r="4" />
-                    <path d="M7 3v4h4" />
-                    <line x1="9" y1="17" x2="9" y2="21" />
-                    <line x1="17" y1="14" x2="17" y2="21" />
-                    <line x1="13" y1="13" x2="13" y2="21" />
-                    <line x1="21" y1="12" x2="21" y2="21" />
-                  </svg>
-                  <small class="ml-1">
-                    Статистика
-                  </small>
-                </div>
-              </div>
+        </div>
+        <div class="col-6 m-0 ">
+          <div class="row">
+            <div class="col-12 d-flex justify-content-end">
+               <div>
+                 <div class="d-flex">
+                    <div style="width: 170px;" class="text-right">
+                      <p class="pt-2 mr-2 font-weight-bold"><span class="text-dark">{{summaString}}</span> Сум</p>
+                    </div>
+                    <mdb-btn style="min-width: 180px;" @click="payCash" color="success" class=" mr-2"  p="r4 l4 t2 b2">{{$t('cash')}}</mdb-btn> 
+                 </div> 
+                  <div class="d-flex">
+                    <div style="width: 170px;" class="text-right">
+                      <p class="pt-2 mr-2 font-weight-bold"><span class="text-dark">{{summaString}}</span> Сум</p>
+                    </div>
+                    <mdb-btn  style="min-width: 180px;" @click="payCard" color="primary" class="mr-2"  p="r4 l4 t2 b2">{{$t('card')}}</mdb-btn>  
+                  </div>
+                  
+                  <div class="d-flex">
+                    <!-- <p  class="pt-2 font-weight-bold">Сум</p> -->
+                    <div style="width: 170px;" class="text-right"></div>
+                    <mdb-btn  style="min-width: 180px;" @click="returnMoney"  color="warning" class="mr-2"  p="r4 l4 t2 b2">{{$t('returnMoney')}}</mdb-btn>  
+                  </div>
+                  
+                  
+               </div>
             </div>
           </div>
         </div>
       </div>
-      
+      <div class="cash_time row  m-0 p-0 mt-2">
+        <div class="col-3 w-100 m-0 p-0 pl-3" style="position: relative;">
+          <span style="position:absolute; top:-18px; left:24px; font-size:17px; color:#4285F4;">Калькулятор</span>
+          <input type="text" v-model="enterSumma" v-on:keyup.13 = "payed" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" @keyup="funcCurrency($event.target.value)" ref="enterSumma"  class="form-control form-control-md border mt-2" style="border:none; outline:none;font-weight:bold; font-size:18px;" >
+          <div class="text-right pt-2">
+            <p class="m-0 p-0 zdachi text-danger" style="font-size:18px;">{{zdachiString}}</p>
+          </div>
+        </div>
+        <div class="col-4">
+          
+        </div>
+        <div class="col-5 text-right">
+            <!-- <mdb-btn   color="info" class="ml-2 mt-4"  p="r4 l4 t2 b2">{{$t('Cancel')}}</mdb-btn>   -->
+            <div>
+              <mdb-btn   color="info" @click="infocash"  class="ml-1 " style="width: 180px;"  p="r5 l5 t2 b2">Инфо</mdb-btn>  
+              <mdb-btn   color="danger" @click="returnPatient"  class="ml-1 " style="width: 180px;"  p="r5 l5 t2 b2">Возврат</mdb-btn>  
+            </div>
+            <div>
+              <mdb-btn  style="min-width: 180px;" @click="debit_pay"  color="success" class="ml-1 "  p="t2 b2">{{$t('pay_debit')}}</mdb-btn>
+              <mdb-btn  style="min-width: 180px;" @click="debit"  color="mdb-color" class="ml-1 "  p="r5 l5 t2 b2">{{$t('debit')}}</mdb-btn>
+            </div>
+            
+        </div>
+      </div>
       <div class="cash-table ">
-        <div class="TablePatientDocId mt-1  ">
-          <table class="myTable px-3">
-            <thead class="bg_table_header" style="position: sticky; top:-17px; z-index: 1;">
+        <div class="TablePatientDocId mt-3 p-3">
+          <table class="myTable">
+            <thead class="bg-white py-3" style="position: sticky; top:-17px; z-index: 1;">
               <tr class="header">
                 <th>{{$t('serviceName')}}</th>
                 <th>{{$t('summ')}}</th>
@@ -211,7 +90,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row,rowIndex) in get_service_pay_list" :key="rowIndex" class="bg_table_tr">
+              <tr v-for="(row,rowIndex) in get_service_pay_list" :key="rowIndex">
                 <td> <span >{{row.serviceName}}</span> </td>
                 <td> <span >{{row.summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
                 <td> <span >{{row.discount_persantage_qty}} %</span> </td>
@@ -259,19 +138,19 @@
           <mdb-btn color="danger" @click="show = false">{{$t('No')}}</mdb-btn>
         </mdb-modal-footer>
     </mdb-modal>
-    <ModalUser  :show="service_show" headerbackColor="info"  closeColor="white" titlecolor="black" 
+    <ModalUser  :show="service_show" headerbackColor="info" closeColor="white" titlecolor="black" 
     :title="$t('Service pay')" @close="service_show = false" width="500px">
         <template v-slot:body>
           <cashpay :option="service_list" @close="payed_close" />
         </template>
       </ModalUser>
-      <ModalUser  :show="return_show"  classes="bg_rasxod" closeColor="white"  titlecolor="white" 
-        :title="$t('returnMoney')" @close="return_show = false" width="60%">
+      <ModalUser  :show="return_show" headerbackColor="success" closeColor="white" titlecolor="white" 
+        :title="$t('returnMoney')" @close="return_show = false" width="500px">
         <template v-slot:body>
           <returnMoney :option="service_list" @close="payed_close" />
         </template>
       </ModalUser>
-      <ModalUser  :show="debit_show" classes="bg_dolg" closeColor="white" titlecolor="white" 
+      <ModalUser  :show="debit_show" headerbackColor="success" closeColor="white" titlecolor="white" 
         :title="$t('debit')" @close="debit_show = false" width="500px">
         <template v-slot:body>
           <debit :option="summa" :summa="summaString" :patient="patient_id" @close="debit_close" />
@@ -308,7 +187,7 @@ export default {
       summaString: '0',
 
 
-      patient_name: '...',
+      patient_name: '',
       patient_id: null,
       time1: null,
       card_code: '',
@@ -337,14 +216,11 @@ export default {
       check_show: false,
       cashOption: null,
       checkIndex: 0,
-
-      activ_id : -1,
     }
   },
   computed: mapGetters(['get_unpay_patient_list', 'get_service_pay_list', 'summa', 'get_check_print_list', 'get_code_patient']),
   mounted(){
     this.fetch_unpayed_patient();
-    setInterval(this.fetch_unpayed_patient, 4000);
     console.log(this.get_service_pay_list)
   },
   methods: {
@@ -361,17 +237,12 @@ export default {
     debit_pay(){
       this.$router.push('/pay_debit')
     },
-    async closeCheck(){
+    closeCheck(){
       this.check_show = false;
-      this.patient_name = '...';
+      this.patient_name = '';
       this.patient_id = null;
-      this.summaString = '0';
+      this.summaString = '';
       this.checkIndex = 0;
-      console.log('this.cashOption')
-      console.log(this.cashOption)
-      if(this.get_service_pay_list.length > 1){
-        await this.selectOption(this.cashOption);
-      }
     },
     closeNext(){
       this.check_show = false;
@@ -383,11 +254,10 @@ export default {
     async selectPatient(option){
       console.log('option');
       console.log(option);
-      this.cashOption = option.data;
+      this.cashOption = option;
       this.update_patient_name(option.data.fio)
       this.patient_name = option.data.fio;
       this.patient_id = option.data.id;
-      this.activ_id = option.data.id;
       this.patient_id_for_ochred = option.data.id;
       await this.fetch_service_pay_list(option.data.id);
       this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
@@ -396,19 +266,6 @@ export default {
         this.enterSumma = '';
       })
       console.log(this.get_service_pay_list)
-    },
-    async selectOption(option){
-      console.log('option');
-      console.log(option);
-      this.cashOption = option;
-      this.update_patient_name(option.fio)
-      this.patient_name = option.fio;
-      this.patient_id = option.id;
-      this.activ_id = option.id;
-      this.patient_id_for_ochred = option.id;
-      await this.fetch_service_pay_list(option.id);
-      this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-      
     },
     funcCurrency(n){
       console.log(n)
@@ -684,7 +541,7 @@ span, th, td, a, p{
 }
 .myTable th, .myTable td {
   text-align: left;
-  padding: 9px;
+  padding: 10px;
 }
 
 .myTable tr {
@@ -710,102 +567,4 @@ color: #000;
 .delIcon{color: rgb(251, 70, 70);
   font-size: 13px;
 }
-.summa_content{
-  .borderSolder{
-    border: 0.5px dashed #D0D3D8;
-
-    span{
-      color:#67676C;
-      font-size: 21px;
-    }
-    p{
-      color:#525255;
-      font-weight:bold;
-      font-size: 23px;
-      margin:0;
-      padding:0;
-    }
-  }
-}
-.btn_pay{
-  height: 45px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  text-transform: uppercase;
-  small{
-    font-size: 11px;
-    color:white;
-  }
-  &:hover{
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
-
-    small{
-      transform: scale(1.01);
-    }
-  }
-}
-.choosePatientLast{
-    padding: 5px 0px 5px 0px;
-    margin: 0;
-  }
-.picture_back_last{
-    width: 35px;
-    height: 35px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    background-image: radial-gradient( circle farthest-corner at 12.3% 19.3%,  rgba(85,88,218,1) 0%, rgba(95,209,249,1) 100.2% );
-  }
-
-.choosePatientLast:hover{
-    background: #e7e7e7;
-  }
-.bg_rasxod{
-  background: linear-gradient(to right, rgb(242, 112, 156), rgb(255, 148, 114));
-}
-.bg_return{
-  background-image: radial-gradient( circle farthest-corner at 10.2% 55.8%,  rgba(252,37,103,1) 0%, rgba(250,38,151,1) 46.2%, rgba(186,8,181,1) 90.1% );
-}
-.bg_dolg{
-  background-image: linear-gradient( 171.8deg,  rgba(5,111,146,1) 13.5%, rgba(6,57,84,1) 78.6% );
-}
-.bg_bron{
-  background-image: radial-gradient( circle farthest-corner at 10% 20%,  rgba(0,152,155,1) 0.1%, rgba(0,94,120,1) 94.2% );
-}
-.bg_paydebit{
-  background-image: linear-gradient( 83.2deg,  rgba(150,93,233,1) 10.8%, rgba(99,88,238,1) 94.3% );
-}
-.last_unpay_patient{
-  height: 150px;
-  overflow-y: scroll;
-}
-.cashbox_page{
-  box-shadow: 0px 2px 5px rgb(238, 238, 238);
-}
-.activ_last_patient{
-  position: relative;
-  background-image: radial-gradient( circle farthest-corner at 1.3% 2.8%,  rgba(239,249,249,1) 0%, rgb(214, 228, 251) 100.2% );
-}
-.activ_last_patient::before{
-  content: '';
-  position: absolute;
-  width: 2.5px;
-  height: 100%;
-  left: 0;
-  top:0;
-  background-image: linear-gradient(to right, rgb(182, 244, 146), rgb(51, 139, 147));
-}
-.bg_table_tr:hover{
-  background-image: radial-gradient( circle farthest-corner at 1.3% 2.8%,  rgb(207, 219, 238) 100.2%, rgb(198, 214, 241) 100.2% );
-}
-.bg_table_header{
-  background-image: linear-gradient( 65.9deg,  rgba(85,228,224,1) 5.5%, rgba(75,68,224,0.74) 54.2%, rgba(64,198,238,1) 55.2%, rgba(177,36,224,1) 98.4% );
-  th,td{
-    color:white;  
-  }
-  padding: 50px !important;
-}
-// </style>
+</style>

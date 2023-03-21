@@ -2,7 +2,7 @@
   <div class="line-select">
 
      <input type="text" class="form-control form-control-sm text-dark" :placeholder="label"
-     @click="select_input" 
+     @click="select_input"
     :value="selected"/>
 
     <mdb-icon class="top-btn not-pointer" icon="caret-down" />
@@ -20,7 +20,11 @@
       >
         <div class="d-flex align-items-center">
           <div class="picture_back">
-          
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="30" height="30" viewBox="0 0 24 24" stroke-width="1" stroke="#fff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+              <circle cx="12" cy="7" r="4" />
+              <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+            </svg>
           </div>
           <div class="ml-2">
             <h6 style="font-size: 13px;" class="m-0 p-0">{{option.fio}}</h6>
@@ -115,9 +119,6 @@ export default {
               }
 
     }
-
-
-
 }
 </script>
 
@@ -174,10 +175,11 @@ export default {
   .options .picture_back{
     width: 35px;
     height: 35px;
-    background-image: url('../../assets/userDoc.png');
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-image: radial-gradient( circle farthest-corner at 12.3% 19.3%,  rgba(85,88,218,1) 0%, rgba(95,209,249,1) 100.2% );
   }
 
   .options .choosePatient:hover{

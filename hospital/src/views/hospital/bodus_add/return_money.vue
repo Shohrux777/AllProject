@@ -3,7 +3,7 @@
     <div class="p-4">
       <div class="bg-white p-4 mb-5 pt-4 shadow" style="border-radius:5px; position:relative;">
         <div class="border-bottom">
-          <h5 class="mx-4 pb-3 ">Возвырат деньги</h5>
+          <h5 class="mx-4 pb-3 ">Расходы лист</h5>
         </div>
         <form @submit.prevent="submit">
           <div style="height: 100px;" class="d-flex justify-content-between border-bottom align-items-center  ">
@@ -50,7 +50,7 @@
             
           </div>
         </form>
-       <div class="TablePatientDocId p-3">
+        <div class="TablePatientDocId p-3">
           <table class="myTable">
             <thead>
               <tr class="header ">

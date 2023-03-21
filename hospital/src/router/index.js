@@ -289,6 +289,13 @@ const routes = [{
             import ('../views/hospital/cashbox.vue')
     },
     {
+        path: '/cashbox1',
+        name: 'cashbox1',
+        meta: { layout: 'hospital' },
+        component: () =>
+            import ('../views/hospital/cashbox1.vue')
+    },
+    {
         path: '/result_lab',
         name: 'result_lab',
         meta: { layout: 'hospital' },
