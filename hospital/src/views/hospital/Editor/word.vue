@@ -1,41 +1,51 @@
 <template>
-  <div class="main" style="background: rgba(250,250,250)">
-    <!-- Top bar -->
-    <vue-file-toolbar-menu :content="menu" class="bar text-white border-top" style="z-index: 2; background-color:#1565c0;" />
-    <div class="row mx-0 mt-3">
-      <div class="col-3 ">
-        <lineSelect
-          class="ml-0"
-          style="margin-top: 10px;"
-          :options="get_patient_client_list" 
-          :searchshow="true"
-          @select="selectPatient"
-          :selected="patient_name"
-          :label="$t('patient list')"
+  <div>
+    <blank_print v-if="show_print" :content = "content" :patient_name = "patient_name" 
+    :patient_id="patient_id" :doc_name="doc_name" :borndate = "borndate" :title="titleHos"/>
+    <div v-else class="main main_bg_word" >
+      <!-- Top bar -->
+      <vue-file-toolbar-menu :content="menu" class="bar text-white border-top" style="z-index: 2; background-color:#1565c0;" />
+      <div class="row mx-0 py-1 pt-2" style="background-color:#1565c0;">
+        <div class="col-3 ">
+          <lineSelect
+            class="ml-0"
+            style="margin-top: 10px;"
+            :options="get_patient_client_list" 
+            :searchshow="true"
+            @select="selectPatient"
+            :selected="patient_name"
+            :label="$t('patient list')"
+          />
+          <small class="invalid-text " style="margin-top: 5px; font-weight: bold;"  v-if="$v.patient_name.$dirty && !$v.patient_name.required" >
+            {{$t('name_invalid_text')}}
+          </small>
+        </div>
+        <div class="col-3">
+          <mdb-input label="Title" class="m-0 p-0" v-model="titleHos" size="sm"/>
+          <small class="invalid-text " style="margin-top: 0px; font-weight: bold;"  v-if="$v.titleHos.$dirty && !$v.titleHos.required" >
+            {{$t('name_invalid_text')}}
+          </small>
+        </div>
+      </div>
+      <!-- Document editor -->
+      <vue-document-editor class="editor document_editor"  ref="editor"
+        :content.sync="content"
+        :zoom="zoom"
+        :page_format_mm="page_format_mm"
+        :page_margins="page_margins"
+        :display="display"
         />
-      </div>
-      <div class="col-3">
-        <mdb-input label="Title" class="m-0 p-0" v-model="titleHos" size="sm"/>
-        <small class="invalid-text " style="padding-top: 20px;"  v-if="$v.titleHos.$dirty && !$v.titleHos.required" >
-          {{$t('name_invalid_text')}}
-        </small>
-      </div>
-    </div>
-    <!-- Document editor -->
-    <vue-document-editor class="editor"  ref="editor"
-      :content.sync="content"
-      :zoom="zoom"
-      :page_format_mm="page_format_mm"
-      :page_margins="page_margins"
-      :display="display" />
 
-      <Toast ref="message"></Toast>
+    </div>
+    <Toast ref="message"></Toast>
+
   </div>
   
       <!-- :overlay="overlay" -->
 </template>
 
 <script>
+import blank_print from './blank_print.vue'
 import VueFileToolbarMenu from 'vue-file-toolbar-menu';
 import VueDocumentEditor from './DocumentEditor.vue'
 import lineSelect from "../../../components/hospital/cashUserSelect.vue";
@@ -45,28 +55,32 @@ import {mapActions, mapGetters, mapMutations} from 'vuex'
   import {mdbInput   } from 'mdbvue';
 // import InvoiceTemplate from './InvoiceTemplate.vue';
 export default {
-  components: { VueDocumentEditor, VueFileToolbarMenu, lineSelect, mdbInput },
+  components: { VueDocumentEditor, VueFileToolbarMenu, lineSelect, mdbInput, blank_print },
   validations: {
-    titleHos: {required}
+    titleHos: {required},
+    patient_name: {required}
   },
   data () {
     return {
+      show_print: false,
       patient_name: '', 
       patient_id: null, 
+      doc_name: localStorage.docName,
       shablon_name: '',
+      borndate: '',
       shablon_id: null,
       // This is where the pages content is stored and synced
       content: [],
       zoom: 1,
       zoom_min: 0.10,
       zoom_max: 5.0,
-      page_format_mm: [325, 460],
+      page_format_mm: [330, 460],
       page_margins: "10mm 15mm",
       display: "grid", // ["grid", "vertical", "horizontal"]
       mounted: false, // will be true after this component is mounted
       undo_count: -1, // contains the number of times user can undo (= current position in content_history)
       content_history: [], // contains the content states for undo/redo operations
-      titleHos: ''
+      titleHos: '',
     }
   }, 
   created () {
@@ -143,8 +157,14 @@ export default {
     if(this.shablon_content.title == ''){
       this.titleHos = this.getPatientInfo.reason;
     }
-    this.patient_id = this.getPatientInfo.id;
-    this.patient_name = this.getPatientInfo.name;
+    if(Object.keys(this.getPatientInfo).length != 0){
+      this.patient_id = this.getPatientInfo.id;
+      this.patient_name = this.getPatientInfo.name;
+      console.log(this.getPatientInfo)
+      this.borndate = this.getPatientInfo.bornDate.slice(0,10);
+    }
+    
+
     this.updatePatientId(this.patient_id)
 
    },
@@ -182,7 +202,7 @@ export default {
         { html: "<b>H4</b>", title: "Header 4", active: this.isH4, disabled: !this.current_text_style, click: () => document.execCommand('formatBlock', false, '<h4>') },
         { html: "<b>H5</b>", title: "Header 5", active: this.isH5, disabled: !this.current_text_style, click: () => document.execCommand('formatBlock', false, '<h5>') },
         { html: "<b>H6</b>", title: "Header 6", active: this.isH6, disabled: !this.current_text_style, click: () => document.execCommand('formatBlock', false, '<h6>') },
-        { icon: "format_clear", title: "Clear format", disabled: !this.current_text_style, click () { document.execCommand('removeFormat'); document.execCommand('formatBlock', false, '<div>'); } },
+        { icon: "format_clear", title: "Clear format", disabled: !this.current_text_style, click () { document.execCommand('removeFormat'); document.execCommand('formatBlock', false, '<p>'); } },
         { icon: "splitscreen", title: "Page break", disabled: !this.current_text_style, click: () => this.insertPageBreak() },
         
         { is: "spacer" },
@@ -335,7 +355,9 @@ export default {
     selectPatient(option){
       this.patient_name = option.data.fio;
       this.patient_id = option.data.id;
-      this.updatePatientId(option.data.id)
+      console.log(option.data)
+      this.borndate = option.data.bornDate.slice(0,10);
+      this.updatePatientId(option.data.id);
     },
     selectShablon(option){
       console.log(option)
@@ -356,14 +378,17 @@ export default {
     
     // Page overlays (headers, footers, page numbers)
     async printed(){
-      this.$refs.editor.printedForBlanka({id:this.patient_id, title:this.titleHos});
+      // this.$refs.editor.printedForBlanka({id:this.patient_id, title:this.titleHos});
+      this.show_print = true;
     },
     async saved(){
       console.log(this.content)
       console.log(localStorage.docId)
       console.log(localStorage.AuthId)
+      console.log('this.titleHos')
+      console.log(this.titleHos)
       
-      if( this.titleHos == '')
+      if( this.$v.$invalid)
       {
         this.$v.$touch();
         this.$refs.message.warning('please_fill')
@@ -483,6 +508,35 @@ export default {
 </script>
 
 <style>
+.document_editor b{
+  font-weight: bold !important;
+}
+.document_editor p{
+  padding-bottom: 5px !important;
+  margin-bottom: 0px !important;
+  font-size: 24px !important;
+}
+.document_editor div{
+  font-size: 24px !important;
+}
+.document_editor h6{
+  font-size: 24px !important;
+}
+.document_editor h5{
+  font-size: 30px !important;
+}
+.document_editor h4{
+  font-size: 35px !important;
+}
+.document_editor h3{
+  font-size: 40px !important;
+}
+.document_editor h2{
+  font-size: 45px !important;
+}
+.document_editor h1{
+  font-size: 50px !important;
+}
 html {
   height: 100%;
 }
@@ -492,7 +546,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: black;
-  background: rgb(248, 249, 250);
+  background: rgb(240, 240, 240);
 }
 ::-webkit-scrollbar {
   width: 16px;
@@ -513,9 +567,15 @@ body {
 </style>
 
 <style scoped>
+b{
+  font-weight: bold;
+}
   .main {
     width: fit-content;
     min-width: 100%;
+  }
+  .main_bg_word{
+    background-image: radial-gradient( circle farthest-corner at 92.3% 71.5%,  rgba(83,138,214,1) 0%, rgba(134,231,214,1) 90% );
   }
   .bar {
     position: sticky;
@@ -523,7 +583,7 @@ body {
     top: 0;
     width: calc(100vw - 16px);
     z-index: 1000;
-    background: rgba(248, 249, 250, 0.8);
+    background: rgba(114, 161, 208, 0.8);
     border-bottom: solid 1px rgb(248, 249, 250);
     backdrop-filter: blur(10px);
     --bar-button-active-color: #188038;

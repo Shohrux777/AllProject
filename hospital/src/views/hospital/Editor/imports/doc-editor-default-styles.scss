@@ -34,7 +34,9 @@
             position: absolute;
             box-sizing: border-box;
             transform-origin: center top;
-            background-image: url("../../../assets/lab1.png");
+            background: #fff;
+            // box-shadow: 7px 4px 7px 5px rgb(242, 242, 242);
+            // background-image: url("../../../assets/lab1.png");
             background-size: cover;
             width: 100%;
             border: var(--page-border);

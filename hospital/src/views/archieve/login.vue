@@ -135,6 +135,9 @@ export default {
           else if(data.userType == 5){
             this.$router.push('/send_doc')
           }
+          else if(data.userType == 4){
+            this.$router.push('/dailyForPayment')
+          }
           else{
             this.$router.push('/m_users')
           }

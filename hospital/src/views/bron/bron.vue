@@ -1,7 +1,7 @@
 <template>
   <div class="bronHospital">
     <div class="leftmenu border-right shadow">
-      <div class="w-100" v-for="(link,index) in bron_room_list.rows" :key="index">
+      <div class="w-100" v-for="(link,index) in get_bron_room_list_pagination" :key="index">
         <!-- :class="{'active_linked': link.view}" -->
         <div
         :class="{ active_linked : active_el == index }" 
@@ -9,9 +9,9 @@
         @click ="update_down(index, link)"
         class=" d-flex pl-2 px-3 menuitem justify-content-between" style="font-size:12.5px; padding: 8px 0; "
         >
-        <span>{{link.room_name}}</span>
+        <span>{{link.name}}</span>
         <div>
-          <span>1/{{link.room_beds_count}}</span>
+          <span><span>{{ link.bed_bron_qty }}</span> <span>/</span> {{link.beds_count}}</span>
           <img src="../../assets/bed.png" class="ml-2" style="margin-right: -10px;" alt="" width="18px">
         </div>
         </div>
@@ -20,13 +20,63 @@
     <div class="mainmenu" >
       <div class="shadowbackground" style="padding: 15px 70px;">
         <mdb-row>
-        <mdb-col v-for="(bed,i) in beds_list" :key="i" md="3" sm="4" class="bedcard">
+        <mdb-col v-for="(bed,i) in bed_list" :key="i" md="3" sm="4" class="bedcard">
           <div class="card">
             <div class="card-header px-2 text-center" style="padding: 10px 10px;">
-              <h6 class="m-0 pt-1">{{bed.bed.beds_name}}</h6>
+              <h6 class="m-0 pt-1">{{bed.name}}</h6>
             </div>
-            <div class="card-body  d-flex justify-content-center align-items-center ">
-              <div class="bg-white d-flex align-items-center rounded card-body border px-3 py-2 addPatient" @click="add_patient(bed.bed)">
+            <div class="bed_bron_status" v-if="bed.not_finished_payment_list.length>0">
+              <div class="text-center header_patient_name">
+                <h6 class="pt-2 pb-1">{{ bed.not_finished_payment_list[0].reserved_name_1 }}</h6>
+              </div>
+              <div class="border_gradiunt"></div>
+              <div class="d-flex justify-content-between px-1 pt-1">
+                <small class="text-success">Начала:</small>
+                <small >{{  new Date(bed.not_finished_payment_list[0].begin_date_bron).toString().slice(4,21) }}</small>
+              </div>
+              <div class="d-flex justify-content-between px-1 pt-1">
+                <small class="text-danger">Окончание:</small>
+                <small >{{  new Date(bed.not_finished_payment_list[0].end_date_bron).toString().slice(4,21) }}</small>
+              </div>
+              <div class="d-flex justify-content-between px-1 pt-1">
+                <small class="text-primary">День:</small>
+                <small >{{ bed.not_finished_payment_list[0].reserved_number_1 }} дней</small>
+              </div>
+
+              <div class="d-flex justify-content-between px-1 pt-1">
+                <small>Операционный пациент</small>
+                <svg v-if="bed.not_finished_payment_list[0].reserved_status_1" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-checkbox" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.5" stroke="#00b341" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <polyline points="9 11 12 14 20 6" />
+                  <path d="M20 12v6a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h9" />
+                </svg>
+                <svg v-else xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-x" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff2825" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <rect x="4" y="4" width="16" height="16" rx="2" />
+                  <path d="M10 10l4 4m0 -4l-4 4" />
+                </svg>
+              </div>
+              <div class="d-flex justify-content-between px-1 pt-1">
+                <small>Не оплатет сумма:</small>
+                <small class="text-danger font-weight-bold">
+                  {{ bed.not_finished_payment_list[0].need_payed_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} сум
+                </small>
+              </div>
+              <div class="d-flex justify-content-between px-1 pt-1">
+                <small>Цена за один день</small>
+                <small class="font-weight-bold">
+                  {{ bed.not_finished_payment_list[0].price_for_one_day.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} сум
+                </small>
+              </div>
+              <div class="text-end border-top mt-1">
+                <mdb-btn color="info" style="font-size: 10px;" class="px-3 py-1">
+                  Инфо</mdb-btn>
+                  <mdb-btn @click="fetch_finish_payment(bed.not_finished_payment_list[0].id)" color="success" :disabled="bed.not_finished_payment_list[0].need_payed_summ != 0" style="font-size: 10px;" class="px-3 py-1 ml-0">
+                    Закончить брон</mdb-btn>
+              </div>
+            </div>
+            <div v-else class="card-body  d-flex justify-content-center align-items-center ">
+              <div class="bg-white d-flex align-items-center rounded card-body border px-3 py-2 addPatient" @click="add_patient(bed)">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-plus m-0 p-0" width="25" height="25" viewBox="0 0 24 24" stroke-width="1.5" stroke="#1266F1" fill="none" stroke-linecap="round" stroke-linejoin="round">
                   <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                   <circle cx="12" cy="12" r="9" />
@@ -49,7 +99,7 @@
     <Modal :show="show" headerbackColor="warning" closeColor="white" titlecolor="white" 
     :title="$t('Inpatient Admission')" @close="show = false" width="600px">
         <template v-slot:body>
-          <patientAdd  @close="show = false" :room_info="room_info" :bed_info="bed_info" />
+          <patientAdd ref="patientAdd"  @close="closePatient_add" :room_info="room_info" :bed_info="bed_info" />
         </template>
       </Modal>
       <mdb-modal  :show="add_bed_show"  @close="add_bed_show = false"  light>
@@ -69,14 +119,14 @@
 </template>
 
 <script>
-  import { mdbRow, mdbCol, mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody,} from 'mdbvue';
+  import { mdbRow, mdbBtn, mdbCol, mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody,} from 'mdbvue';
   import patientAdd from "./patient_bed_add.vue";
   import Modal from '../../components/modal.vue'
   import {mapGetters, mapActions} from 'vuex'
   import bronBeds_add from "../../views/bron/bronBeds_add"
   export default {
     components: {
-      mdbRow,
+      mdbRow, mdbBtn,
       mdbCol,Modal,patientAdd, bronBeds_add,
       mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody,
     },
@@ -89,7 +139,6 @@
         show: false,
         active_el: 0,
         name: '',
-        beds_list: [],
 
         add_bed_show: false,
         editData: {},
@@ -98,8 +147,10 @@
         room_info:{
           id: null,
           name: '', 
-          type: ''
+          type: '',
+          price_type: {},
         },
+        bed_list: [],
         bed_info: {
           name: '',
           id: null,
@@ -107,82 +158,66 @@
       }
     },
     async mounted(){
-      await this.fetch_bron_room()
-      console.log(this.bron_room_list)
-      if(this.bron_room_list.rows.length>0){
-        this.roomId = this.bron_room_list.rows[0].id
-         this.room_info.id = this.bron_room_list.rows[0].id;
-         this.room_info.name = this.bron_room_list.rows[0].room_name;
-         this.room_info.type = this.bron_room_list.rows[0].room_type;
-        await this.fetchRoomsBeds(this.bron_room_list.rows[0].id)
+      await this.fetch_bron_room_pagination()
+      console.log(this.get_bron_room_list_pagination)
+      if(this.get_bron_room_list_pagination.length>0){
+        this.roomId = this.get_bron_room_list_pagination[0].id
+         this.room_info.id = this.get_bron_room_list_pagination[0].id;
+         this.room_info.name = this.get_bron_room_list_pagination[0].name;
+         this.room_info.type = this.get_bron_room_list_pagination[0].reserved_name_1;
+         this.room_info.price_type = this.get_bron_room_list_pagination[0].hospitalRoomType;
+         this.bed_list = this.get_bron_room_list_pagination[0].bedsList.reverse();
         console.log(this.roomId)
       }
-        // this.beds_list = []
-        // for (let j = 0; j <this.get_rooms_list.rows[0].bedsCount; j++) {
-        //   this.beds_list.push(j+1);
-        // } 
-      
     },
-    computed: mapGetters(['bron_room_list']),
+    computed: mapGetters(['bron_room_list', 'get_bron_room_list_pagination']),
     methods: {
-      ...mapActions(['fetch_bron_room']),
+      ...mapActions(['fetch_bron_room', 'fetch_bron_room_pagination']),
       async update_down(i, item) {
         this.active_el = i;
         console.log('item');
         console.log(item);
-         this.beds_list = [];
+         this.bed_list = [];
          this.roomId = item.id;
          this.room_info.id = item.id;
-         this.room_info.name = item.room_name;
-         this.room_info.type = item.room_type;
-         await this.fetchRoomsBeds(item.id)
-        // for (let j = 0; j <item.bedsCount; j++) {
-        //   this.beds_list.push(j+1);
-        // }
+         this.room_info.name = item.name;
+         this.room_info.type = item.reserved_name_1;
+         this.room_info.price_type = item.hospitalRoomType;
+
+         this.bed_list = item.bedsList;
+      },
+      async closePatient_add(){
+        this.show = false;
+        await this.fetch_bron_room_pagination();
+        if(this.get_bron_room_list_pagination.length>0){
+          this.roomId = this.get_bron_room_list_pagination[0].id
+          this.room_info.id = this.get_bron_room_list_pagination[0].id;
+          this.room_info.name = this.get_bron_room_list_pagination[0].name;
+          this.room_info.type = this.get_bron_room_list_pagination[0].reserved_name_1;
+          this.room_info.price_type = this.get_bron_room_list_pagination[0].hospitalRoomType;
+          this.bed_list = this.get_bron_room_list_pagination[0].bedsList.reverse();
+          console.log(this.roomId)
+        }
       },
       add_patient(item){
         console.log(item)
         this.show = true;
         this.bed_info.id = item.id;
-        this.bed_info.name = item.beds_name;
-
-
-        console.log('dasdasdasd asd asdasd')
+        this.bed_info.name = item.name;
+        this.$refs.patientAdd.refresh(this.room_info.price_type)
         console.log(this.room_info)
         console.log(this.bed_info)
       },
-      async updateRoom(roomId){
-        await this.fetchRoomsBeds(roomId)
+      async updateRoom(){
+        // await this.fetchRoomsBeds(roomId)
+        console.log('update room beds')
       },
-      async fetchRoomsBeds(id){
-        console.log('kirdiku ishlayabdi')
-        console.log(id)
-        try{
-          const response = await fetch(this.$store.state.hostname + '/HospitalBronRoomAddBeds/getPaginationByRoomId?page=0&size=1000&room_id=' + id)
-          const data = await response.json()
-          this.loading = false;
-            console.log('data')
-            console.log(data)
-            this.beds_list = [];
-          if(data.items_list){
-            // this.beds_list = data.items_list;
-            for(let i=data.items_list.length-1; i>=0; i--){
-              this.beds_list.push(data.items_list[i]);
-            }
-            this.$refs.message.success('Added_successfully')
-            this.beds_list.unshift({name: 'hiy'});
-            this.beds_list.splice(0,1);
-            console.log(this.beds_list)
-          }
-          else{
-            this.$refs.msg.error('Error_successfully')
-            return false;
-          }
-        }
-        catch{
-            this.$refs.msg.error('Error_successfully')
-        }
-      }
+      async fetch_finish_payment(id){
+        const res = await fetch(this.$store.state.hostname + '/HospitalBronRoomPayments/finishPayment?id=' + id);
+        const res_data = await res.json();
+        console.log('res_data')
+        console.log(res_data)
+      },
     },
   }
 </script>
@@ -266,6 +301,18 @@
     padding: 10px 15px;
     border-radius:50%;
     background-image: radial-gradient( circle farthest-corner at 12.3% 19.3%,  rgba(85,88,218,1) 0%, rgba(95,209,249,1) 100.2% );
+  }
+}
+.bed_bron_status{
+  .header_patient_name{
+    h6{
+      font-size: 13px;
+      margin: 0;
+    }
+  }
+  .border_gradiunt{
+    height: 1px;
+    background-image: linear-gradient( 102.4deg,  rgba(253,189,85,1) 7.8%, rgba(249,131,255,1) 100.3% );
   }
 }
 </style>

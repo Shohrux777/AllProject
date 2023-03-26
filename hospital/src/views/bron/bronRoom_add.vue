@@ -24,9 +24,23 @@
             >
               {{ $t("name_invalid_text") }}
             </small>
-            <mdb-input :label="$t('room_type')" v-model="room_type" outline />
+            <!-- <mdb-input :label="$t('room_type')" v-model="room_type" outline /> -->
 
             <mdb-input :label="$t('note')" v-model="note" outline />
+            <lineSelect
+              :options="price_type_room.rows"
+              :searchshow="true"
+              @select="selectRoomType"
+              :selected="roomType_name"
+              :label="$t('room_type')"
+              />
+              <small
+                class="invalid-text mt-0"
+                v-if="$v.roomType_name.$dirty && !$v.roomType_name.required"
+              >
+                {{ $t("name_invalid_text") }}
+              </small>
+
           </div>
 
           <div class="text-right container">
@@ -54,6 +68,7 @@
 <script>
 import { mdbBtn, mdbInput } from "mdbvue";
 import { required } from "vuelidate/lib/validators";
+import lineSelect from "../../components/lineSelect.vue";
 
 import { mapActions, mapGetters } from "vuex";
 
@@ -61,6 +76,7 @@ export default {
   components: {
     mdbBtn,
     mdbInput,
+    lineSelect
   },
   data() {
     return {
@@ -72,11 +88,15 @@ export default {
       note: "",
       name: "",
       id: 0,
+      roomType_name: '',
+      roomType_id: null,
+      room_beds_list: [],
     };
   },
   validations: {
     name: { required },
     room_beds_count: { required },
+    roomType_name: {required}
   },
   props: {
     options: {
@@ -86,9 +106,10 @@ export default {
       },
     },
   },
-  computed: mapGetters(["get_province_list"]),
+  computed: mapGetters(["get_province_list", 'price_type_room']),
   async mounted() {
-    await this.fetch_province();
+    // await this.fetch_province();
+    await this.fetch_price_type_room();
     await this.options;
     if (Object.keys(this.options).length != 0) {
       this.update();
@@ -97,7 +118,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["fetch_province", "fetch_bron_room"]),
+    ...mapActions(["fetch_province", "fetch_bron_room", 'fetch_price_type_room']),
     update() {
       console.log("da salom");
       console.log(this.options);
@@ -107,6 +128,10 @@ export default {
       this.room_beds_count = this.options.room_beds_count;
       this.note = this.options.note;
     },
+    selectRoomType(option){
+      this.roomType_id = option.data.id;
+      this.roomType_name = option.data.name;
+    },
 
     cls_wnd() {
       this.name = "";
@@ -114,6 +139,8 @@ export default {
       this.room_beds_count = "";
       this.note = "";
       this.id = 0;
+      this.roomType_id= null;
+      this.roomType_name='';
     },
     async submit() {
       if (this.$v.$invalid) {
@@ -121,21 +148,33 @@ export default {
         this.$refs.message.warning("please_fill");
         return false;
       }
+      if(this.room_beds_count){
+        this.room_beds_list = [];
+        for(let i=0; i<this.room_beds_count; i++){
+          let a = {
+            name: 'Кровать',
+            id: 0
+          }
+          this.room_beds_list.push(a);
+        }
+      }
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          room_name: this.name,
-          room_type: this.room_type,
-          room_beds_count: this.room_beds_count,
-          note: this.note,
+          name: this.name + ' (' + this.roomType_name + ' )',
+          beds_count: this.room_beds_count,
+          bedsList: this.room_beds_list,
+          reserved_name_1: this.roomType_name,
+          reserved_name_2: this.note,
+          hospitalRoomTypeid: this.roomType_id,
           id: this.id,
           // "code" : 0
         }),
       };
       this.loading = true;
       const response = await fetch(
-        this.$store.state.hostname + "/HospitalBronRooms",
+        this.$store.state.hostname + "/HospitalBronRoomNs",
         requestOptions
       );
       const data = await response.json();

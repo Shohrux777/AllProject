@@ -112,9 +112,9 @@ export default {
   font-family: 'Ubuntu';  
   font-weight: bold;
 }
-span, h6{
-  font-family: 'Ubuntu';  
-}
+// span, h6{
+//   font-family: 'Ubuntu';  
+// }
 
 .checkPrint {
   position: fixed;

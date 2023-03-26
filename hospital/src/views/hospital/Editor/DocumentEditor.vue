@@ -178,8 +178,8 @@ export default {
       for(const page of this.pages) {
         const page_elt = this.$refs[page.uuid][0];
         // set raw HTML content
-        if(!this.content[page.content_idx]) page_elt.innerHTML = "<div><br></div>";
-        else if(typeof this.content[page.content_idx] == "string") page_elt.innerHTML = "<div>"+this.content[page.content_idx]+"</div>";
+        if(!this.content[page.content_idx]) page_elt.innerHTML = "<p><br></p>";
+        else if(typeof this.content[page.content_idx] == "string") page_elt.innerHTML = "<p>"+this.content[page.content_idx]+"</p>";
         // (else content is a component that is set in Vue.js <template>)
         // restore page in DOM in case it was removed
         if(!this.$refs.content.contains(page_elt)) this.$refs.content.appendChild(page_elt);
@@ -291,7 +291,7 @@ export default {
           return pages.map(page => {
             // remove any useless <div> surrounding the content
             let elt = this.$refs[page.uuid][0];
-            while(elt.children.length == 1 && elt.firstChild.tagName && elt.firstChild.tagName.toLowerCase() == "div" && !elt.firstChild.getAttribute("style")) {
+            while(elt.children.length == 1 && elt.firstChild.tagName && elt.firstChild.tagName.toLowerCase() == "p" && !elt.firstChild.getAttribute("style")) {
               elt = elt.firstChild;
             }
             return elt.innerHTML;

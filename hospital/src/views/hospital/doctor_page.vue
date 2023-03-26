@@ -82,7 +82,8 @@
               active-class="active_link"
               class="text-dark d-flex pl-2 px-3 border-bottom menuitem justify-content-between" style="font-size:12.6px; padding: 6px 0; "
               >
-              <a :href="hostname1 + item.patinetRecipeStr" target="_blank">{{item.patientRecipeTitle}}</a>
+              <a v-if="item.patinetRecipeStr.slice(0,4) == 'data'" @click="update_downShablon(item)" >{{item.patientRecipeTitle}}</a>
+              <a v-else :href="hostname1 + item.patinetRecipeStr" target="_blank">{{item.patientRecipeTitle}}</a>
               </div>
             </div>
             <loader_small v-if="loadAnaliz"/>
@@ -595,7 +596,8 @@ export default {
       var temp = {
         id: this.patient_id,
         name: this.name,
-        reason: this.reason
+        reason: this.reason,
+        bornDate: this.bornDate
       }
       this.updatePatientInfo(temp);
       this.$router.push('/selectShablon')

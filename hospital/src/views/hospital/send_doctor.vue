@@ -194,6 +194,7 @@
                     <tr class="header ">
                       <th width="50">№</th>
                       <th>{{$t('FIO')}}</th>
+                      <th>{{$t('otchrit')}}</th>
                       <th>{{$t('unregistrDate')}}</th>
                       <th>{{$t('bornDate')}}</th>
                       <th>{{$t('phoneNumber')}}</th>
@@ -201,14 +202,17 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(row,rowIndex) in get_patient_list_doc_id" :key="rowIndex">
+                    <tr v-for="(row,rowIndex) in ocherd_list" :key="rowIndex">
                       <td> <small style="font-size:11.5px;">{{rowIndex+1}}</small> </td>
-                      <td> <small style="font-size:11.5px;">{{row.fio}}</small> </td>
-                      <td> <small style="font-size:11.5px;">{{row.registratedDate.slice(0,10)}}</small>  <small>{{row.registratedDate.slice(11,19)}}</small></td>
-                      <td> <small style="font-size:11.5px;">{{row.bornDate.slice(0,10)}}</small> </td>
-                      <td> <small style="font-size:11.5px;">{{row.phoneNumber}}</small> </td>
+                      <td> <small style="font-size:11.5px;">{{row.patients.FIO}}</small> </td>
+                      <td> <small style="font-size:11.5px; font-weight: bold;">
+                        {{row.ochred_name_aout_genereted}}</small> 
+                      </td>
+                      <td> <small style="font-size:11.5px;">{{row.created_date_time.slice(0,10)}}</small><small>{{row.created_date_time.slice(11,19)}}</small></td>
+                      <td> <small style="font-size:11.5px;">{{row.patients.BornDate.slice(0,10)}}</small> </td>
+                      <td> <small style="font-size:11.5px;">{{row.patients.PhoneNumber}}</small> </td>
                       <td class="text-center">
-                        <i class="fas fa-eye editIcon  mask waves-effect text-warning m-0 pr-2" disabled @click="getPatientIdService(row.id, row.fio)" :data-row="rowIndex"></i>
+                        <i class="fas fa-eye editIcon  mask waves-effect text-warning m-0 pr-2" disabled @click="getPatientIdService(row.PatientsId, row.patients.FIO, row.patients)" :data-row="rowIndex"></i>
                       </td>
                     </tr>
                   </tbody>
@@ -257,15 +261,16 @@
               <mdb-modal-title style="font-weight:  500;">{{$t('Surovnoma')}}</mdb-modal-title>
             </mdb-modal-header> -->
             <mdb-modal-body>
-              <div class="d-flex justify-content-center">
+              <div class="d-flex justify-content-between border-bottom">
                 <h4>{{patientNmaeService}}</h4>
+                <mdb-btn class="py-2 px-4" style="font-size: 11px;" @click="ocherd_add_service()" color="primary"> + Добавить услуги</mdb-btn>
               </div>
               <div class="px-3 row mt-2">
                 <div v-for="(servic,i) in show_patientId_ServiceList" :key="i" 
                   class="col-12 border-bottom d-flex justify-content-between " :class="{'bg-payed': servic.finishPayment}">
                   <div class="" >
                     <div class="py-2 px-2 d-flex w-100">
-                      <span class="m-0 p-0 mr-3" style="margin-top: -2px !important">{{i+1}})</span>
+                      <span class="m-0 p-0 mr-3" style="margin-top: -2px !important">{{i+1}} ) </span>
                       <label style="font-weight:500;" class="m-0">{{servic.serviceName}} ({{servic.summ}})</label>
                     </div>
                   </div>
@@ -328,6 +333,7 @@ export default {
       service_show: false,
       show_surov: false,
       patientNmaeService: '',
+      patientsInfoFull: {},
       show_patientId_ServiceList: [],
 
       show_otchert: false,
@@ -367,6 +373,8 @@ export default {
       serviceListGroupItem: [],
 
       discount: 0,
+
+      ocherd_list: [],
     }
   },
    async mounted(){
@@ -385,6 +393,7 @@ export default {
     this.fetch_get_doctor_list(localStorage.AuthId)
     this.fetch_auth_list();
     this.fetch_service_type();
+    await this.fetch_contragent();
   },
 
   watch: {
@@ -393,10 +402,10 @@ export default {
       this.patient_id = this.get_patient_info.patient_id
     }
   },
-  computed: mapGetters(['auth_user_list','get_service_patientId','get_serviceChosenList', 'get_bahila_service_type_group', 'get_service_no_chosen_list', 'get_user_service_list', 'get_patient_info', 'get_patient_list_doc_id', 'get_doctor_list_by_casher']),
+  computed: mapGetters(['auth_user_list','get_service_patientId','get_serviceChosenList','get_contragent_list', 'get_bahila_service_type_group', 'get_service_no_chosen_list', 'get_user_service_list', 'get_patient_info', 'get_patient_list_doc_id', 'get_doctor_list_by_casher']),
   methods:{
-    ...mapActions(['fetch_auth_list','fetch_service_patientId', 'fetch_patient_client', 'fetch_bahila_service_type_group', 'fetch_service_type', 'fetch_add_service_to_user', 'fetch_users_service_list', 'fetch_get_patient_list_Doc_Id','fetch_get_doctor_list']),
-    ...mapMutations(['Users_service_list','update_patient_list', 'ochred_add_check', 'ochred_add_service', 'choosenServiceType']),
+    ...mapActions(['fetch_auth_list','fetch_service_patientId', 'fetch_patient_client','fetch_contragent' ,'fetch_bahila_service_type_group', 'fetch_service_type', 'fetch_add_service_to_user', 'fetch_users_service_list', 'fetch_get_patient_list_Doc_Id','fetch_get_doctor_list']),
+    ...mapMutations(['Users_service_list','update_patient_list', 'ochred_add_check', 'ochred_add_service', 'choosenServiceType', 'choose_patient_client']),
     search_func(){
       // this.get_user_service_list = this.searchServicelist;
       this.renderFunc(this.get_user_service_list)
@@ -440,7 +449,8 @@ export default {
       this.renderFunc(this.get_user_service_list)
       this.search = '';
       this.$refs.refSearchService.focus();
-      this.fetch_get_patient_list_Doc_Id(authId)
+      // this.fetch_get_patient_list_Doc_Id(authId)
+      await this.fetch_ocherd_list();
       console.log(this.get_patient_list_doc_id)
       // this.checkedCategories = []
       // this.ServiceTypesCount = []
@@ -540,9 +550,10 @@ export default {
         this.service_unpayed_show = false;
       }
       },
-    async getPatientIdService(id, fio){
+    async getPatientIdService(id, fio, patients){
       console.log(id)
       this.patientNmaeService = fio;
+      this.patientsInfoFull = patients;
       const response = await fetch(this.$store.state.hostname + "/Payments/getPatientPayedServiceByPatientIdListByDoctrAuthId?PatientId=" + id + '&doctirAuthId=' + this.auth_id);
       const data = await response.json();
       console.log(' info service')
@@ -564,6 +575,22 @@ export default {
       this.search = '';
       this.service_show = false
 
+    },
+    async ocherd_add_service(){
+      this.show_service_patient_id = false;
+      let patient_info = {
+          reason: '',
+          contragent_id: this.get_contragent_list.rows[0].id,
+          contragent_name: this.get_contragent_list.rows[0].name,
+          contragent_tel: '',
+          number_into_id: null,
+          patient_type_id: null,
+          patient_born: this.patientsInfoFull.BornDate.slice(0,10),
+          patient_id: this.patientsInfoFull.Id,
+          patient_name: this.patientNmaeService,
+          patient_tel: this.patientsInfoFull.PhoneNumber
+        }
+        this.choose_patient_client(patient_info)
     },
     async add_services(){
       console.log('get_serviceChosenList')
@@ -811,6 +838,7 @@ export default {
       }
       if( this.$v.$invalid || this.user_id == null )
         {
+          this.loading = false;
           this.$v.$touch();
           this.$refs.message.warning('please_fill')
           return;
@@ -889,7 +917,8 @@ export default {
         this.discount_summa = 0;
         this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
         this.fetch_get_patient_list_Doc_Id(this.auth_id)
-        this.service_bahila_list_database = []
+        this.service_bahila_list_database = [];
+        await this.fetch_ocherd_list();
         this.service_bahila_list_database = this.get_bahila_service_type_group.rows.map(item => {
               return {
                   id: item.id,
@@ -1061,6 +1090,41 @@ export default {
         this.modal_status = true;
       }
     },
+    async fetch_ocherd_list(){
+      let newdate = new Date().toISOString().slice(0,10);
+        console.log(newdate)
+        let b_date  = newdate + 'T00:00:35.000Z';
+        let e_date  = newdate + 'T23:59:35.000Z';
+        console.log(b_date)
+        console.log(e_date)
+        console.log(this.user_id)
+        try{
+          this.loading = true;
+          const response = await fetch(this.$store.state.hostname + "/HospitalOchreds/getPaginationByDoktorIdAndDates?page=0&size=1000&user_id=" + this.user_id + '&b_date=' + b_date + '&e_date='+ e_date);
+          this.loading = false;
+          if(response.status == 201 || response.status == 200)
+          {
+            const data = await response.json();
+            console.log(data ,  'sadasd data open')
+
+            this.ocherd_list = data.items_list;
+            
+            // this.$refs.message.success('Added_successfully')
+            return true;
+          }
+          else{
+            const data = await response.text();
+            this.modal_info = data;
+            this.modal_status = true;
+            return false;
+          }
+        }
+        catch{
+          this.loading = false;
+          this.modal_info = this.$i18n.t('network_ne_connect'); 
+          this.modal_status = true;
+        }
+    }
     
 
   },

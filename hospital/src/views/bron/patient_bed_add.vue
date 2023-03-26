@@ -4,7 +4,7 @@
         <div class="col-7">
           <div class="w-100 timePicer">
             <label class="dayLabel">{{$t('Room')}}</label>
-            <mdb-input :value="room_info.name + ' ' + room_info.type" disabled class="m-0 p-0 mt-2 "  size="sm" outline type="text" />
+            <mdb-input :value="room_info.name" disabled class="m-0 p-0 mt-2 "  size="sm" outline type="text" />
           </div>
         </div>
         <div class="col-5">
@@ -67,14 +67,12 @@
             <label style="font-weight:500; font-size:13.5px; cursor:pointer;"  for="operatsion" 
             class="mt-2 ml-2 text-primary">Операционный пациент</label>
           </div>
-
         </div>
       </div>
       <div class="w-100 timePicer mt-3">
         <label class="dayLabel">{{$t('note')}}</label>
         <mdb-input v-model="note"  class="m-0 p-0 mt-2 "  size="sm" outline type="textarea" />
       </div>
-
 
       <div class="row mt-3" style="position:relative;">
         <div class="col-4 cursor_h" v-for="(item_price, i) in price_list" :key="i">
@@ -198,7 +196,7 @@ export default {
     },
   computed: mapGetters(['get_patient_list_last', 'price_type_room', 'auth_user_list']),
   methods: {
-    ...mapActions(['fetch_patient_list_last', 'fetch_price_type_room','fetch_auth_list']),
+    ...mapActions(['fetch_patient_list_last', 'fetch_price_type_room','fetch_auth_list', 'fetch_bron_room_pagination']),
     selectPatient(option){
       this.patient_name = option.data.fio;
       this.patient_id = option.data.id;
@@ -210,7 +208,7 @@ export default {
       this.price_activ = -1;
       this.price_list = [];
       this.price_list.push({name:'patient', price: roomType.room_bed_price})
-      this.price_list.push({name:'Room', price: roomType.room_price})
+      this.price_list.push({name:'for_room', price: roomType.room_price})
       this.price_list.push({name:'care_patient', price: roomType.room_bed_price_not_patient})
     },
     func_activ_price(i, data){
@@ -279,8 +277,8 @@ export default {
       var mount_day = 0;
       
       if(this.operatsion_show){
-        mount_day = this.days - 3;
-        discount_summ = this.price * 3;
+        mount_day = this.days - 0;
+        discount_summ = this.price * 0;
         need_summ = mount_day * this.price;
       }
       else{
@@ -307,6 +305,8 @@ export default {
           "discount_pesantage": 0,
           "reserved_status_1": this.operatsion_show,
           "reserved_number_1": this.days,
+          "reserved_name_1": this.patient_name,
+          "reserved_name_2": this.room_info.name,
           "finish_payment": false,
           // "authorizationId": localStorage.AuthId,
           // "note": this.note,
@@ -324,7 +324,7 @@ export default {
             console.log(data)
             // await this.fetchAddPriceType(data.id);
             this.$emit('close')
-            this.$refs.message.success('Added_successfully')
+            this.$refs.message.success('Added_successfully');
             this.cls_wnd()
           }
           else{

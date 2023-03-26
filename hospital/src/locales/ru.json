@@ -56,6 +56,7 @@
     "menu_company": "Компания",
     "status": "Статус",
     "note": "Примечание",
+    "reserved_name_2": "Примечание",
     "ed_izm1": "Ед. изм.",
     "ed_izm2": "Ед. изм.2",
     "active_status": "Статус",
@@ -301,6 +302,7 @@
     "number": "Номер",
     "type": "Тип",
     "bedsCount": "Kоличество кровати",
+    "beds_count": "Kоличество кровати",
     "fio": "Ф.И.О",
     "province_name": "Область",
     "supplier": "Поставщик",
@@ -520,9 +522,8 @@
     "Update работника": "Обновить работника",
     "file_name": "Имя файла",
     "Added_successfully_file": "Успешно добавлено файл!",
-
-
-
+    "Start_time": "Время начала",
+    "End_time":"Время окончания",
 
     "Inpatient Admission": "Inpatient Admission",
     "Provider": "Provider",
@@ -547,6 +548,7 @@
     "hospitalBronRoomsid": "Комнаты Брона",
     "room_beds_count": "Kоличество кровати",
     "room_type": "Тип Комнаты",
+    "reserved_name_1": "Тип Комнаты",
     "otchrit": "Oчредь",
     "next_ochred": "Cледующий очредь",
     "opuxoloviya": "ОПУХОЛЕВЫЕ МАРКЕРЫ",
@@ -573,6 +575,8 @@
     "add_laboratory": "Добавить лабораторию",
     "change_doctor": "Сменить врача",
     "add_lab": "Сохранить лабораторию",
-    "add_main":"Сохранить заголовок"
-
+    "add_main":"Сохранить заголовок",
+    "care_patient": "Уход за пациентом",
+    "for_room" :"Для комнаты",
+    "back": "Назад"
 }

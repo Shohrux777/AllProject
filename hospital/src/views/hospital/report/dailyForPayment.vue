@@ -162,6 +162,33 @@
             </tbody>
           </table>
         </div>
+
+        <div class="TablePatientDocIdset mt-1">
+          <table class="myTable">
+            <thead class="bg_header">
+              <tr class="header text-white ">
+                <th >{{$t('service_group')}}</th>
+                <!-- <th >{{$t('user')}}</th> -->
+                <th >{{$t('date')}}</th>
+                <th >{{$t('cash')}}</th>
+                <th >{{$t('card')}}</th>
+                <th>{{$t('qty')}}</th>
+                <td> <span class="text-white">Общий</span> </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td> <span >Стационар</span> </td>
+                <td> <span >{{this.Start_time}}</span> </td>
+                <td> <span >{{get_bron_cash_card.cash.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                <td> <span >{{get_bron_cash_card.card.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                <td> <span >{{get_bron_cash_card.qty}}</span> </td>
+                <td> <span >{{(get_bron_cash_card.cash + get_bron_cash_card.card).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -333,6 +360,7 @@
         c.time2 = b;
         this.loading = true;
         await this.fetch_report_by_data_time(c)
+        await this.fetch_report_by_bron_payed(c)
         this.loading = false;
         console.log(this.get_daily_report_list)
         this.cash = 0;
@@ -364,9 +392,10 @@
        
         // console.log(this.get_report_by_data)
     },
-    computed: mapGetters(['get_contragent_list', 'get_report_by_data', 'get_report_by_time_card_cash', 'get_report_by_data_time','get_daily_report_list']),
+    computed: mapGetters(['get_contragent_list', 'get_report_by_data', 'get_report_by_time_card_cash',
+     'get_report_by_data_time','get_daily_report_list', 'get_bron_cash_card']),
     methods: {
-      ...mapActions(['fetch_contragent', 'fetch_report_by_data', 'fetch_report_by_data_time']),
+      ...mapActions(['fetch_contragent', 'fetch_report_by_data', 'fetch_report_by_data_time', 'fetch_report_by_bron_payed']),
       ...mapMutations(['dibet_delite_cont']),
 
       add(){
@@ -411,7 +440,8 @@
           c.time1 = a;
           c.time2 = b;
           this.loading = true;
-          await this.fetch_report_by_data_time(c)
+          await this.fetch_report_by_data_time(c);
+          await this.fetch_report_by_bron_payed(c);
           this.loading = false;
           console.log(this.get_daily_report_list)
           this.cash = 0;

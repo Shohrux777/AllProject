@@ -10,29 +10,63 @@
         </mdb-navbar-brand>
         <mdb-navbar-toggler>
           <mdb-navbar-nav style="z-index: 5;">
-            <mdb-nav-item class="px-2 " style="font-size:12px;" href="/m_users">Главное меню</mdb-nav-item>
-            <mdb-nav-item class="px-2" style="font-size:12px;" href="/send_doc" >Регистрация</mdb-nav-item>
-            <mdb-nav-item class="px-2" style="font-size:12px;" href="/cashbox">Касса</mdb-nav-item>
-            <mdb-nav-item class="px-2" style="font-size:12px;" href="/doctor">Доктор</mdb-nav-item>
+            <!-- <mdb-nav-item class="px-2 " style="font-size:12px;" href="/m_users">Главное меню</mdb-nav-item> -->
+            <!-- <mdb-nav-item class="px-2" style="font-size:12px;" href="/send_doc" >Регистрация</mdb-nav-item> -->
+            <router-link to="/m_users">
+              <mdb-nav-item class="px-2" style="font-size:12px;">Главное меню</mdb-nav-item>
+            </router-link>
+            <router-link to="/send_doc">
+              <mdb-nav-item class="px-2" style="font-size:12px;">Регистрация</mdb-nav-item>
+            </router-link>
+            <router-link to="/cashbox">
+              <mdb-nav-item class="px-2" style="font-size:12px;">Касса</mdb-nav-item>
+            </router-link>
+            <!-- <mdb-nav-item class="px-2" style="font-size:12px;" href="/cashbox">Касса</mdb-nav-item> -->
+            <!-- <mdb-nav-item class="px-2" style="font-size:12px;" href="/doctor">Доктор</mdb-nav-item> -->
+            <router-link to="/doctor">
+              <mdb-nav-item class="px-2" style="font-size:12px;">Доктор</mdb-nav-item>
+            </router-link>
             <mdb-dropdown tag="li" class="nav-item">
               <mdb-dropdown-toggle tag="a" navLink style="font-size:12px;" slot="toggle" waves-fixed> Отчет </mdb-dropdown-toggle>
               <mdb-dropdown-menu>
                 <!-- <mdb-dropdown-item tag="a" style="font-size:12px;" href="/bycont_data">MRT MSCT</mdb-dropdown-item> -->
                 <!-- <mdb-dropdown-item tag="a" style="font-size:12px;" href="/byuzi_date">UZI LAB</mdb-dropdown-item> -->
-                <mdb-dropdown-item tag="a" style="font-size:12px;" href="/groupReport">Контрагент отчет</mdb-dropdown-item>
+
+
+                <!-- <mdb-dropdown-item tag="a" style="font-size:12px;" href="/groupReport">Контрагент отчет</mdb-dropdown-item>
                 <mdb-dropdown-item tag="a" style="font-size:12px;" href="/bydate">Бонусный отчет</mdb-dropdown-item>
-                <mdb-dropdown-item tag="a" style="font-size:12px;" href="/bycontragent">По контрагент</mdb-dropdown-item>
-                <mdb-dropdown-item tag="a" style="font-size:12px;" href="/bytime">По времени</mdb-dropdown-item>
-                <mdb-dropdown-item tag="a" style="font-size:12px;" href="/payment_docReport">По времени Доктор</mdb-dropdown-item>
-                <mdb-dropdown-item tag="a" style="font-size:12px;" href="/bydoctorMoneyEarn">Служба отчетов врача</mdb-dropdown-item>
+                <mdb-dropdown-item tag="a" style="font-size:12px;" href="/bycontragent">По контрагент</mdb-dropdown-item> -->
+
+                <router-link class="m-0 p-0" to="/bytime">
+                  <mdb-dropdown-item style="font-size:12px;">По времени</mdb-dropdown-item>
+                </router-link>
+                <!-- <mdb-dropdown-item tag="a" style="font-size:12px;" href="/bytime">По времени</mdb-dropdown-item> -->
+                <router-link class="m-0 p-0" to="/payment_docReport">
+                  <mdb-dropdown-item style="font-size:12px;">По времени Доктор</mdb-dropdown-item>
+                </router-link> 
+                <router-link class="m-0 p-0" to="/bydoctorMoneyEarn">
+                  <mdb-dropdown-item style="font-size:12px;">Служба отчетов врача</mdb-dropdown-item>
+                </router-link> 
+                <!-- <mdb-dropdown-item tag="a" style="font-size:12px;" href="/payment_docReport">По времени Доктор</mdb-dropdown-item> -->
+                <!-- <mdb-dropdown-item tag="a" style="font-size:12px;" href="/bydoctorMoneyEarn">Служба отчетов врача</mdb-dropdown-item> -->
 
                 <!-- <mdb-dropdown-item tag="a" href="/bykassir">отчет кассыр</mdb-dropdown-item> -->
-                <mdb-dropdown-item tag="a" style="font-size:12px;" href="/dailyForPayment">Дневники касса</mdb-dropdown-item>            
+                <!-- <mdb-dropdown-item tag="a" style="font-size:12px;" href="/dailyForPayment">Дневники касса</mdb-dropdown-item> -->
+                <router-link class="m-0 p-0" to="/dailyForPayment">
+                  <mdb-dropdown-item style="font-size:12px;">Дневники касса</mdb-dropdown-item>
+                </router-link>         
                 <!-- <mdb-dropdown-item tag="a" style="font-size:12px;" href="/kunlik">Дневники</mdb-dropdown-item>       -->
                 <mdb-dropdown-item tag="a" style="font-size:12px;" href="/debitReport">Список долгов</mdb-dropdown-item>
                 <mdb-dropdown-item tag="a" style="font-size:12px;" href="/debitPayReport">Cписок оплаченных долгов</mdb-dropdown-item>
-                
-                <mdb-dropdown-item tag="a" style="font-size:12px;" href="/return_money">Расходы</mdb-dropdown-item>
+                <router-link class="m-0 p-0" to="/return_money">
+                  <mdb-dropdown-item style="font-size:12px;">Расходы</mdb-dropdown-item>
+                </router-link> 
+                <router-link class="m-0 p-0" to="/bron_time_payment">
+                  <mdb-dropdown-item style="font-size:12px;">Стационар отчет</mdb-dropdown-item>
+                </router-link> 
+                <!-- <mdb-dropdown-item tag="a" style="font-size:12px;" href="/return_money">Расходы</mdb-dropdown-item>
+                <mdb-dropdown-item tag="a" style="font-size:12px;" href="/bron_time_payment">Стационар отчет</mdb-dropdown-item> -->
+
               </mdb-dropdown-menu>
             </mdb-dropdown>
             <mdb-dropdown tag="li" class="nav-item">
@@ -55,8 +89,10 @@
                 <mdb-dropdown-item tag="a" href="/bydate">Бонусный отчет</mdb-dropdown-item> -->
               </mdb-dropdown-menu>
             </mdb-dropdown>
-          
-            <mdb-nav-item class="px-2" style="font-size:12px;" href="/bron">Стационар</mdb-nav-item>
+            <router-link to="/bron">
+              <mdb-nav-item class="px-2" style="font-size:12px;">Стационар</mdb-nav-item>
+            </router-link>
+            <!-- <mdb-nav-item class="px-2" style="font-size:12px;" href="/bron">Стационар</mdb-nav-item> -->
             <!-- <mdb-nav-item class="px-2" style="font-size:12px;" href="/word_search">Бланка</mdb-nav-item> -->
             <mdb-nav-item v-if="laborant || show_but" class="px-2" style="font-size:12px;" href="/laboratory_list/0">Лаборатория</mdb-nav-item>
             <mdb-nav-item class="px-2" style="font-size:12px;" href="/result_lab">Результат</mdb-nav-item>

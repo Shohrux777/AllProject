@@ -1658,6 +1658,20 @@ const routes = [{
             import ('../views/bron/priceTypeRoom.vue')
     },
     {
+        path: '/not_payed_list',
+        name: 'not_payed_list',
+        meta: { layout: 'empty' },
+        component: () =>
+            import ('../views/bron/not_payed_list.vue')
+    },
+    {
+        path: '/bron_time_payment',
+        name: 'bron_time_payment',
+        meta: { layout: 'hospital' },
+        component: () =>
+            import ('../views/hospital/report/bron_time_payment.vue')
+    },
+    {
         path: '/otcheritList/:id',
         name: 'otcheritList',
         meta: { layout: 'empty' },
@@ -1770,9 +1784,9 @@ router.beforeEach((to, from, next) => {
                 //     next('/doctor')
                 // }
             } else if (localStorage.Type == 4) {
-                if (to.path == '/kassa' || to.path == '/antigen' || to.path == '/bron' || to.path == '/doctor' ||
+                if (to.path == '/cashbox' || to.path == '/antigen' || to.path == '/bron' || to.path == '/doctor' ||
                     to.path == '/word_search' || to.path == '/apply_admin' || to.path == '/return_report' ) {
-                    next('/bycont_data')
+                    next('/dailyForPayment')
                 }
             }
             else if (localStorage.Type == 5) {
@@ -1780,7 +1794,7 @@ router.beforeEach((to, from, next) => {
                     to.path == '/medicine' || to.path == '/apply_admin' || to.path == '/return_report' || 
                     to.path == '/bycont_data' || to.path == '/info'  || to.path == '/biox'  || to.path == '/doctor'
                     || to.path == '/bycontragent' || to.path == '/bytime' || to.path == '/dailyForPayment' || to.path == '/kunlik' || to.path == '/return_money'
-                    || to.path == '/bonus_contragent' || to.path == '/bydoctorMoneyEarn' || to.path == '/bonus_repot' || to.path == '/payment_docReport' || to.path == '/bonus_full' || to.path == '/cashbox' ) {
+                    || to.path == '/bonus_contragent' || to.path == '/bydoctorMoneyEarn' || to.path == '/bonus_repot' || to.path == '/payment_docReport' || to.path == '/bonus_full' ) {
                     next('/send_doc')
                     // || to.path == '/cashbox'
                 }
