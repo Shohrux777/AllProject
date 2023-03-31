@@ -3,6 +3,7 @@ import department from './moduls/department'
 import user from './moduls/user'
 import dashboard from './moduls/dashboard'
 import company from './moduls/company'
+import smena from './moduls/smena'
 
 export default createStore({
   state: {
@@ -19,6 +20,7 @@ export default createStore({
     department,
     user,
     dashboard,
-    company
+    company,
+    smena
   }
 })

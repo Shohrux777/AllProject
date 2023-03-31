@@ -212,6 +212,9 @@
         links: [
 
             // ............... for Bank ....................
+            // { title: 'test', icon: 'house-damage', url: '/test', view: false, color: '#ddd', 
+            //   down_list:[]
+            // },
             { title: 'dashboard', icon: 'house-damage', url: '/dashboard', view: false, color: '#ddd', 
               down_list:[]
             },
@@ -221,7 +224,11 @@
             },
             { title: "otdel", icon: 'users', url: '/department', view: false, color: '#ddd', down_list:[] },
             { title: 'company', icon: 'landmark', url: '/company', view: false, color: '#ddd', down_list:[] },
-            
+            { title: 'smena', icon: 'desktop', url: '', view: false, color: '#ddd', down_list:[
+                { title: "smena", url: '/smena', dview: false, color: '#ddd', down_list:[] },
+                { title: "ish_grafigi", url: '/ish_grafigi', dview: false, color: '#ddd', down_list:[] },
+                { title: "result_gr", url: '/result_gr', dview: false, color: '#ddd', down_list:[] },
+            ] },
             { title: 'report', icon: 'clipboard', url: '', view: false, color: '#ddd', down_list:[
               { title: "report_user", url: '/aboutweb', dview: false, color: '#ddd', down_list:[] },
               { title: "report", url: '/', dview: false, color: '#ddd', down_list:[] },

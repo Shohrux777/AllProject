@@ -85,10 +85,12 @@
         return{
           fio: '',
           card_number: '',
-          id: 0,
+          id: 1,
           subdept_name: '',
           subdept_id: null,
           show_picture: false,
+          base64: '',
+          img_str: '',
         }
       },
     computed: mapGetters(['get_deparment_list']),
@@ -96,57 +98,97 @@
         await this.fetch_Department();
     },
 
-      methods:{
-        ...mapActions(['fetch_Department', 'fetch_user']),
-  
-        sub_debt_select(option){
-          console.log(option)
-          this.subdept_name = option.name;
-          this.subdept_id = option.id;
-        },
-        async submit_add(){
-          try{
-            const requestOptions = {
-            method: "POST",
+    methods:{
+      ...mapActions(['fetch_Department', 'fetch_user']),
+
+      sub_debt_select(option){
+        console.log(option)
+        this.subdept_name = option.name;
+        this.subdept_id = option.id;
+      },
+      async submit_add(){
+        await this.fetch_imageFile();
+        try{
+          const requestOptions = {
+          method: "POST",
+          headers: { "Content-Type" : "application/json" },
+          body: JSON.stringify({
+            "userid": this.id,
+            "badgenumber": this.id,
+            "ism" : this.fio,
+            "cardno" : this.card_number,
+            "departid" : this.subdept_id,
+            "familiya": this.subdept_name,
+            "image_url": this.img_str
+            })
+          };
+          const response = await fetch(this.$store.state.hostname + "/SkudMyUserinfoes", requestOptions);
+          const data = await response.json();
+          console.log(data)
+          if(data.userid != 0){
+            this.$emit('close')
+            await this.fetch_user();
+          }
+        }
+        catch(error){
+          console.log('error')
+          console.log(error)
+        }
+
+      },
+
+      previewFile(){
+        console.log('dsd')
+        const preview = document.getElementById('prewImage');
+        const file = document.querySelector('input[type=file]').files[0];
+        const reader = new FileReader();
+        reader.addEventListener("load", function () {
+          preview.src = reader.result;
+        }, false);
+        if (file) {
+          reader.readAsDataURL(file);
+          this.show_picture = true;
+        }
+      },
+
+      async fetch_imageFile(){
+        var img = document.getElementById('prewImage');
+        // console.log(img.src)
+        this.base64 = img.src;
+        console.log('this.base64')
+        console.log(this.base64)
+        try{
+          const requestOptions = {
+            method : "POST",
             headers: { "Content-Type" : "application/json" },
             body: JSON.stringify({
-              "userid": this.id,
-              "ism" : this.fio,
-              "cardno" : this.card_number,
-              "departid" : this.subdept_id,
-              "familiya": this.subdept_name,
-              })
-            };
-            const response = await fetch(this.$store.state.hostname + "/SkudMyUserinfoes", requestOptions);
-            const data = await response.json();
+              "image_base_64" : this.base64,
+            })
+          };
+
+          const response = await fetch(this.$store.state.hostname + "/TegirmonClient/getSaveBase64ImageToFolderAndGetImageUrl", requestOptions);
+          const data = await response.json();
+          
+          if(response.status == 201 || response.status == 200)
+          {
+            console.log("data")
             console.log(data)
-            if(data.userid != 0){
-              this.$emit('close')
-              await this.fetch_user();
-            }
+            this.img_str = data.image_url_str
+            // this.$refs.message.success('Added_successfully')
+            return true;
           }
-          catch{
-            console.log('error')
+          else{
+            console.log('error else')
+            // this.loading = false;
+            // this.modal_info = this.$i18n.t('network_ne_connect'); 
+            // this.modal_status = true;
           }
-  
-        },
-
-        previewFile(){
-          console.log('dsd')
-          const preview = document.getElementById('prewImage');
-          const file = document.querySelector('input[type=file]').files[0];
-          const reader = new FileReader();
-          reader.addEventListener("load", function () {
-            preview.src = reader.result;
-            
-          }, false);
-          if (file) {
-            reader.readAsDataURL(file);
-            this.show_picture = true;
-
           }
-        },
+          catch(error){
+            console.log(error)
+          }
       }
+    }
   }
   </script>
   

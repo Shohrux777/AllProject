@@ -43,6 +43,36 @@ const routes = [
     name: 'dashboard',
     meta: { layout: 'main' },
     component: () => import( '../views/dashboard/checkinOut.vue')
+  },
+  {
+    path: '/smena',
+    name: 'smena',
+    meta: { layout: 'main' },
+    component: () => import( '../views/grafik/smena.vue')
+  },
+  {
+    path: '/ish_grafigi',
+    name: 'ish_grafigi',
+    meta: { layout: 'main' },
+    component: () => import( '../views/grafik/ish_grafigi.vue')
+  },
+  {
+    path: '/result_gr',
+    name: 'result_gr',
+    meta: { layout: 'main' },
+    component: () => import( '../views/grafik/result_gr.vue')
+  },
+  {
+    path: '/connect_user',
+    name: 'connect_user',
+    meta: { layout: 'main' },
+    component: () => import( '../views/grafik/connect_user.vue')
+  },
+  {
+    path: '/test',
+    name: 'test',
+    meta: { layout: 'main' },
+    component: () => import( '../views/dashboard/test.vue')
   }
 ]
 

@@ -11,7 +11,8 @@
             <tr class="tr_hover" :class="{'activetr': activetr == index}" @click="selectItem(index)"
                 v-for="(row, index) in options.rows" :key="index">
                 <td v-for="(column,i) in options.columns" :key="i">
-                    {{ row[column]}}
+                    <span v-if="column == 'image_url'"><img width="50" height="50" :src="hostname1 + row[column]" alt=""></span>
+                    <span v-else>{{ row[column]}}</span>
                 </td>
             </tr>
             </tbody>
@@ -38,6 +39,7 @@ components: {
 data(){
     return{
         activetr: -1,
+        hostname1: this.$store.state.hostname1,
     }
 },
 props:{
