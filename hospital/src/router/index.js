@@ -1791,10 +1791,12 @@ router.beforeEach((to, from, next) => {
             }
             else if (localStorage.Type == 5) {
                 if ( to.path == '/medicineMin' || to.path == '/byuzi_date' || to.path == '/groupReport' || to.path == '/bydate' ||
-                    to.path == '/medicine' || to.path == '/apply_admin' || to.path == '/return_report' || 
+                    to.path == '/medicine' || to.path == '/return_report' || 
                     to.path == '/bycont_data' || to.path == '/info'  || to.path == '/biox'  || to.path == '/doctor'
-                    || to.path == '/bycontragent' || to.path == '/bytime' || to.path == '/dailyForPayment' || to.path == '/kunlik' || to.path == '/return_money'
-                    || to.path == '/bonus_contragent' || to.path == '/bydoctorMoneyEarn' || to.path == '/bonus_repot' || to.path == '/payment_docReport' || to.path == '/bonus_full' ) {
+                    || to.path == '/bycontragent' || to.path == '/bytime' ||
+                     to.path == '/kunlik' || to.path == '/return_money'
+                    || to.path == '/bonus_contragent' || to.path == '/bydoctorMoneyEarn' || to.path == '/bonus_repot' || 
+                    to.path == '/payment_docReport' || to.path == '/bonus_full') {
                     next('/send_doc')
                     // || to.path == '/cashbox'
                 }
