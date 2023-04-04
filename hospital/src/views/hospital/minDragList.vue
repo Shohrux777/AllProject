@@ -20,7 +20,7 @@
               <tr v-for="(row,rowIndex) in get_min_drag_list_for_admin" :key="rowIndex">
                 <td> <span >{{row.product.name}}</span> </td> 
                 <td> <span >{{row.product.price}}</span> </td>
-                <td> <span >{{row.qty}}</span> </td>
+                <td> <span >{{row.qty.toFixed(1)}}</span> </td>
               </tr>
             </tbody>
           </table>

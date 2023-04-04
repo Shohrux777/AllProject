@@ -194,19 +194,23 @@
 
         async chooseService(item){
             console.log(item)
-            if(item.serviceType.link_str3 == null || item.serviceType.link_str3 =='' || item.finishPayment == false){
+            // bu tulov qilmagan bulsa tanlab bulmasligi uchun
+            // || item.finishPayment == false
+            if(item.serviceType.link_str3 == null || item.serviceType.link_str3 ==''){
                 return;
             }
             this.lab_main_id= null;
             this.choosenListId = [];
             this.choosenListName = [];
             for(let i = 0; i<this.get_service_patientId.length; i++){
-                if(item.serviceType.link_str3 == this.get_service_patientId[i].serviceType.link_str3 && this.get_service_patientId[i].finishPayment){
+              // bu tulov qilmagan bulsa tanlab bulmasligi uchun
+              // && this.get_service_patientId[i].finishPayment
+                if(item.serviceType.link_str3 == this.get_service_patientId[i].serviceType.link_str3){
                     let a = {
-                        id: this.get_service_patientId[i].id,
-                        link_id: this.get_service_patientId[i].serviceType.link_str3,
-                        name: this.get_service_patientId[i].serviceName,
-                        status: true,
+                      id: this.get_service_patientId[i].id,
+                      link_id: this.get_service_patientId[i].serviceType.link_str3,
+                      name: this.get_service_patientId[i].serviceName,
+                      status: true,
                     }
                     this.choosenListName.push(a)
                 }

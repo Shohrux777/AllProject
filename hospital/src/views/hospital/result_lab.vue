@@ -34,6 +34,37 @@
       <div v-if="debitResultPatient[0].real_qty>0" class="container d-flex justify-content-center border-bottom">
         <h3 class="text-danger ">Долг: {{debitResultPatient[0].real_qty}}</h3>
       </div>
+      <div class="bg-white mx-5 my-2 px-4 py-3 rounded" v-show="get_service_pay_list.length">
+        <div class="TablePatientDocId mt-1  ">
+          <table class="myTable px-3">
+            <thead class="bg_table_header" style="position: sticky; top:-17px; z-index: 1;">
+              <tr class="header">
+                <th>{{$t('serviceName')}}</th>
+                <th>{{$t('summ')}}</th>
+                <th>{{$t('discount_persantage_qty')}}</th>
+                <th>{{$t('discount_qty')}}</th>
+                <th>{{$t('payedDate')}}</th>
+                <th width="150">{{$t('paid')}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row,rowIndex) in get_service_pay_list" :key="rowIndex" class="bg_table_tr">
+                <td> <span >{{row.serviceName}}</span> </td>
+                <td> <span >{{row.summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                <td> <span >{{row.discount_persantage_qty}} %</span> </td>
+                <!-- <td> <span >{{row.discount_qty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td> -->
+                <td> <span >{{row.discount_qty}}</span> </td>
+                <td> <span >{{row.payedDate.slice(0,10)}}</span> </td>
+                <td>
+                  <mdb-badge v-show="row.finishPayment === true" style="padding: 2px 8px; font-size: 11px;" pill color="success">{{$t("payed")}}</mdb-badge>
+                  <mdb-badge v-show="row.finishPayment === false" style="padding: 2px 8px; font-size: 11px;" pill color="danger">{{$t('unpayed')}}</mdb-badge>
+                </td>
+                
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
       
     </div>
     <loader v-if="loading" />
@@ -91,8 +122,13 @@
             
           </div>
           <div class="d-flex justify-content-end border-bottom pb-2 mb-2">
-              <a class="bg-primary text-white py-2 px-3 rounded" style="font-size:12.5px;"
-              :href="hostname1 + list.patinetRecipeStr" target="_blank">Открыть</a>
+              <router-link v-if="list.patinetRecipeStr.slice(0,4) == 'data'" 
+                class="bg-primary text-white py-2 px-3 rounded" style="font-size:12.5px;" 
+                :to="`/result_xulosa/${list.id}`">Открыть
+              </router-link>
+
+              <a v-else class="bg-primary text-white py-2 px-3 rounded" style="font-size:12.5px;"
+                :href="hostname1 + list.patinetRecipeStr" target="_blank">Открыть</a>
             <!-- <mdb-btn @click="printedTash(list.id)"  color="primary" class="m-0 py-2 px-3 ml-5 mt-1" style="font-size: 10px;" >Распечатать</mdb-btn> -->
             </div>
           <table  class="w-100">
@@ -120,12 +156,12 @@
 </template>
 
 <script>
-  import { mdbInput, mdbBtn } from 'mdbvue';
+  import { mdbInput, mdbBtn, mdbBadge } from 'mdbvue';
   import {mapActions, mapGetters, mapMutations} from 'vuex'
 
 export default {
   components: {
-    mdbInput, mdbBtn
+    mdbInput, mdbBtn, mdbBadge
   },
   data() {
     return {
@@ -138,24 +174,25 @@ export default {
       patient_id:null,
     }
   },
-  mounted() {
+  async mounted() {
     // this.$nextTick
     this.$refs.searchPatientByResult.focus()
+    await this.fetch_service_pay_list(0)
     if(localStorage.Type == 0 || localStorage.Type == 5){
-          this.admin = false;
-        }
+      this.admin = false;
+    }
   },
-    computed: mapGetters(['get_client_list', 'get_patient_list_last', 'result_list', 'shablonLists', 'debitResultPatient']),
+    computed: mapGetters(['get_client_list', 'get_patient_list_last', 'result_list', 'shablonLists', 'debitResultPatient', 'get_service_pay_list']),
   methods: {
-      ...mapActions(['fetch_client', 'fetch_patient_list_last', 'fetch_search_patient_name']),
+      ...mapActions(['fetch_client', 'fetch_patient_list_last', 'fetch_search_patient_name', 'fetch_service_pay_list']),
       ...mapMutations(['updatePatentResults', 'UpdateshablonLists', 'Updatedebit']),
-    search_func(){
+    async search_func(){
         if(this.search == ''){
           // this.fetch_patient_list_last()
           this.searchshow = false;
         }
         else{
-          this.fetch_search_patient_name(this.search);
+          await this.fetch_search_patient_name(this.search);
           var list = [];
           this.updatePatentResults(list);
           this.UpdateshablonLists(list);
@@ -168,6 +205,9 @@ export default {
       },
       async choosePatientID(id){
         console.log(id)
+        await this.fetch_service_pay_list(id)
+        console.log('this.get_service_pay_list')
+        console.log(this.get_service_pay_list)
         this.searchshow = false;
         try{
           this.loading = true;

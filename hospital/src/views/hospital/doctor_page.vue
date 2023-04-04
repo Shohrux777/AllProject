@@ -142,8 +142,14 @@
           <div class="NumberItemMark d-flex px-3 mt-3" >
             <div class="w-100 d-flex " style="height:40px;">
               <!-- <mdb-input :label="$t('number')"  class="m-0 " v-model="markEnterNum" outline/> -->
-              <router-link to="/doctor_info" >
-                <mdb-btn  color="primary" class=" p-0" style="font-size: 9.8px; margin: 2px 5px;"  p="r3 l3 t2 b2">{{$t('info')}}</mdb-btn>
+              <router-link to="/doctor_info">
+                <mdb-btn  color="primary" class="p-0" style="font-size: 9.8px; margin: 2px 5px;"  p="r3 l3 t2 b2">{{$t('info_report')}}</mdb-btn>
+              </router-link>
+              <router-link to="/doc_patient_info">
+                <mdb-btn  color="primary" class="p-0" style="font-size: 9.8px; margin: 2px 5px;"  p="r3 l3 t2 b2">{{$t('info_patient')}}</mdb-btn>
+              </router-link>
+              <router-link to="/doc_info_drag">
+                <mdb-btn  color="primary" class="p-0" style="font-size: 9.8px; margin: 2px 5px;"  p="r3 l3 t2 b2">{{$t('info_drug')}}</mdb-btn>
               </router-link>
               <router-link to="/servecResultDynamic" v-if="laborantType">
                 <mdb-btn  color="success" class=" p-0" style="font-size: 9.8px; margin: 2px 5px;"  p="r3 l3 t2 b2">Введите ответ анализа (ID)</mdb-btn>
@@ -154,7 +160,6 @@
             </div>
             <!-- <div class="w-50 d-flex justify-content-end" style="height:40px;" v-if="laborantType">
               <mdb-input :label="$t('getnumber')"  class="m-0 " v-model="idGetNum" outline/>
-              
             </div> -->
           </div>
           <div class="doctor_table_list mt-2">
@@ -192,17 +197,22 @@
                   <mdb-btn @click="getBlood()"  v-if="laborantType"  color="danger" class="m-0 p-0 mt-2 mr-4" style="font-size: 9.8px;"  p="r5 l5 t2 b2">{{$t('get_blood')}}</mdb-btn>
                   <mdb-btn @click="next_ochred_btn()" :disabled="selectPatient.patient_id == 0"   color="info" class="m-0 p-0 mt-2 mr-2" style="font-size: 9.8px;"  p="r5 l5 t2 b2">{{$t('next_ochred')}}</mdb-btn>
                 </div>
-
           </div>
         </div>
         <div v-if="selectPatient.patient_id" class="d-flex justify-content-center align-items-center  shadow" :class="{'InfoIcoFixedOpen': showSending, 'InfoIcoFixed': !showSending}"  @click="showSending = !showSending">
           <mdb-icon icon="share-square" far class="text-white ml-1" style="font-size: 22px;" />
         </div>
+        <div v-if="selectPatient.patient_id" class="d-flex justify-content-center align-items-center  shadow" :class="{'InfoIcoFixedOpenInfo': showInfoPatientID, 'InfoIcoFixedInfo': !showInfoPatientID}"  @click="showInfoPatientID = !showInfoPatientID">
+          <mdb-icon icon="info" class="text-white ml-1" style="font-size: 22px;" />
+        </div>
+        <div v-if="selectPatient.patient_id" class="d-flex justify-content-center align-items-center  shadow" :class="{'InfoIcoFixedOpenDrag': showSending, 'InfoIcoFixedDrag': !showSending}"  @click="showSending = !showSending">
+          <mdb-icon icon="capsules" class="text-white ml-1" style="font-size: 22px;" />
+        </div>
         <div :class="{'infoLab': showSending, 'infoLabNo': !showSending}">
-          <!-- <div class="d-flex justify-content-center align-items-center InfoIcoFixed shadow"  @click="showSending = !showSending">
-            <mdb-icon icon="share-square" far class="text-white ml-1" style="font-size: 22px;" />
-          </div>  -->
-          <send_doctor :patient="selectPatient"/>
+          <send_doctor :patient="selectPatient" @closed="showSending=false"/>
+        </div>
+        <div :class="{'infoPatientId': showInfoPatientID, 'infoPatientIdNo': !showInfoPatientID}">
+          <patient_info_id :status_info="showInfoPatientID_status" :patientId="selectPatient.patient_id" @closed="showSending=false"/>
         </div>
       </div>
       
@@ -244,12 +254,13 @@ import dropFile from '../../components/hospital/drop.vue'
 import send_doctor from './send doctor/doctor_send.vue'
 import checkLab from '../analysis/dynamic/lab_check.vue'
 import loader_small from '../../components/loader_small.vue'
+import patient_info_id from './doc_func/patient_info_id.vue'
 import {mdbBtn, mdbInput,mdbBadge, mdbIcon, mdbModalHeader, mdbModalFooter, mdbModal, mdbModalBody} from "mdbvue";
 import {mapActions, mapGetters, mapMutations} from "vuex"
 export default {
   components: {
     mdbBtn,mdbInput,mdbBadge, loader_small, mdbIcon, send_doctor, mdbModalHeader, mdbModalFooter, mdbModal, mdbModalBody,
-    checkLab, dropFile
+    checkLab, dropFile, patient_info_id
   },
   data(){
     return{
@@ -280,6 +291,8 @@ export default {
 
       laborantType: false,
       showSending: false,
+      showInfoPatientID: false,
+      showInfoPatientID_status: true,
       analisNumber_show: false,
       analisCheck_show: false,
       labcheck_show : false,
@@ -866,6 +879,19 @@ export default {
   border-top-left-radius:5px; 
   border-bottom-left-radius:5px;
 }
+.InfoIcoFixedInfo{
+  transition: 0.5s;
+  position:fixed;
+  z-index: 11111;
+  right:0; 
+  top:200px; 
+  width: 50px; 
+  height:50px; 
+  cursor:pointer;
+  background-image: linear-gradient( 83.2deg,  rgba(150,93,233,1) 10.8%, rgba(99,88,238,1) 94.3% );
+  border-top-left-radius:5px; 
+  border-bottom-left-radius:5px;
+}
 .InfoIcoFixedOpen{
   transition: 0.5s;
   position:fixed;
@@ -876,6 +902,46 @@ export default {
   height:50px; 
   cursor:pointer;
   background-image: radial-gradient( circle farthest-corner at 12.3% 19.3%,  rgba(85,88,218,1) 0%, rgba(95,209,249,1) 100.2% );
+  border-top-left-radius:5px; 
+  border-bottom-left-radius:5px;
+}
+.InfoIcoFixedOpenInfo{
+  transition: 0.5s;
+  position:fixed;
+  z-index: 11111;
+  right:70%; 
+  top:200px; 
+  width: 50px; 
+  height:50px; 
+  cursor:pointer;
+  background-image: linear-gradient( 83.2deg,  rgba(150,93,233,1) 10.8%, rgba(99,88,238,1) 94.3% );
+  border-top-left-radius:5px; 
+  border-bottom-left-radius:5px;
+}
+
+.InfoIcoFixedDrag{
+  transition: 0.5s;
+  position:fixed;
+  z-index: 11111;
+  right:0; 
+  top:260px; 
+  width: 50px; 
+  height:50px; 
+  cursor:pointer;
+  background-image: radial-gradient( circle 860px at 11.8% 33.5%,  rgba(240,30,92,1) 0%, rgba(244,49,74,1) 30.5%, rgba(249,75,37,1) 56.1%, rgba(250,88,19,1) 75.6%, rgba(253,102,2,1) 100.2% );
+  border-top-left-radius:5px; 
+  border-bottom-left-radius:5px;
+}
+.InfoIcoFixedOpenDrag{
+  transition: 0.5s;
+  position:fixed;
+  z-index: 11111;
+  right:50%; 
+  top:260px; 
+  width: 50px; 
+  height:50px; 
+  cursor:pointer;
+  background-image: radial-gradient( circle 860px at 11.8% 33.5%,  rgba(240,30,92,1) 0%, rgba(244,49,74,1) 30.5%, rgba(249,75,37,1) 56.1%, rgba(250,88,19,1) 75.6%, rgba(253,102,2,1) 100.2% );
   border-top-left-radius:5px; 
   border-bottom-left-radius:5px;
 }
@@ -891,6 +957,27 @@ export default {
   overflow-y: scroll;
 }
 .infoLabNo{
+  transition: 0.5s;
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  right:-100%;
+  // transform: translateX(-100%);
+  background: white;
+  z-index: 1111111111;
+}
+.infoPatientId{
+  position: fixed;
+  width: 70%;
+  height: 100vh;
+  right:0%;
+  background: white;
+  z-index: 1111111111;
+  transition: 0.5s;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+.infoPatientIdNo{
   transition: 0.5s;
   position: fixed;
   width: 100%;

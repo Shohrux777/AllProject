@@ -345,6 +345,20 @@ const routes = [{
             import ('../views/hospital/send doctor/doctor_info.vue')
     },
     {
+        path: '/doc_info_drag',
+        name: 'doc_info_drag',
+        meta: { layout: 'hospital' },
+        component: () =>
+            import ('../views/hospital/doc_func/doc_drug_info.vue')
+    },
+    {
+        path: '/doc_patient_info',
+        name: 'doc_patient_info',
+        meta: { layout: 'hospital' },
+        component: () =>
+            import ('../views/hospital/doc_func/doc_patient_info.vue')
+    },
+    {
         path: '/payment_docReport',
         name: 'payment_docReport',
         meta: { layout: 'hospital' },

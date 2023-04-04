@@ -12,8 +12,8 @@
             
           />
           <small v-if="$v.contragent_name.$dirty && contragent_id == null"  class="invalid-text" style="margin-top:-4px; margin-left:5px;" >
-              {{$t('select_item')}}
-            </small>
+            {{$t('select_item')}}
+          </small>
         </div>
           
         <!-- <div class="col-12">
@@ -21,13 +21,13 @@
         </div> -->
       </div>
       <div class="col-6 text-center border-bottom py-2">
-        <h4 class="text-primary pr-3 m-0">{{patient.name}}</h4>
+        <h5 class="text-primary pr-3 m-0">{{patient.name}}</h5>
       </div>
     </div>
     <loader v-if="loading"/>
     <div v-else class="row allSize">
       <div class="col-6 border-right doctor_list_simple">
-        <div class="doctor_list bg-white  pl-2">
+        <div class="doctor_list bg-white pl-2">
           <!-- <small v-if="$v.doc_name.$dirty && user_id == null" class="text-danger pt-4 pl-5" >
             {{$t('select_item')}}
           </small> -->
@@ -56,7 +56,7 @@
                   <input type="checkbox" style="width: 17px; height: 17px;" :value="servic.serviceType.id" v-model="checkedCategories[servic.serviceType.id]" :id="servic.serviceType.name" @click="check_service($event, servic.serviceType.name, servic.serviceType.price)" />
                 </div>
                 <div class="pb-2 px-2">
-                  <label style="font-weight:500; font-size:13.5px"  :for="servic.serviceType.name" class="m-0">{{servic.serviceType.name}} ({{servic.serviceType.hospitalServiceTypeGroupId}})</label>
+                  <label style="font-weight:500; font-size:13.5px"  :for="servic.serviceType.name" class="m-0">{{servic.serviceType.name}} ({{servic.serviceType.price}})</label>
                 </div>
               </div>
             </div>
@@ -231,6 +231,7 @@ methods: {
     if(data.length){
       this.ServiceTypesCount = [];
       this.checkedCategories = [];
+      this.$emit('closed')
       this.$refs.message.success('Added_successfully')
     }
     // if()

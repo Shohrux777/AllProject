@@ -36,7 +36,15 @@
                 <!-- <mdb-dropdown-item tag="a" style="font-size:12px;" href="/groupReport">Контрагент отчет</mdb-dropdown-item>
                 <mdb-dropdown-item tag="a" style="font-size:12px;" href="/bydate">Бонусный отчет</mdb-dropdown-item>
                 <mdb-dropdown-item tag="a" style="font-size:12px;" href="/bycontragent">По контрагент</mdb-dropdown-item> -->
-
+                <router-link class="m-0 p-0" to="/groupReport">
+                  <mdb-dropdown-item style="font-size:12px;">Контрагент отчет</mdb-dropdown-item>
+                </router-link>
+                <router-link class="m-0 p-0" to="/bydate">
+                  <mdb-dropdown-item style="font-size:12px;">Бонусный отчет</mdb-dropdown-item>
+                </router-link>
+                <router-link class="m-0 p-0" to="/bycontragent">
+                  <mdb-dropdown-item style="font-size:12px;">По контрагент</mdb-dropdown-item>
+                </router-link>
                 <router-link class="m-0 p-0" to="/bytime">
                   <mdb-dropdown-item style="font-size:12px;">По времени</mdb-dropdown-item>
                 </router-link>
@@ -94,9 +102,18 @@
             </router-link>
             <!-- <mdb-nav-item class="px-2" style="font-size:12px;" href="/bron">Стационар</mdb-nav-item> -->
             <!-- <mdb-nav-item class="px-2" style="font-size:12px;" href="/word_search">Бланка</mdb-nav-item> -->
-            <mdb-nav-item v-if="laborant || show_but" class="px-2" style="font-size:12px;" href="/laboratory_list/0">Лаборатория</mdb-nav-item>
-            <mdb-nav-item class="px-2" style="font-size:12px;" href="/result_lab">Результат</mdb-nav-item>
-            <mdb-nav-item class="px-2" style="font-size:12px;" href="/info">Телеграм</mdb-nav-item>
+            <!-- <mdb-nav-item v-if="laborant || show_but" class="px-2" style="font-size:12px;" href="/laboratory_list/0">Лаборатория</mdb-nav-item> -->
+            <router-link v-if="laborant || show_but"  to="/laboratory_list/0">
+              <mdb-nav-item class="px-2 " style="font-size:12px;">Лаборатория</mdb-nav-item>
+            </router-link> 
+            <router-link v-if="!laborant" to="/result_lab">
+              <mdb-nav-item class="px-2 " style="font-size:12px;">Результат</mdb-nav-item>
+            </router-link> 
+            <router-link  to="/info">
+              <mdb-nav-item class="px-2 " style="font-size:12px;">Телеграм</mdb-nav-item>
+            </router-link> 
+            <!-- <mdb-nav-item class="px-2" style="font-size:12px;" href="/result_lab">Результат</mdb-nav-item>
+            <mdb-nav-item class="px-2" style="font-size:12px;" href="/info">Телеграм</mdb-nav-item> -->
       
             <!-- <mdb-nav-item class="px-2" href="/main_category">Маркет</mdb-nav-item>  
             <mdb-dropdown tag="li" class="nav-item">

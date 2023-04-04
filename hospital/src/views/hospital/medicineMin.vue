@@ -31,7 +31,7 @@
                 <td>{{rowIndex+1}}</td>
                 <td> <span >{{row.product.name}}</span> </td> 
                 <td> <span >{{row.product.price}}</span> </td>
-                <td> <span >{{row.qty}}</span> </td>
+                <td> <span >{{row.qty.toFixed(1)}}</span> </td>
                 <td> <div class="px-0">
                   <input style="height:23px; width:90%; border:1px solid #ddd font-size:11px;" class="m-0 p-0 px-2" v-model="row.minValue"  outline/>
                 </div></td>

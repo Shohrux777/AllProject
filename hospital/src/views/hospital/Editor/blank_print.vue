@@ -9,9 +9,9 @@
         <img src="../../../assets/lab1.png" width="100%" alt="">
       </div>
       <loader v-if="loading" />
-      <div class="lab_answer upHeightShablon" >
+      <div class="lab_answer upHeightAllspirma320" >
         <div class=" " style="display:flex; justify-content:center; flex-direction:column;">
-          <table border class="allWidthShablonTable">
+          <table border class="allWidthLabTable">
             <thead>
               <tr>
                 <th class="fs" style="width:45%;"  ><span class="font-weight-bold ">ПАЦИЕНТ:</span>  {{patient_name}}</th>
