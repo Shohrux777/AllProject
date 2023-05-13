@@ -8,7 +8,10 @@
     <div>
       <div  style="text-align:center; margin: 0 0 0 0; padding: 2px 7px; ">
         <img src="../../assets/novo.svg" height="80" style="width: 100%;" alt="">
-        <h5 style="" class="paymentCheckPrintCheck mt-2 mb-3">OOO 'NOVO MEDICS' Уратепалик МФЙ. И.Каримов кучаси, 17-уй</h5>
+        <h5 style="" class="paymentCheckPrintCheck mt-2 mb-3">OOO 'ExtresMed'</h5>
+
+        <!-- <img src="../../assets/novo.svg" height="80" style="width: 100%;" alt="">
+        <h5 style="" class="paymentCheckPrintCheck mt-2 mb-3">OOO 'NOVO MEDICS' Уратепалик МФЙ. И.Каримов кучаси, 17-уй</h5> -->
       <!-- 
         <img src="../../assets/iymon.svg" height="80" style="width: 100%;" alt="">
         <h4 style="" class="paymentCheckPrintCheck mt-2 mb-3">IYMON MEDICAL SBJ </h4> 

@@ -5,10 +5,13 @@
       <loader v-if="loading"/>
         <div class="patient_list border-right">
           <div class="text-center" @click="update" style="cursor:pointer;">
-            <h5 class="m-0 text-primary py-2">Пациенты </h5>
+            <h5 class="m-0 text-primary py-2">Пациенты</h5>
           </div>
         <div class="px-2" @click="update">
-            <mdb-input class="mt-0 mb-4" size="sm" v-model="search" style="font-size: 10px; " outline  ariaDescribedBy="button-addon2">
+            <mdb-input class="mt-0 mb-4" size="sm"
+              v-model="search" @input="searchPatientFio"
+              placeholder="Search patients"
+              style="font-size: 10px; " outline  ariaDescribedBy="button-addon2">
               <!-- <mdb-btn color="info" size="sm" @click="update" group slot="append" style="font-size:10px;" id="button-addon2">{{$t('Search')}}</mdb-btn> -->
             </mdb-input>
         </div>
@@ -146,11 +149,11 @@
                 <mdb-btn  color="primary" class="p-0" style="font-size: 9.8px; margin: 2px 5px;"  p="r3 l3 t2 b2">{{$t('info_report')}}</mdb-btn>
               </router-link>
               <router-link to="/doc_patient_info">
-                <mdb-btn  color="primary" class="p-0" style="font-size: 9.8px; margin: 2px 5px;"  p="r3 l3 t2 b2">{{$t('info_patient')}}</mdb-btn>
+                <mdb-btn  color="primary" class="p-0" style="font-size: 9.8px; margin: 2px 5px;"  p="r3 l3 t2 b2">{{$t('send_report')}}</mdb-btn>
               </router-link>
-              <router-link to="/doc_info_drag">
+              <!-- <router-link to="/doc_info_drag">
                 <mdb-btn  color="primary" class="p-0" style="font-size: 9.8px; margin: 2px 5px;"  p="r3 l3 t2 b2">{{$t('info_drug')}}</mdb-btn>
-              </router-link>
+              </router-link> -->
               <router-link to="/servecResultDynamic" v-if="laborantType">
                 <mdb-btn  color="success" class=" p-0" style="font-size: 9.8px; margin: 2px 5px;"  p="r3 l3 t2 b2">Введите ответ анализа (ID)</mdb-btn>
               </router-link>
@@ -202,17 +205,20 @@
         <div v-if="selectPatient.patient_id" class="d-flex justify-content-center align-items-center  shadow" :class="{'InfoIcoFixedOpen': showSending, 'InfoIcoFixed': !showSending}"  @click="showSending = !showSending">
           <mdb-icon icon="share-square" far class="text-white ml-1" style="font-size: 22px;" />
         </div>
-        <div v-if="selectPatient.patient_id" class="d-flex justify-content-center align-items-center  shadow" :class="{'InfoIcoFixedOpenInfo': showInfoPatientID, 'InfoIcoFixedInfo': !showInfoPatientID}"  @click="showInfoPatientID = !showInfoPatientID">
+        <div v-if="selectPatient.patient_id" class="d-flex justify-content-center align-items-center  shadow" :class="{'InfoIcoFixedOpenInfo': showInfoPatientID, 'InfoIcoFixedInfo': !showInfoPatientID}"  @click="show_patient_info">
           <mdb-icon icon="info" class="text-white ml-1" style="font-size: 22px;" />
         </div>
-        <div v-if="selectPatient.patient_id" class="d-flex justify-content-center align-items-center  shadow" :class="{'InfoIcoFixedOpenDrag': showSending, 'InfoIcoFixedDrag': !showSending}"  @click="showSending = !showSending">
+        <div v-if="selectPatient.patient_id" class="d-flex justify-content-center align-items-center  shadow" :class="{'InfoIcoFixedOpenDrag': showSendingDrug, 'InfoIcoFixedDrag': !showSendingDrug}"  @click="showSendingDrug = !showSendingDrug">
           <mdb-icon icon="capsules" class="text-white ml-1" style="font-size: 22px;" />
         </div>
         <div :class="{'infoLab': showSending, 'infoLabNo': !showSending}">
           <send_doctor :patient="selectPatient" @closed="showSending=false"/>
         </div>
         <div :class="{'infoPatientId': showInfoPatientID, 'infoPatientIdNo': !showInfoPatientID}">
-          <patient_info_id :status_info="showInfoPatientID_status" :patientId="selectPatient.patient_id" @closed="showSending=false"/>
+          <patient_info_id :status_info="showInfoPatientID_status" ref="patient_info_id" :patientId="selectPatient.patient_id" @closed="showSending=false"/>
+        </div>
+        <div :class="{'infoPatientIdDrug': showSendingDrug, 'infoPatientIdNo': !showSendingDrug}">
+          <Send_drug_doc @close="showSendingDrug = false" :patient="selectPatient"/>
         </div>
       </div>
       
@@ -257,11 +263,24 @@ import loader_small from '../../components/loader_small.vue'
 import patient_info_id from './doc_func/patient_info_id.vue'
 import {mdbBtn, mdbInput,mdbBadge, mdbIcon, mdbModalHeader, mdbModalFooter, mdbModal, mdbModalBody} from "mdbvue";
 import {mapActions, mapGetters, mapMutations} from "vuex"
+import Send_drug_doc from './doc_func/send_drug_doc.vue'
 export default {
   components: {
-    mdbBtn,mdbInput,mdbBadge, loader_small, mdbIcon, send_doctor, mdbModalHeader, mdbModalFooter, mdbModal, mdbModalBody,
-    checkLab, dropFile, patient_info_id
-  },
+    mdbBtn,
+    mdbInput,
+    mdbBadge,
+    loader_small,
+    mdbIcon,
+    send_doctor,
+    mdbModalHeader,
+    mdbModalFooter,
+    mdbModal,
+    mdbModalBody,
+    checkLab,
+    dropFile,
+    patient_info_id,
+    Send_drug_doc
+},
   data(){
     return{
       hostname1: this.$store.state.hostname1,
@@ -293,28 +312,31 @@ export default {
       showSending: false,
       showInfoPatientID: false,
       showInfoPatientID_status: true,
+      showSendingDrug: false,
       analisNumber_show: false,
       analisCheck_show: false,
       labcheck_show : false,
 
       fileSelect_show: false,
 
+      filteredList: [],
+
     }
   },
   computed: {
     ...mapGetters(['get_patient_auth_id','get_service_patientId', 'get_service_patientId_for_finish', 'shablonLists', 
       'ServiceListForSelect', 'get_analiz_list', 'selectPatient']),
-    filteredList: function(){
-      if(this.search)
-      {
-        return this.get_patient_auth_id.filter((item)=>{
-          return this.search.toLowerCase().split(' ').every(v => item.fio.toLowerCase().includes(v))
-        })
-      }else
-      {
-        return this.get_patient_auth_id;
-      }
-      }
+    // filteredList: function(){
+    //   if(this.search)
+    //   {
+    //     return this.get_patient_auth_id.filter((item)=>{
+    //       return this.search.toLowerCase().split(' ').every(v => item.fio.toLowerCase().includes(v))
+    //     })
+    //   }else
+    //   {
+    //     return this.get_patient_auth_id;
+    //   }
+    //   }
   },
   async mounted(){
     if(localStorage.Type == 3){
@@ -322,7 +344,8 @@ export default {
       }
     
     await this.fetch_authId_patient_list()
-    this.uppdateServiceEmpty()
+    this.uppdateServiceEmpty();
+    this.filteredList = this.get_patient_auth_id;
     // console.log(this.get_patient_auth_id)
 
   },
@@ -332,7 +355,27 @@ export default {
         'AddServiceListForSelect','DelServiceListForSelect', 'ClearServiceListForSelect', 'allCheckedServiceList', 'UpdateselectPatient',]),
     async update(){
       await this.fetch_authId_patient_list()
+      this.filteredList = this.get_patient_auth_id;
     },
+    show_patient_info(){
+      this.showInfoPatientID = !this.showInfoPatientID;
+      this.$refs.patient_info_id.fetch_patient_drugs();
+    },
+    async searchPatientFio(){
+          try{
+              if(this.search != ''){
+                  const response = await fetch(this.$store.state.hostname + '/Patients/searchPatientsByFioList?FIO=' + this.search);
+                  const data = await response.json();
+                  this.filteredList = data
+              }else{
+                  this.filteredList = this.get_patient_auth_id;
+              }
+          }
+          catch(error){
+              this.modal_status = true;
+              this.modal_info = error;
+          }
+      },
     async fetchFiles(list){
       console.log('list')
       console.log(list.data)
@@ -458,6 +501,7 @@ export default {
           this.AddServiceListForSelect(this.get_service_patientId)
           if(this.get_service_patientId.length == 0){
             await this.fetch_authId_patient_list();
+            this.filteredList = this.get_patient_auth_id;
             if(this.get_patient_auth_id.length == this.active_bemor){
               this.active_bemor = 0;
               await this.getBemorId(this.active_bemor, this.get_patient_auth_id[this.active_bemor])
@@ -619,6 +663,7 @@ export default {
     async all_finish(){
       await this.next_ochred(this.selectPatient.patient_id, localStorage.docId)
       this.fetch_authId_patient_list()
+      this.filteredList = this.get_patient_auth_id;
       this.fetch_service_patientId(this.selectPatient.patient_id)
       this.finishPermission = false;
       this.active_bemor = -1;
@@ -652,6 +697,7 @@ export default {
           console.log(this.ServiceListForSelect.length)  
           if(this.ServiceListForSelect.length < 1){
             await this.fetch_authId_patient_list();
+            this.filteredList = this.get_patient_auth_id;
             // this.all_finish();
             // console.log('last finish lest');
           }
@@ -936,7 +982,7 @@ export default {
   transition: 0.5s;
   position:fixed;
   z-index: 11111;
-  right:50%; 
+  right:75%; 
   top:260px; 
   width: 50px; 
   height:50px; 
@@ -969,6 +1015,17 @@ export default {
 .infoPatientId{
   position: fixed;
   width: 70%;
+  height: 100vh;
+  right:0%;
+  background: white;
+  z-index: 1111111111;
+  transition: 0.5s;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+.infoPatientIdDrug{
+  position: fixed;
+  width: 75%;
   height: 100vh;
   right:0%;
   background: white;

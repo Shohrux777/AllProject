@@ -42,12 +42,6 @@ export default {
     },
     data(){
       return{
-        list: [
-          {
-            name: 'dadasdasd',
-            id: 1
-          }
-        ],
         dept_name: '',
         id: 0,
         company_name: '',
@@ -56,8 +50,18 @@ export default {
     },
     computed: mapGetters(['get_deparment_list', 'get_company_list']),
     async mounted(){
+        this.id = this.select_data.id;
+        this.dept_name = this.select_data.name;
+        // this.company_name = this.select_data.familiya;
+        // this.company_id = this.select_data.skudCompanyid;
         await this.fetch_Company();
     },
+    props:{
+        select_data:{
+          type: Object,
+          default: {}
+        },
+      },
     methods:{
       ...mapActions(['fetch_Department', 'fetch_Company']),
 

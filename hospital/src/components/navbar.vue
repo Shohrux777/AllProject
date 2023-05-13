@@ -72,6 +72,9 @@
                 <router-link class="m-0 p-0" to="/bron_time_payment">
                   <mdb-dropdown-item style="font-size:12px;">Стационар отчет</mdb-dropdown-item>
                 </router-link> 
+                <router-link class="m-0 p-0" to="/report_of_reagin">
+                  <mdb-dropdown-item style="font-size:12px;">Расход Риаген</mdb-dropdown-item>
+                </router-link> 
                 <!-- <mdb-dropdown-item tag="a" style="font-size:12px;" href="/return_money">Расходы</mdb-dropdown-item>
                 <mdb-dropdown-item tag="a" style="font-size:12px;" href="/bron_time_payment">Стационар отчет</mdb-dropdown-item> -->
 

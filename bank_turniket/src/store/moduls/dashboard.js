@@ -2,13 +2,13 @@ export default {
     state: {
         dashboard_list: {
             rows: [],
-            columns: [ 'FIO', 'User ID', 'checktype', 'date', 'time'],
+            columns: [ 'FIO', 'User ID', 'checktype', 'door_name', 'date', 'time'],
             col: []
         },
     },
     actions: {
         async fetch_dashboard_list(ctx) {
-            const res = await fetch(ctx.rootState.hostname + '/SkudMyCheckinouts/getPagination?page=0&size=10');
+            const res = await fetch(ctx.rootState.hostname + '/SkudMyCheckinouts/getPagination?page=0&size=100');
             const res_data = await res.json();
             // console.log(ctx.rootState.hostname);
             ctx.commit('Updatedashboard_list', res_data);

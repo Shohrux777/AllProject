@@ -1,324 +1,391 @@
 <template>
-    <div class="bg-white">
-     <loader v-if="loading"/>
-      <div class="py-0">
-        <div class="bg-white p-4 mb-5 pt-4 shadow" style="border-radius:5px; position:relative;">
-          <form @submit.prevent="submit">
-            <div style="height: 60px;" class="d-flex justify-content-between border-bottom align-items-center  ">
-              <div class="title w-75 row align-items-center">
-                <div class="col-4">
-                  <mdb-input type="text" v-model="search" @input="searchPatientFio" size="sm" :label="$t('search_here')" outline></mdb-input>
+  <div class="bg-white">
+    <div class="p-4">
+      <div class="bg-white p-4 mb-5 pt-4 shadow" style="border-radius:5px; position:relative;">
+        <form @submit.prevent="submit">
+          <div style="height: 60px;" class="d-flex justify-content-between border-bottom align-items-center  ">
+            <div class="title w-100 row align-items-center">
+              <div class="col-3 pt-3" v-show="false">
+                <lineSelect
+                  :options="get_contragent_list.rows"
+                  :searchshow="true"
+                  @select="selectcontragent"
+                  :selected="contragent_name"
+                  :label="$t('contragent')"
+                />
+              </div> 
+              <div class="col-3">
+                <div style="position: relative; margin-top: 40px;"> 
+                  <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -8px; color: #757575;">
+                    {{$t('start_time')}}
+                  </small>
+                  <mdb-input type="date"  v-model="Start_time" outline/>
                 </div>
-                <div class="col-1 m-0 p-0">
-                  <mdb-btn @click="searchPatientFio" color="primary py-2 px-4"  style="font-size:10px;" >
-                    {{$t('search')}}
+              </div>
+              <div class="col-3">
+                <div style="position: relative; margin-top: 40px;"> 
+                  <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -8px; color: #757575;">
+                    {{$t('end_time')}}
+                  </small>
+                  <mdb-input type="date"  v-model="End_time" outline/>
+                </div>
+              </div>
+              <div class="col-3">
+                <RegSelect
+                :label="$t('service_group')"
+                @select="select_service_Group"
+                :options = "get_service_group_list" 
+                :selected="group_name"
+               />
+              </div>
+              <div class="col-3">
+                <div class="d-flex justify-content-end mr-4 mt-2">
+                  <div class="plus">
+                    <mdb-btn @click="print" color="info py-2 px-4"  style="font-size:10px;" >
+                      {{$t('print')}}
                     </mdb-btn>
+                    <mdb-btn type="submit" color="primary py-2 px-4"  style="font-size:10px;" >
+                      {{$t('apply')}}
+                    </mdb-btn>
+                  </div>
                 </div>
               </div>
-              <div class="plus">
-                <mdb-btn @click="$router.back()" color="primary py-2 px-4"  style="font-size:10px;" >
-                  {{$t('back')}}
-                </mdb-btn>
-              </div>
             </div>
-          </form>
-          <div class="TablePatientBron mt-2">
-              <table class="myTable">
-                <thead class="rasxod_table_header">
-                  <tr class="header">
-                    <th width="40">№</th>
-                    <th width="270">{{$t('patient')}}</th>
-                    <th>{{$t('bornDate')}}</th>
-                    <th>{{$t('phoneNumber')}}</th>
-                    <th >{{$t('district')}}</th>
-                    <th >{{$t('address')}}</th>
-                  </tr>
-                </thead>
-                <tbody class="rasxod_body">
-                  <tr v-for="(row,rowIndex) in filteredList" :key="rowIndex" class="hover_bron_item" @click="choosePatient(row.id)">
-                    <td> <span >{{rowIndex+1}}</span> </td>
-                    <td> <span class="font-weight-bold">{{row.fio}}</span> </td>
-                    <td> <span >{{row.bornDate.slice(0,10)}}</span> </td>
-                    <td> <span >{{row.phoneNumber}}</span> </td>
-                    <td> <span >{{row.districts.name}}</span> </td>
-                    <td> <span >{{row.address}}</span> </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            
+          </div>
+            
+        </form>
+        <div class="TablePatientDocId p-3">
+          <table class="myTable">
+            <thead>
+              <tr class="header ">
+                <th width="60">№</th>
+                <th >{{$t('contragent_name')}}</th>
+                <th >{{$t('patient_name')}}</th>
+                <th>{{$t('service_name')}}</th>
+                <th width="100">{{$t('service_price')}}</th>
+                <th width="120">{{$t('paymentInCard')}}</th>
+                <th width="120">{{$t('paymentInCash')}}</th>
+                <th width="120">{{$t('payDate')}}</th>
+                <th width="100">{{$t('payed')}}</th>
+                <th width="150">{{$t('finish')}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row,rowIndex) in bonus_contragent_list_by_group" :key="rowIndex" >
+                <td >{{rowIndex+1}}</td>
+                <td> <span >{{row.contragent_name}}</span> </td>
+                <td> <span >{{row.patient_name}}</span> </td>
+                <td> <span >{{row.service_name}}</span> </td>
+                <td> <span >{{row.service_price}}</span> </td>
+                <td> <span :class="{'text-danger': row.paymentInCard == 0, 'text-success': row.paymentInCard != 0}">{{row.paymentInCard}}</span> </td>
+                <td> <span :class="{'text-danger': row.paymentInCash == 0, 'text-success': row.paymentInCash != 0}">{{row.paymentInCash}}</span> </td>
+                <td> <span >{{row.payDate}}</span> </td>
+                <td>
+                  <mdb-badge v-show="row.payed === true" style="padding: 2px 8px;" pill color="success">{{$t("payed")}}</mdb-badge>
+                  <mdb-badge v-show="row.payed === false" style="padding: 2px 8px;" pill color="danger">{{$t('unpayed')}}</mdb-badge>
+                </td>
+                <td>
+                  <mdb-badge v-show="row.finish === true" style="padding: 2px 8px;" pill color="success">{{$t("проверил")}}</mdb-badge>
+                  <mdb-badge v-show="row.finish === false" style="padding: 2px 8px;" pill color="danger">{{$t('непроверенный')}}</mdb-badge>
+                </td>
+              </tr>
+              <tr >
+                <td> <span class="text-primary">Общий</span> </td>
+                <td> <span ></span> </td>
+                <td> <span class="text-primary"></span></td>
+                <td> <span class="text-primary"></span></td>
+                <td> <span class="text-danger">{{summa}}</span> </td>
+                <td class="text-primary">{{card}}</td>
+                <td class="text-primary">{{cash}}</td>
+                <td> <span >All: {{(card + cash)}}</span> </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-  
-
-        <div class="fixedInfoPatientId" v-if="info_patient_id">
-            <div class="close_icon" @click="info_patient_id = false">
-                <mdb-icon far style="font-size: 24px;" class="text-danger" icon="times-circle" />
-            </div>
-            <div>
-                <patient_info_id :patientId="patient_id_choosen"/>
-                <!--  -->
-            </div>
-        </div>
-  
-         <ModalUser  :show="payment_bron_show" classes="bg_dolg" closeColor="white" titlecolor="white" 
-          :title="$t('debit')" @close="payment_bron_show = false" width="600px">
-          <template v-slot:body>
-            <pay_cash :option = "payment_data" @close="payed_close"/>
-          </template>
-        </ModalUser>
-      <Toast ref="message"></Toast>
-       <massage_box :hide="modal_status" :detail_info="modal_info"
-        :m_text="$t('Failed_to_delete')" @to_hide_modal = "modal_status= false"/>
     </div>
-  
-  </template>
-  
-  <script>
-  import { required } from 'vuelidate/lib/validators'
-  import ModalUser from '../../../components/modal.vue'
-  import pay_cash from '../../bron/pay_cash.vue'
-  import patient_info_id from './patient_info_id'
-    // import lineSelect from "../../components/lineSelect.vue";
-    import { mdbBtn, mdbInput, mdbIcon  } from 'mdbvue';
-    import {mapActions, mapGetters, mapMutations} from 'vuex'
-    // import 'vue2-datepicker/index.css';
-    export default {
-      components: {
-        mdbBtn,
-        mdbIcon,
-        mdbInput, 
-        ModalUser,
-        pay_cash,
-        patient_info_id
+
+     <vue-html2pdf ref='listlar'
+        :show-layout="false"
+        :float-layout="true"
+        :enable-download="false"
+        :preview-modal="true"
+        :paginate-elements-by-height="1600"
+        filename="hee hee"
+        :pdf-quality="2"
+        :manual-pagination="false"
+        pdf-format="a4"
+        pdf-orientation="landscape"
+        pdf-content-width="100%"
+        @hasStartedGeneration="hasStartedGeneration()"
+        @hasGenerated="hasGenerated($event)"
+      >
+      <div slot="pdf-content">
+        <div class="TablePatientDocId p-3">
+          <table class="myTable">
+            <thead>
+              <tr class="header ">
+                <th >{{$t('contragent_name')}}</th>
+                <th >{{$t('patient_name')}}</th>
+                <th>{{$t('service_name')}}</th>
+                <th width="100">{{$t('service_price')}}</th>
+                <th width="120">{{$t('paymentInCard')}}</th>
+                <th width="120">{{$t('paymentInCash')}}</th>
+                <th width="120">{{$t('payDate')}}</th>
+                <th width="100">{{$t('payed')}}</th>
+                <th width="150">{{$t('finish')}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row,rowIndex) in bonus_contragent_list_by_group" :key="rowIndex">
+                <td> <span >{{row.contragent_name}}</span> </td>
+                <td> <span >{{row.patient_name}}</span> </td>
+                <td> <span >{{row.service_name}}</span> </td>
+                <td> <span >{{row.service_price}}</span> </td>
+                <td> <span :class="{'text-danger': row.paymentInCard == 0, 'text-success': row.paymentInCard != 0}">{{row.paymentInCard}}</span> </td>
+                <td> <span :class="{'text-danger': row.paymentInCash == 0, 'text-success': row.paymentInCash != 0}">{{row.paymentInCash}}</span> </td>
+                <td> <span >{{row.payDate}}</span> </td>
+                <td>
+                  <mdb-badge v-show="row.payed === true" style="padding: 2px 8px;" pill color="success">{{$t("payed")}}</mdb-badge>
+                  <mdb-badge v-show="row.payed === false" style="padding: 2px 8px;" pill color="danger">{{$t('unpayed')}}</mdb-badge>
+                </td>
+                <td>
+                  <mdb-badge v-show="row.finish === true" style="padding: 2px 8px;" pill color="success">{{$t("проверил")}}</mdb-badge>
+                  <mdb-badge v-show="row.finish === false" style="padding: 2px 8px;" pill color="danger">{{$t('непроверенный')}}</mdb-badge>
+                </td>
+              </tr>
+              <tr >
+                <td> <span class="text-primary">Общий</span> </td>
+                <td> <span ></span> </td>
+                <td> <span class="text-primary"></span></td>
+                <td> <span class="text-danger">{{summa}}</span> </td>
+                <td class="text-primary">{{card}}</td>
+                <td class="text-primary">{{cash}}</td>
+                <td> <span >All: {{(card + cash)}}</span> </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </vue-html2pdf>
+
+    <!-- <div :class="{'showing':show}">
+      <div class="add d-flex justify-content-center align-items-center" >  
+        <districtAdd/>
+      </div>
+    </div> -->
+      <mdb-modal  :show="show"  @close="show = false"  light>
+        <mdb-modal-header>
+          <mdb-modal-title style="font-weight:  500;">{{$t('Добавить Район')}}</mdb-modal-title>
+        </mdb-modal-header>
+        <mdb-modal-body>
+          <districtAdd :options="editData"/>
+        </mdb-modal-body>
+      </mdb-modal>
+    <Toast ref="message"></Toast>
+     <massage_box :hide="modal_status" :detail_info="modal_info"
+      :m_text="$t('Failed_to_delete')" @to_hide_modal = "modal_status= false"/>
+  </div>
+
+</template>
+
+<script>
+  import VueHtml2pdf from 'vue-html2pdf'
+  import RegSelect from '../../../components/RegSelect.vue'
+  // import DatePicker from 'vue2-datepicker';
+  import districtAdd from "../../../components/new_prog_add/district_add"
+  import lineSelect from "../../../components/lineSelect.vue";
+  import { mdbBtn, mdbInput,  mdbModal, mdbModalHeader, mdbBadge, mdbModalTitle, mdbModalBody,   } from 'mdbvue';
+  import {mapActions, mapGetters, mapMutations} from 'vuex'
+  // import 'vue2-datepicker/index.css';
+  export default {
+    components: {
+      mdbBtn,
+      mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, lineSelect,
+      districtAdd,mdbBadge, mdbInput, RegSelect,
+      VueHtml2pdf
+    },
+    data(){
+      return{
+        show: false,
+        snipper: true,
+        editData: {},
+        modal_info : '',
+        modal_status: false,
+        contragent_name: '',
+        contragent_id: localStorage.cont_id,
+        Start_time: null,
+        End_time: null,
+        group_name: '',
+        group_id: null,
+        bonus_contragent_list_by_group: [],
+        summa: 0,
+        card: 0,
+        cash: 0,
+      }
+    },
+    mounted(){
+        this.fetch_contragent()
+        this.fetch_service_group()
+    },
+    computed: mapGetters(['get_contragent_list', 'get_report_by_data_contragent', 'get_service_group_list', 'get_report_qty_summ', 'get_report_by_cont_card_cash']),
+    methods: {
+      ...mapActions(['fetch_contragent', 'fetch_report_by_data_cont', 'fetch_service_group']),
+      ...mapMutations(['district_row_delete']),
+
+      async selectcontragent(option){
+        this.contragent_id = option.data.id
+        this.contragent_name = option.data.name
       },
-      data(){
-        return{
-          info_patient_id: false,
-  
-          payment_bron_show: false,
-          payment_data: {},
-          
-          patient_id: null,
-          patient_id_choosen: null,
-          filteredList: [],
-          summa: 0,
-          summaString: '',
-          patientName: '',
-  
-          search:'',
-  
-          show: false,
-          snipper: true,
-          editData: {},
-          modal_info : '',
-          modal_status: false,
-          contragent_name: '',
-          contragent_id: null,
-          Start_time: new Date(),
-          End_time: new Date(),
-          price: null,
-          reason: '',
-          loading: false,
-          bonus_contragent_list: [],
-          showen_Auth: false,
-            
-          m_contragent :{
-            rows: [],
-            columns: ['patient_name', 'real_qty', 'created_date_time'],
-            col : []
-          },
+      add(){
+        this.show =! this.show
+        this.editData = {};
+      },
+      print(){
+        this.$refs.listlar.generatePdf()
+      },
+      select_service_Group(option){
+        this.group_name = option.name;
+        this.group_id = option.id;
+        this.bonus_contragent_list_by_group = [];
+        this.summa = 0;
+        this.cash = 0;
+        this.card = 0;
+        for(let i = 0; i < this.get_report_by_data_contragent.rows.length; i++) {
+          if(this.get_report_by_data_contragent.rows[i].service_Group == this.group_name){
+            this.bonus_contragent_list_by_group.push(this.get_report_by_data_contragent.rows[i])
+            this.summa += this.get_report_by_data_contragent.rows[i].service_price;
+            this.cash += this.get_report_by_data_contragent.rows[i].paymentInCash;
+            this.card += this.get_report_by_data_contragent.rows[i].paymentInCard;
+          }
         }
       },
-      validations: {
-        price: {required},
-        contragent_name : {required}
-      },
-      async mounted(){
-        // this.refresh();
-        await this.fetch_patient_client();
-        this.filteredList = this.get_patient_client_list;
-        console.log('this.get_patient_client_list')
-        console.log(this.get_patient_client_list)
-        if(localStorage.AuthId === 0){
-          this.showen_Auth = true
-          console.log(localStorage.Auth)
+      async submit(){
+        // const time1 = this.Start_time.toISOString();
+        // const time2 = this.End_time.toISOString();
+        let a = {
+          time1: "2021-09-01T09:15:28.886Z",
+          time2: new Date(),
+          contId: 0
+        }
+        a.time1 = this.Start_time + 'T00:00:35.000Z';
+        a.time2 = this.End_time + 'T23:59:59.000Z';
+        a.contId = this.contragent_id;
+        await this.fetch_report_by_data_cont(a)
+        if(this.group_name == ''){
+          this.bonus_contragent_list_by_group = [];
+          this.bonus_contragent_list_by_group = this.get_report_by_data_contragent.rows
+          this.summa = 0;
+          this.cash = 0;
+          this.card = 0;
+          this.summa = this.get_report_by_data_contragent.rows.reduce((total, item) => {
+                return total + item.service_price
+            }, 0)
+            this.cash = this.get_report_by_data_contragent.rows.reduce((total, item) => {
+                return total + item.paymentInCash
+            }, 0)
+            this.card = this.get_report_by_data_contragent.rows.reduce((total, item) => {
+                return total + item.paymentInCard
+            }, 0)
+        }
+        else{
+          this.bonus_contragent_list_by_group = [];
+          this.summa = 0;
+          this.cash = 0;
+          this.card = 0;
+          for(let i = 0; i < this.get_report_by_data_contragent.rows.length; i++) {
+            if(this.get_report_by_data_contragent.rows[i].service_Group == this.group_name){
+              this.bonus_contragent_list_by_group.push(this.get_report_by_data_contragent.rows[i])
+              this.summa += this.get_report_by_data_contragent.rows[i].service_price;
+              this.cash += this.get_report_by_data_contragent.rows[i].paymentInCash;
+              this.card += this.get_report_by_data_contragent.rows[i].paymentInCard;
+            }
+          }
+          console.log(this.get_report_by_data_contragent.rows)
         }
       },
-      computed:{
-        ...mapGetters(['get_patient_client_list' ,'get_contragent_list', 'get_report_by_data_time', 'get_report_by_time_card_cash','get_pagination']),},
-      methods: {
-        ...mapActions(['fetch_contragent', 'fetch_report_by_data_time', 'fetch_patient_client']),
-        ...mapMutations(['district_row_delete', 'update_pagination_first']),
-        cls_wnd(){
-          this.price =  null;
-          this.reason =  '';
-          this.contragent_name = '';
-          this.contragent_id = null;
-        },
-        payed_payment(item){
-          this.payment_bron_show = true;
-          this.payment_data = item;
-        },
-        async choosePatient(id){
-            this.info_patient_id = true;
-            this.patient_id_choosen = id;
-        },
-        async searchPatientFio(){
-            try{
-                if(this.search != ''){
-                    const response = await fetch(this.$store.state.hostname + '/Patients/searchPatientsByFioList?FIO=' + this.search);
-                    const data = await response.json();
-                    this.filteredList = data
-                }else{
-                    this.filteredList = this.get_patient_client_list;
-                }
-            }
-            catch(error){
-                this.modal_status = true;
-                this.modal_info = error;
-            }
-        },
-        async payed_close(){
-          this.payment_bron_show = false;
-          await this.refresh();
-          this.$refs.message.success('Added_successfully');
-        },
-        async refresh(){
-          const res = await fetch(this.$store.state.hostname + '/HospitalBronRoomPayments/getPaginationOnlyFinishFalse?page=0&size=400');
-          const res_data = await res.json();
-          console.log('res_data')
-          console.log(res_data)
-          this.m_contragent.rows = res_data.items_list;
-          this.loading = false;
-        },
-        async fetch_finish_payment(id){
-          const res = await fetch(this.$store.state.hostname + '/HospitalBronRoomPayments/finishPayment?id=' + id);
-          const res_data = await res.json();
-          console.log('res_data')
-          console.log(res_data)
-        },
-  
-        print(){
-          this.$refs.listlar.generatePdf()
-        },
-      },
-    };
-  </script>
-  
-  <style lang="scss">
-  
-  
-  .add{
-    position: fixed;
-    background: rgba(0, 0, 0, 0.4);
-    height: 100vh;
-    top:0;
-    width:85%;
+
+    },
+  };
+</script>
+
+<style lang="scss">
+
+
+.add{
+  position: fixed;
+  background: rgba(0, 0, 0, 0.4);
+  height: 100vh;
+  top:0;
+  width:85%;
+}
+
+.addxizmat{
+  width: 470px;
+  // height: 120px;
+  background: #fff;
+  position: relative;
+  z-index: 5000;
+}
+.showing{
+  display: none;
+}
+.timePicer{
+  position: relative;
+  margin-top: -10px;
+  .timeLabel{
+    position: absolute;
+    font-size: 12px;
+    background-color: #fff;
+    padding: 1px 3px;
+    z-index: 1;
+    left: 6px;
+    top: -1px;
   }
-  
-  .addxizmat{
-    width: 470px;
-    // height: 120px;
-    background: #fff;
-    position: relative;
-    z-index: 5000;
+  .dayLabel{
+    position: absolute;
+    font-size: 12px;
+    background-color: #fff;
+    padding: 0px 3px;
+    z-index: 1;
+    left: 6px;
+    top: -8px;
   }
-  .showing{
-    display: none;
-  }
-  .timePicer{
-    position: relative;
-    margin-top: -10px;
-    .timeLabel{
-      position: absolute;
-      font-size: 12px;
-      background-color: #fff;
-      padding: 1px 3px;
-      z-index: 1;
-      left: 6px;
-      top: -1px;
-    }
-    .dayLabel{
-      position: absolute;
-      font-size: 12px;
-      background-color: #fff;
-      padding: 0px 3px;
-      z-index: 1;
-      left: 6px;
-      top: -8px;
-    }
-  }
-  .TablePatientDocIds{
-      // height: 400px;
-      // overflow: hidden;
-      // overflow-y: auto;
-      // border: 1px solid #ddd;
-    }
-    .myTable {
-    /* border-collapse: collapse; */
-    table-layout:fixed;
-    width: 100%;
-    overflow: hidden;
+}
+.TablePatientDocId{
+    // height: 400px;
+    // overflow: hidden;
+    // overflow-y: auto;
     // border: 1px solid #ddd;
-    font-size: 18px;
-    max-height:80px; overflow-x:auto
   }
-  .myTable th{
-    font-weight: 600;
-    font-size:12px;
-  }
-  .myTable td{
-    font-size:13px;
-  }
-  .myTable th, .myTable td {
-    text-align: left;
-    padding: 10px;
-  }
-  
-  .myTable tr {
-    border-bottom: 1px solid rgb(240, 240, 240);
-  }
-  
-  .myTable tr.header, .myTable tr:hover {
-    // background-color: #f1f1f1;
-  }
-  .delIcon{
-    color: rgb(251, 70, 70);
-    font-size: 13px;
-  }
-  .TablePatientBron .myTable th, td{
-    padding: 7px 4px !important;
-  }
-  .TablePatientBron .myTable .rasxod_table_header{
-    background-image: radial-gradient( circle farthest-corner at 1.3% 2.8%,  rgb(207, 219, 238) 100.2%, rgb(198, 214, 241) 100.2% );
-  }
-  .hover_bron_item:hover{
-    background: #e6ebf1;
-    cursor:pointer;
-  }
-  .fixedInfoPatientId{
-    height: 100vh;
-    width: 100vw;
-    background: #f6f6f6;
-    position: fixed;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
-    overflow-y: scroll;
-    z-index: 1111;
-  }
-  .close_icon{
-    position: fixed;
-    display: flex;
-    justify-content:center;
-    align-items: center; 
-    right: 10px; 
-    top: 10px; 
-    width: 24px; 
-    height: 24px;
-    border-radius: 50%;
-    background: #ffffff;
-    cursor: pointer;
-  }
-  </style>
+  .myTable {
+  /* border-collapse: collapse; */
+  table-layout:fixed;
+  width: 100%;
+  overflow: hidden;
+  // border: 1px solid #ddd;
+  font-size: 18px;
+  max-height:80px; overflow-x:auto
+}
+.myTable th{
+  font-weight: 600;
+  font-size:12px;
+}
+.myTable td{
+  font-size:13px;
+}
+.myTable th, .myTable td {
+  text-align: left;
+  padding: 10px;
+}
+
+.myTable tr {
+  border-bottom: 1px solid rgb(240, 240, 240);
+}
+
+.myTable tr.header, .myTable tr:hover {
+  // background-color: #f1f1f1;
+}
+</style>

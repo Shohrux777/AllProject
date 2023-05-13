@@ -1686,6 +1686,13 @@ const routes = [{
             import ('../views/hospital/report/bron_time_payment.vue')
     },
     {
+        path: '/report_of_reagin',
+        name: 'report_of_reagin',
+        meta: { layout: 'hospital' },
+        component: () =>
+            import ('../views/hospital/report/report_of_reagin.vue')
+    },
+    {
         path: '/otcheritList/:id',
         name: 'otcheritList',
         meta: { layout: 'empty' },

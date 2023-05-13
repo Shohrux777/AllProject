@@ -4,6 +4,9 @@ import user from './moduls/user'
 import dashboard from './moduls/dashboard'
 import company from './moduls/company'
 import smena from './moduls/smena'
+import door from './moduls/door'
+import device from './moduls/device'
+import salary from './moduls/salary'
 
 export default createStore({
   state: {
@@ -21,6 +24,9 @@ export default createStore({
     user,
     dashboard,
     company,
-    smena
+    door,
+    device,
+    smena,
+    salary
   }
 })

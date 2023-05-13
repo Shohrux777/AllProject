@@ -159,9 +159,15 @@
         dropdown5,
       };
     },
-    mounted() {
+    async mounted() {
+
       // this.show_title = localStorage.sidebar;
-      console.log(this.show_title)
+      console.log('this.show_title')
+      let time1 = new Date();
+      console.log(time1)
+      this.Start_time = time1.toISOString().slice(0,10);
+      await this.submit();
+      setInterval(await this.fetchblockTime, 60000);
       // console.log(localStorage.sidebar)
       // this.name = localStorage.Name;
       for (let j = 0; j < this.links.length; j++) {
@@ -181,10 +187,14 @@
           }
         }
       }
+      
     },
     data() {
       return {
         name: 'sidebar',
+        Start_time: null,
+        loading: false,
+        reportList: [],
         show_title: true,
         indexMain: -1,
         langList: [
@@ -224,20 +234,32 @@
             },
             { title: "otdel", icon: 'users', url: '/department', view: false, color: '#ddd', down_list:[] },
             { title: 'company', icon: 'landmark', url: '/company', view: false, color: '#ddd', down_list:[] },
+
+            { title: 'salary', icon: 'hand-holding-usd', url: '', view: false, color: '#ddd', down_list:[
+                { title: "salary", url: '/salary', dview: false, color: '#ddd', down_list:[] },
+                { title: "connect_user_salary", url: '/userconnect_salary', dview: false, color: '#ddd', down_list:[] },
+            ] },
+
+            { title: 'report', icon: 'clipboard', url: '', view: false, color: '#ddd', down_list:[
+              { title: "report_user", url: '/bytimeInOut', dview: false, color: '#ddd', down_list:[] },
+              { title: "report", url: '/byvaqtReport', dview: false, color: '#ddd', down_list:[] },
+              { title: "report_salary", url: '/salaryReportbytime', dview: false, color: '#ddd', down_list:[] },
+              { title: "come_in_out", url: '/come_in_out', dview: false, color: '#ddd', down_list:[] },
+              { title: "ComeInReport", url: '/ComeInReport', dview: false, color: '#ddd', down_list:[] },
+              { title: "notComeInReport", url: '/notComeInReport', dview: false, color: '#ddd', down_list:[] },
+              { title: "blockedUsers", url: '/blockedUsers', dview: false, color: '#ddd', down_list:[] },
+            ]},
+
             { title: 'smena', icon: 'desktop', url: '', view: false, color: '#ddd', down_list:[
+                { title: "userconnect_grafik", url: '/userconnect_grafik', dview: false, color: '#ddd', down_list:[] },
                 { title: "smena", url: '/smena', dview: false, color: '#ddd', down_list:[] },
                 { title: "ish_grafigi", url: '/ish_grafigi', dview: false, color: '#ddd', down_list:[] },
                 { title: "result_gr", url: '/result_gr', dview: false, color: '#ddd', down_list:[] },
             ] },
-            { title: 'report', icon: 'clipboard', url: '', view: false, color: '#ddd', down_list:[
-              { title: "report_user", url: '/aboutweb', dview: false, color: '#ddd', down_list:[] },
-              { title: "report", url: '/', dview: false, color: '#ddd', down_list:[] },
-              { title: "report_details", url: '/', dview: false, color: '#ddd', down_list:[] },
-              { title: "report_devices", url: '/', dview: false, color: '#ddd', down_list:[] },
-            ]},
+            
            { title: 'devices', icon: 'desktop', url: '', view: false, color: '#ddd', down_list:[
-                { title: "devices_info", url: '/', dview: false, color: '#ddd', down_list:[] },
-                { title: "device_door", url: '/', dview: false, color: '#ddd', down_list:[] },
+                { title: "devices_info", url: '/device', dview: false, color: '#ddd', down_list:[] },
+                { title: "device_door", url: '/door', dview: false, color: '#ddd', down_list:[] },
             ] },
 
             { title: 'menu_setting', icon: 'tools', url: '', view: false, color: '#ddd', down_list:[
@@ -284,6 +306,53 @@
       selectLang(lang){
         this.activLang = lang;
         this.$i18n.locale = lang.lang;
+      },
+      async submit(){
+        let start = this.Start_time + 'T00:00:35.000Z' ;
+        console.log(start)
+        console.log('submit')
+        try{
+          this.loading = true;
+          const response = await fetch(this.$store.state.hostname + "/SkudMyUserinfoes/getReportKemaganlarAllUsers?page=0&size=500&need_date=" + start);
+          const data = await response.json();
+          this.loading = false;
+          console.log(data)
+          this.reportList = data.items_list;
+        }
+        catch(error){
+          this.loading = false;
+          console.log(error)
+        }
+      },
+      async fetchblockTime(){
+          let day = new Date();
+          console.log('day.getDay()')
+          console.log(day.getDay())
+          console.log(day.getHours())
+          console.log(day.getMinutes())
+
+          if(day.getDay() != 0){
+              if(day.getHours() == 22 && day.getMinutes()>0 && day.getMinutes()<6){
+                await this.submit();
+                for(let i=0; i<this.reportList.length; i++){
+                  await this.fetchBlockUsers(this.reportList[i].userid);
+                }
+              }
+          }
+      },
+      async fetchBlockUsers(id){
+        try{
+          this.loading = true;
+          const response = await fetch(this.$store.state.hostname + "/SkudMyUserinfoes/getBlokUsersListForAllDoorsWithUpdateGr?user_id_list=" + id);
+          const data = await response.json();
+          this.loading = false;
+          console.log(data)
+          // this.reportList = data.items_list;
+        }
+        catch(error){
+          this.loading = false;
+          console.log(error)
+        }
       }
     }
   };

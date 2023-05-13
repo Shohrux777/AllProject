@@ -1,7 +1,7 @@
 <template>
     <div class="fullInfoPatient bg_choose_patient">
       <loader v-if="loading"/>
-      <div class="p-4">
+      <div class="p-4 fullInfoPatientList">
         <div class="mb-2 pt-2 px-4 pb-1" style="border-radius:5px; position:relative;">
   
           <div class="row" v-if="patientInfo.fio">
@@ -96,6 +96,49 @@
               </div>
             </div>
           </div>
+
+          <div class="row mb-5">
+            <div class="col-12 mt-4">
+              <div class="card px-3 py-2">
+                <div class="d-flex justify-content-between border_dashed">
+                  <h6 class="pb-3 pt-2 m-0 text-primary">Medicine</h6>
+                  <!-- <h6 class="pb-3 pt-2 m-0 text-primary">{{item.doctorPhone}}</h6> -->
+                </div>
+                <table class="myTableFullInfo">
+                  <thead>
+                    <tr class="header ">
+                      <th  width="40" class="text-left">№</th>
+                      <th width="200">{{$t('patient_name')}}</th>
+                      <th>{{$t('contragent_name')}}</th>
+                      <th>{{$t('Drag list')}}</th>
+                      <th>Рецепт</th>
+                      <th >{{$t('qty')}}</th>
+                      <th >{{$t('sht')}}</th>
+                      <th >{{$t('payed')}}</th> 
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(row,rowIndex) in patient_drugs_list" :key="rowIndex">
+                      <td> <span >{{rowIndex+1}}</span> </td>
+                      <td> <span >{{row.patient_name}}</span> </td>
+                      <td> <span >{{row.doctor_name}}</span> </td>
+                      <td> <span >{{row.posProduct.name}}</span></td>
+                      <td> <span >{{row.note}}</span></td>
+                      <td> <span >{{row.qty}}</span> </td>
+                      <td> <span >{{row.real_qty}}</span> </td>
+                      
+                      <td>
+                        <mdb-badge v-show="row.get_drugs_status === true" style="padding: 2px 8px;" pill color="success">{{$t("payed")}}</mdb-badge>
+                        <mdb-badge v-show="row.get_drugs_status === false" style="padding: 2px 8px;" pill color="danger">{{$t('unpayed')}}</mdb-badge>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          
   
           
         </div>
@@ -259,6 +302,8 @@
           ],
           change_doc_patient_id: false,
           patient_data: {patients:{FIO:''}},
+
+          patient_drugs_list: [],
         }
       },
       props:{
@@ -274,6 +319,7 @@
        watch: {
             patientId: async function () {
                 await this.IdFunc();
+                await this.fetch_patient_drugs();
             },
         },
       async mounted(){
@@ -281,6 +327,7 @@
           this.admin = true;
         }
         await this.IdFunc();
+        await this.fetch_patient_drugs();
       },
       computed: mapGetters(['get_client_info','get_contragent_list', 'get_report_by_data_time',
          'get_report_by_time_card_cash', 'get_service_group_list', 'get_patient_client_list', 'auth_user_list']),
@@ -288,6 +335,22 @@
         ...mapActions(['fetch_contragent', 'fetch_report_by_data_time', 'fetch_service_group', 'fetch_patient_client', 
           'fetch_client_info', 'fetch_auth_list']),
         ...mapMutations(['district_row_delete']),
+
+        async fetch_patient_drugs(){
+          console.log('ishladi kirdi')
+          try{
+            const response = await fetch(this.$store.state.hostname + "/HospitalPatientDrugs/getPaginationWithPatientId?page=0&size=100&patient_id=" +  this.patientId);
+            const data = await response.json();
+            console.log('data items drugs')
+            console.log(data)
+            if(data.items_count){
+             this.patient_drugs_list = data.items_list;
+            }
+          }
+          catch{
+            console.log('Oshibka')
+          }
+        },
   
         
         print(){
@@ -504,8 +567,11 @@
   
   <style lang="scss">
   .fullInfoPatient{
-    min-height: 100vh;
-    background: rgb(248, 248, 248);
+    height: 100vh;
+  }
+  .fullInfoPatientList{
+    overflow-y: scroll;
+    height: 97vh;
   }
   .search_item{
     position: relative;
@@ -629,6 +695,6 @@
     border-bottom: 1px dashed #ddd;
   }
   .bg_choose_patient{
-    background-image: linear-gradient( 109.6deg,  rgba(156,252,248,1) 11.2%, rgba(110,123,251,1) 91.1% );
+    background-image: linear-gradient( 109.6deg,  rgba(156,252,248,1) 11.2%, rgba(110,123,251,1) 91.1% ) !important;
   }
   </style>

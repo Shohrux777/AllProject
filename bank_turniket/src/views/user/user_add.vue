@@ -33,6 +33,13 @@
                     >
                         <MDBIcon icon="credit-card" class="trailing"></MDBIcon>
                     </MDBInput>
+                    <div class="mt-3">
+                      <MDBSwitch
+                        :label="$t('dont_block_user')"
+                        v-model="switch1"
+                      />
+                    </div>
+                    
                 
                     <erpSelect
                         :options = "get_deparment_list.rows" 
@@ -69,7 +76,7 @@
   </template>
   
   <script>
-  import { MDBInput, MDBIcon, MDBModalFooter, MDBBtn } from "mdb-vue-ui-kit";
+  import { MDBInput, MDBIcon, MDBModalFooter, MDBBtn, MDBSwitch } from "mdb-vue-ui-kit";
   import erpSelect from '@/components/erpSelectAdd.vue'
   import {mapActions, mapGetters} from 'vuex'
   
@@ -79,23 +86,47 @@
         MDBIcon,
         MDBModalFooter,
         erpSelect,
-        MDBBtn
+        MDBBtn,
+        MDBSwitch 
       },
       data(){
         return{
           fio: '',
           card_number: '',
           id: 1,
-          subdept_name: '',
+          subdept_name: ' ',
           subdept_id: null,
           show_picture: false,
           base64: '',
           img_str: '',
+          switch1: false,
+          gr: 0,
         }
+      },
+      props:{
+        select_data:{
+          type: Object,
+          default: {}
+        },
       },
     computed: mapGetters(['get_deparment_list']),
     async mounted(){
-        await this.fetch_Department();
+      await this.fetch_Department();
+
+      if(Object.keys(this.select_data).length != 0){
+        if(this.select_data.gr == 0){
+            this.switch1 = false;
+          }
+          else{
+            this.switch1 = true;
+          }
+            this.id = this.select_data.userid;
+            this.fio = this.select_data.ism;
+            this.card_number = this.select_data.cardno;
+            this.subdept_name = this.select_data.familiya;
+            this.subdept_id = this.select_data.departid;
+        }
+      
     },
 
     methods:{
@@ -107,7 +138,17 @@
         this.subdept_id = option.id;
       },
       async submit_add(){
+        let url = '/SkudMyUserinfoes';
+        if(Object.keys(this.select_data).length != 0){
+          url = '/SkudMyUserinfoes/updateUserInfo'
+        }
         await this.fetch_imageFile();
+        if(this.switch1 == false){
+          this.gr = 0;
+        }
+        else{
+          this.gr = 1;
+        }
         try{
           const requestOptions = {
           method: "POST",
@@ -119,10 +160,11 @@
             "cardno" : this.card_number,
             "departid" : this.subdept_id,
             "familiya": this.subdept_name,
-            "image_url": this.img_str
+            "image_url": this.img_str,
+            "gr": this.gr
             })
           };
-          const response = await fetch(this.$store.state.hostname + "/SkudMyUserinfoes", requestOptions);
+          const response = await fetch(this.$store.state.hostname + url, requestOptions);
           const data = await response.json();
           console.log(data)
           if(data.userid != 0){

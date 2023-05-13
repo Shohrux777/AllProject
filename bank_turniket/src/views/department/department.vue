@@ -1,9 +1,10 @@
 <template>
   <div class="deparment_page">
-    <navbar :title = "$t('otdel')" @add="addDept"/>
+    <navbar :title = "$t('otdel')" @add="addDept" @editFunc="editFunc" @deleteFunc="deleteFunc"/>
     <div class="mainpage">
         <mdbtabled
         :options = get_deparment_list
+        @selectData="selectData"
         />
     </div>
     <MDBModal
@@ -18,7 +19,7 @@
             <MDBModalTitle id="exampleModalLabel"> {{$t('otdel')}} </MDBModalTitle>
         </MDBModalHeader>
         <MDBModalBody>
-            <dept_add @close="exampleModal = false"></dept_add>
+            <dept_add :select_data="select_data" @close="exampleModal = false"></dept_add>
         </MDBModalBody>
     </MDBModal>
   </div>
@@ -75,7 +76,36 @@
             console.log('dept')
             this.show_dept = true;
             this.exampleModal = true;
-        }
+        },
+        selectData(data){
+          console.log('select_date')
+          console.log(data.userid)
+          this.select_data = data
+        },
+        async deleteFunc(){
+            try{
+                console.log('deleteFunc')
+                const requestOptions = {
+                    method : "delete",
+                };
+                const response = await fetch(this.$store.state.hostname + "/SkudMyDepartments/" + this.select_data.id, requestOptions);
+                const data = await response.json();
+                console.log('data')
+                console.log(data)
+                console.log(response)
+                if(response.status == 200 || response.status == 201){
+                    await this.fetch_Department();
+                }
+            }
+            catch(error){
+                console.log(error)
+            }
+          },
+          async editFunc(){
+            this.show_dept = true;
+            this.exampleModal = true;
+            console.log('editFunc')
+          }
     }
 
   };

@@ -9,15 +9,15 @@
                         <small class="text-white" style="font-size: 12px;">
                             <MDBIcon icon="plus" />
                             Add
-                        </small> 
+                        </small>
                     </div>
-                    <div class="px-2 btn_hover" > 
+                    <div class="px-2 btn_hover" @click="$emit('editFunc')"> 
                         <small class="text-white" style="font-size: 12px;">
                             <MDBIcon icon="edit" />
                             Edit
                         </small> 
                     </div>
-                    <div class="px-2 btn_hover"> 
+                    <div class="px-2 btn_hover" @click="$emit('deleteFunc')"> 
                         <small class="text-white" style="font-size: 12px;">
                             <MDBIcon  icon="trash" />
                             Delete
@@ -58,7 +58,11 @@
         type:Boolean,
         default:true
       },
-    }
+    },
+    // async mounted(){
+                
+    // },
+  
   };
 </script>
 

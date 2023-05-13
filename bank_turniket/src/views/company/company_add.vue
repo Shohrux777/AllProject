@@ -46,7 +46,15 @@ export default {
     },
     computed: mapGetters(['get_deparment_list']),
     async mounted(){
+      this.id = this.select_data.id;
+      this.name = this.select_data.name;
     },
+    props:{
+        select_data:{
+          type: Object,
+          default: {}
+        },
+      },
     methods:{
       ...mapActions(['fetch_Company']),
 

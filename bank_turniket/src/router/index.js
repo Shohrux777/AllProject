@@ -73,7 +73,79 @@ const routes = [
     name: 'test',
     meta: { layout: 'main' },
     component: () => import( '../views/dashboard/test.vue')
-  }
+  },
+  {
+    path: '/door',
+    name: 'door',
+    meta: { layout: 'main' },
+    component: () => import( '../views/door/door.vue')
+  },
+  {
+    path: '/device',
+    name: 'device',
+    meta: { layout: 'main' },
+    component: () => import( '../views/device/device.vue')
+  },
+  {
+    path: '/salary',
+    name: 'salary',
+    meta: { layout: 'main' },
+    component: () => import( '../views/salary/salary.vue')
+  },
+  {
+    path: '/userconnect_grafik',
+    name: 'userconnect_grafik',
+    meta: { layout: 'main' },
+    component: () => import( '../views/connect/userconnect_grafik.vue')
+  },
+  {
+    path: '/userconnect_salary',
+    name: 'userconnect_salary',
+    meta: { layout: 'main' },
+    component: () => import( '../views/salary/userconnect_salary.vue')
+  },
+  {
+    path: '/bytimeInOut',
+    name: 'bytimeInOut',
+    meta: { layout: 'main' },
+    component: () => import( '../views/report/bytimeInOut.vue')
+  },
+  {
+    path: '/salaryReportbytime',
+    name: 'salaryReportbytime',
+    meta: { layout: 'main' },
+    component: () => import( '../views/report/salaryReportbytime.vue')
+  },
+  {
+    path: '/notComeInReport',
+    name: 'notComeInReport',
+    meta: { layout: 'main' },
+    component: () => import( '../views/report/notComeInReport.vue')
+  },
+  {
+    path: '/blockedUsers',
+    name: 'blockedUsers',
+    meta: { layout: 'main' },
+    component: () => import( '../views/report/blockedUsers.vue')
+  },
+  {
+    path: '/ComeInReport',
+    name: 'ComeInReport',
+    meta: { layout: 'main' },
+    component: () => import( '../views/report/ComeInReport.vue')
+  },
+  {
+    path: '/byvaqtReport',
+    name: 'byvaqtReport',
+    meta: { layout: 'main' },
+    component: () => import( '../views/report/byvaqtReport.vue')
+  },
+  {
+    path: '/come_in_out',
+    name: 'come_in_out',
+    meta: { layout: 'main' },
+    component: () => import( '../views/report/come_in_out.vue')
+  },
 ]
 
 const router = createRouter({

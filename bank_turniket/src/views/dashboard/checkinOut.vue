@@ -14,11 +14,11 @@
                   
                   <td>
                   <div class="d-flex align-items-center">
-                      <img :src="picture_list[row.userid]" alt="" style="width: 45px; height: 45px"
+                      <img v-show="false" :src="picture_list[row.userid]" alt="" style="width: 45px; height: 45px"
                       class="rounded-circle" />
                       <div class="ms-3">
-                      <p class="fw-bold mb-1">{{ row.userinfo.ism }}</p>
-                      <p class="text-muted mb-0">{{ row.userinfo.familiya }}</p>
+                      <p class="fw-bold mb-1" v-if="row.userinfo != null">{{ row.userinfo.ism }}</p>
+                      <p class="text-muted mb-0" v-if="row.userinfo != null">{{ row.userinfo.familiya }}</p>
                       </div>
                   </div>
                   </td>
@@ -30,12 +30,12 @@
                   <p class="text-muted mb-0">IT department</p>
                   </td> -->
                   <td>
-                  <MDBBadge v-if="row.checktype == 'I'" badge="success" pill class="d-inline">Входить</MDBBadge>
+                  <MDBBadge v-if="row.checktype == 'I'  || row.checktype == 'K'" badge="success" pill class="d-inline">Входить</MDBBadge>
                   <MDBBadge v-else badge="warning" pill class="d-inline">Выход</MDBBadge>
                   </td>
+                  <td>{{row.door_name}}</td>
                   <td>{{row.sana.slice(0,10)}}</td>
                   <td>{{row.checktime}}</td>
-                  
               </tr>
               </tbody>
             </MDBTable>
@@ -50,7 +50,6 @@
       MDBBtn,
       MDBBadge,
       MDBIcon,
-      
     } from 'mdb-vue-ui-kit';
     import { ref } from 'vue';
     import navbar from '@/components/navbar.vue'
@@ -67,7 +66,6 @@
           MDBBtn,
           MDBBadge,
           MDBIcon,
-          
           navbar,
       },
       data(){

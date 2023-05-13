@@ -1,10 +1,26 @@
 <template>
     <div class="deparment_page">
-      <navbar :title = "$t('user')" @add="addDept"/>
+      <navbar :title = "$t('user')" @add="addDept" @editFunc="editFunc" @deleteFunc="deleteFunc"/>
       <div class="mainpage">
-          <mdbtabled
-           :options="get_user_list"
-           ></mdbtabled>
+        <div class="row">
+            <div class="col-4">
+                <MDBInput
+                    type="text"
+                    id="form1"
+                    size="sm"
+                    class="form-icon-trailing mt-0 mb-2"
+                    :label="$t('search_client')"
+                    v-model="search"
+                    @input="searchUser()"
+                >
+                </MDBInput>
+            </div>
+        </div>
+            
+        <mdbtabled
+        :options="get_user_list"
+        @selectData="selectData"
+        ></mdbtabled>
       </div>
       <MDBModal
           id="exampleModal"
@@ -18,7 +34,7 @@
               <MDBModalTitle id="exampleModalLabel"> {{$t('user')}} </MDBModalTitle>
           </MDBModalHeader>
           <MDBModalBody>
-              <dept_add @close="exampleModal = false"></dept_add>
+              <dept_add :select_data="select_data" @close="exampleModal = false"></dept_add>
           </MDBModalBody>
           
       </MDBModal>
@@ -33,7 +49,7 @@
       MDBModal,
       MDBModalHeader,
       MDBModalTitle,
-      MDBModalBody,
+      MDBModalBody,MDBInput
     } from 'mdb-vue-ui-kit';
     import { ref } from 'vue';
     import mdbtabled from '@/components/mdbtable.vue'
@@ -52,7 +68,7 @@
           MDBBadge,
           MDBIcon,
           MDBModal,
-          MDBModalHeader,
+          MDBModalHeader, MDBInput,
           MDBModalTitle,
           MDBModalBody,
           navbar,
@@ -62,20 +78,65 @@
       data(){
           return{
               show_dept: false,
+              select_data: null,
+              search: '',
+              users_list: {},
           }
       },
       async mounted(){
           await this.fetch_user();
           console.log(this.get_user_list)
+        //   this.users_list = this.get_user_list;
           console.log('this.get_user_list')
       },
-      computed: mapGetters(['get_user_list']),
+      computed: {
+        ...mapGetters(['get_user_list']),
+        },
       methods:{
           ...mapActions(['fetch_user']),
+          async searchUser(){
+            await this.fetch_user();
+            if(this.search){
+                this.get_user_list.rows = this.get_user_list.rows.filter((item)=>{
+                    return this.search.toLowerCase().split(' ').every(v => item.ism.toLowerCase().includes(v))
+                })
+            }
+            
+          },
           addDept(){
               console.log('dept')
+              this.select_data = {};
               this.show_dept = true;
               this.exampleModal = true;
+          },
+          selectData(data){
+            console.log('select_date')
+            console.log(data.userid)
+            this.select_data = data
+          },
+          async deleteFunc(){
+            try{
+                console.log('deleteFunc')
+                const requestOptions = {
+                    method : "delete",
+                };
+                const response = await fetch(this.$store.state.hostname + "/SkudMyUserinfoes/" + this.select_data.userid, requestOptions);
+                const data = await response.json();
+                console.log('data')
+                console.log(data)
+                console.log(response)
+                if(response.status == 200 || response.status == 201){
+                    await this.fetch_user();
+                }
+            }
+            catch(error){
+                console.log(error)
+            }
+          },
+          async editFunc(){
+            this.show_dept = true;
+            this.exampleModal = true;
+            console.log('editFunc')
           }
       }
   
