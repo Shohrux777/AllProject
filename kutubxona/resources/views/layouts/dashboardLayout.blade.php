@@ -158,7 +158,7 @@
 										</a>
 									</li>
 									<li>
-										<a href="/notes">
+										<a href="/notifications">
 											<i class="fa fa-tasks" aria-hidden="true"></i>
 											<span>Elonlar</span>
 										</a>

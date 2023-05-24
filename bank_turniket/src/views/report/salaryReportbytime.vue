@@ -100,7 +100,6 @@
 
                       
                       <td>{{ row.day }}</td>
-
                       <td>{{row.oylik_nomi}}</td>
                       <td :class="{'text-success': row.ishlagan_puli != 0}" >
                         {{row.ishlagan_puli}}

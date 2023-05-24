@@ -41,8 +41,8 @@
                                     <th>Пароль</th>
                                     <th>E-mail</th>
                                     <th>Телефон</th>
-                                    <th>Факс</th>
-                                    <th>Примечание</th>
+                                    <th>День рождения</th>
+                                    <th>Адрес</th>
                                     <th>Дата</th>
                                     {{-- <th class="text-right mr-3">Actions</th> --}}
                                 </tr>

@@ -67,13 +67,13 @@
                             </div>
                         </div>
                         <div class="form-group mt-2">
-                            <label class="col-md-3 control-label" for="faks">Факс: </label>
+                            <label class="col-md-3 control-label" for="faks">День рождения : </label>
                             <div class="col-md-6">
-                                <input type="text" name="faks" class="form-control"  id="faks">
+                                <input type="date" name="faks" class="form-control"  id="faks">
                             </div>
                         </div>
                         <div class="form-group mt-2">
-                            <label class="col-md-3 control-label" for="note">Примечание:</label>
+                            <label class="col-md-3 control-label" for="note">Адрес:</label>
                             <div class="col-md-6">
                                 <textarea id="note" name="note" class="form-control" rows="4" ></textarea>
                             </div>

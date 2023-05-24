@@ -7,6 +7,7 @@ use App\Models\Book;
 use App\Models\News;
 use App\Models\Category;
 use App\Models\Buyurtma;
+use App\Models\Notification;
 use App\Http\Requests\MainRequest;
 
 class MainController extends Controller
@@ -15,9 +16,10 @@ class MainController extends Controller
     {
         $news = News::latest()->paginate(8);
         $books = Book::latest()->paginate(8);
+        $notes = Notification::latest()->paginate(4);
         $categories = Category::all();
         // dd($books);
-         return view('index', compact('news', 'books', 'categories'));
+         return view('index', compact('news', 'books', 'categories', 'notes'));
     }
     public function category_index($id){
         $categories = Category::all();
@@ -36,6 +38,11 @@ class MainController extends Controller
     public function new_index($id){
         $new_id = News::find($id);
         return view('newsShow', compact( 'new_id'));
+
+    }
+    public function note_index($id){
+        $note_id = Notification::find($id);
+        return view('noteShow', compact( 'note_id'));
 
     }
     public function receive()

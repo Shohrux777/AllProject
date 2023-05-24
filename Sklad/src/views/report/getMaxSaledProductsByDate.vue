@@ -201,8 +201,7 @@ export default {
   computed: mapGetters(['allProduct']),
   methods: {
     ...mapActions(['fetchProduct']),
-    ...mapMutations([ 'update_pagination_first']),  
-
+    ...mapMutations([ 'update_pagination_first']),
     async paginationClick(index){
        this.activePage = index;
        await this.refresh();
@@ -258,7 +257,6 @@ export default {
           this.loading = true;
           const res = await fetch(this.$store.state.hostname + '/PosChecks/getMaxSaledProductsByDate?page=' + this.activePage + '&size=' + this.value + '&begin_date=' + this.dateString + '&end_date=' + this.date1String);
           const res_data = await res.json();
-          console.log('res_data');
           console.log(res_data);
           this.allreports = res_data.items_list;
 

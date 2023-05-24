@@ -352,154 +352,61 @@
           </div>
         </div>
 
-        <!-- <div class="note_main container">
+        <div class="note_main container">
           <div class="row elonlar_rows p-0 m-0 w-100">
+            @foreach ($notes as $note)
             <div class="col-10 col-sm-10 col-md-6 col-lg-4 col-xl-3 px-2">
               <div class="note_item">
-                <img src="http://tdpu.uz/upload/7697_21078.jpg" class="img-fluid rounded" style="width: 100%;">
+                <a href="{{route('noteId', $note->id)}}" class="w-100 d-flex justify-content-center">
+                    <img src="{{asset('/public/news/picture/' .$note->image) }}" class="img-fluid rounded shadow" style="width: 90%;">
+                </a>
                 <div class="d-flex box_title">
-                  <div class="data_box">
-                    <div class="data1">
-                      <h1>25</h1>
-                    </div>
-                    <div class="data2">
-                      <h2>Apr</h2>
-                    </div>
-                  </div>
                   <div class="elon_title1">
                     <div class="main_title1">
-                      <h4>Universitet rektorining abiturientlarga murojaati</h4>
+                        <a href="{{route('noteId', $note->id)}}">
+                            <h4>{{$note->menu}}</h4>
+                        </a>
                     </div>
                     <div class="icon_clock">
-                        <div class="class_clock">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock " width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#14BDEE" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                              <circle cx="12" cy="12" r="9" />
-                              <polyline points="12 7 12 12 15 15" />
-                            </svg>
+                        <div class="d-flex">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-due" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#00abfb" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />
+                                <path d="M16 3v4" />
+                                <path d="M8 3v4" />
+                                <path d="M4 11h16" />
+                                <path d="M12 16m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                              </svg>
+                            <div class="data_clock" style="margin-top:2px;">
+                              <h5>{{$note->datestr}}</h5>
+                            </div>
                         </div>
-                        <div class="data_clock">
-                          <h5>15.00 - 19.30</h5>
+
+                        <div class="d-flex mx-2">
+                            <div class="class_clock">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#14BDEE" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                  <circle cx="12" cy="12" r="9" />
+                                  <polyline points="12 7 12 12 15 15" />
+                                </svg>
+                            </div>
+                            <div class="data_clock" style="margin-top:2px;">
+                              <h5>{{$note->timestr}}</h5>
+                            </div>
                         </div>
                     </div>
                     <div class="text_elon">
-                      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iusto, quo.</p>
+                        <a href="{{route('noteId', $note->id)}}">
+                            <p>{{$note->text}}</p>
+                        </a>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
-            <div class="col-10 col-sm-10 col-md-6 col-lg-4 col-xl-3 px-2">
-              <div class="note_item">
-                <img src="https://storage.kun.uz/source/9/QgCyRYEs8d3v0R_MADLc8n1-hAlxk1qO.jpg" class="img-fluid rounded" style="width: 100%;">
-                <div class="d-flex box_title">
-                  <div class="data_box">
-                    <div class="data1">
-                      <h1>25</h1>
-                    </div>
-                    <div class="data2">
-                      <h2>Apr</h2>
-                    </div>
-                  </div>
-                  <div class="elon_title1">
-                    <div class="main_title1">
-                      <h4>Universitet rektorining abiturientlarga murojaati</h4>
-                    </div>
-                    <div class="icon_clock">
-                        <div class="class_clock">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock " width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#14BDEE" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                              <circle cx="12" cy="12" r="9" />
-                              <polyline points="12 7 12 12 15 15" />
-                            </svg>
-                        </div>
-                        <div class="data_clock">
-                          <h5>15.00 - 19.30</h5>
-                        </div>
-                    </div>
-                    <div class="text_elon">
-                      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iusto, quo.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-10 col-sm-10 col-md-6 col-lg-4 col-xl-3 px-2">
-              <div class="note_item">
-                <img src="https://storage.kun.uz/source/9/eO-xPrv9pr0krQoQ9OM7wGha3pLAlgBh.jpg" class="img-fluid rounded" style="width: 100%;">
-                <div class="d-flex box_title">
-                  <div class="data_box">
-                    <div class="data1">
-                      <h1>25</h1>
-                    </div>
-                    <div class="data2">
-                      <h2>Apr</h2>
-                    </div>
-                  </div>
-                  <div class="elon_title1">
-                    <div class="main_title1">
-                      <h4>Universitet rektorining abiturientlarga murojaati</h4>
-                    </div>
-                    <div class="icon_clock">
-                        <div class="class_clock">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock " width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#14BDEE" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                              <circle cx="12" cy="12" r="9" />
-                              <polyline points="12 7 12 12 15 15" />
-                            </svg>
-                        </div>
-                        <div class="data_clock">
-                          <h5>15.00 - 19.30</h5>
-                        </div>
-                    </div>
-                    <div class="text_elon">
-                      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iusto, quo.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-10 col-sm-10 col-md-6 col-lg-4 col-xl-3 px-2">
-              <div class="note_item">
-                <img src="https://storage.kun.uz/source/9/Bn1ybAeCzmF21TMjWwNX07pKbQG4yV61.jpg" class="img-fluid rounded" style="width: 100%;">
-                <div class="d-flex box_title">
-                  <div class="data_box">
-                    <div class="data1">
-                      <h1>25</h1>
-                    </div>
-                    <div class="data2">
-                      <h2>Apr</h2>
-                    </div>
-                  </div>
-                  <div class="elon_title1">
-                    <div class="main_title1">
-                      <h4>Universitet rektorining abiturientlarga murojaati</h4>
-                    </div>
-                    <div class="icon_clock">
-                        <div class="class_clock">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock " width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#14BDEE" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                              <circle cx="12" cy="12" r="9" />
-                              <polyline points="12 7 12 12 15 15" />
-                            </svg>
-                        </div>
-                        <div class="data_clock">
-                          <h5>15.00 - 19.30</h5>
-                        </div>
-                    </div>
-                    <div class="text_elon">
-                      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iusto, quo.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
+            @endforeach
           </div>
-        </div> -->
+        </div>
     </div>
   </div>
   <!-- Elonlar container complected-->
