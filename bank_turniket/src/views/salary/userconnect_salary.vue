@@ -19,6 +19,22 @@
                 <h5 class="text-primary">{{ salary_name }}</h5>
             </div>
             <div class="added_user_table">
+                <div class="search_user mt-2">
+                <div class="row mx-0">
+                    <div class="col-12">
+                        <MDBInput
+                            type="text"
+                            id="form1"
+                            size="sm"
+                            class="form-icon-trailing mt-0 mb-2"
+                            :label="$t('search_client')"
+                            v-model="searchUserA"
+                            @input="searchUserAccept()"
+                        >
+                        </MDBInput>
+                    </div>
+                </div>
+            </div>
                 <MDBTable class="align-middle mb-0 bg-white">
                   <thead class="bg-light">
                     <tr>
@@ -62,6 +78,22 @@
                 />
                 <label for="all_select" class="m-0 p-0 mt-1" style="font-weight:500; font-size:13.5px">Все выбрать</label>
             </div>
+            <div class="search_user mt-2">
+                <div class="row mx-0">
+                    <div class="col-12">
+                        <MDBInput
+                            type="text"
+                            id="form1"
+                            size="sm"
+                            class="form-icon-trailing mt-0 mb-2"
+                            :label="$t('search_client')"
+                            v-model="search"
+                            @input="searchUser()"
+                        >
+                        </MDBInput>
+                    </div>
+                </div>
+            </div>
             <div class="item_user d-flex" v-for="(item, i) in this.get_user_list.rows" :key="i">
                 <input type="checkbox" style="width: 17px; height: 17px; margin-top: 3px; margin-right: 3px;" 
                     :value="item.userid" 
@@ -81,14 +113,15 @@
 <script>
 import loader from '@/components/loader.vue'
     import {mapActions, mapGetters} from 'vuex'
-import { MDBBtn, MDBTable, MDBIcon } from "mdb-vue-ui-kit";
+import { MDBBtn, MDBTable, MDBIcon, MDBInput } from "mdb-vue-ui-kit";
 
 export default {
     components: {
       MDBBtn,
       MDBTable,
       loader,
-      MDBIcon
+      MDBIcon,
+      MDBInput
     },
     data(){
         return{
@@ -102,22 +135,51 @@ export default {
             salary_id: null,
             loading: false,
             Connected_userList: [],
+            search: '',
+            searchUserA: '',
+
+            activ_item: {},
+            user_list_all: [],
         }
     },
     computed: mapGetters(['get_user_list','get_salary_list']),
     async mounted(){
         await this.fetch_user();
         await this.fetch_Salary();
-        console.log(this.get_salary_list.rows)
+        console.log('this.get_salary_list.rows')
+        console.log(this.get_user_list.rows)
     },
     methods:{
           ...mapActions(['fetch_user', 'fetch_Salary']),
+            async searchUser(){
+              if(this.salary_id){
+                await this.fetch_get_oylik_user(this.salary_id)
+              }
+              else{
+                await this.fetch_user();
+              }
+                if(this.search){
+                    this.get_user_list.rows = this.get_user_list.rows.filter((item)=>{
+                        return this.search.toLowerCase().split(' ').every(v => item.ism.toLowerCase().includes(v))
+                    })
+                }
+            },
+            async searchUserAccept(){
+                await this.fetch_get_oylik_userAccept(this.salary_id);
+                if(this.searchUserA){
+                    this.Connected_userList = this.Connected_userList.filter((item)=>{
+                        return this.searchUserA.toLowerCase().split(' ').every(v => item.ism.toLowerCase().includes(v))
+                    })
+                }
+            },
           async choose_salary(item, i){
             this.activ_smena = i;
+            this.activ_item = item;
             console.log(item);
             this.salary_name = item.name;
             this.salary_id = item.id;
             await this.fetch_get_oylik_user(item.id);
+
           },
           check_service: function(e, item){
             if (e.target.checked){
@@ -135,7 +197,6 @@ export default {
                 }
                 console.log('this.user_id_list')
                 console.log(this.user_id_list)
-
             }
           },
           check_all(e){
@@ -184,10 +245,39 @@ export default {
           },
           async fetch_get_oylik_user(id){
             try{
-                this.loading =true;
+                // this.loading =true;
                 const response = await fetch(this.$store.state.hostname + "/SkudOyliks/getPaginationUsersByOylikId?page=0&size=1000&oylik_id=" + id);
                 const data = await response.json();
-                this.loading =false;
+                // this.loading =false;
+                // console.log('data oylik user')
+                // console.log(data)
+                // console.log(response)
+                if(response.status == 200 || response.status == 201){
+                    console.log('success')
+                    this.Connected_userList = data.items_list;
+                    await this.fetch_user();
+                    for(let i=0; i<data.items_list.length; i++){
+                        for(let j=0; j<this.get_user_list.rows.length; j++){
+                            if(data.items_list[i].userid == this.get_user_list.rows[j].userid){
+                                this.get_user_list.rows.splice(j,1);
+                            }
+                        }
+                    }
+                    this.user_list_all = await this.get_salary_list.rows;
+                }
+            }
+            catch(error){
+                // this.loading =false;
+                console.log(error)
+            }
+          },
+
+          async fetch_get_oylik_userAccept(id){
+            try{
+                // this.loading =true;
+                const response = await fetch(this.$store.state.hostname + "/SkudOyliks/getPaginationUsersByOylikId?page=0&size=1000&oylik_id=" + id);
+                const data = await response.json();
+                // this.loading =false;
                 console.log('data oylik user')
                 console.log(data)
                 console.log(response)
@@ -197,7 +287,7 @@ export default {
                 }
             }
             catch(error){
-                this.loading =false;
+                // this.loading =false;
                 console.log(error)
             }
           },

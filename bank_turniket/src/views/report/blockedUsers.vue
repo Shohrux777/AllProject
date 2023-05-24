@@ -3,7 +3,7 @@
       <loader  v-if="loading"/>
         <div class="navbar_Nav_Edit d-flex justify-content-between"  container>
             <div class="d-flex align-items-center">
-                <span to="#"> <span class="text-white">Не пришел на работу</span> </span>
+                <span to="#"> <span class="text-white">Заблокиров. пользователь</span> </span>
             </div>
             <div >
                 <div  class="excel d-flex  align-items-center">
@@ -15,9 +15,9 @@
                       <download-excel
                         :data   = "filteredList"
                         :fields = "json_fields"
-                        name="Не пришел на работу.xls">
+                        name="Заблокиров. пользователь.xls">
                         <small class="text-white" style="font-size: 12px;">
-                            <MDBIcon  icon="file-excel" />
+                            <MDBIcon  icon="file-excel"/>
                             EXCEL
                         </small> 
                       </download-excel>
@@ -26,6 +26,12 @@
                         <small class="text-white" style="font-size: 12px;">
                             <MDBIcon  icon="file-pdf"  far/>
                             PDF
+                        </small>
+                    </div>
+                    <div class="px-2 btn_hover" @click="unblockAllUser">
+                        <small class="text-white" style="font-size: 12px;">
+                            <MDBIcon  icon="unlock"  fas/>
+                            {{ $t('unlock') }}
                         </small>
                     </div>
                 </div>
@@ -61,7 +67,7 @@
                   <thead class="bg-light">
                     <tr>
                         <th width="40">№</th>
-                        <th>{{$t('FIO')}}</th>
+                        <th>{{$t('FIO')}} </th>
                         <!-- <th width="100">User ID</th> -->
                         <!-- <th width="100">{{$t('vaqt')}}</th> -->
                         <th>{{$t('otdel')}}</th>
@@ -204,6 +210,14 @@ export default {
           this.loading = false;
           console.log(error)
         }
+      },
+      async unblockAllUser(){
+        this.loading = true;
+        for(let i=0; i<this.filteredList.length; i++){
+          await this.unblockUser(this.filteredList[i])
+        }
+        this.loading = false;
+
       },
       async unblockUser(item){
         console.log(item)
