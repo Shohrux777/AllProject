@@ -17,9 +17,9 @@
                         :fields = "json_fields"
                         name="Пришел на работу.xls">
                         <small class="text-white" style="font-size: 12px;">
-                            <MDBIcon  icon="file-excel" />
+                            <MDBIcon icon="file-excel"/>
                             EXCEL
-                        </small> 
+                        </small>
                       </download-excel>
                     </div>
                     <div class="px-2 btn_hover"> 
@@ -132,7 +132,7 @@ export default {
         json_fields: {
           'ФИО': 'fio',
           'User ID': 'userid',
-          'Статус': 'checktype',
+          'Статус': 'comeInOut',
           'Дверь': 'door_name',
           'Дата': 'sana',
           'Время': 'checktime'
@@ -145,9 +145,8 @@ export default {
         if(this.search)
         {
           return this.reportList.filter((item)=>{
-            return this.search.toLowerCase().split(' ').every(v => item.userinfo.ism.toLowerCase().includes(v))
+            return this.search.toLowerCase().split(' ').every(v => item.fio.toLowerCase().includes(v))
           })
-          
         }else
         {
           return this.reportList;
@@ -180,24 +179,60 @@ export default {
       },
       async submit(){
         let start = this.Start_time + 'T00:00:35.000Z' ;
-        let end = this.End_time + 'T23:59:59.000Z';
+        let end = this.End_time + 'T23:58:58.000Z';
         console.log(start)
         console.log(end)
         console.log('submit')
         try{
           this.loading = true;
-          const response = await fetch(this.$store.state.hostname + "/SkudMyCheckinouts/getPaginationGetByDateTime?page=0&size=3000&begin_date=" + start + '&end_date=' + end);
+          const response = await fetch(this.$store.state.hostname + "/SkudMyCheckinouts/getPaginationGetByDateTime?page=0&size=30000&begin_date=" + start + '&end_date=' + end);
           const data = await response.json();
           this.loading = false;
           console.log(data)
+          console.log('data')
           if(this.door_name == ''){
-            this.reportList = data.items_list;
+            this.reportList = []
+            for(let i=0; i<data.items_list.length; i++){
+              let JponItem = {
+                userid : data.items_list[i].userid,
+                userinfo: data.items_list[i].userinfo,
+                fio: data.items_list[i].fio,
+                checktime: data.items_list[i].checktime,
+                checktype: data.items_list[i].checktype,
+                door_name: data.items_list[i].door_name,
+                sana: data.items_list[i].sana.slice(0,10),
+                comeInOut: '',
+              }
+              if(data.items_list[i].checktype == 'O' || data.items_list[i].checktype == 'C'){
+                JponItem.comeInOut = 'Выход'
+              }
+              else{
+                JponItem.comeInOut = 'Входить'
+              }
+              this.reportList.push(JponItem)
+            }
           }
           else{
             this.reportList = []
             for(let i=0; i<data.items_list.length; i++){
               if(data.items_list[i].door_name == this.door_name){
-                this.reportList.push(data.items_list[i])
+                let JponItem = {
+                  userid : data.items_list[i].userid,
+                  userinfo: data.items_list[i].userinfo,
+                  fio: data.items_list[i].fio,
+                  checktime: data.items_list[i].checktime,
+                  checktype: data.items_list[i].checktype,
+                  door_name: data.items_list[i].door_name,
+                  sana: data.items_list[i].sana.slice(0,10),
+                  comeInOut: '',
+                }
+                if(data.items_list[i].checktype == 'O' || data.items_list[i].checktype == 'C'){
+                  JponItem.comeInOut = 'Выход'
+                }
+                else{
+                  JponItem.comeInOut = 'Входить'
+                }
+                this.reportList.push(JponItem)
               }
             }
           }
@@ -214,7 +249,6 @@ export default {
     
 }
 </script>
-
 <style>
 .navbar_Nav_Edit{
     background: #475a65;

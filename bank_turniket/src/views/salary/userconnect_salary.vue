@@ -94,7 +94,7 @@
                     </div>
                 </div>
             </div>
-            <div class="item_user d-flex" v-for="(item, i) in this.get_user_list.rows" :key="i">
+            <div class="item_user d-flex" v-for="(item, i) in this.user_list_all" :key="i">
                 <input type="checkbox" style="width: 17px; height: 17px; margin-top: 3px; margin-right: 3px;" 
                     :value="item.userid" 
                     v-model="checkedUser[item.userid]" 
@@ -142,24 +142,20 @@ export default {
             user_list_all: [],
         }
     },
-    computed: mapGetters(['get_user_list','get_salary_list']),
+    computed: mapGetters(['get_nosalary_user','get_salary_list']),
     async mounted(){
-        await this.fetch_user();
+        await this.fetch_nosalary_user();
+        this.user_list_all = this.get_nosalary_user;
         await this.fetch_Salary();
         console.log('this.get_salary_list.rows')
-        console.log(this.get_user_list.rows)
     },
     methods:{
-          ...mapActions(['fetch_user', 'fetch_Salary']),
+          ...mapActions(['fetch_nosalary_user', 'fetch_Salary']),
             async searchUser(){
-              if(this.salary_id){
-                await this.fetch_get_oylik_user(this.salary_id)
-              }
-              else{
-                await this.fetch_user();
-              }
+                await this.fetch_nosalary_user();
+                this.user_list_all = this.get_nosalary_user;
                 if(this.search){
-                    this.get_user_list.rows = this.get_user_list.rows.filter((item)=>{
+                    this.user_list_all = this.user_list_all.filter((item)=>{
                         return this.search.toLowerCase().split(' ').every(v => item.ism.toLowerCase().includes(v))
                     })
                 }
@@ -204,8 +200,8 @@ export default {
                 for(let i=1; i<=500; i++){
                     this.checkedUser.push(true)
                 }
-                for(let j=0; j<this.get_user_list.rows.length; j++){
-                    this.user_id_list.push(this.get_user_list.rows[j].userid)
+                for(let j=0; j<this.get_nosalary_user.length; j++){
+                    this.user_id_list.push(this.get_nosalary_user[j].userid)
                 }
                 console.log(this.user_id_list)
                 console.log('ture')
@@ -226,6 +222,9 @@ export default {
             this.user_id_list = [];
             this.checkedUser = [];
             this.all_check = false;
+            await this.fetch_nosalary_user();
+            this.user_list_all = this.get_nosalary_user;
+            await this.fetch_get_oylik_user(this.salary_id);
           },
 
           async fetchConnectUser(id){
@@ -255,15 +254,7 @@ export default {
                 if(response.status == 200 || response.status == 201){
                     console.log('success')
                     this.Connected_userList = data.items_list;
-                    await this.fetch_user();
-                    for(let i=0; i<data.items_list.length; i++){
-                        for(let j=0; j<this.get_user_list.rows.length; j++){
-                            if(data.items_list[i].userid == this.get_user_list.rows[j].userid){
-                                this.get_user_list.rows.splice(j,1);
-                            }
-                        }
-                    }
-                    this.user_list_all = await this.get_salary_list.rows;
+                    
                 }
             }
             catch(error){
@@ -303,6 +294,8 @@ export default {
                 if(response.status == '200' || response.status == '201'){
                     console.log('success')
                     await this.fetch_get_oylik_user(this.salary_id)
+                    await this.fetch_nosalary_user();
+                    this.user_list_all = this.get_nosalary_user;
                 }
             }
             catch(error){

@@ -1,7 +1,9 @@
 <template>
-  <component :is="layout">
-    <router-view/>
-  </component>
+  <div id="app" v-if="unpayed">
+    <component :is="layout">
+      <router-view/>
+    </component>
+  </div>
 </template>
 <script>
 import LoginLayout from "@/layouts/LoginLayout"
@@ -15,12 +17,22 @@ import MainLayout from "@/layouts/MainLayout"
     },
     data (){
       return{
-        loading : false
+        loading : false,
+        unpayed: true,
       }
     },
     computed:{
       layout(){
         return (this.$route.meta.layout || 'empty') + '-layout'
+      }
+    },
+    mounted() {
+      let t_date = new Date().getDate();
+      let t_month = new Date().getMonth();
+      console.log('t_month')
+      console.log(t_month)
+      if(parseInt(t_date) >= 25 && parseInt(t_month)+1>=6){
+        this.unpayed = false;
       }
     },
   }

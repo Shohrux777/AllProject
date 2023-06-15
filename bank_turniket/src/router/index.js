@@ -111,6 +111,12 @@ const routes = [
     component: () => import( '../views/report/bytimeInOut.vue')
   },
   {
+    path: '/LaterUser',
+    name: 'LaterUser',
+    meta: { layout: 'main' },
+    component: () => import( '../views/report/LaterUser.vue')
+  },
+  {
     path: '/salaryReportbytime',
     name: 'salaryReportbytime',
     meta: { layout: 'main' },

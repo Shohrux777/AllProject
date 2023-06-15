@@ -15,9 +15,7 @@ import MainLayout from "@/layouts/MainLayout"
 export default
 {
   computed:{
-
      layout(){
-
         return (this.$route.meta.layout || 'empty') + '-layout'
     }
   },
@@ -49,17 +47,16 @@ export default
 
   // },
   mounted() {
-    let t_date = new Date().getDate();
-    if(parseInt(t_date) >= 28){
-      this.unpayed = false;
-    }
+    // let t_date = new Date().getDate();
+    // if(parseInt(t_date) >= 28){
+    //   this.unpayed = false;
+    // }
   },
   async created()
   {
     // await this.fetchUsers();
      this.loading = true;
   }
-
 }
 </script>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
@@ -80,10 +77,7 @@ export default
   transition: padding-left 0.5s;
   padding-left: 270px;
 }
-
-
 @media (max-width: 1199.98px) {
-
   .flexible-navbar {
     padding-left: 10px;
   }
@@ -96,20 +90,16 @@ export default
     color: #2196f3 !important;
     font-weight: bolder;
 }
-
 .erp-select .md-form .form-control{
   cursor: pointer;
 }
-
 .line-select .form-control{
   cursor: pointer;
 }
-
 .erp-select .md-form .mr-5{
   cursor: pointer;
   position: absolute;
 }
-
 .invalid-text{
   color: red;
   font-size: 12px;
@@ -138,7 +128,6 @@ export default
 .multiselect__select{
   padding: 14px 8px !important;
 }
-
 .multiselect__option
 {
   padding:8px !important;
@@ -146,17 +135,14 @@ export default
   line-height:12px !important;
   font-size: 12px !important;
 }
-
 .multiselect__placeholder
 {
   margin-bottom:0 !important;
-  padding-top:0 !important
+  padding-top:0 !important;
 }
-
 .form-control-sm
 {
   font-size: 12px !important;
   padding-bottom: 4px !important;
 }
-
 </style>

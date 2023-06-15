@@ -101,16 +101,15 @@
                     return this.search.toLowerCase().split(' ').every(v => item.ism.toLowerCase().includes(v))
                 })
             }
-            
           },
           addDept(){
-              console.log('dept')
+              console.log('department')
               this.select_data = {};
               this.show_dept = true;
               this.exampleModal = true;
           },
           selectData(data){
-            console.log('select_date')
+            console.log('select_department')
             console.log(data.userid)
             this.select_data = data
           },
