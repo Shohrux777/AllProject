@@ -643,7 +643,7 @@
     </div>
     <div class="dynamic_update" v-if="labUpdate_show">
         <div class="close_lab_update shadow " @click="labUpdate_show = false;">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon_scale icon-tabler-x" width="25" height="25" viewBox="0 0 24 24" stroke-width="2.5" stroke="#fff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler  icon-tabler-x" width="15" height="15" viewBox="0 0 24 24" stroke-width="2.5" stroke="#fff" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
@@ -732,9 +732,8 @@ export default {
     if(this.main_name_title.norma_status == true){
         await this.fetch_lab_norma_list(this.main_id);
     }
-    if(this.main_name_title.extra_status == true){
-        await this.fetch_lab_center_list(this.main_id);
-    }
+    await this.fetch_lab_center_list(this.main_id);
+    await this.fetch_lab_firs_name_list(this.main_id);
     
     // console.log('this.get_lab_name_list')
     // console.log(this.main_name_title)
@@ -1018,17 +1017,18 @@ export default {
     height: 100vh;
     width:100%;
     background: #fff;
-    padding: 50px 30px 30px 30px; 
+    padding: 50px 0px 0px 0px; 
 }
 .close_lab_update{
     position: fixed;
     top: 50px; 
     right: 10px;
-    padding:6px;
+    padding:2px 7px 3px 7px;
     cursor:pointer;
     background: rgb(255, 20, 110);
     border-radius: 50%;
     cursor:pointer;
+    z-index: 1;
 }
 .v-transition-animate-enter {
   opacity: 0;
