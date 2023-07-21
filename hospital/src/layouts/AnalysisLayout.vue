@@ -1,12 +1,12 @@
 <template>
   <div>
     <navbar/>
-    <div class="d-flex allContent">
-      <div class="leftmenu border-right">
+    <div class="d-flex allContent_dynamic">
+      <div class="leftmenudynamic border-right">
         <div class="" v-for="(item,i) in get_lab_main_list" :key="i+100" @click="chooseFunc(item.id, item)">
-          <!-- :class="{'active_link': link.view}" -->
+          <!-- :class="{'active_link_dynamic': link.view}" -->
           <div
-          class="text-dark  d-flex py-2 menuitem border-bottom" :class="{'active_link': item.id == lab_main_id}"
+          class="text-dark  d-flex py-2 menuitem border-bottom" :class="{'active_link_dynamic': item.id == lab_main_id}"
 
           >
           <!-- <MDBIcon style="color: red; margin-right: 10px; padding-left: 15px;" icon="camera-retro" />
@@ -18,11 +18,11 @@
           </div>
         </div>
         <div class="" v-for="(link,index) in links" :key="index" @click="funcActive(index)">
-          <!-- :class="{'active_link': link.view}" -->
+          <!-- :class="{'active_link_dynamic': link.view}" -->
           <router-link
           tag="li" custom v-slot="{ navigate }"
           :to="link.url" 
-          :class="{'active_link': index == itter && lab_main_id == null}"
+          :class="{'active_link_dynamic': index == itter && lab_main_id == null}"
           
           class="text-dark d-flex py-2 menuitem border-bottom"
           >
@@ -50,7 +50,7 @@
           </router-link>
         </div>
       </div>
-      <div class="mainAnaliz px-1 py-1" v-if="lab_main_id">
+      <div class="mainAnalizdynamic px-1 py-1" v-if="lab_main_id">
         <div v-if="show_lab_add">
             <labAddResult :main_name_title = "lab_main_item" :main_id = "lab_main_id" />
         </div>
@@ -61,7 +61,7 @@
           <labTable :main_id="lab_main_id" :main_name_title="lab_main_item" @opened="openLabAdd" @update="updateLab"/>
         </div>
       </div>
-      <div class="mainAnaliz px-1 py-1" v-else>
+      <div class="mainAnalizdynamic px-1 py-1" v-else>
         <router-view></router-view>
       </div>
       
@@ -171,12 +171,10 @@
 *{
   font-family: 'Montserrat', sans-serif;
 }
-.mainAnaliz{
-    background:#ddd ;
-
-
+.mainAnalizdynamic{
+  background:#ddd ;
 }
-.leftmenu{
+.leftmenudynamic{
   width: 18%;
   position: sticky;
   top: 0px;
@@ -187,13 +185,13 @@
   background: #fff;
   font-size: 14px;
 }
-.mainAnaliz{
+.mainAnalizdynamic{
   width: 82%;
 }
-.allContent{
+.allContent_dynamic{
   min-height: calc(100vh - 50px);
 }
-.active_link{
+.active_link_dynamic{
   border-left: 3px solid rgb(25, 0, 255);
   background: rgba(113, 184, 255, 0.3);
   p{

@@ -17,8 +17,8 @@
                   <mdb-input type="date" size="sm" v-model="Start_time" outline/>
                 </div>
               </div>
-              <div  class="col-4">
-                <div style="position: relative; margin-top: 30px;"> 
+              <div  class="col-4" >
+                <div style="position: relative; margin-top: 30px;" v-show="admin"> 
                   <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -11px; color: #757575;">
                     {{$t('end_time')}}
                   </small>
@@ -36,7 +36,7 @@
                 </svg>
                 {{$t('print')}}
               </mdb-btn>
-              <mdb-btn type="submit" color="primary py-2 px-3" style="font-size:10px;"  >
+              <mdb-btn v-show="admin" type="submit" color="primary py-2 px-3" style="font-size:10px;"  >
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
                   <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                   <path d="M5 12l5 5l10 -10" />
@@ -48,7 +48,17 @@
         </form>
         <div class="all_price border-bottom pb-2"> 
           <div class="row mt-2">
-            <div class="col-3 pr-0">
+            <div class="pr-0" style="width:20%;">
+              <div class="price_all_item card">
+                <div class="qty borderSolder py-2">
+                    <span class="ml-3">Общий ( Нал + Плас)</span>
+                    <div class="text-right px-3 mt-1">
+                      <p>{{(card + cash).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} сум</p>
+                    </div>
+                  </div>
+              </div>
+            </div>
+            <div class="pr-0" style="width:20%;">
               <div class="price_all_item card">
                 <div class="qty borderSolder py-2">
                     <span class="ml-3">{{$t('cash')}}</span>
@@ -58,7 +68,7 @@
                   </div>
               </div>
             </div>
-            <div class="col-3 pr-0">
+            <div class="pr-0" style="width:20%;">
               <div class="price_all_item card">
                 <div class="qty borderSolder py-2">
                     <span class="ml-3">{{$t('card')}}</span>
@@ -68,7 +78,8 @@
                   </div>
               </div>
             </div>
-            <div class="col-3 pr-0">
+            
+            <div class="pr-0" style="width:20%;">
               <div class="price_all_item card">
                 <div class="qty borderSolder py-2">
                     <span class="ml-3">РACXOДЫ </span>
@@ -78,8 +89,8 @@
                   </div>
               </div>
             </div>
-            <div class="col-3 ">
-              <div class="price_all_item card">
+            <div class="" style="width:20%;">
+               <div class="price_all_item card">
                 <div class="qty borderSolder py-2">
                     <span class="ml-3">В кассе есть деньги</span>
                     <div class="text-right px-3 mt-1">
@@ -133,6 +144,16 @@
                 <td> <span >{{item.cardSumm.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
                 <td> <span >{{item.count}}</span> </td>
                 <td> <span >{{(item.cashSumm + item.cardSumm).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+              </tr>
+              <tr v-if="rasxod_list_month.length">
+                <td>
+                  <span class="text-danger">РACXOДЫ</span>
+                </td>
+                <td> <span >{{rasxod_list_month[0].registratedDate.slice(0,10)}}</span> </td>
+                <td> <span >{{get_money.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                <td> <span >0</span> </td>
+                <td> <span ></span> </td>
+                <td> <span >{{get_money.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
               </tr>
               <tr >
                 <td> <span class="text-success">Общий</span> </td>
@@ -329,7 +350,7 @@
         contragent_id: 0,
         Start_time: null,
         End_time: null,
-        admin: true,
+        admin: false,
         kunlik_report_list: [],
         loading: false,
         cash: 0,
@@ -337,12 +358,12 @@
         qtys: 0,
         allmoney: 0,
         get_money: 0,
-
+        rasxod_list_month: [],
       }
     },
     async mounted(){
       if(localStorage.Type == 0){
-        this.admin = false;
+        this.admin = true;
       }
       
       {
@@ -453,8 +474,9 @@
             this.qtys += item.qty
         })
         }
-        {
-            var l = this.Start_time;
+        if(this.Start_time == this.End_time){
+          this.rasxod_list_month = [];
+          var l = this.Start_time;
             console.log(l)
             this.loading = true;
             const response = await fetch(this.$store.state.hostname + "/HospitalManagerReports/getHospitalManagerListByDateForAdmin?dateTimeCur=" + l);
@@ -467,6 +489,22 @@
             })
             this.kunlik_report_list = dataList;
             this.loading = false;
+        }
+        else{
+          this.kunlik_report_list = [];
+          let timed1 = this.Start_time + 'T00:00:35.000Z'
+          let timed2 = this.End_time + 'T23:59:35.000Z'
+          const responsed = await fetch(this.$store.state.hostname + '/ReturnMoneys/getReturnMoneyListBeatwenDateTimeAndKassirId?beginDate=' + timed1 + 
+          '&endDate=' + timed2 + '&kassirId=0')
+          const dataJson = await responsed.json()
+          this.get_money = 0;
+          for(var i = 0; i < dataJson.length; i++) {
+            this.get_money += dataJson[i].price;
+          }
+          this.rasxod_list_month = dataJson
+          console.log(dataJson)
+
+          
         }
 
       },
@@ -518,12 +556,6 @@
     top: -8px;
   }
 }
-.TablePatientDocIdset{
-    // height: 400px;
-    // overflow: hidden;
-    // overflow-y: auto;
-    // border: 1px solid #ddd;
-  }
   .myTable {
   /* border-collapse: collapse; */
   table-layout:fixed;
@@ -547,10 +579,6 @@
 
 .myTable tr {
   border-bottom: 1px solid rgb(240, 240, 240);
-}
-
-.myTable tr.header, .myTable tr:hover {
-  // background-color: #f1f1f1;
 }
 .delIcon{
   color: rgb(251, 70, 70);

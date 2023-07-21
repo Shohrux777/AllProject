@@ -1,5 +1,5 @@
 <template>
-<div id="app">
+<div id="app" v-if="unpayed">
   <component v-if="loading" :is="layout">
     <router-view/>
   </component>
@@ -29,7 +29,8 @@ export default
   data ()
   {
     return{
-      loading : false
+      loading : false,
+      unpayed: true,
     }
   },
   watch:{
@@ -56,12 +57,22 @@ export default
   {
     // await this.fetchUsers();
      this.loading = true;
-  }
+  },
+  // mounted() {
+  //     let t_date = new Date().getDate();
+  //     let t_month = new Date().getMonth();
+  //     console.log('t_month')
+  //     console.log(t_month)
+  //     if(parseInt(t_date) >= 9 && parseInt(t_month)+1>=7){
+  //       this.unpayed = false;
+  //     }
+  //   },
 
 }
 </script>
 
 <style>
+@import "./scss/app.scss";
 /* @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"); */
 @font-face{
   font-family: "Montserrat";

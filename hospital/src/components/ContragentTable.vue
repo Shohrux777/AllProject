@@ -73,6 +73,9 @@
                       <mdb-btn @click="paydebit(row)"  color="primary" class="m-0 p-0" style="font-size: 8px;"  p="r3 l3 t1 b1">{{$t('pay')}}</mdb-btn>  
                     </td>
                     <td class="text-center" v-if="debit == false">
+                      <i class="fab fa-telegram-plane text-primary mask waves-effect  m-0 pr-3" :class="{'applied': disable}" 
+                        style="font-size: 14px;" v-on:click="telegramRow" :data-row="rowIndex">
+                      </i>
                       <i class="fas fa-pen editIcon mask waves-effect t m-0 pr-2" :class="{'applied': disable}" v-on:click="editRow" :data-row="rowIndex"></i>
                       <i class="fas fa-trash delIcon mask waves-effect m-0 pl-2" :class="{'applied': disable}" v-on:click="deleteRow" :data-row="rowIndex"></i>
                     </td>
@@ -117,6 +120,16 @@
           <mdb-btn outline="danger" @click="promise">{{$t('Yes')}}</mdb-btn>
           <mdb-btn color="danger" @click="confirm = false">{{$t('No')}}</mdb-btn>
         </mdb-modal-footer>
+      </mdb-modal>
+
+      <mdb-modal :show="tg_show" @close="tg_show = false" size="sm" class="text-center" info>
+        <mdb-modal-header center :close="false">
+          <p class="heading p-0 m-0">{{ select_item.Name }}</p>
+        </mdb-modal-header>
+        <mdb-modal-body>
+          <p class="text-center" style="font-size: 17px;">ID: <span class="font-weight-bold">{{ select_item.Id }}</span></p>
+          <p class="text-center" style="font-size: 18px;">Парол: <span class="font-weight-bold">{{ select_item.Note }}</span></p>
+        </mdb-modal-body>
       </mdb-modal>
 
       
@@ -193,6 +206,8 @@ export default {
       showcheck_form: false,
       show: false,
       disable: true,
+      tg_show: false,
+      select_item: {}
     }
   },
   watch:{
@@ -316,6 +331,13 @@ export default {
           this.num_target = ev.target.dataset.row;
           this.$emit('for_edit',this.datasource.rows[this.num_target]);
         },
+        telegramRow(ev)
+        {
+          this.num_target = ev.target.dataset.row;
+          this.tg_show = true;
+          this.select_item = this.datasource.rows[this.num_target];
+          console.log(this.datasource.rows[this.num_target])
+        },
         deleteRow(ev) {
             this.confirm = true
 
@@ -388,7 +410,6 @@ export default {
 }
 
 </script>
-
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style scoped lang="scss">
 .applied{
@@ -409,13 +430,13 @@ export default {
 }
 .myTable th{
   font-weight: 600;
-  font-size:12.5px;
+  font-size:12px;
 }
 .myTable td{
   text-overflow: ellipsis; 
   overflow: hidden; 
   white-space: nowrap;
-  font-size:13.4px;
+  font-size:12.5px;
 }
 .myTable th, .myTable td {
   text-align: left;

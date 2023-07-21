@@ -13,7 +13,7 @@ export default {
     },
     mutations: {
         UpdateAuthUser(state, data) {
-            console.log(data)
+            // console.log(data)
             state.auth_user_list = data;
             state.auth_user_limit = data.map(item => {
                 return {

@@ -5,30 +5,37 @@
         <div class="img " style="text-align:center;" v-show="false">
           <img id="image" width="100%" height="25%" alt="">
         </div>
-        <div class="img " style="text-align:center;" >
+        <div class="qr-code_absolute" v-show="false">
+          <qr-code :text="lab_url" :size="size" error-level="L"></qr-code>
+        </div>
+        <div class="img " style="text-align:center;">
           <img src="../../../assets/lab1.png" width="100%" alt="">
         </div>
         <loader v-if="loading"/>
         <div class="lab_answer upHeightAllspirma320">
           <div class=" " style="display:flex; justify-content:center; flex-direction:column;">
-            <h3 style="width:100%; text-align:center; font-weight:bold; " class="mb-5 headerTitle">{{ option.name_title }}</h3>
-            <table border class="allWidthLabTable">
+            <table border class="allWidthLabTable" >
               <thead>
                 <tr>
-                  <th class="fs" style="width:45%;" ><span class="font-weight-bold">ПАЦИЕНТ:</span>  {{patient_name}}</th>
-                  <th class="fs"><span class="font-weight-bold">ВРАЧ:</span>  {{option.extra1}}</th>
+                  <th class="fs bg_headertable text-center" style="width:350px;" ><span class="font-weight-bold">ПАЦИЕНТ</span></th>
+                  <th class="fs text-center">{{patient_name}}</th>
+                  <th class="fs text-center bg_headertable" style="width:200px;" rowspan="3"> Результаты анализов <p>ID: {{patient_id}}</p> </th>
                 </tr>
                 <tr>
-                  <th class="fs" style="width:45%;"><span class="font-weight-bold">ВОЗРАСТ:</span> {{borndate}} </th>
-                  <th class="fs"><span class="font-weight-bold">ДАТА:</span> {{date}}</th>
+                  <th class="fs bg_headertable text-center" style="width:350px;"><span class="font-weight-bold">ВОЗРАСТ</span>  </th>
+                  <th class="fs text-center">{{borndate}}</th>
                 </tr>
                 <tr>
+                  <th class="fs bg_headertable text-center" style="width:350px;"><span class="font-weight-bold">ДАТА</span> </th>
+                  <th class="fs text-center"> {{date}}</th>
+                </tr>
+                <!-- <tr>
                   <th v-if="option.hospitalAnalizDynamicmain.name_1" class="fs" style="width:45%;"><span class="font-weight-bold">ПРИБОР:</span> {{option.hospitalAnalizDynamicmain.name_1}} </th>
                   <th v-if="option.hospitalAnalizDynamicmain.name_3" class="fs" style="width:45%;"><span class="font-weight-bold">Паспорт</span> {{option.hospitalAnalizDynamicmain.name_3}} </th>
-                </tr>
+                </tr> -->
               </thead>
             </table>
-            <table v-if="option.hospitalAnalizDynamicmain.name_25" border class="allWidthLabTable" style="margin-top:40px;">
+            <!-- <table v-if="option.hospitalAnalizDynamicmain.name_25" border class="allWidthLabTable" style="margin-top:40px;">
               <thead>
                 <tr>
                   <th v-if="option.hospitalAnalizDynamicmain.name_5" class="fs" style="width:45%;"> {{option.hospitalAnalizDynamicmain.name_5}} </th>
@@ -47,8 +54,10 @@
                   <th v-if="option.hospitalAnalizDynamicmain.name_12" class="fs" > {{option.hospitalAnalizDynamicmain.name_12}} </th>
                 </tr>
               </thead>
-            </table>
-            <table border class="allWidthLabTable" style="margin-top:35px;">
+            </table> -->
+            <h6 style="width:100%; text-align:center; font-weight:bold; " class="mb-2 mt-4 headerTitleTest">{{ option.name_title }}</h6>
+            <p v-if="option.hospitalAnalizDynamicmain.name_1" style="margin-top:15px;" class="m-0 p-0 text-right"><span ></span> {{option.hospitalAnalizDynamicmain.name_1}} </p>
+            <table border class="allWidthLabTable" style="margin-top:0px;">
               <thead>
                 <tr>
                   <!-- <th class="fs font-weight-bold py-2" style="width:40px;">№</th> -->
@@ -615,8 +624,9 @@
             </table>
 
           </div>
-          <p v-if="option.hospitalAnalizDynamicmain.name_4" class="font-weight-bold mt-3" style="font-size:20px;"> {{option.hospitalAnalizDynamicmain.name_4}} </p>
-
+          <p v-if="option.hospitalAnalizDynamicmain.name_4" class="font-weight-bold mt-3 " style="font-size:24px;"> {{option.hospitalAnalizDynamicmain.name_4}} </p>
+          <p v-if="option.hospitalAnalizDynamicmain.name_13" class="font-weight-bold mt-3" style="font-size:24px;"> {{option.hospitalAnalizDynamicmain.name_13}} </p>
+          <p v-if="option.hospitalAnalizDynamicmain.name_14" class="font-weight-bold mt-3 " style="font-size:24px;"> {{option.hospitalAnalizDynamicmain.name_14}}: <span class="ml-4">{{option.extra1}}</span> </p>
           
         </div>
       </div>
@@ -716,6 +726,10 @@
         simbol: '<',
         patient_name: '',
         show_page: false,
+        lab_url: this.$store.state.hostname2 + 'hospital_lab_result/'+ this.$route.params.id,
+        size: 170,
+        patient_id: null,
+
       }
     },
     computed:{
@@ -734,6 +748,7 @@
         this.borndate = data.patients.bornDate.slice(0,4);
         this.date = this.option.create_date.slice(0,10);
         this.patient_name = this.option.patients.fio;
+        this.patient_id = this.option.patients.id;
         if(data.firs_name_status){
           await this.fetch_lab_firs_name_list(this.option.hospitalAnalizDynamicmainId);
         }
@@ -838,11 +853,11 @@
   }
   
   
-  .headerTitle{
-    font-size:50px;
+  .headerTitleTest{
+    font-size:35px;
   }
-  .headerTitle1{
-    font-size:45px;
+  .headerTitleTest1{
+    font-size:35px;
   }
   p{
     margin:0;
@@ -850,7 +865,12 @@
     font-size: 22.5px;
   }
   
-  
-  
-  
+  @media print {
+    body {-webkit-print-color-adjust: exact;}
+  }
+  .qr-code_absolute{
+    position: absolute;
+    top: 104px;
+    left: 790px;
+  }
   </style>

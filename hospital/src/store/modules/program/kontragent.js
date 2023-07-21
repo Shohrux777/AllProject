@@ -2,7 +2,7 @@ export default {
     state: {
         contragent_list: {
             rows: [],
-            columns: ['name', 'phoneNumber', 'address', 'district', 'activeStatus'],
+            columns: ['name', 'phoneNumber', 'address', 'district','Note', 'activeStatus'],
             col: []
         },
     },

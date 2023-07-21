@@ -8,39 +8,42 @@
         <div class="userEnter px-3 pb-2">
           <div class="row">
             <div class="col-12">
-              <mdb-input label="Имя"  v-model="name"  @input="search_func" outline/>
+              <mdb-input label="Имя" size="sm" v-model="name"  @input="search_func" outline/>
               <small class="invalid-text"  v-if="$v.name.$dirty && !$v.name.required" >
                 {{$t('name_invalid_text')}}
               </small>
               <div style="position: relative;">
-                <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -9px; color: #757575;">
+                <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -14px; color: #757575;">
                   Дата рождения
                 </small>
-                  <mdb-input type="date"  v-model="time1" outline/>
+                  <mdb-input type="date" style="font-size: 13px !important;" size="sm" v-model="time1" outline/>
                   <small class="invalid-text"  v-if="$v.time1.$dirty && !$v.time1.required" >
                     {{$t('name_invalid_text')}}
                   </small>
               </div>
               <div style="position:relative;">
-                <input style="width:100%;  height:38px; border:none; outline:none; padding: 0 12px;" class="mt-0 mb-4 border rounded " @input="changeInput" v-model="tel" placeholder="(--) --- ----" outline/>
-                <small style="position: absolute; top:-10px; left:8px; color:#5B5B5B;" class="bg-white px-1">{{$t('phoneNumber')}}</small>
+                <input style="width:100%; font-size: 13.5px !important;  height:33px; border:none; outline:none; padding: 0 12px;" class="mt-0 mb-4 border rounded " @input="changeInput" v-model="tel" placeholder="(--) --- ----" outline/>
+                <small style="position: absolute; top:-14px; left:8px; color:#5B5B5B;" class="bg-white px-1">{{$t('phoneNumber')}}</small>
+              </div>
+
+              <div class="d-flex m-0 mb-1" style="position:absolute; bottom: -12px;">
+                <div class="custom-control custom-checkbox ml-2 pr-5 ">
+                    <input type="checkbox" v-model="men" @click="menFunc" class="custom-control-input" id="defaultUnchecked">
+                    <label class="custom-control-label" style="font-size: 13px;" for="defaultUnchecked">Мужской</label>
+                </div>
+                <div class="custom-control custom-checkbox px-5 ">
+                    <input type="checkbox" v-model="girl" @click="girlFunc"  class="custom-control-input" id="defaultUnchecked2">
+                    <label class="custom-control-label" style="font-size: 13px;" for="defaultUnchecked2">Женский</label>
+                </div>
               </div>
               
             </div>
-            <div class="d-flex mb-1">
-              <div class="custom-control custom-checkbox ml-2 pr-5 ">
-                  <input type="checkbox" v-model="men" @click="menFunc" class="custom-control-input" id="defaultUnchecked">
-                  <label class="custom-control-label" for="defaultUnchecked">Мужской</label>
-              </div>
-              <div class="custom-control custom-checkbox px-5 ">
-                  <input type="checkbox" v-model="girl" @click="girlFunc"  class="custom-control-input" id="defaultUnchecked2">
-                  <label class="custom-control-label" for="defaultUnchecked2">Женский</label>
-              </div>
-            </div>
+            
 
             <div class="col-12">
               <RegSelect
                 label="Район"
+                size="sm"
                 @select="district_func"
                 :options="get_district_list.rows"
                 :selected="district_name"
@@ -56,6 +59,7 @@
               <lineSelect
                     :options="get_contragent_list.rows" 
                     :searchshow="true"
+                    size="sm"
                     @select="contragent_func"
                     :selected="contragent_name"
                     :label="$t('contragent')"
@@ -68,9 +72,9 @@
             </div>
             
             <div class="col-12 pt-0 m-0">
-              <mdb-input label="Паспорт"  v-model="passport" outline/>
-              <mdb-input :label="$t('reason_patient')" style="margin-top: 15px;" v-model="reason"    outline/>
-              <mdb-input label="Адрес" style="margin-top: -7px;"  v-model="adress" outline/>
+              <mdb-input size="sm" label="Паспорт"  v-model="passport" outline/>
+              <mdb-input size="sm" :label="$t('reason_patient')" style="margin-top: 15px;" v-model="reason"    outline/>
+              <mdb-input size="sm" label="Адрес" style="margin-top: -7px;"  v-model="adress" outline/>
               <!--<mdb-input label="Место (учебы) работы" style="margin-top: -5px;" v-model="workAdress" outline/> -->
             </div>
               
@@ -101,7 +105,7 @@
                     <img src="../../assets/patientAvatar.png" style="height: 45px; overflow: none; " class="img-fluid" alt="">
                   </div>
                   <div class="px-3">
-                    <p class="m-0 p-0" >{{item.fio}}</p>
+                    <p class="m-0 p-0" style="font-size: 13px;">{{item.fio}}</p>
                     <p class="m-0 rang" style="font-size:10px;">Год: <span class="px-2">{{item.bornDate.slice(0,4)}}</span> 
                      Тел: <span class="px-2">{{item.phoneNumber}}</span></p>
                   </div>
@@ -159,7 +163,7 @@
   import { mdbBtn, mdbInput   } from 'mdbvue';
 import { required } from 'vuelidate/lib/validators'
 import lineSelect from "../lineSelect.vue";
-import RegSelect from '../../components/RegSelect.vue'
+import RegSelect from '../RegSelect.vue'
   import {mapActions, mapGetters, mapMutations} from 'vuex'
 export default {
   components: {
@@ -498,7 +502,7 @@ export default {
           this.patient_info.patient_id = data.id
           this.patient_info.patient_name = data.fio
           this.cls_wnd()
-          await this.fetch_client()
+          // this.fetch_client()
           this.choose_patient_client(this.patient_info)
           this.fetch_patient_list_last()
           this.$emit('close')

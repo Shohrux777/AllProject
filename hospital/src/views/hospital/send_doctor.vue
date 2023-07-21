@@ -11,15 +11,15 @@
               </small>
               <div  v-for="(doc,i) in get_doctor_list_by_casher.rows" :key="i"
                 @click="show_serv(i,doc.DocAuthId,doc.doctorAuth.users.id, doc.fio, doc.doctorAuth.users.phoneNumber, doc.doctorAuth.users.image )"  
-                class="item px-3" :class="{ 'activeUser' : active_el == i }"
+                class="item px-2" :class="{ 'activeUser' : active_el == i }"
               >
               <!-- @dblclick="show_service(doc.doctorAuth.users.id)" -->
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center user_text_boxs">
                   <div class="user_photo user_photo_back">
                     <img :src="doc.doctorAuth.users.image" style="overflow: none;" class="img-fluid" alt="">
                   </div>
                   <div class="px-3 doctor_fullname">
-                    <p class="m-0 p-0" style="font-size:15px;">{{doc.fio}}</p>
+                    <p class="m-0 p-0" style="font-size:14px;">{{doc.fio}}</p>
                     <p class="m-0 rang" style="font-size:11.5px;">{{doc.doctorAuth.users.position.name}}</p>
                   </div>
                 </div>
@@ -39,7 +39,7 @@
                 <div>
                   <div class="d-flex">
                     <div class="text-center">
-                      <h4 class="m-0 pt-3 mr-3" style="font-weight: 550; ">{{get_patient_info.patient_name}}</h4>
+                      <h4 class="m-0 pt-3 mr-3" style="font-weight: 550; ">{{get_patient_info.patient_name}} (ID:  {{ get_patient_info.patient_id }})</h4>
                       <h5 class="m-0 pt-1 mr-3 text-danger" style="font-weight: 100 !important; font-size: 16px;" v-if="get_patient_info.patient_born">
                         <small class="pb-1" style="border-bottom: 1px dashed black; font-weight: 100 !important;">Тел: {{get_patient_info.patient_tel}}</small>
                         <small class="pb-1 ml-2" style="border-bottom: 1px dashed black;" >Дата рож: {{get_patient_info.patient_born}}</small></h5>
@@ -86,7 +86,7 @@
                         </div>
                       </div>
                       <div class="w-50 d-flex align-items-end">
-                        <mdb-input label="Скидка %" v-model="discount" type="number" class="m-0 p-0 w-100" size="sm"  @input="discount_func"/>
+                        <mdb-input label="Скидка $" v-model="discount" type="number" class="m-0 p-0 w-100" size="sm"  @input="discount_func"/>
                         <mdb-input label="Поиск услуга" v-model="search" ref="refSearchService" class="m-0 ml-5 p-0 w-100" size="sm"  @input="search_func"/>
                       </div>
                     </div>
@@ -221,7 +221,7 @@
             </div>
           </div>
           <div style="position: absolute; bottom: 7px; right: 15px;">
-            <mdb-btn color="warning" @click="blankaShow" style=" font-size:10px;" hidden  p="r5 l5 t2 b2">{{$t('blanka')}}</mdb-btn>  
+            <mdb-btn color="secondary" @click="blankaShow" style=" font-size:10px;"   p="r5 l5 t2 b2">{{$t('blanka')}}</mdb-btn>  
             <mdb-btn color="warning" :disabled="user_id == null" @click="$router.push('/otcheritList/' + user_id)" style=" font-size:10px;" p="r4 l4 t2 b2">{{$t('otchrit')}}</mdb-btn>  
             <mdb-btn  color="primary" type="submit" style=" font-size:10px;"  p="r4 l4 t2 b2">{{$t('Send')}}</mdb-btn>
           </div>
@@ -293,7 +293,16 @@
               <mdb-btn color="danger" @click="service_unpayed_show = false">{{$t('No')}}</mdb-btn>
             </mdb-modal-footer>
           </mdb-modal>
-          
+
+          <div v-if="get_patient_info.patient_id" class="d-flex justify-content-center align-items-center  shadow" 
+          :class="{'InfoIcoFixedOpenInfo': showInfoPatientID, 'InfoIcoFixedInfo': !showInfoPatientID}"  @click="show_patient_info">
+            <mdb-icon icon="info" class="text-white ml-1" style="font-size: 22px;" />
+          </div>
+          <div :class="{'InfoIcoFixedOpenInfoPatient': showInfoPatientID, 'infoPatientIdNo': !showInfoPatientID}">
+            <!-- <p>dasdasdas</p> -->
+            <patient_info_id :status_info="showInfoPatientID_status" ref="patient_info_id" :patientId="get_patient_info.patient_id" @closed="showSending=false"/>
+            <!--  @closed="showSending=false" -->
+          </div>
     </div>
     <Toast ref="message"></Toast>
     <AlertError ref="msg"></AlertError>
@@ -313,11 +322,12 @@ import clientAdd from "../../components/new_prog_add/client_add"
 import surovnomaPatient from "../../components/hospital/surovnomaPatient"
 import Accordion from "../../components/accordion/accordion.vue";
 import AccordionItem from "../../components/accordion/accordion_item.vue";
+import patient_info_id from './doc_func/patient_info_id.vue'
 
 export default {
   components: {
     mdbBtn, ModalUser, clientAdd, mdbModal, surovnomaPatient, mdbModalBody, checkOtchert, mdbInput,
-    mdbModalHeader, mdbModalFooter, mdbIcon, Accordion, AccordionItem
+    mdbModalHeader, mdbModalFooter, mdbIcon, Accordion, AccordionItem, patient_info_id
   },
   validations: {
       doc_name: {required},
@@ -375,6 +385,11 @@ export default {
       discount: 0,
 
       ocherd_list: [],
+
+      showInfoPatientID: false,
+      showInfoPatientID_status: true,
+      showSending: false,
+      
     }
   },
    async mounted(){
@@ -422,15 +437,21 @@ export default {
           this.renderFunc(this.get_user_service_list)
         }
     },
+    show_patient_info(){
+      this.showInfoPatientID = !this.showInfoPatientID;
+      // this.$refs.patient_info_id.fetch_patient_drugs();
+    },
     discount_func(){
       console.log(this.discount);
       if(this.discount != null && this.discount != ''){
-        this.discount_summa = parseInt((this.summa * this.discount)/100);
-        this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+        this.discount_summa = parseFloat((100 * this.discount)/this.summa);
+        this.discount_summaString = this.discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+        // this.discount_summa = parseInt((this.summa * this.discount)/100);
+        // this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
       }
       else{
         this.discount_summa = 0;
-        this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+        this.discount_summaString = this.discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
       }
     },
     
@@ -644,8 +665,10 @@ export default {
               this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
             }
             if(this.discount != null && this.discount != ''){
-              this.discount_summa = parseInt((this.summa * this.discount)/100);
-              this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+              this.discount_summa = parseFloat((100 * this.discount)/this.summa);
+              this.discount_summaString = this.discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+              // this.discount_summa = parseInt((this.summa * this.discount)/100);
+              // this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
             }
           return
         }
@@ -679,8 +702,10 @@ export default {
               this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
             }
             if(this.discount != null && this.discount != ''){
-              this.discount_summa = parseInt((this.summa * this.discount)/100);
-              this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+              this.discount_summa = parseFloat((100 * this.discount)/this.summa);
+              this.discount_summaString = this.discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+              // this.discount_summa = parseInt((this.summa * this.discount)/100);
+              // this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
             }
           return
         }
@@ -703,8 +728,10 @@ export default {
                   this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
                 }
                 if(this.discount != null && this.discount != ''){
-                  this.discount_summa = parseInt((this.summa * this.discount)/100);
-                  this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+                  this.discount_summa = parseFloat((100 * this.discount)/this.summa);
+                  this.discount_summaString = this.discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+                  // this.discount_summa = parseInt((this.summa * this.discount)/100);
+                  // this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
                 }
                 return;
               }
@@ -736,8 +763,10 @@ export default {
                   this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
                 }
                 if(this.discount != null && this.discount != ''){
-                  this.discount_summa = parseInt((this.summa * this.discount)/100);
-                  this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+                  this.discount_summa = parseFloat((100 * this.discount)/this.summa);
+                  this.discount_summaString = this.discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+                  // this.discount_summa = parseInt((this.summa * this.discount)/100);
+                  // this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
                 }
                 return;
               }
@@ -772,8 +801,10 @@ export default {
           this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
         }
         if(this.discount != null && this.discount != ''){
-          this.discount_summa = parseInt((this.summa * this.discount)/100);
-          this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+          this.discount_summa = parseFloat((100 * this.discount)/this.summa);
+          this.discount_summaString = this.discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+          // this.discount_summa = parseInt((this.summa * this.discount)/100);
+          // this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
         }
       }
       else{
@@ -788,8 +819,10 @@ export default {
               this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
             }
             if(this.discount != null && this.discount != ''){
-              this.discount_summa = parseInt((this.summa * this.discount)/100);
-              this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+              this.discount_summa = parseFloat((100 * this.discount)/this.summa);
+              this.discount_summaString = this.discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+              // this.discount_summa = parseInt((this.summa * this.discount)/100);
+              // this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
             }
             return
           }
@@ -805,6 +838,7 @@ export default {
     async submit(){
       if(this.discount == null || this.discount == ''){
         this.discount = 0;
+        this.discount_summa = 0;
       }
       // this.ochred_add_service(this.ServiceTypesCount)
       this.patient_name = this.get_patient_info.patient_name
@@ -850,7 +884,7 @@ export default {
         var jsonData = []
       for(let i=0; i<this.ServiceTypesCount.length; i++){
         let tempSumm = this.ServiceTypesCount[i].price;
-        let tempDiscount = this.discount;
+        let tempDiscount = this.discount_summa.toFixed(1);
         let tempDiscountSumm = 0;
         var a = {
           serviceTypeId: null,
@@ -867,12 +901,12 @@ export default {
           discount_real_qty: 0,
         }
         if(this.discount != 0){
-          tempDiscountSumm = parseInt((this.ServiceTypesCount[i].price * this.discount)/100);
-          tempSumm = this.ServiceTypesCount[i].price - tempDiscountSumm;
+          tempDiscountSumm = ((this.ServiceTypesCount[i].price * this.discount_summa)/100);
+          tempSumm = (this.ServiceTypesCount[i].price - tempDiscountSumm);
         }
         a.discount_card_qty = this.ServiceTypesCount[i].doc_name
         a.discount_real_qty = parseInt(this.ServiceTypesCount[i].talon)
-        a.discount_qty = tempDiscountSumm;
+        a.discount_qty = tempDiscountSumm.toFixed(1);
         a.discount_persantage_qty = tempDiscount;
         a.serviceTypeId = this.ServiceTypesCount[i].id;
         a.contragentId = this.get_patient_info.contragent_id;
@@ -887,7 +921,7 @@ export default {
       console.log(jsonData)
       const requestOptions = {
         method: "POST",
-        headers: { "Content-Type" : "application/json" },
+        headers: { "Content-Type" : "application/json"},
         body: JSON.stringify(jsonData)
       };
       console.log(requestOptions)
@@ -915,7 +949,7 @@ export default {
         this.search = '';
         this.discount = 0;
         this.discount_summa = 0;
-        this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+        this.discount_summaString = this.discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
         this.fetch_get_patient_list_Doc_Id(this.auth_id)
         this.service_bahila_list_database = [];
         await this.fetch_ocherd_list();
@@ -1155,8 +1189,12 @@ export default {
   box-shadow: 0 2px 8px rgb(187, 187, 187);
 }
 .doctor_list .item{
+  .user_text_boxs{
+    width: 100% !important;
+    overflow: hidden;
+  }
       .user_photo{
-        background-color: #fff;
+          background-color: #fff;
           border-radius: 50%;
           width: 45px !important;
           height: 45px !important;
@@ -1167,6 +1205,16 @@ export default {
         //   border-radius: 50%;
         //   overflow: hidden;          
         // }
+      }
+      .doctor_fullname{
+        width: calc(100% - 45px);
+        overflow: hidden;
+
+      }
+      .doctor_fullname p{
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
       }
       width:100%;
       box-shadow: 2px 2px 8px rgb(224, 224, 224), -1px -1px 2px rgb(224, 224, 224);
@@ -1285,10 +1333,6 @@ export default {
   border-bottom: 1px solid rgb(240, 240, 240);
 }
 
-.myTable tr.header, .myTable tr:hover {
-  // background-color: #f1f1f1;
-}
-
 .editIcon{
   color:#01b348;
   font-size: 13px;
@@ -1320,5 +1364,64 @@ color: #000;
   border-top: 0.1px solid rgb(220, 220, 220);
   border-bottom: 0.1px solid rgb(220, 220, 220);  
   font-size: 13px;
+}
+.InfoIcoFixedOpenInfo{
+  transition: 0.5s;
+  position:fixed;
+  z-index: 11111;
+  right:50%; 
+  top:150px; 
+  width: 50px; 
+  height:50px; 
+  cursor:pointer;
+  background-image: linear-gradient( 83.2deg,  rgba(150,93,233,1) 10.8%, rgba(99,88,238,1) 94.3% );
+  border-top-left-radius:5px; 
+  border-bottom-left-radius:5px;
+}
+.InfoIcoFixedInfo{
+  transition: 0.5s;
+  position:fixed;
+  z-index: 11111;
+  right:0; 
+  top:150px; 
+  width: 50px; 
+  height:50px; 
+  cursor:pointer;
+  background-image: linear-gradient( 83.2deg,  rgba(150,93,233,1) 10.8%, rgba(99,88,238,1) 94.3% );
+  border-top-left-radius:5px; 
+  border-bottom-left-radius:5px;
+}
+.InfoIcoFixedOpenInfoPatient{
+  transition: 0.5s;
+  position:fixed;
+  z-index: 11111;
+  right:0%; 
+  top:0; 
+  width: 50%; 
+  height:100vh; 
+  cursor:pointer;
+  background: white;
+  border-top-left-radius:5px; 
+  border-bottom-left-radius:5px;
+}
+.infoPatientId{
+  position: fixed;
+  width: 70%;
+  height: 100vh;
+  right:0%;
+  background: white;
+  z-index: 11111111111;
+  transition: 0.5s;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+.infoPatientIdNo{
+  transition: 0.5s;
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  right:-100%;
+  background: white;
+  z-index: 1111111111;
 }
 </style>

@@ -1,6 +1,7 @@
 <template>
   <div>
-    <blank_print v-if="show_print" :content = "content" :patient_name = "patient_name" 
+    <blank_print v-if="show_print" :content = "content" :selectServiceList="selectServiceList" 
+      :patient_name = "patient_name" :tableNumber="tableNumber" 
     :patient_id="patient_id" :doc_name="doc_name" :borndate = "borndate" :title="titleHos"/>
     <div v-else class="main main_bg_word" >
       <!-- Top bar -->
@@ -21,10 +22,26 @@
           </small>
         </div>
         <div class="col-3">
-          <mdb-input label="Title" class="m-0 p-0" v-model="titleHos" size="sm"/>
+          <input placeholder="Title" class=" p-0  text-dark rounded " 
+             v-model="titleHos" style="outline: none; padding: 0px 7px !important; 
+             width: 400px; height: 30px; margin-top: 10px; border:none;"/>
           <small class="invalid-text " style="margin-top: 0px; font-weight: bold;"  v-if="$v.titleHos.$dirty && !$v.titleHos.required" >
             {{$t('name_invalid_text')}}
           </small>
+        </div>
+        <div class="col-3 ">
+          <lineSelect
+            class="ml-0"
+            style="margin-top: 10px;"
+            :options="get_doctor_list_by_casher.rows" 
+            :searchshow="true"
+            @select="selectDocUser"
+            :selected="doc_for_ser_name"
+            :label="$t('Doctor')"
+          />
+          <!-- <small class="invalid-text " style="margin-top: 5px; font-weight: bold;"  v-if="$v.patient_name.$dirty && !$v.patient_name.required" >
+            {{$t('name_invalid_text')}}
+          </small> -->
         </div>
       </div>
       <!-- Document editor -->
@@ -36,6 +53,29 @@
         :display="display"
         />
 
+        <div v-if="!show_print" style="padding-bottom:120px;" class="mx-3 d-flex justify-content-center mb-5">
+          <div class="form-group purple-border" style="width:85%">
+            <label for="exampleFormControlTextarea4">Text formatini to'girlash</label>
+            <textarea class="form-control" id="exampleFormControlTextarea4" rows="8"></textarea>
+          </div>
+        </div>
+    </div>
+
+    <div v-show="false"  class="serviceList_fixed px-3" v-if="!show_print">
+      <div class="row">
+        <div class="col-2 mb-1 border"  v-for="(servic,i) in service_list" :key="i" 
+        @click="selectServiceDoc(i)" :class="{'bg_success_service': servic.activ}">
+          <div class="d-flex  justify-content-center align-items-center"  
+            style="height: 40px; cursor:pointer;">
+            <span style="font-size: 13px;">{{servic.name}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-show="false" class="serviceNumber" v-if="!show_print">
+      <input placeholder="День" type="number" class=" p-0  text-dark rounded " 
+             v-model="tableNumber" style="outline: none; padding: 0px 7px !important; 
+             width: 100%; height: 45px;  border:none;"/>
     </div>
     <Toast ref="message"></Toast>
 
@@ -52,10 +92,10 @@ import lineSelect from "../../../components/hospital/cashUserSelect.vue";
 // import shablonSelect from "../../../components/hospital/shablonSelect.vue";
 import { required } from 'vuelidate/lib/validators'
 import {mapActions, mapGetters, mapMutations} from 'vuex'
-  import {mdbInput   } from 'mdbvue';
+  // import {mdbInput   } from 'mdbvue';
 // import InvoiceTemplate from './InvoiceTemplate.vue';
 export default {
-  components: { VueDocumentEditor, VueFileToolbarMenu, lineSelect, mdbInput, blank_print },
+  components: { VueDocumentEditor, VueFileToolbarMenu, lineSelect, blank_print },
   validations: {
     titleHos: {required},
     patient_name: {required}
@@ -81,6 +121,12 @@ export default {
       undo_count: -1, // contains the number of times user can undo (= current position in content_history)
       content_history: [], // contains the content states for undo/redo operations
       titleHos: '',
+      doc_for_ser_name: localStorage.DocServFio,
+      doc_for_ser_id: localStorage.DocServId,
+      doc_for_ser_Docid: localStorage.DocServDocId,
+      service_list: [],
+      selectServiceList: [],
+      tableNumber: null,
     }
   }, 
   created () {
@@ -147,6 +193,26 @@ export default {
     // use window.removeEventListener in the Vue.js beforeDestroy handler
   },
   async mounted () { 
+    console.log('dsdsdsdsdsd')
+    await this.fetch_get_doctor_list(localStorage.AuthId);
+    console.log('get_doctor_list_by_casher')
+    console.log(this.get_doctor_list_by_casher)
+    if(this.doc_for_ser_id != null){
+      await this.fetch_users_service_list(this.doc_for_ser_id)
+      console.log('this.get_user_service_list')
+      console.log(this.get_user_service_list)
+      this.service_list = [];
+      for(let i=0; i<this.get_user_service_list.length; i++){
+        let tempServic = {
+          serviceTypeId: this.get_user_service_list[i].serviceTypeId,
+          id: this.get_user_service_list[i].serviceType.id,
+          name: this.get_user_service_list[i].serviceType.name,
+          price: this.get_user_service_list[i].serviceType.price,
+          activ: false,
+        }
+        this.service_list.push(tempServic)
+      }
+    }
     this.content = [];
     this.content.push(this.shablon_content.name)
     this.titleHos = this.shablon_content.title
@@ -166,10 +232,12 @@ export default {
     
 
     this.updatePatientId(this.patient_id)
+    
 
    },
   computed: {
-    ...mapGetters(['get_patient_client_list', 'getPatientInfo', 'shablon_content','sablonSavepatient']),
+    ...mapGetters(['get_patient_client_list', 'getPatientInfo', 'shablon_content','sablonSavepatient', 
+      'get_doctor_list_by_casher', 'get_user_service_list']),
     // This is the menu content
     menu () {
       return [
@@ -350,7 +418,7 @@ export default {
     can_redo () { return this.content_history.length - this.undo_count - 1 > 0; }
   },
   methods: {
-    ...mapActions(['fetch_patient_client']),
+    ...mapActions(['fetch_patient_client', 'fetch_get_doctor_list', 'fetch_users_service_list']),
     ...mapMutations(['updateShablonPatient', 'updatePatientId']),
     selectPatient(option){
       this.patient_name = option.data.fio;
@@ -358,6 +426,39 @@ export default {
       console.log(option.data)
       this.borndate = option.data.bornDate.slice(0,10);
       this.updatePatientId(option.data.id);
+    },
+    async selectDocUser(option){
+      console.log(option)
+      this.doc_for_ser_name = option.data.fio;
+      this.doc_for_ser_id = option.data.doctorAuth.users.id;
+      this.doc_for_ser_Docid = option.data.DocAuthId;
+      localStorage.DocServFio = option.data.fio;
+      localStorage.DocServId = option.data.doctorAuth.users.id;
+      localStorage.DocServDocId = option.data.DocAuthId;
+      await this.fetch_users_service_list(this.doc_for_ser_id)
+      console.log('this.get_user_service_list')
+      console.log(this.get_user_service_list)
+      this.service_list = [];
+      for(let i=0; i<this.get_user_service_list.length; i++){
+        let tempServic = {
+          serviceTypeId: this.get_user_service_list[i].serviceTypeId,
+          id: this.get_user_service_list[i].serviceType.id,
+          name: this.get_user_service_list[i].serviceType.name,
+          price: this.get_user_service_list[i].serviceType.price,
+          activ: false,
+        }
+        this.service_list.push(tempServic)
+      }
+    },
+    async selectServiceDoc(i){
+      this.service_list[i].activ = !this.service_list[i].activ;
+      this.selectServiceList = [];
+      for(let j=0; j<this.service_list.length; j++){
+        if(this.service_list[j].activ == true){
+          this.selectServiceList.push(this.service_list[j])
+        }
+      }
+      console.log(this.selectServiceList)
     },
     selectShablon(option){
       console.log(option)
@@ -379,6 +480,12 @@ export default {
     // Page overlays (headers, footers, page numbers)
     async printed(){
       // this.$refs.editor.printedForBlanka({id:this.patient_id, title:this.titleHos});
+      if(this.tableNumber == null){
+        this.tableNumber = 0;
+      }
+      else{
+        this.tableNumber = parseInt(this.tableNumber)
+      }
       this.show_print = true;
     },
     async saved(){
@@ -514,28 +621,28 @@ export default {
 .document_editor p{
   padding-bottom: 5px !important;
   margin-bottom: 0px !important;
-  font-size: 24px !important;
+  font-size: 22px !important;
 }
 .document_editor div{
-  font-size: 24px !important;
+  font-size: 22px !important;
 }
 .document_editor h6{
-  font-size: 24px !important;
+  font-size: 22px !important;
 }
 .document_editor h5{
-  font-size: 30px !important;
+  font-size: 28px !important;
 }
 .document_editor h4{
-  font-size: 35px !important;
+  font-size: 33px !important;
 }
 .document_editor h3{
-  font-size: 40px !important;
+  font-size: 38px !important;
 }
 .document_editor h2{
-  font-size: 45px !important;
+  font-size: 43px !important;
 }
 .document_editor h1{
-  font-size: 50px !important;
+  font-size: 48px !important;
 }
 html {
   height: 100%;
@@ -590,5 +697,32 @@ b{
     --bar-button-open-color: #188038;
     --bar-button-active-bkg: #e6f4ea;
     --bar-button-open-bkg: #e6f4ea;
+  }
+
+  .serviceList_fixed{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height:90px;
+    background: #e6f4ea;
+    overflow-y: scroll;
+  }
+  .serviceNumber{
+    position: fixed;
+    bottom: 90px;
+    left: 0;
+    width: 200px;
+    height:45px;
+    background: #e6f4ea;
+  }
+  .serviceNumberTitle{
+    position: absolute;
+    top:-22px;
+    left: 5px;
+  }
+  .bg_success_service{
+    background: #9fcfff;
   }
 </style>

@@ -41,29 +41,29 @@
           </mdb-row>
 
       </div>
-      <table  class="myTable">
+      <table  class="myTableUser">
                 <thead>
-                <tr class="header">
+                <tr class="header ">
                     <th width="60">№</th>
-                    <th v-for="column in datasource.columns" :key="column">{{$t(column)}}</th>
-                    <th width="120" class="text-center">{{$t('Info_Auth')}}</th>
-                    <th width="100" class="text-center">{{$t('Action')}}</th>
+                    <th v-for="column in datasource.columns" :key="column" :class="{'fioWidth': column == 'fio'}">{{$t(column)}}</th>
+                    <th width="110" class="text-center">{{$t('Info_Auth')}}</th>
+                    <th width="90" class="text-center">{{$t('Action')}}</th>
                 </tr>
                 </thead>
                 <tbody>
                   <!-- .slice().reverse() -->
                 <tr v-for="(row,rowIndex) in datasource.rows" :key="rowIndex">
                     <td>{{rowIndex+1}}</td>
-                    <td v-for="(column,i) in datasource.columns" :key="i">
+                    <td v-for="(column,i) in datasource.columns" :key="i" >
                         <mdb-badge v-show="row[column] === true" style="padding: 2px 8px;" pill color="success">{{row[column]}}</mdb-badge>
                         <mdb-badge v-show="row[column] === false"  pill color="danger" style="padding: 2px 8px;" >{{row[column]}}</mdb-badge>
                         <div v-show="column == 'colorCode'" :style="{background: row[column]}" style="width: 65px; height:3px; border-radius:10px;" ></div>
-                        <span v-show="row[column] !== true && row[column] !== false && column !== 'name' && column !== 'colorCode'">{{row[column]}}</span>
-                        <span v-show="column == 'name'" style="font-weight: 450; font-family: 'Ubuntu', sans-serif;">{{row[column]}}</span>
+                        <small class="smallFont" v-show="row[column] !== true && row[column] !== false && column !== 'name' && column !== 'colorCode'">{{row[column]}}</small>
+                        <small class="smallFont" v-show="column == 'name'" style="font-weight: 450; font-family: 'Ubuntu', sans-serif;">{{row[column]}}</small>
                     </td>
                     <td class="text-center">
-                      <mdb-btn class="px-2 py-1 m-0 " @click="info" :disabled="disable" :data-row="rowIndex" style="font-size: 8px;" color="primary">Info</mdb-btn>
-                      <mdb-btn class="px-2 py-1 m-0 ml-1" :disabled="disable" @click="auth" :data-row="rowIndex" style="font-size: 8px;" color="danger">Auth</mdb-btn>
+                      <mdb-btn class="px-2 py-1 m-0 " @click="info" :disabled="disable" :data-row="rowIndex" style="font-size: 8px;" color="primary"><mdb-icon style="font-size: 11px;" icon="users-cog" /></mdb-btn>
+                      <mdb-btn class="px-2 py-1 m-0 ml-1" :disabled="disable" @click="auth" :data-row="rowIndex" style="font-size: 8px;" color="danger"><mdb-icon style="font-size: 11px;" icon="user-lock" /></mdb-btn>
                     </td>
                     <td class="text-center">
                       <i class="fas fa-pen editIcon mask waves-effect t m-0 pr-2" :class="{'applied': disable}" v-on:click="editRow" :data-row="rowIndex"></i>
@@ -112,16 +112,10 @@
         </mdb-modal-footer>
     </mdb-modal> 
 
-    <!-- <ModalAuth  :title="$t('Add authorization')" closeColor="#fff" titlecolor="white" headerbackColor="danger"
-     :show="auth_show" @close="auth_show = false" width="550px">
+      <ModalAuth  :title="$t('user_connect_doctor')" closeColor="#fff" titlecolor="white" headerbackColor="info"
+        :show="client_show" @close="client_show = false" width="70%">
         <template v-slot:body>
-          <authAdd :options="updateAuth" :user="user_id" @close="auth_show = false"/>
-        </template>
-      </ModalAuth> -->
-      <ModalAuth  :title="$t('Client List')" closeColor="#fff" titlecolor="white" headerbackColor="info"
-        :show="client_show" @close="client_show = false" width="800px">
-        <template v-slot:body>
-          <clientList  @close="client_show = false"/>
+          <clientList ref="clientList"  @close="client_show = false"/>
         </template>
       </ModalAuth>
       <mdb-modal  :show="auth_show"  @close="auth_show = false" size="md" danger>
@@ -132,17 +126,12 @@
           <authAdd :options="updateAuth" :user="user_id" @close="auth_show = false"/>
         </mdb-modal-body>
       </mdb-modal>
-    <!-- <edit_col
-        v-show="showcheck_form"
-        :option="datasource"
-        @select="checklist"
-    /> -->
+      <Toast ref="message"></Toast>
+      
   </div>
 </template>
 
 <script>
-// import Multiselect from 'vue-multiselect'
-// import edit_col from "../components/editColumn";
 import ModalAuth from './modal'
 import authAdd from './new_prog_add/auth_add.vue'
 import clientList from '../views/market/client'
@@ -295,12 +284,15 @@ export default {
         this.$emit('clicked_filter');
       },
       async info(ev){
-        this.client_show = true
-        console.log(this.datasource.rows[ev.target.dataset.row].id)
-        console.log(this.datasource.rows[ev.target.dataset.row])
-        localStorage.UserIDFor = this.datasource.rows[ev.target.dataset.row].authorization.id;
-        this.fetch_get_doctor_list(this.datasource.rows[ev.target.dataset.row].authorization.id)
-        console.log('info')
+        if(this.datasource.rows[ev.target.dataset.row].authorization != undefined){
+          this.client_show = true
+          localStorage.UserIDFor = this.datasource.rows[ev.target.dataset.row].authorization.id;
+          await this.fetch_get_doctor_list(this.datasource.rows[ev.target.dataset.row].authorization.id)
+          this.$refs.clientList.refresh();
+        }      
+        else{
+          this.$refs.message.warning('not_authorization')
+        }  
       },
       auth(ev){
         this.auth_show = true;
@@ -389,132 +381,7 @@ export default {
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
-<style scoped lang="scss">
-.applied{
-  pointer-events: none;
-  background:#fcfcfc;
-}
-.d_table{
-  position: relative;
-}
 
-.myTable {
-  /* border-collapse: collapse; */
-  table-layout:fixed;
-  width: 100%;
-  // border: 1px solid #ddd;
-  font-size: 18px;
-  max-height:80px; overflow-x:auto
-}
-.myTable th{
-  font-weight: 600;
-  font-size:12.5px;
-}
-.myTable td{
-  text-overflow: ellipsis; 
-  overflow: hidden; 
-  white-space: nowrap;
-  font-size:13.4px;
-}
-.myTable th, .myTable td {
-  text-align: left;
-  padding: 12px;
-}
-
-.myTable tr {
-  border-bottom: 1px solid rgb(240, 240, 240);
-}
-
-.myTable tr.header, .myTable tr:hover {
-  // background-color: #f1f1f1;
-}
-
-.editIcon{
-  color:#01b348;
-  font-size: 13px;
-
-}
-.editIcon:hover{
-color: #000;
-}
-
-.delIcon:hover{
-color: #000;
-}
-.delIcon{color: rgb(251, 70, 70);
-  font-size: 13px;
-
-}
-.delete{
-  
-  position: fixed;
-  display: flex;
-  justify-content: center;
-  top:0;
-  animation: logo 0.2s linear;
-  z-index:111111;
-  left:0;
-  width:100%;
-  height:100vh;
-  background:rgba(0, 0, 0, 0.5);
-  .delete_form{
-    background: white;
-    border-radius: 5px;
-    // box-shadow: 0 0 3px rgb(121, 121, 121);
-    max-height: 135px;
-    width: 420px;
-    transform: translate(0, 20px);
-    animation: anime 0.2s linear;
-    p{
-      padding: 0px 35px;
-    }
-    .delete_btn{
-      text-align: right;
-      button{
-        border-radius: 5px;
-        padding: 3px 20px;
-      }
-    }
-  }
-}
-@keyframes anime
-{
-  0%{
-    transform: translate(0, -130px);
-    opacity: 0;
-  }
-  100%{
-    transform: translate(0, 20px);
-    opacity: 1;
-  }
-}
-@keyframes logo
-{
-  0%{
-    opacity: 0;
-  }
-  100%{
-    opacity: 1;
-  }
-}
-// true and false background
-.span_bg{
-  border-radius: 3px;
-  font-family: roboto, sans-serif;
-  font-weight: 600;
-  font-size: 12px;
-  padding: 1px 5px;
-  box-shadow: 1px 2px 7px rgb(191, 191, 191);
-}
-.multiselect__tag {
-    min-height: calc(1.5em + .75rem + 2px);
-    display: block;
-    padding: 0 40px 0 8px;
-    border-radius: 5px;
-    border: 1px solid #e8e8e8;
-    background: #fff;
-    font-size: 12px;
-}
-
-
+<style lang="scss" scoped>
+@import "@/scss/userTable.scss";
 </style>

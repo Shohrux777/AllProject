@@ -4,6 +4,7 @@ export default {
         last_patient_list: [],
         service_pay_list: [],
         summ: 0,
+        skidka: 0,
         inArray: [],
         cashSumm_Array: [
             {
@@ -67,11 +68,14 @@ export default {
             state.unpay_patient_list = data;
         },
         UpdateServicePay(state, data) {
+            console.log('data strlik');
             console.log(data);
             state.service_pay_list = data;
             state.summ = 0;
+            state.skidka = 0;
             for (let i = 0; i < data.length; i++) {
-                state.summ += data[i].summ
+                state.summ += data[i].summ;
+                state.skidka += data[i].discount_qty;
             }
         },
         Update_check_data(state, data) {
@@ -165,6 +169,9 @@ export default {
         },
         summa(state) {
             return state.summ
+        },
+        get_skidka(state){
+            return state.skidka.toFixed()
         },
         get_check_sum(state) {
             return state.check_sum

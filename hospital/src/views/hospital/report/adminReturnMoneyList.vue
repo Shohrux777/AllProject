@@ -387,12 +387,6 @@
     top: -8px;
   }
 }
-.TablePatientDocIdApply{
-    // height: 400px;
-    // overflow: hidden;
-    // overflow-y: auto;
-    // border: 1px solid #ddd;
-  }
   .myTable {
   /* border-collapse: collapse; */
   table-layout:fixed;
@@ -416,10 +410,6 @@
 
 .myTable tr {
   border-bottom: 1px solid rgb(240, 240, 240);
-}
-
-.myTable tr.header, .myTable tr:hover {
-  // background-color: #f1f1f1;
 }
 .delIcon{
   color: rgb(251, 70, 70);

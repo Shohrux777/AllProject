@@ -203,7 +203,6 @@
         kassir_name: '',
         kassir_id: null,
         kassir_athId: null,
-
       }
     },
     async mounted(){
@@ -211,7 +210,7 @@
         this.kassirListForAdmin = []
         console.log(this.auth_user_list)
         for(let l = 0; l < this.auth_user_list.length; l++) {
-          if(this.auth_user_list[l].userType == 2){
+          if(this.auth_user_list[l].userType == 2 || this.auth_user_list[l].userType == 5){
             this.auth_user_list[l].users.authId = this.auth_user_list[l].id;
             this.kassirListForAdmin.push(this.auth_user_list[l].users)
           }
@@ -425,12 +424,6 @@
     top: -8px;
   }
 }
-.TablePatientDocId{
-    // height: 400px;
-    // overflow: hidden;
-    // overflow-y: auto;
-    // border: 1px solid #ddd;
-  }
   .myTable {
   /* border-collapse: collapse; */
   table-layout:fixed;
@@ -454,10 +447,6 @@
 
 .myTable tr {
   border-bottom: 1px solid rgb(240, 240, 240);
-}
-
-.myTable tr.header, .myTable tr:hover {
-  // background-color: #f1f1f1;
 }
 .delIcon{
   color: rgb(251, 70, 70);

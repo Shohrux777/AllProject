@@ -64,7 +64,7 @@ export default {
     },
     mutations: {
         Updatereport_by_data(state, data) {
-            console.log('data');
+            console.log('data iployeee');
             console.log(data);
             state.report_by_data = data;
         },
@@ -144,6 +144,7 @@ export default {
         },
         Updatereport_by_data_time(state, data) {
             console.log('fetch get')
+            console.log()
             console.log(data)
             state.report_by_time_card_cash.card = data.reduce((total, item) => {
                 return total + item.paymentInCard

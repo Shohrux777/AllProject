@@ -48,7 +48,7 @@
                 <th  width="55" class="text-left">№</th>  
                 <th >{{$t('contragentName')}}</th>
                 <th >{{$t('contNumber')}}</th>
-                <th  >{{$t('regionName')}}</th>
+                <th >{{$t('regionName')}}</th>
                 <th >{{$t('serviceGroupName')}}</th>
                 <th>{{$t('serviceTypeName')}}</th>
                 <th>{{$t('date')}}</th>
@@ -276,6 +276,8 @@
         a.time1 = this.Start_time + 'T00:00:35.000Z';
         a.time2 = this.End_time + 'T23:59:59.000Z';
         this.loading = true;
+        console.log('this.get_report_by_data')
+        console.log(this.get_report_by_data)
         await this.fetch_report_by_data(a);
         if(this.group_name == ''){
           this.bonus_contragent_list_by_group = this.get_report_by_data
@@ -346,12 +348,6 @@
     top: -8px;
   }
 }
-.TablePatientDocId{
-    // height: 400px;
-    // overflow: hidden;
-    // overflow-y: auto;
-    // border: 1px solid #ddd;
-  }
   .myTable {
   /* border-collapse: collapse; */
   table-layout:fixed;
@@ -375,10 +371,6 @@
 
 .myTable tr {
   border-bottom: 1px solid rgb(240, 240, 240);
-}
-
-.myTable tr.header, .myTable tr:hover {
-  // background-color: #f1f1f1;
 }
 .delIcon{
   color: rgb(251, 70, 70);

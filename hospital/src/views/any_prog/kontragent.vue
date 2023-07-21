@@ -64,7 +64,7 @@
         modal_status: false,
         m_contragent :{
           rows: [],
-          columns: ['Name', 'PhoneNumber', 'Address', 'ActiveStatus'],
+          columns: ['Name', 'PhoneNumber', 'Address','Note', 'ActiveStatus'],
           col : []
         },
       }

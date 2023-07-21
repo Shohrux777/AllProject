@@ -177,10 +177,6 @@ export default {
   border-bottom: 1px solid rgb(240, 240, 240);
 }
 
-.myTable tr.header, .myTable tr:hover {
-  /* // background-color: #f1f1f1; */
-}
-
 .editIcon{
   color:#01b348;
 

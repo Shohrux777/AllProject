@@ -29,9 +29,14 @@
             <mdb-dropdown tag="li" class="nav-item">
               <mdb-dropdown-toggle tag="a" navLink style="font-size:12px;" slot="toggle" waves-fixed> Отчет </mdb-dropdown-toggle>
               <mdb-dropdown-menu>
-                <!-- <mdb-dropdown-item tag="a" style="font-size:12px;" href="/bycont_data">MRT MSCT</mdb-dropdown-item> -->
-                <!-- <mdb-dropdown-item tag="a" style="font-size:12px;" href="/byuzi_date">UZI LAB</mdb-dropdown-item> -->
-
+                <!-- <mdb-dropdown-item tag="a" style="font-size:12px;" href="/bycont_data">MRT MSCT</mdb-dropdown-item>
+                <mdb-dropdown-item tag="a" style="font-size:12px;" href="/byuzi_date">UZI LAB</mdb-dropdown-item> -->
+                <router-link class="m-0 p-0" to="/bycont_data">
+                  <mdb-dropdown-item style="font-size:12px;">MRT MSCT</mdb-dropdown-item>
+                </router-link>
+                <router-link class="m-0 p-0" to="/byuzi_date">
+                  <mdb-dropdown-item style="font-size:12px;">UZI LAB</mdb-dropdown-item>
+                </router-link>
 
                 <!-- <mdb-dropdown-item tag="a" style="font-size:12px;" href="/groupReport">Контрагент отчет</mdb-dropdown-item>
                 <mdb-dropdown-item tag="a" style="font-size:12px;" href="/bydate">Бонусный отчет</mdb-dropdown-item>
@@ -63,7 +68,7 @@
                 <router-link class="m-0 p-0" to="/dailyForPayment">
                   <mdb-dropdown-item style="font-size:12px;">Дневники касса</mdb-dropdown-item>
                 </router-link>         
-                <!-- <mdb-dropdown-item tag="a" style="font-size:12px;" href="/kunlik">Дневники</mdb-dropdown-item>       -->
+                <mdb-dropdown-item tag="a" style="font-size:12px;" href="/kunlik">Дневники</mdb-dropdown-item>      
                 <mdb-dropdown-item tag="a" style="font-size:12px;" href="/debitReport">Список долгов</mdb-dropdown-item>
                 <mdb-dropdown-item tag="a" style="font-size:12px;" href="/debitPayReport">Cписок оплаченных долгов</mdb-dropdown-item>
                 <router-link class="m-0 p-0" to="/return_money">
@@ -72,9 +77,9 @@
                 <router-link class="m-0 p-0" to="/bron_time_payment">
                   <mdb-dropdown-item style="font-size:12px;">Стационар отчет</mdb-dropdown-item>
                 </router-link> 
-                <router-link class="m-0 p-0" to="/report_of_reagin">
+                <!-- <router-link class="m-0 p-0" to="/report_of_reagin">
                   <mdb-dropdown-item style="font-size:12px;">Расход Риаген</mdb-dropdown-item>
-                </router-link> 
+                </router-link>  -->
                 <!-- <mdb-dropdown-item tag="a" style="font-size:12px;" href="/return_money">Расходы</mdb-dropdown-item>
                 <mdb-dropdown-item tag="a" style="font-size:12px;" href="/bron_time_payment">Стационар отчет</mdb-dropdown-item> -->
 
@@ -132,6 +137,7 @@
               <mdb-dropdown tag="li" class="nav-item" >
                 <mdb-dropdown-toggle tag="a" class="avatar_drop m-0 text-white" navLink style="border-radius:50%; width: 35px; height: 35px; z-index: 55; " slot="toggle" ></mdb-dropdown-toggle>
                 <mdb-dropdown-menu style="position: absolute; top: 0; left: -120px; width: 165px;">
+                  <mdb-dropdown-item tag="a" style="font-size: 12.5px;" class="py-2">{{user_fio}} </mdb-dropdown-item>
                   <mdb-dropdown-item tag="a" style="font-size: 12.5px;" class="py-2" href="/profil">{{$t('Profile')}} </mdb-dropdown-item>
                   <mdb-dropdown-item tag="a" style="font-size: 12.5px" class="py-2" v-show="show_but" @click="showInfo" href="#">{{$t('product_info')}}</mdb-dropdown-item>
                   <div class="dropdown-divider"></div>
@@ -208,8 +214,8 @@ import Snow from './wnd_for_add/snow.vue';
         image: '',
         show_but: false,
         laborant: false,
-        infoBoolen: false
-
+        infoBoolen: false,
+        user_fio: localStorage.docName
       }
     },
     async mounted(){

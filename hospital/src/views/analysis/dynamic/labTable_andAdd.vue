@@ -104,7 +104,7 @@
            const requestOptions = {
               method : "delete",
             };
-            const response = await fetch(this.$store.state.hostname + "/HospitalAnalizDynamicResults/" + del_data.id, requestOptions);
+            const response = await fetch(this.$store.state.hostname + "/HospitalAnalizDynamicResults/" + del_data.Id, requestOptions);
             const data = await response.text();
   
             if(response.status == 201 || response.status == 200)

@@ -10,7 +10,7 @@
             <div class="title w-100 row align-items-center">
               <div class="col-3">
                 <div style="position: relative; margin-top: 40px;"> 
-                  <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -8px; color: #757575;">
+                  <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -12px; color: #757575;">
                     {{$t('start_time')}}
                   </small>
                   <mdb-input type="date" size="sm" v-model="Start_time" outline/>
@@ -18,7 +18,7 @@
               </div>
               <div class="col-3">
                 <div style="position: relative; margin-top: 40px;"> 
-                  <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -8px; color: #757575;">
+                  <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -12px; color: #757575;">
                     {{$t('end_time')}}
                   </small>
                   <mdb-input type="date" size="sm"  v-model="End_time" outline/>
@@ -178,9 +178,13 @@
         summa: 0
       }
     },
-    mounted(){
+    async mounted(){
       console.log('date')
-      this.get_get_()
+      // this.get_get_()
+      let time1 = new Date();
+      this.Start_time = time1.toISOString().slice(0,10);
+      this.End_time = time1.toISOString().slice(0,10);
+      await this.submit();
         this.fetch_contragent()
         this.fetch_auth_list()
     },
@@ -277,12 +281,7 @@
     top: -8px;
   }
 }
-.TablePatientDocId{
-    // height: 400px;
-    // overflow: hidden;
-    // overflow-y: auto;
-    // border: 1px solid #ddd;
-  }
+
   .myTable {
   /* border-collapse: collapse; */
   table-layout:fixed;
@@ -308,7 +307,4 @@
   border-bottom: 1px solid rgb(240, 240, 240);
 }
 
-.myTable tr.header, .myTable tr:hover {
-  // background-color: #f1f1f1;
-}
 </style>

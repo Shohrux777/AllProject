@@ -63,6 +63,12 @@
         <div class="col-3 m-0 py-0">
             <mdb-input  type="text" class="w-100 m-0 py-1" v-model="main_value.bottom_text" placeholder="Нижний текст" label="Нижний текст" />
         </div>
+        <div class="col-3 m-0 py-0">
+            <mdb-input  type="text" class="w-100 m-0 py-1" v-model="main_value.result_info_bottom" placeholder="Нижний текст 2" label="Нижний текст" />
+        </div>
+        <div class="col-3 m-0 py-0">
+            <mdb-input  type="text" class="w-100 m-0 py-1" v-model="main_value.doctor_name" placeholder="Доктор" label="Нижний текст" />
+        </div>
       </div>
       <div class="row">
         <div class="col-12">
@@ -209,6 +215,8 @@ export default {
         center_s: false,
         size_top: '',
         bottom_text: '',
+        result_info_bottom: 'Результаты лабораторных исследований не являются, требуется консультация специалиста',
+        doctor_name: 'Анализ проводил',
       },
       lab_name_list: [],
       norma_list: [],
@@ -288,6 +296,8 @@ export default {
           "name_2": this.main_value.anything,
           "name_3": this.main_value.size_top,
           "name_4": this.main_value.bottom_text,
+          "name_13": this.main_value.result_info_bottom,
+          "name_14": this.main_value.doctor_name,
           "name_5": this.table.name1,
           "name_6": this.table.name2,
           "name_7": this.table.name3,

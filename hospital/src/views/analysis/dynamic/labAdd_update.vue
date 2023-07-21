@@ -6,7 +6,15 @@
           <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
           <polyline points="15 6 9 12 15 18" />
         </svg>
-          <h5 class="m-0 p-0 py-2 text-success">{{$t('Edit')}} лабораторию</h5>
+          <h5 class="m-0 p-0 py-2 text-success">{{$t('Edit')}} лабораторию 
+            <span @click="delLaboratory" class="text-danger" style="cursor:pointer;"> 
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash-filled" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#fd0061" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M20 6a1 1 0 0 1 .117 1.993l-.117 .007h-.081l-.919 11a3 3 0 0 1 -2.824 2.995l-.176 .005h-8c-1.598 0 -2.904 -1.249 -2.992 -2.75l-.005 -.167l-.923 -11.083h-.08a1 1 0 0 1 -.117 -1.993l.117 -.007h16z" stroke-width="0" fill="currentColor" />
+                <path d="M14 2a2 2 0 0 1 2 2a1 1 0 0 1 -1.993 .117l-.007 -.117h-4l-.007 .117a1 1 0 0 1 -1.993 -.117a2 2 0 0 1 1.85 -1.995l.15 -.005h4z" stroke-width="0" fill="currentColor" />
+              </svg>
+            </span>
+          </h5>
       </div>
       <div class="main_header_lab_added border-bottom px-4" >
         <div class="row pt-2">
@@ -62,6 +70,12 @@
           </div>
           <div class="col-3 m-0 py-0">
             <mdb-input  type="text" class="w-100 m-0 py-1" v-model="main_value.bottom_text" placeholder="Нижний текст" label="Нижний текст" />
+        </div>
+        <div class="col-3 m-0 py-0">
+            <mdb-input  type="text" class="w-100 m-0 py-1" v-model="main_value.result_info_bottom" placeholder="Нижний текст 2" label="Нижний текст" />
+        </div>
+        <div class="col-3 m-0 py-0">
+            <mdb-input  type="text" class="w-100 m-0 py-1" v-model="main_value.doctor_name" placeholder="Доктор" label="Нижний текст" />
         </div>
         </div>
         <div class="row">
@@ -190,6 +204,7 @@
   <script>
   import { VueEditor } from "vue2-editor";
   import { mdbInput, mdbBtn } from 'mdbvue';
+  import {mapActions, mapGetters} from 'vuex'
   import Accordion from "../../../components/accordion/accordion.vue";
 import AccordionItem from "../../../components/accordion/accordion_item_relative.vue";
   export default {
@@ -228,6 +243,8 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
           center_s: false,
           size_top: '',
           bottom_text: '',
+          result_info_bottom: 'Результаты лабораторных исследований не являются, требуется консультация специалиста',
+          doctor_name: 'Анализ проводил',
         },
         lab_name_list: [],
         norma_list: [],
@@ -257,6 +274,7 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
         table_show:''
       }
     },
+    computed: mapGetters(['get_lab_main_list']),
     async mounted(){
       this.loading = true;
       await this.updateMain();
@@ -311,6 +329,7 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
       this.loading = false;
     },
     methods:{
+      ...mapActions(['fetch_lab_main_list']),
       add_item_lab_item(){
         this.number_list ++;
       },
@@ -351,6 +370,8 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
           this.main_value.center_s = data.extra_status;
           this.main_value.size_top = data.name_3;
           this.main_value.bottom_text =  data.name_4;
+          this.main_value.result_info_bottom =  data.name_13;
+          this.main_value.doctor_name =  data.name_14;
           this.table.name1 =  data.name_5;
           this.table.name2 =  data.name_6;
           this.table.name3 =  data.name_7;
@@ -383,6 +404,8 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
             "name_2": this.main_value.anything,
             "name_3": this.main_value.size_top,
             "name_4": this.main_value.bottom_text,
+            "name_13": this.main_value.result_info_bottom,
+            "name_14": this.main_value.doctor_name,
             "name_5": this.table.name1,
             "name_6": this.table.name2,
             "name_7": this.table.name3,
@@ -1205,6 +1228,26 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
           this.modal_info = "Server no connect";
           this.modal_status = true;
         }
+      },
+      async delLaboratory(){
+        const requestOptions = {
+              method : "delete",
+            };
+            const response = await fetch(this.$store.state.hostname + "/HospitalAnalizDynamicmains/" + this.main_id, requestOptions);
+            const data = await response.text();
+  
+            if(response.status == 201 || response.status == 200)
+            {
+              this.$refs.message.success('Successfully_removed')
+              this.$emit('close', 0);
+              await this.fetch_lab_main_list()
+              this.$router.push('/laboratory_list/' + this.get_lab_main_list[0].id)
+
+            }
+            else{
+              this.modal_info = data;
+              this.modal_status = true;
+            }
       }
       
   

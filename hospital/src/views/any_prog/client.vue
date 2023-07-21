@@ -10,7 +10,21 @@
             <div style="width: 300px;">
               <mdb-input label="Поиск" v-model="search"  @input="search_func"/>
             </div>
+            <div style="width:100px; cursor:pointer;" class="mr-1 ml-1">
+              <download-excel
+                class="bg-info rounded px-2"
+                style="margin-top:35px; padding: 3.5px 5px;"
+                :data   = "get_client_list.rows"
+                :fields = "json_fields"
+                name="Nomer.xls">
+                <small class="text-white ml-1" style="font-size: 12px;">
+                    <mdb-icon icon="file-excel" class="mr-1"></mdb-icon>
+                    Excel
+                </small>
+              </download-excel>
+            </div>
             <div>
+              
               <mdb-btn tag="a" @click="add" color="info py-2 px-4 "   style="background-color: rgb(85, 172, 238); margin-top: 35px; font-size:10px;">
                 <mdb-icon  icon="plus" class="mr-2"></mdb-icon>{{$t('add')}}
               </mdb-btn>
@@ -67,13 +81,19 @@
         modal_status: false,
         search: '',
         loading: false,
+        json_fields: {
+          'phone_number': 'phoneNumber',
+        },
+        filteredList: [],
       }
     },
     async mounted(){
-      // this.fetch_client()
+      
       this.loading = true;
+      await this.fetch_client()
       await this.fetch_patient_list_last()
       this.loading = false;
+    
     },
     computed: mapGetters(['get_client_list', 'get_patient_list_last']),
     methods: {

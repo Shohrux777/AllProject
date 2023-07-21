@@ -196,7 +196,7 @@
                 </div>
                 <div class="text-right d-flex justify-content-end mr-3">
                   <mdb-btn @click="allCheck()"  color="info" class="m-0 p-0 mt-2 mr-4" style="font-size: 9.8px;"  p="r5 l5 t2 b2">{{$t('all_check')}}</mdb-btn>
-                  <mdb-btn  @click="fineshedAllService"  color="primary" class="m-0 p-0 mt-2 mr-4" style="font-size: 9.8px;"  p="r5 l5 t2 b2">Выберите проверено</mdb-btn>
+                  <mdb-btn  @click="fineshedAllService" :hidden="finishId"  color="primary" class="m-0 p-0 mt-2 mr-4" style="font-size: 9.8px;"  p="r5 l5 t2 b2">Выберите проверено</mdb-btn>
                   <mdb-btn @click="getBlood()"  v-if="laborantType"  color="danger" class="m-0 p-0 mt-2 mr-4" style="font-size: 9.8px;"  p="r5 l5 t2 b2">{{$t('get_blood')}}</mdb-btn>
                   <mdb-btn @click="next_ochred_btn()" :disabled="selectPatient.patient_id == 0"   color="info" class="m-0 p-0 mt-2 mr-2" style="font-size: 9.8px;"  p="r5 l5 t2 b2">{{$t('next_ochred')}}</mdb-btn>
                 </div>
@@ -208,9 +208,9 @@
         <div v-if="selectPatient.patient_id" class="d-flex justify-content-center align-items-center  shadow" :class="{'InfoIcoFixedOpenInfo': showInfoPatientID, 'InfoIcoFixedInfo': !showInfoPatientID}"  @click="show_patient_info">
           <mdb-icon icon="info" class="text-white ml-1" style="font-size: 22px;" />
         </div>
-        <div v-if="selectPatient.patient_id" class="d-flex justify-content-center align-items-center  shadow" :class="{'InfoIcoFixedOpenDrag': showSendingDrug, 'InfoIcoFixedDrag': !showSendingDrug}"  @click="showSendingDrug = !showSendingDrug">
+        <!-- <div v-if="selectPatient.patient_id" class="d-flex justify-content-center align-items-center  shadow" :class="{'InfoIcoFixedOpenDrag': showSendingDrug, 'InfoIcoFixedDrag': !showSendingDrug}"  @click="showSendingDrug = !showSendingDrug">
           <mdb-icon icon="capsules" class="text-white ml-1" style="font-size: 22px;" />
-        </div>
+        </div> -->
         <div :class="{'infoLab': showSending, 'infoLabNo': !showSending}">
           <send_doctor :patient="selectPatient" @closed="showSending=false"/>
         </div>
@@ -359,7 +359,7 @@ export default {
     },
     show_patient_info(){
       this.showInfoPatientID = !this.showInfoPatientID;
-      this.$refs.patient_info_id.fetch_patient_drugs();
+      // this.$refs.patient_info_id.fetch_patient_drugs();
     },
     async searchPatientFio(){
           try{
@@ -446,6 +446,8 @@ export default {
 
     },
     async fineshedAllService(){
+      this.loading = true;
+      this.finishId = true;
       var indexChecked = 0;
       var choosenFinishList = [];
       while (indexChecked < this.ServiceListForSelect.length){
@@ -457,12 +459,20 @@ export default {
           indexChecked++;
         }
       }
-      await this.fetchAll_choosenList(choosenFinishList)
+      if(choosenFinishList.length<=0){
+        this.finishId = false;
+        this.loading = false;
+      }
+      else{
+        await this.fetchAll_choosenList(choosenFinishList)
+      }
+      
       
       this.loading = false;
-      this.analisNumber_show = false;
-      // this.analisCheck_show = false;
+      // this.analisNumber_show = false;
+      this.analisCheck_show = false;
       this.idGetNum = null;
+      this.finishId = false;
     },
     async closeCheck(){
         this.analisCheck_show = false;
@@ -497,6 +507,7 @@ export default {
         this.$refs.message.success('Added_successfully');
         await this.fetch_service_patientId_for_finish(this.selectPatient.patient_id)
           console.log('kirdiku ichiga nega uchmadui')
+          this.loading = false;
           await this.fetch_service_patientId(this.selectPatient.patient_id);
           this.AddServiceListForSelect(this.get_service_patientId)
           if(this.get_service_patientId.length == 0){
@@ -529,8 +540,8 @@ export default {
           this.payments_list.push(this.ServiceListForSelect[i].id)
           this.serviece_types.push(this.ServiceListForSelect[i].serviceType.id)
           bloodNum ++;
-          this.analisNumber_show = true;
-          // this.analisCheck_show = true;
+          // this.analisNumber_show = true;
+          this.analisCheck_show = true;
         }
       }
       if(bloodNum == 0){
@@ -880,10 +891,6 @@ export default {
 
   .myTable tr {
     border-bottom: 1px solid rgb(240, 240, 240);
-  }
-
-  .myTable tr.header, .myTable tr:hover {
-    // background-color: #f1f1f1;
   }
 
   .editIcon{

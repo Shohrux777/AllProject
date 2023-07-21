@@ -1,10 +1,11 @@
 <template>
     <div class="full_input">
       <div class="input_div mt-3 d-flex align-items-center" @click="open_input" :class="{'vaeble': change, 'backJump': back}" >
-        <input type="text" @focus="togglePicker" hidden id="inputIdname" v-model="getData" :ref="getData"
+        <input type="text"  @focus="togglePicker" v-on:keydown.enter.tab="handleFocusout" id="inputIdname" v-model="getData" :ref="getData"
         @click="open_input">
-        <span style="margin-left: 10px;">{{getData}}</span>
-        <label for="text" @click="change = true">{{label}}</label>
+        <!-- <input type="text" v-model="getData" style="font-size: 14px !important;"> -->
+        <!-- <small style="margin-left: 10px; font-size: 14px !important;">{{getData}}</small> -->
+        <label style="font-size: 14.5px;" for="text" @click="change = true">{{label}}</label>
         <div class="icon_trash">
           <i v-show="getData" class="fa fa-plus " style="transform: rotate(45deg); color:#757580;" @click="trash()"></i>
           <i  class="fa fa-caret-down mx-2 mt-2" @click="open_input"></i>
@@ -12,7 +13,8 @@
       </div>
       <div class="name_list" v-show="closedown">
         <p
-          v-for="(option,index) in options"
+          style="font-size: 13.5px;"
+          v-for="(option,index) in filteredList"
           :key="index"
           @click="select_name(option)"
           >{{option.name}}</p>
@@ -28,7 +30,7 @@ export default {
       getData: this.selected,
       back: false,
       closedown: false,
-      num: 0
+      num: 0,
     }
   },
   watch: {
@@ -61,8 +63,22 @@ export default {
       
     },
     togglePicker(){
-      this.closedown = true
-      this.change = true
+      this.closedown = true;
+      this.change = true;
+      this.back = false;
+      this.open_input();
+    },
+    handleFocusout(){
+      this.closedown = false;
+      this.change = false;
+      this.$nextTick(function () {
+        this.$refs[this.getData].removeAttribute('placeholder')
+      })  
+      if(this.selected != '' && this.selected != null){
+        this.getData = this.selected;
+        this.change = true;
+        this.change = true;
+      }
     },
     // select function from dropdown list
     select_name (name) {
@@ -76,7 +92,7 @@ export default {
     trash () {
       this.getData = ''
       this.back = false
-      this.$emit('select', this.getData)
+      this.$emit('remove')
       this.open_input()
       this.$nextTick(function () {
         this.$refs[this.getData].focus()
@@ -87,7 +103,7 @@ export default {
       this.num = 0
       document.addEventListener('click', this.add_fun)
       this.$nextTick(function () {
-        this.$refs[this.getData].setAttribute('placeholder', 'Search...')
+        this.$refs[this.getData].setAttribute('placeholder', 'Поиск...')
       })
       this.change = true
       this.back = false
@@ -116,7 +132,7 @@ export default {
     filteredList: function () {
       if (this.getData) {
         return this.options.filter((item) => {
-          return this.getData.toLowerCase().split(' ').every(v => item.toLowerCase().includes(v))
+          return this.getData.toLowerCase().split(' ').every(v => item.name.toLowerCase().includes(v))
         })
       } else {
         return this.options
@@ -129,7 +145,7 @@ export default {
 <style  scoped lang="scss">
 // @import url('https://fonts.googleapis.com/css?family=Roboto+Condensed');
 .input_div{
-  font-family: roboto sans-serif;
+  font-family: "Montserrat";
   position: relative;
   width: 100%;
   height: 35px;

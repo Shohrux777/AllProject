@@ -1,14 +1,19 @@
 <template >
   <!-- 58 mm Xprinter     width: 270px; -->
   <!-- 800 mm Xprinter    width: 400px; -->
-  <div style="width: 270px; background:#fff;" class="paymentCheckPrintCheck" id="printForm">
+  <div style="width: 400px; background:#fff;" class="paymentCheckPrintCheck" id="printForm">
     <div class="img" style="text-align:center;">
       <img id="image" width="100%" alt="">
     </div>
     <div>
       <div  style="text-align:center; margin: 0 0 0 0; padding: 2px 7px; ">
-        <img src="../../assets/novo.svg" height="80" style="width: 100%;" alt="">
-        <h5 style="" class="paymentCheckPrintCheck mt-2 mb-3">OOO 'ExtresMed'</h5>
+        <!-- <img src="../../assets/novo.svg" height="80" style="width: 100%;" alt="">
+        <h5 style="" class="paymentCheckPrintCheck mt-2 mb-3">OOO 'ExtresMed'</h5> -->
+
+        <!-- <img src="../../assets/Aider.svg" height="80" style="width: 100%;" alt=""> -->
+        <h5 style="" class="paymentCheckPrintCheck mt-2 mb-3">
+          ЧП "GIJDUVON DIAGNOSTIKA MASKANI" GIJDUVON DIAGNOSTIKA MASKANI Алпомиш кучаси
+        </h5>
 
         <!-- <img src="../../assets/novo.svg" height="80" style="width: 100%;" alt="">
         <h5 style="" class="paymentCheckPrintCheck mt-2 mb-3">OOO 'NOVO MEDICS' Уратепалик МФЙ. И.Каримов кучаси, 17-уй</h5> -->
@@ -106,9 +111,9 @@
      </div>
      <div style="display:flex; justify-content: center; padding: 0; padding-top: 0px; margin-bottom: 4px;">
       <span style="font-size: 20px;" class="paymentCheckPrintCheck"> 
-        <!-- @Aider_med_bot -->
+        @Gijduvon_diagnostika_bot 
         <!-- @iymon_medical_bot -->
-        @novo_medics_bot
+        <!-- @novo_medics_bot -->
       </span>
      </div>
      <div style="display:flex; justify-content: start; padding: 0; padding-top: 10px;">
@@ -158,8 +163,8 @@ export default {
       checklist: [],
       minut: new Date().toISOString().slice(11, 19),
       dataItems: [],
-      // value: 'https://t.me/Aider_med_bot',
-      value: 'https://t.me/novo_medics_bot',
+      value: 'https://t.me/Gijduvon_diagnostika_bot',
+      // value: 'https://t.me/novo_medics_bot',
       size: 90,
     }
   },

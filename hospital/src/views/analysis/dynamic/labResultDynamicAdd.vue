@@ -700,6 +700,7 @@ export default {
       id: this.$route.params.id,
       result_list: [],
       labUpdate_show: false,
+      phone_number: '',
     }
   },
   computed:{
@@ -745,9 +746,10 @@ export default {
     ...mapActions(['fetch_patient_client', 'fetch_lab_name_list', 'fetch_lab_firs_name_list',
          'fetch_lab_norma_list', 'fetch_lab_edzm_list', 'fetch_lab_center_list', 'fetch_client_info']),
     selectPatient(option){
-    //   console.log(option)
+      console.log(option)
       this.patient_name = option.data.fio;
       this.patient_id = option.data.id;
+      this.phone_number = option.data.phoneNumber;
     },
     async closeUpdateLab(id_lab){
         // console.log(id_lab)
@@ -768,47 +770,48 @@ export default {
             await this.fetch_lab_center_list(id_lab);
         }
     },
-    async submit(){
-        try{
-            await this.fetch_client_info(this.numberEnter);
-            this.$refs.message.success('Added_successfully')
-            if(this.get_client_info.fio){
-                this.patient_name = this.get_client_info.fio;
-                this.patient_id = this.get_client_info.id;
-            }
-            else{this.$refs.message.success('not_found')}
-        }
-        catch{
-            this.$refs.message.success('not_found')
-        }
-    },
     // async submit(){
-    //   try{
-    //     this.loading = true;
-    //     const response = await fetch(this.$store.state.hostname + '/HospitalMarkSeviceTyesWithNumber/getFullInfoById?id=' + this.numberEnter)
-    //     const data = await response.json()
-    //     // console.log('data')
-    //     // console.log(data)
-    //     if(data.id){
-    //       this.patient_name = data.patients.fio;
-    //       this.patient_id = data.patients.id;
-    //       this.loading = false;
-    //       this.$refs.message.success('Added_successfully')
+    //     try{
+    //         await this.fetch_client_info(this.numberEnter);
+    //         this.$refs.message.success('Added_successfully')
+    //         if(this.get_client_info.fio){
+    //             this.patient_name = this.get_client_info.fio;
+    //             this.patient_id = this.get_client_info.id;
+    //             this.phone_number = this.get_client_info.phoneNumber;
+    //         }
+    //         else{this.$refs.message.success('not_found')}
     //     }
-    //     else{
-    //       // this.$refs.msg.error('Error_successfully')
-    //       this.loading = false;
-    //       this.modal_info = data.detail + "    (" + data.routine + ")";
-    //       this.modal_status = true;
-    //       return false;
+    //     catch{
+    //         this.$refs.message.success('not_found')
     //     }
-    //   }
-    //   catch{
-    //     this.loading = false;
-    //     this.modal_info = "Server no connect";
-    //     this.modal_status = true;
-    //   }
     // },
+    async submit(){
+      try{
+        this.loading = true;
+        const response = await fetch(this.$store.state.hostname + '/HospitalMarkSeviceTyesWithNumber/getFullInfoById?id=' + this.numberEnter)
+        const data = await response.json()
+        // console.log('data')
+        // console.log(data)
+        if(data.id){
+          this.patient_name = data.patients.fio;
+          this.patient_id = data.patients.id;
+          this.loading = false;
+          this.$refs.message.success('Added_successfully')
+        }
+        else{
+          // this.$refs.msg.error('Error_successfully')
+          this.loading = false;
+          this.modal_info = data.detail + "    (" + data.routine + ")";
+          this.modal_status = true;
+          return false;
+        }
+      }
+      catch{
+        this.loading = false;
+        this.modal_info = "Server no connect";
+        this.modal_status = true;
+      }
+    },
     async sendFinish(){
       if(this.numberEnter){
         try{
@@ -937,9 +940,10 @@ export default {
         // console.log('data addDynamic')
         // console.log(data)
         if(data.id){
-          this.cls_wnd()
           this.sendFinish()
+          await this.sendMessage();
           this.loading = false;
+          this.cls_wnd();
           this.$refs.message.success('Added_successfully')
           this.$router.push('/lab_print/' + data.id)
           return true;
@@ -957,6 +961,25 @@ export default {
         this.modal_info = "Server no connect";
         this.modal_status = true;
       }
+    },
+    async sendMessage(){
+        let text_sms = 'Hurmatli ' + this.patient_name +'. Sizning '+ this.main_name_title.name_title +'  analiz javobingiz natijasi chiqdi.'
+        try{
+            const requestOptions = {
+            method : "POST",
+            headers: { "Content-Type" : "application/json" },
+          };
+        //   this.loading = true;
+          const response = await fetch(this.$store.state.hostname + '/Users/sendSmsWithPlayMobile?login=aidermed&password_s=h4M%7BjE-%2AQ9O-&url_str=https://send.smsxabar.uz/broker-api/send&phone_number=' + this.phone_number + '&sms_txt=' + text_sms, requestOptions)
+        //   const data = await response.json()
+          console.log('message data get response')
+          console.log(response)
+        //   this.loading = false;
+        }
+        catch(error){
+            console.log('message data erroe chiqdi')
+            console.log(error)
+        }
     }
   }
 }

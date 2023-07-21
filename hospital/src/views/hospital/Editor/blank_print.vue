@@ -3,13 +3,13 @@
     <div class="editor_blank allWidthLab" id="table" style="position:relative;">
       <input type="text" style="position:absolute; top: -500px; outline:none;border:none;" ref="print" @keyup.enter="send">
       <div class="img " style="text-align:center;" v-show="false">
-        <img id="image" width="100%" height="25%" alt="">
+        <img id="image" width="98.5%" height="25%" alt="">
       </div>
-      <div class="img " style="text-align:center;" >
-        <img src="../../../assets/lab1.png" width="100%" alt="">
+      <div class="img" style="text-align:center;" >
+        <img src="../../../assets/lab1.png" width="98.5%" alt="">
       </div>
-      <loader v-if="loading" />
-      <div class="lab_answer upHeightAllspirma320" >
+      <loader v-if="loading"/>
+      <div class="lab_answer upHeightAllspirma320">
         <div class=" " style="display:flex; justify-content:center; flex-direction:column;">
           <table border class="allWidthLabTable">
             <thead>
@@ -18,12 +18,25 @@
                 <th class="fs"  ><span class="font-weight-bold ">ВРАЧ:</span>  {{doc_name}}</th>
               </tr>
               <tr>
-                <th class="fs"   style="width:45%;"><span class="font-weight-bold ">ВОЗРАСТ:</span> {{borndate}} </th>
-                <th class="fs"  ><span class="font-weight-bold ">ДАТА:</span> {{date}}</th>
+                <th class="fs"  style="width:45%;"><span class="font-weight-bold ">ВОЗРАСТ:</span> {{borndate}} </th>
+                <th class="fs" ><span class="font-weight-bold ">ДАТА:</span> {{date}}</th>
               </tr>
             </thead>
           </table>
           <div class="mt-4" v-html="content[0]"></div>
+        </div>
+        <div class="mt-3" v-show="false">
+          <p class="mb-2">
+            Муолажа: {{ tableNumber }}  кун
+          </p>
+          <table border class="allWidthLabTable">
+            <thead>
+              <tr v-for="(item,i) in selectServiceList" :key="i">
+                <th class="fs">{{ item.name }}</th>
+                <td class="fs" style="min-width: 40px;" v-for="index in tableNumber" :key="index"></td>
+              </tr>
+            </thead>
+          </table>
         </div>
         
       </div>
@@ -58,6 +71,12 @@ export default {
           return []
         }
       },
+      selectServiceList:{
+        type: Array,
+        default(){
+          return []
+        }
+      },
       patient_name:
       {
         type: String,
@@ -83,7 +102,11 @@ export default {
         type: String,
         return: ''
       },
-
+      tableNumber:
+      {
+        type: Number,
+        return: 0
+      },
     },
   data(){
     return{
@@ -196,27 +219,27 @@ th, td{
   padding: 0 !important;
   padding-bottom: 5px !important;
   margin-bottom: 0px !important;
-  font-size: 26px !important;
+  font-size: 27px !important;
 }
 .editor_blank div{
-  font-size: 26px !important;
+  font-size: 27px !important;
 }
 .editor_blank h6{
-  font-size: 26px !important;
+  font-size: 27px !important;
 }
 .editor_blank h5{
-  font-size: 30px !important;
+  font-size: 32px !important;
 }
 .editor_blank h4{
-  font-size: 35px !important;
+  font-size: 37px !important;
 }
 .editor_blank h3{
-  font-size: 40px !important;
+  font-size: 42px !important;
 }
 .editor_blank h2{
-  font-size: 45px !important;
+  font-size: 47px !important;
 }
 .editor_blank h1{
-  font-size: 50px !important;
+  font-size: 52px !important;
 }
 </style>

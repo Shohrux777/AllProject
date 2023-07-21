@@ -581,5 +581,10 @@
     "back": "Назад",
     "srok": "Срок",
     "manifacturer_name": "Производитель",
-    "sht": "шт (piece)"
+    "sht": "шт (piece)",
+    "info_report": "Отчеть",
+    "send_report": "Отп. пациенты отчета",
+    "not_authorization": "Пароль и логин не дают",
+    "user_connect_doctor": "Подключить врача к пользователю",
+    "Note": "Чат парол"
 }

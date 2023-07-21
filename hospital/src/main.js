@@ -17,6 +17,10 @@ import Vuelidate from 'vuelidate'
 import VueApexCharts from 'vue-apexcharts'
 import VMdDateRangePicker from "v-md-date-range-picker";
 
+import JsonExcel from "vue-json-excel";
+ 
+Vue.component("downloadExcel", JsonExcel);
+
 import VueQRCodeComponent from 'vue-qrcode-component'
 
 Vue.component('qr-code', VueQRCodeComponent)

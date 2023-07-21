@@ -52,7 +52,7 @@
           console.log(data)
           
           if(data.id){
-            this.$emit('close');
+            this.$emit('close', );
             this.CardMoney = null;
             this.CashMoney = null;
           }

@@ -6,7 +6,7 @@
       <div class="addxizmat px-2 ">
         <div class="row">
           <div class="col-12">
-            <mdb-input label="Ф.И.О" v-model="name" outline/>
+            <mdb-input label="Ф.И.О" ref="fioRF" v-model="name" outline/>
             <small class="invalid-text"  v-if="$v.name.$dirty && !$v.name.required" >
               {{$t('name_invalid_text')}}
             </small>
@@ -17,7 +17,7 @@
                 @input="changeInput" v-model="phone" placeholder="(--) --- ----" outline/>
               <small style="position: absolute; top:-10px; left:8px; color:#5B5B5B;" class="bg-white px-1">{{$t('phoneNumber')}}</small>
             </div>
-            <mdb-input label="Адрес" class="mt-3" v-model="adress" outline/>
+            <mdb-input label="Адрес" class="mt-0" v-model="adress" outline/>
           </div>
           <div class="col-12" style="margin-top: -15px;">
               <RegSelect
@@ -70,6 +70,7 @@ export default {
         district_id:null,    
         id: 0,
         loading: false,
+        chatParol: '',
       }
     },
     props:{
@@ -86,6 +87,10 @@ export default {
     if(Object.keys(this.options).length != 0){
       this.id = this.options.Id
       this.name = this.options.Name
+      this.chatParol = this.options.Note
+      if(this.chatParol == null || this.chatParol == undefined){
+        this.chatParol = this.makeid(6)
+      }
       var temp = ''
       for(let i=4;i<this.options.PhoneNumber.length; i++){
         temp += this.options.PhoneNumber[i]
@@ -94,13 +99,26 @@ export default {
       this.phone = !y[2] ? y[1] : '(' + y[1] + ') ' + y[2] + (y[3] ? '-' + y[3] : '');
       // this.phone = this.options.PhoneNumber
       this.adress = this.options.Address
+      this.district_id = this.options.DistrictsId
+      this.district_name = this.options.districts.Name
     }else{
       this.cls_wnd();
+      this.chatParol = this.makeid(6);
     }
+    this.$refs.fioRF.focus();
   },
   computed: mapGetters(['get_district_list']),
     methods: {
       ...mapActions(['fetch_contragent', 'fetch_district']),
+      makeid(length) {
+        var result = '';
+        var characters  = 'abcdefghijklmnopqrstuvwxyz123456789';
+        var charactersLength = characters.length;
+        for ( var i = 0; i < length; i++ ) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+      },
       changeInput(){
         var x = this.phone.replace(/\D/g, '').match(/(\d{0,2})(\d{0,3})(\d{0,4})/);
         this.phone = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
@@ -141,6 +159,7 @@ export default {
               "name": this.name,
               "phoneNumber" : '+998' + this.phone,
               "address" : this.adress,
+              "note": this.chatParol,
               "districtsId" : this.district_id,
             // "code" : 0
             })

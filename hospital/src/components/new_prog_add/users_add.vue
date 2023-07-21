@@ -7,13 +7,14 @@
         <div class="userEnter px-3 pb-2">
           <div class="row">
             <div class="col-12">
-              <mdb-input label="Название" v-model="name" outline/>
+              <mdb-input label="Ф.И.О" ref="fioFocus" v-model="name" outline/>
               <small class="invalid-text"  v-if="$v.name.$dirty && !$v.name.required" >
                   {{$t('name_invalid_text')}}
                 </small>
               <RegSelect
                 label="Отдель"
                 @select="depart_func"
+                @remove="depart_id = null; depart_name = '';"
                 :options="allDepartments.rows"
                 :selected="depart_name"
                />
@@ -27,6 +28,7 @@
               <RegSelect
                 label="Должность"
                 @select="position_func"
+                @remove="position_id = null; position_name = '';"
                 :options="get_position_list.rows"
                 :selected="position_name"
                />
@@ -36,13 +38,15 @@
                   {{$t('select_item')}}
                 </small>
             </div>
-            <div class="custom-control custom-checkbox px-5 mt-3">
+            <div class="d-flex justify-content-between">
+              <div class="custom-control custom-checkbox px-5 mt-3">
                 <input type="checkbox" v-model="men" @click="menFunc" class="custom-control-input" id="defaultUnchecked">
-                <label class="custom-control-label" for="defaultUnchecked">Мужской</label>
-            </div>
-            <div class="custom-control custom-checkbox px-5 mt-3">
-                <input type="checkbox" v-model="girl" @click="girlFunc"  class="custom-control-input" id="defaultUnchecked2">
-                <label class="custom-control-label" for="defaultUnchecked2">Женский</label>
+                <label class="custom-control-label polType" for="defaultUnchecked">Мужской</label>
+              </div>
+              <div class="custom-control custom-checkbox px-5 mt-3">
+                  <input type="checkbox" v-model="girl" @click="girlFunc"  class="custom-control-input" id="defaultUnchecked2">
+                  <label class="custom-control-label polType" for="defaultUnchecked2">Женский</label>
+              </div>
             </div>
 
             <div class="col-12">
@@ -51,6 +55,7 @@
               <RegSelect
                 label="Кабинет"
                 @select="rooms_func"
+                @remove="room_id = null; room_name = '';"
                 :options="get_rooms_list.rows"
                 :selected="room_name"
                />
@@ -65,7 +70,8 @@
         </div>
         <div class="userPicture ">
           <div class="user_img">
-            <img src="" id="prewImage"  width= "213" height= "249" alt="">
+            <img src="" id="prewImage" v-show="pictureshow" width= "213" height= "249" alt="">
+            <div style="width: 123px; height: 249px;" v-show="!pictureshow"></div>
             <div class="mt-2" style="margin-left: 0px;">
               <div class="">
                 <input type="file" hidden  id="inputGroupFile01" v-on:change="previewFile" aria-describedby="inputGroupFileAddon01">
@@ -73,7 +79,7 @@
                 <div class="text-center  mt-2 ">
                   <label for="inputGroupFile01" 
                     style="cursor: pointer; font-size:13px;" 
-                    class=" py-1 mt-1 px-4 rounded  bg-primary shadow text-white">
+                    class=" py-1 mt-1 px-4 rounded download_bg shadow text-white">
                     Download
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-camera-rotate mb-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#fff" fill="none" stroke-linecap="round" stroke-linejoin="round">
                       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -133,6 +139,7 @@ export default {
         position_id: null,
         pol: 1,
         base64: '',
+        pictureshow: false,
         
       }
     },
@@ -156,12 +163,15 @@ export default {
     this.fetch_position()
     this.fetch_rooms()
     await this.options;
+
     if(Object.keys(this.options).length != 0){
       console.log('i am using')
       this.update();
     }else{
       this.cls_wnd();
     }
+    this.$refs.fioFocus.focus();
+
   },
 
     methods: {
@@ -180,6 +190,10 @@ export default {
       update(){
         // console.log('this.option')
         // console.log(this.option)
+        this.$refs.fioFocus.focus();
+
+        // this.nextTick(() => {
+        // });
         this.name = this.options.fio;     
         this.tel = this.options.phone;
         this.depart_name = this.options.depart_name;
@@ -191,6 +205,9 @@ export default {
         this.id = this.options.id;
         var img = document.getElementById('prewImage');
         img.src = this.options.img;
+        if(this.options.img != 'http://192.168.1.177:8080/m_users'){
+          this.pictureshow = true;
+        }
         if(this.options.polId == 1){
           this.men = true;
           this.girl = false;
@@ -295,6 +312,7 @@ export default {
       },
         previewFile(){
           console.log('dsd')
+          this.pictureshow = true;
           const preview = document.getElementById('prewImage');
           const file = document.querySelector('input[type=file]').files[0];
           const reader = new FileReader();
@@ -319,7 +337,8 @@ export default {
 .userPicture .user_img{
   width: 215px;
   height: 250px;
-  border: 1px solid rgb(164, 164, 164);
+  /* border: 1px solid rgb(164, 164, 164); */
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   border-radius: 3px;
   background-image: url('../../assets/patientAvatar.png');
   background-size: cover; 
@@ -334,5 +353,11 @@ export default {
   display: flex;
   justify-content: center;
   margin-top: 25px;
+}
+.polType{
+  font-size: 14.2px;
+}
+.download_bg{
+  background-image: radial-gradient( circle farthest-corner at 12.3% 19.3%,  rgba(85,88,218,1) 0%, rgba(95,209,249,1) 100.2% );
 }
 </style>

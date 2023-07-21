@@ -19,10 +19,10 @@
                   <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
                 </svg>
               </div>
-              <input type="text" v-model="login" placeholder="User name">
+              <input type="text" v-model="login" ref="loginINP" style="font-size: 16px;" placeholder="Логин">
               <small class="invalid-text" style="margin-top: 115px; margin-left: -125px;"  v-if="$v.login.$dirty && !$v.login.required" >
-              {{$t('name_invalid_text')}}
-            </small>
+                {{$t('name_invalid_text')}}
+              </small>
             </div>
             <div class="password border-bottom d-flex justify-content-center align-items-center px-2">
               <div class="d-flex ">
@@ -33,13 +33,13 @@
                   <path d="M8 11v-4a4 4 0 0 1 8 0v4" />
                 </svg>
               </div>
-              <input type="password" v-model="pass"  @input="handleHashing($event.target.value)" placeholder="Password">
+              <input type="password" v-model="pass" style="font-size: 16px;"  @input="handleHashing($event.target.value)" placeholder="Парол">
               <small class="invalid-text" style="margin-top: 115px; margin-left: -125px;"   v-if="$v.pass.$dirty && !$v.pass.required" >
                 {{$t('name_invalid_text')}}
               </small>
             </div>
             <div class="sub_login d-flex justify-content-center  align-items-center">
-               <mdb-btn  color="primary" type="submit" p="r5 l5 t2 b2" style="font-size: 12px;">Войти</mdb-btn>  
+               <mdb-btn  color="primary" type="submit" p="r5 l5 t2 b2" style="font-size: 11px;">Войти</mdb-btn>  
             </div>
           </div>
         </form>
@@ -72,12 +72,16 @@ export default {
         loading: false,
       }
     },
-  async mounted(){  
+  async mounted(){
+    this.$refs.loginINP.focus();
     localStorage.cont_name = '';
     localStorage.client_id_Lab = null;
     localStorage.finish_serv_Lab = [];
     localStorage.labBack = false;
     localStorage.cont_id = null;
+    localStorage.DocServFio = '';
+    localStorage.DocServId = null;
+    localStorage.DocServDocId = null;
     await this.fetch_auth_list();
     localStorage.Shablon = ['']
     localStorage.ShablonName = '',
@@ -86,18 +90,16 @@ export default {
     localStorage.docName = ""
     localStorage.Type = null;
     localStorage.docId = null;
-    localStorage.size_value = 15
+    localStorage.size_value = 1000000;
     localStorage.numPage = 1
     localStorage.pageNum = 1
     localStorage.Items_count = 10
-    console.log(this.auth_user_list)
     if(this.auth_user_list.length == 0){
       localStorage.Login = "hello"
       localStorage.AuthId = 1;
       localStorage.Type = 0;
       this.$router.push('/m_users')
     }
-    // console.log(localStorage.AuthId)
   },
   computed: mapGetters(['auth_user_list']),
   methods: {
@@ -105,7 +107,6 @@ export default {
     handleHashing (data) {
         this.pass = data
         this.md = md5(data)
-        // console.log(this.md)
       },
     async submit(){
           if(this.$v.$invalid )
@@ -118,7 +119,7 @@ export default {
         const response = await fetch(this.$store.state.hostname + '/Authorization/checkuser?password=' + this.md + '&login=' + this.login)
         const data = await response.json()
         this.loading = false;
-        console.log(data)
+        // console.log(data)
         if(data.id != 0){
           localStorage.Login = data.login
           localStorage.AuthId = data.id

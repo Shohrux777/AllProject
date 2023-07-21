@@ -8,7 +8,7 @@
    <transition name="slide"  appear>
      <div class="card modal_FP" style="z-index: 10000;" :style="{'width': width}" v-show="show">
        <div class="card-header d-flex justify-content-between" :class="'bg-' + headerbackColor + ' ' + classes">
-         <h5 class="m-0" :style="{'color': titlecolor}">{{title}}</h5>
+         <h6 class="m-0" style="font-size: 17.5px;" :style="{'color': titlecolor}">{{title}}</h6>
          <svg @click="close" xmlns="http://www.w3.org/2000/svg" style="border-radius: 50%; cursor:pointer;" class="icon icon-tabler icon-tabler-x bg-danger p-1" width="21" height="21" viewBox="0 0 24 24" stroke-width="2.7" stroke="#fff" fill="none" stroke-linecap="round" stroke-linejoin="round">
           <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
           <line x1="18" y1="6" x2="6" y2="18" />

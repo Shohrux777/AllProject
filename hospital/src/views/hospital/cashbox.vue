@@ -61,7 +61,7 @@
                   <div class="qty borderSolder py-2">
                     <span class="ml-3">{{$t('discount')}}</span>
                     <div class="text-right px-3 mt-1">
-                      <p>0</p>
+                      <p>{{ skidkaString }}</p>
                     </div>
                   </div>
                 </div>
@@ -339,9 +339,11 @@ export default {
       checkIndex: 0,
 
       activ_id : -1,
+      skidkaString: '0',
+      skidka: 0,
     }
   },
-  computed: mapGetters(['get_unpay_patient_list', 'get_service_pay_list', 'summa', 'get_check_print_list', 'get_code_patient']),
+  computed: mapGetters(['get_unpay_patient_list', 'get_service_pay_list', 'summa', 'get_check_print_list', 'get_code_patient', 'get_skidka']),
   mounted(){
     this.fetch_unpayed_patient();
     setInterval(this.fetch_unpayed_patient, 4000);
@@ -366,6 +368,8 @@ export default {
       this.patient_name = '...';
       this.patient_id = null;
       this.summaString = '0';
+      this.skidkaString = '0';
+      this.skidka = 0;
       this.checkIndex = 0;
       console.log('this.cashOption')
       console.log(this.cashOption)
@@ -391,10 +395,11 @@ export default {
       this.patient_id_for_ochred = option.data.id;
       await this.fetch_service_pay_list(option.data.id);
       this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-      this.$nextTick(function () {
-        this.$refs.enterSumma.focus();
-        this.enterSumma = '';
-      })
+      this.skidkaString = this.get_skidka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+      // this.$nextTick(function () {
+      //   this.$refs.enterSumma.focus();
+      //   this.enterSumma = '';
+      // })
       console.log(this.get_service_pay_list)
     },
     async selectOption(option){
@@ -407,7 +412,8 @@ export default {
       this.activ_id = option.id;
       this.patient_id_for_ochred = option.id;
       await this.fetch_service_pay_list(option.id);
-      this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+      this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      this.skidkaString = this.get_skidka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
       
     },
     funcCurrency(n){
@@ -520,6 +526,7 @@ export default {
             await this.fetch_service_pay_list(this.patient_id);
             this.fetch_unpayed_patient();
             this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+            this.skidkaString = this.get_skidka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
             if(this.get_service_pay_list.length == 0){
               this.patient_name = '';
               this.patient_id = null;
@@ -589,7 +596,9 @@ export default {
       }
     },
     infocash(){
-      this.$router.push('/dailyForPayment')
+      // this.$router.push('/dailyForPayment')
+      this.$router.push('/kunlikkassa')
+
     },
     async payCash(){
       this.confirm = true;

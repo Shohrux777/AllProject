@@ -50,14 +50,14 @@
                     <tr class="header ">
                       <th  width="40" class="text-left">№</th>
                       <th width="200">{{$t('patient_name')}}</th>
-                      <th>{{$t('contragent_name')}}</th>
+                      <!-- <th>{{$t('contragent_name')}}</th> -->
                       <th>{{$t('service_name')}}</th>
-                      <th >{{$t('service_price')}}</th>
+                      <!-- <th >{{$t('service_price')}}</th>
                       <th >{{$t('paymentInCash')}}</th>
-                      <th >{{$t('paymentInCard')}}</th>
+                      <th >{{$t('paymentInCard')}}</th> -->
                       <th >{{$t('regisdate')}}</th>
                       <th >{{$t('payed')}}</th>
-                      <th >{{$t('finish')}}</th>
+                      <!-- <th >{{$t('finish')}}</th> -->
                       <th v-show="false" class="text-center">{{$t('Action')}}</th>
   
                     </tr>
@@ -66,21 +66,21 @@
                     <tr v-for="(row,rowIndex) in item.item" :key="rowIndex">
                       <td> <span >{{rowIndex+1}}</span> </td>
                       <td> <span >{{row.patients.FIO}}</span> </td>
-                      <td> <span >{{row.contragent.Name}}</span> </td>
+                      <!-- <td> <span >{{row.contragent.Name}}</span> </td> -->
                       <td> <span >{{row.ServiceName}}</span> </td>
-                      <td> <span >{{row.Summ}}</span> </td>
+                      <!-- <td> <span >{{row.Summ}}</span> </td>
                       <td> <span :class="{'text-danger': row.PaymentInCash == 0, 'text-success': row.PaymentInCash != 0}">{{row.PaymentInCash}}</span> </td>
-                      <td> <span :class="{'text-danger': row.PaymentInCard == 0, 'text-success': row.PaymentInCard != 0}">{{row.PaymentInCard}}</span> </td>
+                      <td> <span :class="{'text-danger': row.PaymentInCard == 0, 'text-success': row.PaymentInCard != 0}">{{row.PaymentInCard}}</span> </td> -->
                       <td> <p class="m-0">{{row.RegistratedDate.slice(0,10)}}</p> <p class="m-0">{{row.RegistratedDate.slice(11,19)}}</p> </td>
   
                       <td>
                         <mdb-badge v-show="row.FinishPayment === true" style="padding: 2px 8px;" pill color="success">{{$t("payed")}}</mdb-badge>
                         <mdb-badge v-show="row.FinishPayment === false" style="padding: 2px 8px;" pill color="danger">{{$t('unpayed')}}</mdb-badge>
                       </td>
-                      <td>
+                      <!-- <td>
                         <mdb-badge v-show="row.Finish === true" style="padding: 2px 8px;" pill color="success">{{$t("проверил")}}</mdb-badge>
                         <mdb-badge v-show="row.Finish === false" style="padding: 2px 8px;" pill color="danger">{{$t('непроверенный')}}</mdb-badge>
-                      </td>
+                      </td> -->
                       <!-- <td v-show="row.Finish === false" class="text-center" style="cursor:pointer;"  @click="change_doctor(row)">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-replace" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#00abfb" fill="none" stroke-linecap="round" stroke-linejoin="round">
                           <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -186,21 +186,21 @@
                   <tr v-for="(row,rowIndex) in item.item" :key="rowIndex">
                     <td> <span >{{rowIndex+1}}</span> </td>
                     <td> <span >{{row.patients.FIO}}</span> </td>
-                    <td> <span >{{row.contragent.Name}}</span> </td>
+                    <!-- <td> <span >{{row.contragent.Name}}</span> </td> -->
                     <td> <span >{{row.ServiceName}}</span> </td>
                     <td> <span >{{row.Summ}}</span> </td>
-                    <td> <span :class="{'text-danger': row.PaymentInCash == 0, 'text-success': row.PaymentInCash != 0}">{{row.PaymentInCash}}</span> </td>
-                    <td> <span :class="{'text-danger': row.PaymentInCard == 0, 'text-success': row.PaymentInCard != 0}">{{row.PaymentInCard}}</span> </td>
+                    <!-- <td> <span :class="{'text-danger': row.PaymentInCash == 0, 'text-success': row.PaymentInCash != 0}">{{row.PaymentInCash}}</span> </td>
+                    <td> <span :class="{'text-danger': row.PaymentInCard == 0, 'text-success': row.PaymentInCard != 0}">{{row.PaymentInCard}}</span> </td> -->
                     <td> <p class="m-0">{{row.RegistratedDate.slice(0,10)}}</p> <p class="m-0">{{row.RegistratedDate.slice(11,19)}}</p> </td>
   
                     <td>
                       <mdb-badge v-show="row.FinishPayment === true" style="padding: 2px 8px;" pill color="success">{{$t("payed")}}</mdb-badge>
                       <mdb-badge v-show="row.FinishPayment === false" style="padding: 2px 8px;" pill color="danger">{{$t('unpayed')}}</mdb-badge>
                     </td>
-                    <td>
+                    <!-- <td>
                       <mdb-badge v-show="row.Finish === true" style="padding: 2px 8px;" pill color="success">{{$t("проверил")}}</mdb-badge>
                       <mdb-badge v-show="row.Finish === false" style="padding: 2px 8px;" pill color="danger">{{$t('непроверенный')}}</mdb-badge>
-                    </td>
+                    </td> -->
   
                   </tr>
                 </tbody>
@@ -319,7 +319,7 @@
        watch: {
             patientId: async function () {
                 await this.IdFunc();
-                await this.fetch_patient_drugs();
+                // await this.fetch_patient_drugs();
             },
         },
       async mounted(){
@@ -327,7 +327,7 @@
           this.admin = true;
         }
         await this.IdFunc();
-        await this.fetch_patient_drugs();
+        // await this.fetch_patient_drugs();
       },
       computed: mapGetters(['get_client_info','get_contragent_list', 'get_report_by_data_time',
          'get_report_by_time_card_cash', 'get_service_group_list', 'get_patient_client_list', 'auth_user_list']),
@@ -336,21 +336,21 @@
           'fetch_client_info', 'fetch_auth_list']),
         ...mapMutations(['district_row_delete']),
 
-        async fetch_patient_drugs(){
-          console.log('ishladi kirdi')
-          try{
-            const response = await fetch(this.$store.state.hostname + "/HospitalPatientDrugs/getPaginationWithPatientId?page=0&size=100&patient_id=" +  this.patientId);
-            const data = await response.json();
-            console.log('data items drugs')
-            console.log(data)
-            if(data.items_count){
-             this.patient_drugs_list = data.items_list;
-            }
-          }
-          catch{
-            console.log('Oshibka')
-          }
-        },
+        // async fetch_patient_drugs(){
+        //   console.log('ishladi kirdi')
+        //   try{
+        //     const response = await fetch(this.$store.state.hostname + "/HospitalPatientDrugs/getPaginationWithPatientId?page=0&size=100&patient_id=" +  this.patientId);
+        //     const data = await response.json();
+        //     console.log('data items drugs')
+        //     console.log(data)
+        //     if(data.items_count){
+        //      this.patient_drugs_list = data.items_list;
+        //     }
+        //   }
+        //   catch{
+        //     console.log('Oshibka')
+        //   }
+        // },
   
         
         print(){
@@ -623,12 +623,6 @@
       top: -8px;
     }
   }
-  .TablePatientDocId{
-      // height: 400px;
-      // overflow: hidden;
-      // overflow-y: auto;
-      // border: 1px solid #ddd;
-    }
     .myTableFullInfo {
     /* border-collapse: collapse; */
     table-layout:fixed;
@@ -652,10 +646,6 @@
   
   .myTableFullInfo tr {
     border-bottom: 1px dashed rgb(240, 240, 240);
-  }
-  
-  .myTableFullInfo tr.header, .myTableFullInfo tr:hover {
-    // background-color: #f1f1f1;
   }
   .delIcon{
     color: rgb(251, 70, 70);

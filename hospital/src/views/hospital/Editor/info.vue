@@ -1,6 +1,7 @@
 <template>
   <div class="bg-white telegram_page">
-    <form @submit.prevent="submit" class="telegram_filter pt-5 pb-5">
+    <loader v-if="loading"/>
+    <form v-else @submit.prevent="submit" class="telegram_filter pt-5 pb-5">
       <div class="container card shadow">
         <div >
           <h5 class="pt-3">Extreme Medics сервис</h5>
@@ -178,38 +179,50 @@ export default {
     },
     async sendPatient(){
       try{
+          this.loading = true;
          const response = await fetch(this.$store.state.hostname + "/Payments/sendMessageToAllPatients?message_str=" + this.patients);
           const data = await response.json()
+          this.loading = false;
           console.log(data)
           this.$refs.message.success('Added_successfully')
           this.patients = '';
       }
       catch{
+        this.loading = false;
+
         this.$refs.message.error('error')
       }
     },
     async sendUser(){
       try{
+        this.loading = true;
         const response = await fetch(this.$store.state.hostname + "/Payments/sendMessageToAllUsers?message_str=" + this.users);
         const data = await response.json()
+        this.loading = false;
         console.log(data)
         this.$refs.message.success('Added_successfully')
          this.users = '';
       }
       catch{
+        this.loading = false;
+
         this.$refs.message.error('error')
       }
     },
     async sendContragent(){
       try{
+        this.loading = true;
         const response = await fetch(this.$store.state.hostname + "/Payments/sendMessageToAllContragents?message_str=" + this.contragent);
         const data = await response.json()
+        this.loading = false;
         console.log(data)
         this.$refs.message.success('Added_successfully')
         this.contragent = '';
       }
       catch{
+        this.loading = false;
         this.$refs.message.error('error')
+
       }
     },
     async sendButton(){

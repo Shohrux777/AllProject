@@ -48,10 +48,10 @@
                   <td> <span >{{row.end_date_bron.slice(0,10)}}</span> </td>   
                   <td> <span >{{row.price_for_one_day.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>   
                   <td> <span class="text-success">{{row.payed_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>   
-                  <td> <span class="text-danger"> {{row.need_payed_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>   
+                  <td> <span class="text-danger font-weight-bold"> {{row.need_payed_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>   
                   <td class="text-end"> 
                     <mdb-btn color="success" @click="payed_payment(row)" style="font-size: 9px;" class="px-2 py-1 ml-0">{{$t('pay')}}</mdb-btn> 
-                    <mdb-btn color="primary" :disabled="row.need_payed_summ != 0" style="font-size: 9px;" class="px-2 py-1 ml-0">{{$t('finish')}}</mdb-btn> 
+                    <mdb-btn color="primary" @click="fetch_finish_payment(row.id)" :disabled="row.need_payed_summ != 0" style="font-size: 9px;" class="px-2 py-1 ml-0">{{$t('finish')}}</mdb-btn> 
                   </td>
                 </tr>
               </tbody>
@@ -211,6 +211,11 @@ import pay_cash from './pay_cash.vue'
         const res_data = await res.json();
         console.log('res_data')
         console.log(res_data)
+        if(res.status == 200 || res.status == 201){
+          this.refresh();
+          this.$refs.message.success('Bemor xonadan chiqarildi');
+
+        }
       },
 
       print(){
@@ -263,12 +268,6 @@ import pay_cash from './pay_cash.vue'
     top: -8px;
   }
 }
-.TablePatientDocIds{
-    // height: 400px;
-    // overflow: hidden;
-    // overflow-y: auto;
-    // border: 1px solid #ddd;
-  }
   .myTable {
   /* border-collapse: collapse; */
   table-layout:fixed;
@@ -294,9 +293,6 @@ import pay_cash from './pay_cash.vue'
   border-bottom: 1px solid rgb(240, 240, 240);
 }
 
-.myTable tr.header, .myTable tr:hover {
-  // background-color: #f1f1f1;
-}
 .delIcon{
   color: rgb(251, 70, 70);
   font-size: 13px;

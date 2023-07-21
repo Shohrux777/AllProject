@@ -434,13 +434,13 @@ export default {
 }
 .myTable th{
   font-weight: 600;
-  font-size:12.5px;
+  font-size:12px;
 }
 .myTable td{
   text-overflow: ellipsis; 
   overflow: hidden; 
   white-space: nowrap;
-  font-size:13.4px;
+  font-size:12.5px;
 }
 .myTable th, .myTable td {
   text-align: left;

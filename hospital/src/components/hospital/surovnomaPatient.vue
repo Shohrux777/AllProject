@@ -34,7 +34,6 @@
               </div>
               <div class="border-bottom px-3 w-100">
                 <a> {{get_patient_info.patient_tel}}</a>
-
               </div>
             </div>
           </div>
@@ -57,7 +56,6 @@
               </div>
               <div class="border-bottom px-2 w-100">
                 <a> {{get_patient_info.contragent_tel}}</a>
-
               </div>
             </div>
           </div>
@@ -68,7 +66,7 @@
           </div>
           <div class="border-bottom w-100"></div>
         </div>
-        <div class="mt-3 text-center ">
+        <div class="mt-3 text-center">
           <h6 class="font-weight-bold">Танангизда қуйидаги мослама, холатлари мавжудми:</h6>
         </div>
       
@@ -494,7 +492,7 @@ export default {
           if(data.id){
             this.cls_wnd();
             this.$emit('close')
-            // this.printCheck()
+            // this.printCheck();
             // this.fetch_service_type();
             this.$refs.message.success('Added_successfully')
           }

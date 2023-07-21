@@ -16,7 +16,7 @@
         </div>
       </div>
       <div style="margin: 0px 0px; margin-top: 3px; display:flex; justify-content:center; align-items: center; width: 190px;">
-        <barcode  width="1" style="border:none !important;" height="25" displayValue="false" marginTop="1" marginBottom="1" v-bind:value="barcodeValue">
+        <barcode  width="1" style="border:none !important;" height="25" displayValue="false" marginTop="1" marginBottom="1" v-bind:value="numId">
         </barcode>
       </div>
     </div>

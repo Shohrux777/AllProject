@@ -77,9 +77,16 @@ export default {
             for( let i=0; i<data.items_list.length; i++){
                 let bed_bron_qty = 0;
                 for(let j=0; j<data.items_list[i].bedsList.length; j++){
-                    if(data.items_list[i].bedsList[j].not_finished_payment_list.length>0){
-                        bed_bron_qty ++;
+                    for(let k=0; k<data.items_list[i].bedsList[j].not_finished_payment_list.length; k++){
+                        if(data.items_list[i].bedsList[j].not_finished_payment_list[k].finish_payment == false){
+                            bed_bron_qty ++;
+                        }
                     }
+                    // real qismi bu tepadagi forni uchirsa ishlaydi
+                    
+                    // if(data.items_list[i].bedsList[j].not_finished_payment_list.length>0){
+                    //     bed_bron_qty ++;
+                    // }
                 }
                 let a = {
                     room: data.items_list[i],

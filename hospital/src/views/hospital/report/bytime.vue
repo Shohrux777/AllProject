@@ -102,7 +102,7 @@
               <tr class="header ">
                 <th  width="40" class="text-left">№</th>
                 <th width="200">{{$t('patient_name')}}</th>
-                <!-- <th>{{$t('contragent_name')}}</th> -->
+                <th>{{$t('contragent_name')}}</th>
                 <th>{{$t('service_name')}}</th>
                 <th >{{$t('service_price')}}</th>
                 <th >{{$t('paymentInCash')}}</th>
@@ -119,7 +119,7 @@
               <tr v-for="(row,rowIndex) in get_payment_list" :key="rowIndex">
                 <td> <span >{{rowIndex+1}}</span> </td>
                 <td> <span >{{row.patient_name}}</span> </td>
-                <!-- <td> <span >{{row.contragent_name}}</span> </td> -->
+                <td> <span >{{row.contragent_name}}</span></td>
                 <td> <span >{{row.service_name}}</span> </td>
                 <td> <span >{{row.service_price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
                 <td> <span :class="{'text-danger': row.paymentInCash == 0, 'text-success': row.paymentInCash != 0}">{{row.paymentInCash.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>

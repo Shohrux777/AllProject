@@ -7,8 +7,10 @@
     </div>
     <div>
       <div  style="text-align:center; margin: 10px 0 0 0; padding: 2px 7px; ">
-        <img src="../../assets/iymon.svg" height="80" style="width: 100%;" alt="">
-        <h4 style="" class="paymentCheckPrintCheck mt-2 mb-3">IYMON MEDICAL SBJ </h4>
+        <!-- <img src="../../assets/iymon.svg" height="80" style="width: 100%;" alt="">
+        <h4 style="" class="paymentCheckPrintCheck mt-2 mb-3">IYMON MEDICAL SBJ </h4> -->
+        <img src="../../assets/Aider.svg" height="80" style="width: 100%;" alt="">
+        <h5 style="" class="paymentCheckPrintCheck mt-2 mb-3">AIDER MED CENTR</h5>
       </div>
      <!-- <div  style="text-align:center; margin-bottom: 12px; padding: 0 10px"  >
         <a  style="font-weight: bold; font-size: 16px;" class="paymentCheckPrintCheck">ISTIQBOL <i class="fas fa-heartbeat"></i> MED CENTER</a>

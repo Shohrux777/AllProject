@@ -14,7 +14,7 @@
           />
         </div>
         <div class="col-3 ">
-          <mdb-input label="Title" class="m-0 p-0" v-model="titleHos" size="sm"/>
+          <mdb-input label="Title" class="m-0 p-0"  v-model="titleHos" size="sm"/>
         </div>
         <div class="col-3 ">
           <mdb-input label="Doctor" class="m-0 p-0" v-model="doc_name" size="sm"/>

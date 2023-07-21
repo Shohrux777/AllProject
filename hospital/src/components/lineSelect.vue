@@ -1,7 +1,7 @@
 <template>
   <div class="line-select">
 
-     <input type="text" class="form-control form-control-sm" :placeholder="label"
+     <input type="text" class="form-control form-control-sm" style="font-size: 13px;" :placeholder="label"
      @click="select_input"
     :value="selected"/>
 
@@ -15,7 +15,7 @@
         />
       </div>
 
-      <p v-for="option in filteredList" :key="option.id"
+      <p v-for="option in filteredList" :key="option.id" style="font-size: 13px;"
           @click="selectOption(option)"
       >
         {{option.name}}

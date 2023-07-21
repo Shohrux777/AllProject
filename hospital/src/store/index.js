@@ -51,9 +51,6 @@ import serviceGroupShowDoc from './modules/hospital/serviceGroupShowDoc'
 import activeService from './modules/hospital/activeService'
 import laboratory from './modules/hospital/laboratory'
 
-
-
-
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -61,8 +58,9 @@ export default new Vuex.Store({
         // hostname: 'http://192.168.0.227:5003/api',
         // hostname: 'http://192.168.100.250:5003/api',
         // hostname: 'http://62.209.128.51:5003/api',
-        hostname: 'http://localhost:5003/api',
-        hostname1: 'http://localhost:5003/',
+        hostname: 'http://192.168.1.222:5003/api',
+        hostname1: 'http://192.168.1.222:5003/',
+        hostname2: 'http://192.168.1.222:8088/',
         alert: false,
         info_product: false,
         cashPay_card: true,
