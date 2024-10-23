@@ -1,0 +1,15 @@
+.table_header_bg{
+    background-image: radial-gradient( circle farthest-corner at 10% 20%,  rgb(200, 220, 230) 0%, rgb(196, 223, 228) 90.1% );
+}
+.main_header_bg{
+    background-image: radial-gradient( circle farthest-corner at 10% 20%,  rgb(187, 205, 214) 0%, rgb(196, 223, 228) 90.1% );
+}
+tr:hover{
+    background-image: radial-gradient( circle farthest-corner at 10% 20%,  rgb(234, 244, 254) 0%, rgb(217, 235, 240) 90.1% ) !important;
+}
+.main_header_bg_new{
+    background-image: radial-gradient( circle farthest-corner at 10% 20%,  rgb(137, 189, 213) 0%, rgb(167, 206, 213) 90.1% );
+    padding-bottom: 5px !important;
+    
+}
+// tr:nth-child(even) {background-image: radial-gradient( circle farthest-corner at 10% 20%,  rgb(241, 246, 251) 0%, rgb(232, 238, 240) 90.1% );}
