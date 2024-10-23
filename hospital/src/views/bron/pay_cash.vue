@@ -6,7 +6,7 @@
         <mdb-input v-model="CashMoney" :label="$t('cash')" size="md" outline type="number" />
         <mdb-input v-model="CardMoney" :label="$t('card')" size="md" outline type="number" />
       </div>
-      <div class="text-right">
+      <div class="text-right" v-if="btn_show">
         <div @click="payDivece()">
           <mdb-btn color="success"  p="r4 l4 t2 b2" style="font-size:10px;">{{$t('pay')}} </mdb-btn>  
         </div>
@@ -32,32 +32,44 @@
         CashMoney: null,
         CardMoney: null,
         database: [],
+        btn_show: true,
       }
     },
     computed: mapGetters(['get_code_patient']),
     methods: {
       ...mapActions(['fetch_get_code']),
-      ...mapMutations([ 'Update_check_data', 'updateDebit', 'UpdatecheckInfo']),
+      ...mapMutations([ 'Update_check_data', 'updateDebit', 'UpdatecheckInfo', 'updatebronCheck']),
       async payDivece(){
-          if( this.CashMoney == null){
-              this.CashMoney = 0;
-            }
-          if( this.CardMoney == null){
+          this.btn_show = false;
+          if( this.CashMoney == null || this.CashMoney == ''){
+            this.CashMoney = 0;
+          }
+          if( this.CardMoney == null || this.CardMoney == ''){
             this.CardMoney = 0;
           }
+          if((parseInt(this.CardMoney) + parseInt(this.CashMoney)) > this.option.need_payed_summ){
+            this.$refs.message.error('deffirent_sum');
+            this.btn_show = true;
+            return false;
+          }
           const respon = await fetch(this.$store.state.hostname + '/HospitalBronRoomPayments/addPayment?id=' + this.option.id + 
-          '&cash=' + this.CashMoney + '&card=' + this.CardMoney)
+          '&cash=' + this.CashMoney + '&card=' + this.CardMoney + '&auth_id=' + localStorage.AuthId)
           const data = await respon.json()
-          console.log('nima bor ekan')
+          this.btn_show = true;
+          console.log('nima bor ekan');
           console.log(data)
           
           if(data.id){
-            this.$emit('close', );
+            await this.updatebronCheck(data)
+            this.$emit('close',);
+            
             this.CardMoney = null;
             this.CashMoney = null;
+            this.btn_show = true;
           }
           else{
             this.$refs.message.error('deffirent_sum')
+            this.btn_show = true;
           }
       },
       

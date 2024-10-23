@@ -1,81 +1,131 @@
 <template>
     <div class="main_lab_add">
       <div class="header_lab text-center border-bottom" style="position:relative">
-        <svg @click="$emit('closed')" xmlns="http://www.w3.org/2000/svg" style="position: absolute; left: 10px; top:5px; cursor:pointer;"
-          class="icon icon-tabler icon-tabler-chevron-left" width="30" height="30" viewBox="0 0 24 24" stroke-width="2.5" stroke="#00abfb" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <!-- <svg @click="$emit('closed')" xmlns="http://www.w3.org/2000/svg" style="position: absolute; left: 10px; top:5px; cursor:pointer;"
+          class="icon icon-tabler icon-tabler-chevron-left" width="25" height="25" viewBox="0 0 24 24" stroke-width="2.5" stroke="#00abfb" fill="none" stroke-linecap="round" stroke-linejoin="round">
           <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
           <polyline points="15 6 9 12 15 18" />
-        </svg>
-          <h5 class="m-0 p-0 py-2 text-success">{{$t('Edit')}} лабораторию 
-            <span @click="delLaboratory" class="text-danger" style="cursor:pointer;"> 
+        </svg> -->
+          <mdb-btn @click="delLaboratory" style="position: absolute; left: 10px; top:5px; cursor:pointer; font-size: 9px;" 
+            class="px-3 py-1 m-0" color="danger">
+            Удалить
+          </mdb-btn>
+          <h5 class="m-0 p-0 py-2 text-info" style="font-size: 15.7px;">{{$t('Edit')}} лабораторию 
+            <!-- <span @click="delLaboratory" class="text-danger" style="cursor:pointer;"> 
               <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash-filled" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#fd0061" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                 <path d="M20 6a1 1 0 0 1 .117 1.993l-.117 .007h-.081l-.919 11a3 3 0 0 1 -2.824 2.995l-.176 .005h-8c-1.598 0 -2.904 -1.249 -2.992 -2.75l-.005 -.167l-.923 -11.083h-.08a1 1 0 0 1 -.117 -1.993l.117 -.007h16z" stroke-width="0" fill="currentColor" />
                 <path d="M14 2a2 2 0 0 1 2 2a1 1 0 0 1 -1.993 .117l-.007 -.117h-4l-.007 .117a1 1 0 0 1 -1.993 -.117a2 2 0 0 1 1.85 -1.995l.15 -.005h4z" stroke-width="0" fill="currentColor" />
               </svg>
-            </span>
+            </span> -->
           </h5>
       </div>
-      <div class="main_header_lab_added border-bottom px-4" >
-        <div class="row pt-2">
+      <div class="main_header_lab_added border-bottom px-3" >
+        <div class="row pt-4">
           <div class="col-3 m-0 py-0">
-              <mdb-input class="m-0 py-1" type="text" v-model="main_value.menu_name" label="Название меню" />
+              <mdb-input size="sm" class="m-0 py-1" type="text" v-model="main_value.menu_name" label="Название меню" />
           </div>
           <div class="col-3  m-0 py-0">
-              <mdb-input class="m-0 py-1" type="text" v-model="main_value.blanka_name" label="Название бланка" />
+              <mdb-input size="sm" class="m-0 py-1" type="text" v-model="main_value.blanka_name" label="Название бланка" />
           </div>
           <div class="col-3  m-0 py-0">
-              <mdb-input class="m-0 py-1" type="text" v-model="main_value.pribor_name" label="Прибор"/>
+              <mdb-input size="sm" class="m-0 py-1" type="text" v-model="main_value.pribor_name" label="Прибор"/>
           </div>
           <div class="col-3  m-0 py-0">
-              <mdb-input class=" m-0 py-1" type="text" v-model="main_value.anything" label="Название результата" />
+            <mdb-input size="sm"  type="text" class="w-100 m-0 py-1" v-model="main_value.size_top" placeholder="Нужен паспорт" :label="$t('passportSerialNumber')" />
           </div>
           <div class="col-3 m-0 py-0 d-flex">
             <div class="custom-control custom-checkbox" style="margin-top:15px;">
-              <input type="checkbox" class="custom-control-input" v-model="main_value.first_name_s" id="defaultChecked4" checked>
+              <input  type="checkbox" class="custom-control-input" v-model="main_value.first_name_s" id="defaultChecked4" checked>
               <label class="custom-control-label" for="defaultChecked4"></label>
             </div>
-              <mdb-input  type="text" class="w-100 m-0 py-1" v-model="main_value.first_name" label="Аббревиатура в начале" />
+              <mdb-input size="sm" type="text" class="w-100 m-0 py-1" v-model="main_value.first_name" label="Аббревиатура в начале" />
           </div>
           <div class="col-3 m-0 py-0 d-flex">
             <div class="custom-control custom-checkbox" style="margin-top:15px;">
               <input type="checkbox" class="custom-control-input" v-model="main_value.lab_name_s" id="defaultChecked2" checked>
               <label class="custom-control-label" for="defaultChecked2"></label>
             </div>
-              <mdb-input  type="text" class="w-100 m-0 py-1" v-model="main_value.lab_name" label="Название" />
+              <mdb-input size="sm" type="text" class="w-100 m-0 py-1" v-model="main_value.lab_name" label="Название" />
           </div>
           <div class="col-3 m-0 py-0 d-flex">
             <div class="custom-control custom-checkbox" style="margin-top:15px;">
               <input type="checkbox" class="custom-control-input" v-model="main_value.norma_s" id="defaultChecked3" checked>
               <label class="custom-control-label" for="defaultChecked3"></label>
             </div>
-              <mdb-input  type="text" class="w-100 m-0 py-1" v-model="main_value.norma" label="Норма" />
+              <mdb-input size="sm" type="text" class="w-100 m-0 py-1" v-model="main_value.norma" label="Норма" />
           </div>
           <div class="col-3 m-0 py-0 d-flex">
             <div class="custom-control custom-checkbox" style="margin-top:15px;">
               <input type="checkbox" class="custom-control-input" v-model="main_value.edzm_s" id="defaultChecked5" checked>
               <label class="custom-control-label" for="defaultChecked5"></label>
             </div>
-              <mdb-input  type="text" class="w-100 m-0 py-1" v-model="main_value.edzm" label="Название измерение" />
+              <mdb-input size="sm" type="text" class="w-100 m-0 py-1" v-model="main_value.edzm" label="Название измерение" />
           </div>
           <div class="col-3 m-0 py-0 d-flex">
             <div class="custom-control custom-checkbox" style="margin-top:15px;">
               <input type="checkbox" class="custom-control-input" v-model="main_value.center_s" id="defaultChecked6" checked>
               <label class="custom-control-label" for="defaultChecked6"></label>
             </div>
-              <mdb-input type="text" class="w-100 m-0 py-1" v-model="main_value.center" label="Текстовый центр" />
+              <mdb-input size="sm" type="text" class="w-100 m-0 py-1" v-model="main_value.center" label="Текстовый центр" />
           </div>
           <div class="col-3 m-0 py-0">
-              <mdb-input  type="text" class="w-100 m-0 py-1" v-model="main_value.size_top" placeholder="Нужен паспорт" :label="$t('passportSerialNumber')" />
+            <mdb-input size="sm" class=" m-0 py-1" type="text" v-model="main_value.anything" label="Название результата" />
           </div>
+          <div class="col-3 m-0 py-0 d-flex">
+            <div class="custom-control custom-checkbox" style="margin-top:15px;">
+              <input type="checkbox" class="custom-control-input" v-model="main_value.tableWithout_s" id="defaultChecked8" checked>
+              <label class="custom-control-label" for="defaultChecked8"></label>
+            </div>
+              <mdb-input  size="sm" type="text" disabled class="w-100 m-0 py-1" v-model="main_value.tableWithout" label="таблица" />
+          </div>
+          <div class="col-3 m-0 py-0 d-flex">
+          <div class="custom-control custom-checkbox" style="margin-top:15px;">
+            <input type="checkbox" class="custom-control-input" v-model="main_value.showEmptyTable_s" id="defaultChecked12" checked>
+            <label class="custom-control-label" for="defaultChecked12"></label>
+          </div>
+            <mdb-input  size="sm" type="text" disabled class="w-100 m-0 py-1" v-model="main_value.showEmptyTable" label="Показатель пустой результат" />
+        </div>
+        <div class="col-3 m-0 py-0 d-flex">
+          <div class="custom-control custom-checkbox" style="margin-top:15px;">
+            <input type="checkbox" class="custom-control-input" v-model="main_value.resultFirst_s" id="defaultChecked9" checked>
+            <label class="custom-control-label" for="defaultChecked9"></label>
+          </div>
+            <mdb-input  size="sm" type="text" class="w-100 m-0 py-1" v-model="main_value.resultFirst" label="Название результата 1" />
+        </div>
+        <div class="col-3 m-0 py-0 d-flex">
+          <div class="custom-control custom-checkbox" style="margin-top:15px;">
+            <input type="checkbox" class="custom-control-input" v-model="main_value.resultSecond_s" id="defaultChecked10" checked>
+            <label class="custom-control-label" for="defaultChecked10"></label>
+          </div>
+            <mdb-input  size="sm" type="text" class="w-100 m-0 py-1" v-model="main_value.resultSecond" label="Название результата 2" />
+        </div>
+        <div class="col-3 m-0 py-0 d-flex">
+          <div class="custom-control custom-checkbox" style="margin-top:15px;">
+            <input type="checkbox" class="custom-control-input" v-model="main_value.secondName_s" id="defaultChecked11" checked>
+            <label class="custom-control-label" for="defaultChecked11"></label>
+          </div>
+            <mdb-input  size="sm" type="text" class="w-100 m-0 py-1" v-model="main_value.secondName" label="После показатель" />
+        </div>
           <div class="col-3 m-0 py-0">
-            <mdb-input  type="text" class="w-100 m-0 py-1" v-model="main_value.bottom_text" placeholder="Нижний текст" label="Нижний текст" />
+          </div>
+          
+          <div class="col-3 m-0 py-0">
+            <mdb-input size="sm" type="text" class="w-100 m-0 py-1" v-model="main_value.bottom_text" placeholder="Нижний текст" label="Нижний текст" />
         </div>
         <div class="col-3 m-0 py-0">
-            <mdb-input  type="text" class="w-100 m-0 py-1" v-model="main_value.result_info_bottom" placeholder="Нижний текст 2" label="Нижний текст" />
+            <mdb-input size="sm"  type="text" class="w-100 m-0 py-1" v-model="main_value.result_info_bottom" placeholder="Нижний текст 2" label="Нижний текст" />
         </div>
         <div class="col-3 m-0 py-0">
-            <mdb-input  type="text" class="w-100 m-0 py-1" v-model="main_value.doctor_name" placeholder="Доктор" label="Нижний текст" />
+            <mdb-input size="sm" type="text" class="w-100 m-0 py-1" v-model="main_value.doctor_name" placeholder="Доктор" label="Нижний текст" />
+        </div>
+        <div class="col-3 m-0 py-0">
+        </div>
+        <div class="col-3 m-0 mt-2 py-0">
+            <mdb-input  size="sm"  type="text" class="w-100 m-0 py-1" v-model="main_value.info_another_hos" placeholder="" label="Еще одно сообщение из больницы" />
+        </div>
+        <div class="col-3 m-0 mt-2 py-0">
+            <mdb-input  size="sm"  type="text" class="w-100 m-0 py-1" v-model="main_value.info_another_hos_continue" placeholder="" label="Еще одно сообщение из больницы, продолжение" />
         </div>
         </div>
         <div class="row">
@@ -83,41 +133,41 @@
             <accordion>
               <accordion-item>
                 <template slot="accordion-trigger">
-                  <span style="color:#597e8d;">Заголовок таблица</span>
+                  <span style="color:#597e8d; font-size: 13.5px;">Заголовок таблица</span>
                 </template>
                 <template slot="accordion-content" >
                   <table bordered class="w-100">
                     <tbody>
                       <tr>
-                        <td class="px-4">
-                          <mdb-input  type="text" class="w-100 m-0 py-1" v-model="table.name1"  />
+                        <td class="px-4 ">
+                          <mdb-input size="sm" type="text" class="w-100 m-0 py-1" v-model="table.name1"  />
                         </td>
                         <td class="px-4">
-                          <mdb-input  type="text" class="w-100 m-0 py-1" v-model="table.name2"  />
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="px-4">
-                          <mdb-input  type="text" class="w-100 m-0 py-1" v-model="table.name3"  />
-                        </td>
-                        <td class="px-4">
-                          <mdb-input  type="text" class="w-100 m-0 py-1" v-model="table.name4"  />
+                          <mdb-input size="sm" type="text" class="w-100 m-0 py-1" v-model="table.name2"  />
                         </td>
                       </tr>
                       <tr>
                         <td class="px-4">
-                          <mdb-input  type="text" class="w-100 m-0 py-1" v-model="table.name5"  />
+                          <mdb-input size="sm" type="text" class="w-100 m-0 py-1" v-model="table.name3"  />
                         </td>
                         <td class="px-4">
-                          <mdb-input  type="text" class="w-100 m-0 py-1" v-model="table.name6"  />
+                          <mdb-input size="sm" type="text" class="w-100 m-0 py-1" v-model="table.name4"  />
                         </td>
                       </tr>
                       <tr>
                         <td class="px-4">
-                          <mdb-input  type="text" class="w-100 m-0 py-1" v-model="table.name7"  />
+                          <mdb-input size="sm" type="text" class="w-100 m-0 py-1" v-model="table.name5"  />
                         </td>
                         <td class="px-4">
-                          <mdb-input  type="text" class="w-100 m-0 py-1" v-model="table.name8"  />
+                          <mdb-input size="sm" type="text" class="w-100 m-0 py-1" v-model="table.name6"  />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-4">
+                          <mdb-input size="sm" type="text" class="w-100 m-0 py-1" v-model="table.name7"  />
+                        </td>
+                        <td class="px-4">
+                          <mdb-input size="sm" type="text" class="w-100 m-0 py-1" v-model="table.name8"  />
                         </td>
                       </tr>
                     </tbody>
@@ -136,12 +186,12 @@
         <div class="d-flex justify-content-center mt-2 border-bottom" >
           <svg xmlns="http://www.w3.org/2000/svg" @click="open_name_update" 
             class="icon icon-tabler icon-tabler-alert-triangle" style="cursor:pointer;"
-            width="25" height="25" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffbf00" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            width="23" height="23" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffbf00" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
             <path d="M12 9v2m0 4v.01" />
             <path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75" />
           </svg>
-          <span class="ml-3 mb-2" style="color:#ffbf00;">{{ main_value.lab_name }}  ning ketma ketligini uzgartirmang oldingi laboratoriya javoblari almashib ketadi</span>
+          <span class="ml-3 mb-2" style="color:#ffbf00; font-size: 14px;">{{ main_value.lab_name }}  ning ketma ketligini uzgartirmang oldingi laboratoriya javoblari almashib ketadi</span>
         </div>
         <div class="container-fluid content_lab_item_last card mt-3"  v-for="(i, index) in number_list" :key="index">
           <span v-show="false">{{ i }}</span>
@@ -154,21 +204,27 @@
             <div class="col-4"></div>
           </div>
           <div class="row">
-            <div class="col-3" v-if="main_value.first_name_s" >
+            <div class="col-1" v-if="main_value.first_name_s" >
               <mdb-input  type="text" class="w-100 m-0 py-1 mt-3" size="sm" v-model="first_name_list[i-1].name" :label="main_value.first_name" />
             </div>
             <div class="col-3" v-if="main_value.lab_name_s" :class="{'applied': show_number > i-1}">
               <mdb-input  type="text" class="w-100 m-0 py-1 mt-3" size="sm" v-model="lab_name_list[i-1].name1" :label="main_value.lab_name" />
             </div>
+            <div class="col-1" v-if="main_value.secondName_s">
+              <mdb-input  type="text" class="w-100 m-0 py-1 mt-3" size="sm" v-model="second_name_list[i-1].name6" :label="main_value.secondName" />
+            </div>
+            <div class="col-2">
+              <mdb-input  type="text" class="w-100 m-0 py-1 mt-3" size="sm" v-model="result_name_list[i-1].name5" :label="main_value.anything" />
+            </div>
             <div class="col-3" v-if="main_value.norma_s">
-              <vue-editor style="width:100%;" 
+              <vue-editor style="width:100%;" class="mb-1" 
                 :placeholder="main_value.norma" 
-                :editorToolbar="customToolbar" 
+                :editorToolbar="customToolbar"
                 v-model="norma_list[i-1].name2"
                 ></vue-editor>
               <!-- <mdb-input  type="text" class="w-100 m-0 py-1" size="sm" v-model="norma_list[i-1].name2" :label="main_value.norma" /> -->
             </div>
-            <div class="col-3" v-if="main_value.edzm_s">
+            <div class="col-2" v-if="main_value.edzm_s">
               <mdb-input  type="text" class="w-100 m-0 py-1 mt-3" size="sm" v-model="edzm_list[i-1].name3" :label="main_value.edzm" />
             </div>
           </div>
@@ -245,17 +301,34 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
           bottom_text: '',
           result_info_bottom: 'Результаты лабораторных исследований не являются, требуется консультация специалиста',
           doctor_name: 'Анализ проводил',
+          tableWithout_s:false,
+          tableWithout: 'Нет таблица',
+          info_another_hos: '',
+          info_another_hos_continue: '',
+
+          resultFirst_s: false,
+          resultFirst: 'Титр',
+          resultSecond_s: false,
+          resultSecond: '',
+          secondName_s: false,
+          secondName: '',
+          showEmptyTable_s: false,
+          showEmptyTable: '',
         },
         lab_name_list: [],
+        result_name_list:[],
         norma_list: [],
         first_name_list: [],
         edzm_list: [],
         center_list: [],
+        second_name_list: [],
         lab_name_id: 0,
         norma_id: 0,
         first_name_id: 0,
         edzm_id: 0,
         center_id: 0,
+        result_id: 0,
+        second_id: 0,
         show_table: false,
         show_number: 0,
         customToolbar: [
@@ -271,13 +344,23 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
           name7: '',
           name8: '',
         },
-        table_show:''
+        table_show:'',
+        table_have: '',
+
+        resultFirst: '',
+        resultSecond: '',
+        secondName: '',
+        showEmptyTable: '',
       }
     },
     computed: mapGetters(['get_lab_main_list']),
     async mounted(){
       this.loading = true;
       await this.updateMain();
+      
+      // if(this.this.lab_name_list[0].name1 == ''){
+      //   return;
+      // }
       for(let i=0; i<50; i++){
         let obj_name = {
           name: ''
@@ -294,11 +377,19 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
         let obj_name4 = {
           name4: ''
         }
+        let obj_name5 = {
+          name5: ''
+        }
+        let obj_name6 = {
+          name6: ''
+        }
         this.first_name_list.push(obj_name);
         this.lab_name_list.push(obj_name1);
         this.norma_list.push(obj_name2);
         this.edzm_list.push(obj_name3);
         this.center_list.push(obj_name4);
+        this.result_name_list.push(obj_name5);
+        this.second_name_list.push(obj_name6);
       }
       if(this.main_value.lab_name_s){
         await this.updateLab_name();
@@ -322,6 +413,10 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
       }
       if(this.main_value.center_s){
         await this.updateCenter_name();
+      }
+      await this.updateResult_name();
+      if(this.main_value.secondName_s){
+        await this.updateSecond_name();
       }
       
       console.log('hiy')
@@ -372,6 +467,8 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
           this.main_value.bottom_text =  data.name_4;
           this.main_value.result_info_bottom =  data.name_13;
           this.main_value.doctor_name =  data.name_14;
+          this.main_value.info_another_hos =  data.name_21;
+          this.main_value.info_another_hos_continue =  data.name_22;
           this.table.name1 =  data.name_5;
           this.table.name2 =  data.name_6;
           this.table.name3 =  data.name_7;
@@ -380,7 +477,26 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
           this.table.name6 =  data.name_10;
           this.table.name7 =  data.name_11;
           this.table.name8 =  data.name_12;
+          this.main_value.resultFirst = data.name_23;
+          this.main_value.resultSecond = data.name_26;
+          this.main_value.secondName = data.name_28;
+          this.main_value.showEmptyTable = data.name_30;
           this.table_show =  data.name_25;
+          if(data.name_20 == '+'){
+            this.main_value.tableWithout_s = true;
+          }
+          if(data.name_24 == '+'){
+            this.main_value.resultFirst_s = true;
+          }
+          if(data.name_27 == '+'){
+            this.main_value.resultSecond_s = true;
+          }
+          if(data.name_29 == '+'){
+            this.main_value.secondName_s = true;
+          }
+          if(data.name_31 == '+'){
+            this.main_value.showEmptyTable_s = true;
+          }
           this.loading = false;
         }
         catch{
@@ -393,6 +509,21 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
           if(this.table.name1 || this.table.name2 || this.table.name3 || this.table.name4 ||  this.table.name5 || this.table.name6 ||
             this.table.name7 || this.table.name8){
               this.table_show = '+';
+          }
+          if(this.main_value.tableWithout_s == true){
+            this.table_have = '+';
+          }
+          if(this.main_value.resultFirst_s == true){
+            this.resultFirst = '+';
+          }
+          if(this.main_value.resultSecond_s == true){
+            this.resultSecond = '+';
+          }
+          if(this.main_value.secondName_s == true){
+            this.secondName = '+';
+          }
+          if(this.main_value.showEmptyTable_s == true){
+            this.showEmptyTable = '+';
           }
           const requestOptions = {
             method : "POST",
@@ -415,6 +546,17 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
             "name_11": this.table.name7,
             "name_12": this.table.name8,
             "name_25": this.table_show,
+            "name_20": this.table_have,
+            "name_21": this.main_value.info_another_hos,
+            "name_22": this.main_value.info_another_hos_continue,
+            "name_23": this.main_value.resultFirst,
+            "name_24": this.resultFirst,
+            "name_26": this.main_value.resultSecond,
+            "name_27": this.resultSecond,
+            "name_28": this.main_value.secondName,
+            "name_29": this.secondName,
+            "name_30": this.main_value.showEmptyTable,
+            "name_31": this.showEmptyTable,
             "lab_name": this.main_value.lab_name,
             "lab_name_status": this.main_value.lab_name_s,
             "norma": this.main_value.norma,
@@ -527,6 +669,7 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
           const response = await fetch(this.$store.state.hostname + '/HospitalAnalizDynamicNormas/getPaginationByMainTableId?page=0&size=1&main_table_id=' + this.main_id)
           const data = await response.json();
           console.log('data Norma')
+          if(data.items_list.length == 0)return;
           console.log(data.items_list[0])
           this.norma_id = data.items_list[0].Id;
           this.norma_list[0].name2 = data.items_list[0].name_1;
@@ -592,6 +735,7 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
           const response = await fetch(this.$store.state.hostname + '/HospitalAnalizDynamicFirstNames/getPaginationByMainTableId?page=0&size=1&main_table_id=' + this.main_id)
           const data = await response.json();
           console.log('data Norma')
+          if(data.items_list.length == 0)return;
           console.log(data.items_list[0])
           this.first_name_id = data.items_list[0].Id;
           this.first_name_list[0].name = data.items_list[0].name_1;
@@ -657,6 +801,7 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
           const response = await fetch(this.$store.state.hostname + '/HospitalAnalizDynamicUnitMeasurments/getPaginationByMainTableId?page=0&size=1&main_table_id=' + this.main_id)
           const data = await response.json();
           console.log('data Norma')
+          if(data.items_list.length == 0)return;
           console.log(data.items_list[0])
           this.edzm_id = data.items_list[0].Id;
           this.edzm_list[0].name3 = data.items_list[0].name_1;
@@ -722,6 +867,7 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
           const response = await fetch(this.$store.state.hostname + '/HospitalAnalizDynamicCenterNames/getPaginationByMainTableId?page=0&size=1&main_table_id=' + this.main_id)
           const data = await response.json();
           console.log('data Norma')
+          if(data.items_list.length == 0)return;
           console.log(data.items_list[0])
           this.center_id = data.items_list[0].Id;
           this.center_list[0].name4 = data.items_list[0].name_1;
@@ -781,6 +927,138 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
           // console.log('catch')
         }
       },
+      async updateResult_name(){
+        try{
+          this.loading = true;
+          const response = await fetch(this.$store.state.hostname + '/HospitalAnalizDynamicNameTitles/getPaginationByMainTableId?page=0&size=1&main_table_id=' + this.main_id)
+          const data = await response.json();
+          console.log('data Norma')
+          if(data.items_list.length == 0)return;
+          console.log(data.items_list[0])
+          this.result_id = data.items_list[0].Id;
+          this.result_name_list[0].name5 = data.items_list[0].name_1;
+          this.result_name_list[1].name5 = data.items_list[0].name_2;
+          this.result_name_list[2].name5 = data.items_list[0].name_3;
+          this.result_name_list[3].name5 = data.items_list[0].name_4;
+          this.result_name_list[4].name5 = data.items_list[0].name_5;
+          this.result_name_list[5].name5 = data.items_list[0].name_6;
+          this.result_name_list[6].name5 = data.items_list[0].name_7;
+          this.result_name_list[7].name5 = data.items_list[0].name_8;
+          this.result_name_list[8].name5 = data.items_list[0].name_9;
+          this.result_name_list[9].name5 = data.items_list[0].name_10;
+          this.result_name_list[10].name5 = data.items_list[0].name_11;
+          this.result_name_list[11].name5 = data.items_list[0].name_12;
+          this.result_name_list[12].name5 = data.items_list[0].name_13;
+          this.result_name_list[13].name5 = data.items_list[0].name_14;
+          this.result_name_list[14].name5 = data.items_list[0].name_15;
+          this.result_name_list[15].name5 = data.items_list[0].name_16;
+          this.result_name_list[16].name5 = data.items_list[0].name_17;
+          this.result_name_list[17].name5 = data.items_list[0].name_18;
+          this.result_name_list[18].name5 = data.items_list[0].name_19;
+          this.result_name_list[19].name5 = data.items_list[0].name_20;
+          this.result_name_list[20].name5 = data.items_list[0].name_21;
+          this.result_name_list[21].name5 = data.items_list[0].name_22;
+          this.result_name_list[22].name5 = data.items_list[0].name_23;
+          this.result_name_list[23].name5 = data.items_list[0].name_24;
+          this.result_name_list[24].name5 = data.items_list[0].name_25;
+          this.result_name_list[25].name5 = data.items_list[0].name_26;
+          this.result_name_list[26].name5 = data.items_list[0].name_27;
+          this.result_name_list[27].name5 = data.items_list[0].name_28;
+          this.result_name_list[28].name5 = data.items_list[0].name_29;
+          this.result_name_list[29].name5 = data.items_list[0].name_30;
+          this.result_name_list[30].name5 = data.items_list[0].name_31;
+          this.result_name_list[31].name5 = data.items_list[0].name_32;
+          this.result_name_list[32].name5 = data.items_list[0].name_33;
+          this.result_name_list[33].name5 = data.items_list[0].name_34;
+          this.result_name_list[34].name5 = data.items_list[0].name_35;
+          this.result_name_list[35].name5 = data.items_list[0].name_36;
+          this.result_name_list[36].name5 = data.items_list[0].name_37;
+          this.result_name_list[37].name5 = data.items_list[0].name_38;
+          this.result_name_list[38].name5 = data.items_list[0].name_39;
+          this.result_name_list[39].name5 = data.items_list[0].name_40;
+          this.result_name_list[40].name5 = data.items_list[0].name_41;
+          this.result_name_list[41].name5 = data.items_list[0].name_42;
+          this.result_name_list[42].name5 = data.items_list[0].name_43;
+          this.result_name_list[43].name5 = data.items_list[0].name_44;
+          this.result_name_list[44].name5 = data.items_list[0].name_45;
+          this.result_name_list[45].name5 = data.items_list[0].name_46;
+          this.result_name_list[46].name5 = data.items_list[0].name_47;
+          this.result_name_list[47].name5 = data.items_list[0].name_48;
+          this.result_name_list[48].name5 = data.items_list[0].name_49;
+          this.result_name_list[49].name5 = data.items_list[0].name_50;
+          this.loading = false;
+        }
+        catch{
+            this.$refs.message.error('server_not_working')
+          // console.log('catch')
+        }
+      },
+      async updateSecond_name(){
+        try{
+          this.loading = true;
+          const response = await fetch(this.$store.state.hostname + '/HospitalAnalizDynamicFirstNameSeconds/getPaginationByMainTableId?page=0&size=1&main_table_id=' + this.main_id)
+          const data = await response.json();
+          console.log('data name second')
+          if(data.items_list.length == 0)return;
+          console.log(data.items_list[0])
+          this.second_id = data.items_list[0].Id;
+          this.second_name_list[0].name6 = data.items_list[0].name_1;
+          this.second_name_list[1].name6 = data.items_list[0].name_2;
+          this.second_name_list[2].name6 = data.items_list[0].name_3;
+          this.second_name_list[3].name6 = data.items_list[0].name_4;
+          this.second_name_list[4].name6 = data.items_list[0].name_5;
+          this.second_name_list[5].name6 = data.items_list[0].name_6;
+          this.second_name_list[6].name6 = data.items_list[0].name_7;
+          this.second_name_list[7].name6 = data.items_list[0].name_8;
+          this.second_name_list[8].name6 = data.items_list[0].name_9;
+          this.second_name_list[9].name6 = data.items_list[0].name_10;
+          this.second_name_list[10].name6 = data.items_list[0].name_11;
+          this.second_name_list[11].name6 = data.items_list[0].name_12;
+          this.second_name_list[12].name6 = data.items_list[0].name_13;
+          this.second_name_list[13].name6 = data.items_list[0].name_14;
+          this.second_name_list[14].name6 = data.items_list[0].name_15;
+          this.second_name_list[15].name6 = data.items_list[0].name_16;
+          this.second_name_list[16].name6 = data.items_list[0].name_17;
+          this.second_name_list[17].name6 = data.items_list[0].name_18;
+          this.second_name_list[18].name6 = data.items_list[0].name_19;
+          this.second_name_list[19].name6 = data.items_list[0].name_20;
+          this.second_name_list[20].name6 = data.items_list[0].name_21;
+          this.second_name_list[21].name6 = data.items_list[0].name_22;
+          this.second_name_list[22].name6 = data.items_list[0].name_23;
+          this.second_name_list[23].name6 = data.items_list[0].name_24;
+          this.second_name_list[24].name6 = data.items_list[0].name_25;
+          this.second_name_list[25].name6 = data.items_list[0].name_26;
+          this.second_name_list[26].name6 = data.items_list[0].name_27;
+          this.second_name_list[27].name6 = data.items_list[0].name_28;
+          this.second_name_list[28].name6 = data.items_list[0].name_29;
+          this.second_name_list[29].name6 = data.items_list[0].name_30;
+          this.second_name_list[30].name6 = data.items_list[0].name_31;
+          this.second_name_list[31].name6 = data.items_list[0].name_32;
+          this.second_name_list[32].name6 = data.items_list[0].name_33;
+          this.second_name_list[33].name6 = data.items_list[0].name_34;
+          this.second_name_list[34].name6 = data.items_list[0].name_35;
+          this.second_name_list[35].name6 = data.items_list[0].name_36;
+          this.second_name_list[36].name6 = data.items_list[0].name_37;
+          this.second_name_list[37].name6 = data.items_list[0].name_38;
+          this.second_name_list[38].name6 = data.items_list[0].name_39;
+          this.second_name_list[39].name6 = data.items_list[0].name_40;
+          this.second_name_list[40].name6 = data.items_list[0].name_41;
+          this.second_name_list[41].name6 = data.items_list[0].name_42;
+          this.second_name_list[42].name6 = data.items_list[0].name_43;
+          this.second_name_list[43].name6 = data.items_list[0].name_44;
+          this.second_name_list[44].name6 = data.items_list[0].name_45;
+          this.second_name_list[45].name6 = data.items_list[0].name_46;
+          this.second_name_list[46].name6 = data.items_list[0].name_47;
+          this.second_name_list[47].name6 = data.items_list[0].name_48;
+          this.second_name_list[48].name6 = data.items_list[0].name_49;
+          this.second_name_list[49].name6 = data.items_list[0].name_50;
+          this.loading = false;
+        }
+        catch{
+            this.$refs.message.error('server_not_working')
+          // console.log('catch')
+        }
+      },
       async submitItems(){
         if(this.main_value.first_name_s == true){
           await this.submitFirst();
@@ -796,6 +1074,10 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
         }
         if(this.main_value.center_s == true){
           await this.submitCenter_name();
+        }
+        await this.submitResult_name();
+        if(this.main_value.secondName_s == true){
+          await this.submitSecond_name();
         }
         this.$emit('close', this.main_id);
       },
@@ -1229,6 +1511,178 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
           this.modal_status = true;
         }
       },
+      async submitResult_name(){
+        try{
+          const requestOptions = {
+            method : "POST",
+            headers: { "Content-Type" : "application/json" },
+            body: JSON.stringify({
+            "hospitalAnalizDynamicmainId": this.main_id,
+            "name": 'result',
+            "name_1": this.result_name_list[0].name5,
+            "name_2": this.result_name_list[1].name5,
+            "name_3": this.result_name_list[2].name5,
+            "name_4": this.result_name_list[3].name5,
+            "name_5": this.result_name_list[4].name5,
+            "name_6": this.result_name_list[5].name5,
+            "name_7": this.result_name_list[6].name5,
+            "name_8": this.result_name_list[7].name5,
+            "name_9": this.result_name_list[8].name5,
+            "name_10": this.result_name_list[9].name5,
+            "name_11": this.result_name_list[10].name5,
+            "name_12": this.result_name_list[11].name5,
+            "name_13": this.result_name_list[12].name5,
+            "name_14": this.result_name_list[13].name5,
+            "name_15": this.result_name_list[14].name5,
+            "name_16": this.result_name_list[15].name5,
+            "name_17": this.result_name_list[16].name5,
+            "name_18": this.result_name_list[17].name5,
+            "name_19": this.result_name_list[18].name5,
+            "name_20": this.result_name_list[19].name5,
+            "name_21": this.result_name_list[20].name5,
+            "name_22": this.result_name_list[21].name5,
+            "name_23": this.result_name_list[22].name5,
+            "name_24": this.result_name_list[23].name5,
+            "name_25": this.result_name_list[24].name5,
+            "name_26": this.result_name_list[25].name5,
+            "name_27": this.result_name_list[26].name5,
+            "name_28": this.result_name_list[27].name5,
+            "name_29": this.result_name_list[28].name5,
+            "name_30": this.result_name_list[29].name5,
+            "name_31": this.result_name_list[30].name5,
+            "name_32": this.result_name_list[31].name5,
+            "name_33": this.result_name_list[32].name5,
+            "name_34": this.result_name_list[33].name5,
+            "name_35": this.result_name_list[34].name5,
+            "name_36": this.result_name_list[35].name5,
+            "name_37": this.result_name_list[36].name5,
+            "name_38": this.result_name_list[37].name5,
+            "name_39": this.result_name_list[38].name5,
+            "name_40": this.result_name_list[39].name5,
+            "name_41": this.result_name_list[40].name5,
+            "name_42": this.result_name_list[41].name5,
+            "name_43": this.result_name_list[42].name5,
+            "name_44": this.result_name_list[43].name5,
+            "name_45": this.result_name_list[44].name5,
+            "name_46": this.result_name_list[45].name5,
+            "name_47": this.result_name_list[46].name5,
+            "name_48": this.result_name_list[47].name5,
+            "name_49": this.result_name_list[48].name5,
+            "name_50": this.result_name_list[49].name5,
+            "id": this.result_id,
+            })
+          };
+          this.loading = true;
+          const response = await fetch(this.$store.state.hostname + '/HospitalAnalizDynamicNameTitles', requestOptions)
+          const data = await response.json()
+          if(data.id){
+            // this.cls_wnd()
+            // this.main_id = data.id;
+            // this.number_list ++;
+            this.loading = false;
+            this.$refs.message.success('Added_successfully')
+            return true;
+          }
+          else{
+            // this.$refs.msg.error('Error_successfully')
+            this.loading = false;
+            this.modal_info = data.detail + "    (" + data.routine + ")";
+            this.modal_status = true;
+            return false;
+          }
+        }
+        catch{
+          this.loading = false;
+          this.modal_info = "Server no connect";
+          this.modal_status = true;
+        }
+      },
+      async submitSecond_name(){
+        try{
+          const requestOptions = {
+            method : "POST",
+            headers: { "Content-Type" : "application/json" },
+            body: JSON.stringify({
+            "hospitalAnalizDynamicmainId": this.main_id,
+            "name": 'second_name',
+            "name_1": this.second_name_list[0].name6,
+            "name_2": this.second_name_list[1].name6,
+            "name_3": this.second_name_list[2].name6,
+            "name_4": this.second_name_list[3].name6,
+            "name_5": this.second_name_list[4].name6,
+            "name_6": this.second_name_list[5].name6,
+            "name_7": this.second_name_list[6].name6,
+            "name_8": this.second_name_list[7].name6,
+            "name_9": this.second_name_list[8].name6,
+            "name_10": this.second_name_list[9].name6,
+            "name_11": this.second_name_list[10].name6,
+            "name_12": this.second_name_list[11].name6,
+            "name_13": this.second_name_list[12].name6,
+            "name_14": this.second_name_list[13].name6,
+            "name_15": this.second_name_list[14].name6,
+            "name_16": this.second_name_list[15].name6,
+            "name_17": this.second_name_list[16].name6,
+            "name_18": this.second_name_list[17].name6,
+            "name_19": this.second_name_list[18].name6,
+            "name_20": this.second_name_list[19].name6,
+            "name_21": this.second_name_list[20].name6,
+            "name_22": this.second_name_list[21].name6,
+            "name_23": this.second_name_list[22].name6,
+            "name_24": this.second_name_list[23].name6,
+            "name_25": this.second_name_list[24].name6,
+            "name_26": this.second_name_list[25].name6,
+            "name_27": this.second_name_list[26].name6,
+            "name_28": this.second_name_list[27].name6,
+            "name_29": this.second_name_list[28].name6,
+            "name_30": this.second_name_list[29].name6,
+            "name_31": this.second_name_list[30].name6,
+            "name_32": this.second_name_list[31].name6,
+            "name_33": this.second_name_list[32].name6,
+            "name_34": this.second_name_list[33].name6,
+            "name_35": this.second_name_list[34].name6,
+            "name_36": this.second_name_list[35].name6,
+            "name_37": this.second_name_list[36].name6,
+            "name_38": this.second_name_list[37].name6,
+            "name_39": this.second_name_list[38].name6,
+            "name_40": this.second_name_list[39].name6,
+            "name_41": this.second_name_list[40].name6,
+            "name_42": this.second_name_list[41].name6,
+            "name_43": this.second_name_list[42].name6,
+            "name_44": this.second_name_list[43].name6,
+            "name_45": this.second_name_list[44].name6,
+            "name_46": this.second_name_list[45].name6,
+            "name_47": this.second_name_list[46].name6,
+            "name_48": this.second_name_list[47].name6,
+            "name_49": this.second_name_list[48].name6,
+            "name_50": this.second_name_list[49].name6,
+            "id": this.second_id,
+            })
+          };
+          this.loading = true;
+          const response = await fetch(this.$store.state.hostname + '/HospitalAnalizDynamicFirstNameSeconds', requestOptions)
+          const data = await response.json()
+          if(data.id){
+            // this.cls_wnd()
+            // this.main_id = data.id;
+            // this.number_list ++;
+            this.loading = false;
+            this.$refs.message.success('Added_successfully')
+            return true;
+          }
+          else{
+            // this.$refs.msg.error('Error_successfully')
+            this.loading = false;
+            this.modal_info = data.detail + "    (" + data.routine + ")";
+            this.modal_status = true;
+            return false;
+          }
+        }
+        catch{
+          this.loading = false;
+          this.modal_info = "Server no connect";
+          this.modal_status = true;
+        }
+      },
       async delLaboratory(){
         const requestOptions = {
               method : "delete",
@@ -1258,7 +1712,8 @@ import AccordionItem from "../../../components/accordion/accordion_item_relative
   
   <style>
   .main_header_lab_added{
-    background: rgb(252, 252, 252);
+    padding: 5px;
+    background: rgb(234, 254, 255);
   }
   .applied{
       pointer-events: none;

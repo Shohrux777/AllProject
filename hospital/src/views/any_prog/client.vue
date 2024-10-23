@@ -145,25 +145,5 @@
 </script>
 
 <style lang="scss">
-
-
-.add{
-  position: fixed;
-  background: rgba(0, 0, 0, 0.4);
-  height: 100vh;
-  top:0;
-  width:85%;
-}
-
-.addxizmat{
-  width: 470px;
-  // height: 120px;
-  background: #fff;
-  position: relative;
-  z-index: 5000;
-}
-.showing{
-  display: none;
-}
-
+@import "../../scss/tableAll.scss";
 </style>

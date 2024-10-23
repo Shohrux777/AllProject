@@ -13,11 +13,10 @@
       <form @submit.prevent="submit">
         <div class="container-fluid ">
           <div :class="{'applied': sklad_submitted}" class="container-fluid mt-3  shadow bgColorBack p-4" style=" border-radius: 7px;">
-
             <mdb-row >
               <mdb-col col="4">
                 <mdb-input v-model="invoice_name" size="sm" :label="$t('Invoice_name')"  type="text" />
-                <small class="invalid-text"  v-if="$v.invoice_name.$dirty && !$v.invoice_name.required" >
+                <small class="invalid-text" v-if="$v.invoice_name.$dirty && !$v.invoice_name.required" >
                     {{$t('name_invalid_text')}}
                   </small>
               </mdb-col>

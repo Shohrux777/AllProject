@@ -11,7 +11,7 @@
                   <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -12px; color: #757575;">
                     {{$t('start_time')}}
                   </small>
-                  <mdb-input type="date" size="sm"  v-model="Start_time" outline/>
+                  <mdb-input type="date" :disabled="!admin" size="sm"  v-model="Start_time" outline/>
                 </div>
               </div>
               <div class="col-4">
@@ -19,7 +19,7 @@
                   <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -12px; color: #757575;">
                     {{$t('end_time')}}
                   </small>
-                  <mdb-input type="date" size="sm"  v-model="End_time" outline/>
+                  <mdb-input type="date" size="sm" :disabled="!admin" v-model="End_time" outline/>
                 </div>
               </div>
               <div class="col-4">
@@ -32,16 +32,26 @@
                />
               </div>
             </div>
-            <div class="plus">
+            <div class="plus d-flex">
               <mdb-btn @click="allService" color="indigo py-2 px-4"  style="font-size:10px;" >
                 {{$t('all_service')}}
-              </mdb-btn>
-              <mdb-btn @click="print" color="info py-2 px-4"  style="font-size:10px;" >
-                {{$t('print')}}
               </mdb-btn>
               <mdb-btn type="submit" color="primary py-2 px-4" style="font-size:10px;"  >
                 {{$t('apply')}}
               </mdb-btn>
+              <div>
+                <download-excel
+                  class="bg-info rounded px-2"
+                  style="margin-top:6px; padding: 3.5px 5px;"
+                  :data = "get_report_by_data_time_excel"
+                  :fields = "json_fields"
+                  name="Service.xls">
+                  <small class="text-white ml-1" style="font-size: 12px;">
+                      <mdb-icon icon="file-excel" class="mr-1"></mdb-icon>
+                      Excel
+                  </small>
+                </download-excel>
+              </div>
             </div>
           </div>
         </form>
@@ -96,6 +106,26 @@
               </div>
           </div>
         </div>
+        <div class="row py-1 border-bottom">
+          <div class="col-2">
+            <div class="d-flex w-100 justify-content-between border">
+              <div class="ml-2 d-flex align-items-center">
+                <mdb-icon class="text-danger mr-1" icon="circle" />
+                <span style="font-size: 14px;">{{ $t('debit') }} </span>
+              </div>
+              <p class="m-0 p-0 mr-2 font-weight-bold">{{(get_report_by_time_card_cash.dolg).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</p>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="d-flex w-100 justify-content-between border">
+              <div class="ml-2 d-flex align-items-center">
+                <mdb-icon class="text-secondary mr-1" icon="circle" />
+                <span style="font-size: 14px;">{{ $t('vozvrat') }} </span>
+              </div>
+              <p class="m-0 p-0 mr-2 font-weight-bold">{{(get_report_by_time_card_cash.vozvrat).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</p>
+            </div>
+          </div>
+        </div>
         <div class="TablePatientDocId p-3">
           <table class="myTable">
             <thead>
@@ -103,12 +133,15 @@
                 <th  width="40" class="text-left">№</th>
                 <th width="200">{{$t('patient_name')}}</th>
                 <th>{{$t('contragent_name')}}</th>
+                <th>Отп. врач</th>
                 <th>{{$t('service_name')}}</th>
                 <th >{{$t('service_price')}}</th>
                 <th >{{$t('paymentInCash')}}</th>
                 <th >{{$t('paymentInCard')}}</th>
                 <th>{{$t('discount_persantage_qty')}}</th>
-                <th>{{$t('discount_qty')}}</th>
+                <!-- <th>{{$t('discount_qty')}}</th> -->
+                <th>{{$t('debit')}}</th>
+                <th>Возврат</th>
                 <th >{{$t('regisdate')}}</th>
                 <th >{{$t('payed')}}</th>
                 <th >{{$t('finish')}}</th>
@@ -116,16 +149,19 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row,rowIndex) in get_payment_list" :key="rowIndex">
+              <tr v-for="(row,rowIndex) in get_payment_list" :key="rowIndex" :class="{'alert-danger': row.dolg_summ>0, 'alert-success': row.dolg_status, 'alert-secondary': row.pay_num1>0}">
                 <td> <span >{{rowIndex+1}}</span> </td>
                 <td> <span >{{row.patient_name}}</span> </td>
+                <td> <span >{{row.discount_card_qty}}</span></td>
                 <td> <span >{{row.contragent_name}}</span></td>
                 <td> <span >{{row.service_name}}</span> </td>
                 <td> <span >{{row.service_price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
                 <td> <span :class="{'text-danger': row.paymentInCash == 0, 'text-success': row.paymentInCash != 0}">{{row.paymentInCash.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
                 <td> <span :class="{'text-danger': row.paymentInCard == 0, 'text-success': row.paymentInCard != 0}">{{row.paymentInCard.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
                 <td> <span >{{row.discount_persantage_qty}} %</span> </td>
-                <td > <span v-if="row.discount_qty != null && row.discount_qty != ''">{{row.discount_qty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                <!-- <td > <span v-if="row.discount_qty != null && row.discount_qty != ''">{{row.discount_qty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td> -->
+                <td > <span v-if="row.dolg_summ != null && row.dolg_summ != ''">{{row.dolg_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                <td > <span v-if="row.pay_num1 != null && row.pay_num1 != ''" class="text-secondary">{{row.pay_num1.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
                 <td> <span >{{row.regisdate.slice(0,10)}}</span> 
                   <span class="ml-1" style="font-size: 12px;"> | {{row.regisdate.slice(11,16)}}</span>
                 </td>
@@ -137,7 +173,7 @@
                   <mdb-badge v-show="row.finish === true" style="padding: 2px 8px;" pill color="success">{{$t("проверил")}}</mdb-badge>
                   <mdb-badge v-show="row.finish === false" style="padding: 2px 8px;" pill color="danger">{{$t('непроверенный')}}</mdb-badge>
                 </td>
-                <td v-show="admin" class="text-center">
+                <td v-show="admin" class="text-center"> 
                     <i class="fas fa-trash delIcon mask waves-effect m-0 pl-2" v-on:click="deleteRow(row,rowIndex)" :data-row="rowIndex"></i>
                 </td>
               </tr>
@@ -157,84 +193,6 @@
         </div>
       </div>
     </div>
-
-     <vue-html2pdf ref='listlar'
-        :show-layout="false"
-        :float-layout="true"
-        :enable-download="false"
-        :preview-modal="true"
-        :paginate-elements-by-height="1600"
-        filename="hee hee"
-        :pdf-quality="2"
-        :manual-pagination="false"
-        pdf-format="a4"
-        pdf-orientation="landscape"
-        pdf-content-width="100%"
-        @hasStartedGeneration="hasStartedGeneration()"
-        @hasGenerated="hasGenerated($event)"
-      >
-      <div slot="pdf-content">
-       <div class="TablePatientDocId p-3">
-          <table class="myTable">
-            <thead>
-              <tr class="header ">
-                <th >{{$t('patient_name')}}</th>
-                <th >{{$t('contragent_name')}}</th>
-                <th>{{$t('service_name')}}</th>
-                <th width="100">{{$t('service_price')}}</th>
-                <th width="120">{{$t('paymentInCash')}}</th>
-                <th width="120">{{$t('paymentInCard')}}</th>
-                <th width="100">{{$t('payed')}}</th>
-                <th width="150">{{$t('finish')}}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(row,rowIndex) in get_payment_list" :key="rowIndex">
-                <td> <span >{{row.patient_name}}</span></td>
-                <td> <span >{{row.contragent_name}}</span></td>
-                <td> <span >{{row.service_name}}</span></td>
-                <td> <span >{{row.service_price}}</span></td>
-                <td> <span >{{row.paymentInCash}}</span></td>
-                <td> <span >{{row.paymentInCard}}</span></td>
-                <td>
-                  <span v-show="row.payed === true" style="padding: 2px 8px;" pill color="success">{{$t("payed")}}</span>
-                  <span v-show="row.payed === false" style="padding: 2px 8px;" pill color="danger">{{$t('unpayed')}}</span>
-                </td>
-                <td>
-                  <span v-show="row.finish === true" style="padding: 2px 8px;" pill color="success">{{$t("проверил")}}</span>
-                  <span v-show="row.finish === false" style="padding: 2px 8px;" pill color="danger">{{$t('непроверенный')}}</span>
-                </td>
-              </tr>
-              <tr>
-                <td> <span class="text-primary">Общий</span> </td>
-                <td> <span ></span> </td>
-                <td> <span class="text-primary">{{qty}}</span></td>
-                <td> <span class="text-danger">{{summ}}</span> </td>
-                <td> <span class="text-danger">{{cash}}</span> </td>
-                <td> <span class="text-danger">{{card}}</span> </td>
-                <td></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </vue-html2pdf>
-
-    <!-- <div :class="{'showing':show}">
-      <div class="add d-flex justify-content-center align-items-center" >  
-        <districtAdd/>
-      </div>
-    </div> -->
-      <!-- <mdb-modal  :show="show"  @close="show = false"  light>
-        <mdb-modal-header>
-          <mdb-modal-title style="font-weight:  500;">{{$t('Добавить Район')}}</mdb-modal-title>
-        </mdb-modal-header>
-        <mdb-modal-body>
-          <districtAdd :options="editData"/>
-        </mdb-modal-body>
-      </mdb-modal> -->
       <mdb-modal :show="show" @close="show = false" size="sm" class="text-center" danger>
         <mdb-modal-header center :close="false">
           <p class="heading">{{$t('Are_you_sure')}}</p>
@@ -255,7 +213,7 @@
 </template>
 
 <script>
-  import VueHtml2pdf from 'vue-html2pdf'
+  // import VueHtml2pdf from 'vue-html2pdf'
   // import DatePicker from 'vue2-datepicker';
   import RegSelect from '../../../components/RegSelect.vue'
   // import districtAdd from "../../../components/new_prog_add/district_add"
@@ -267,7 +225,7 @@
       mdbBtn,
       mdbModal, mdbModalHeader, mdbIcon, mdbModalBody, mdbModalFooter,
       mdbBadge, mdbInput,
-      VueHtml2pdf, RegSelect
+      RegSelect
     },
     data(){
       return{
@@ -287,12 +245,21 @@
         get_payment_list: [],
         index: null,
         service_id: null,
+        payment_data: null,
         day: '',
         qty: 0,
         summ: 0,
         card: 0,
         cash: 0,
         discount_qty: 0,
+        json_fields: {
+          'Имя пациента': 'patient_name',
+          'Имя врача': 'discount_card_qty',
+          'Услуги': 'serviceGroup',
+          'Услуги деталь':'service_name',
+          'Сумма': 'summ',
+
+        },
       }
     },
     async mounted(){
@@ -314,21 +281,22 @@
         c.time2 = b;
         this.loading = true;
         await this.fetch_report_by_data_time(c)
+        await this.fetch_report_by_data_time_excel(c)
         this.get_payment_list = this.get_report_by_data_time.rows
         this.qty = this.get_report_by_time_card_cash.qty
         this.summ = this.get_report_by_time_card_cash.summ;
         this.card = this.get_report_by_time_card_cash.card;
         this.cash = this.get_report_by_time_card_cash.cash;
         this.discount_qty = this.get_report_by_time_card_cash.discount_qty
-
         this.loading = false;
       }
 
         this.fetch_service_group()
     },
-    computed: mapGetters(['get_contragent_list', 'get_report_by_data_time', 'get_report_by_time_card_cash', 'get_service_group_list']),
+    computed: mapGetters(['get_contragent_list', 'get_report_by_data_time', 'get_report_by_time_card_cash',
+     'get_service_group_list', 'get_report_by_data_time_excel']),
     methods: {
-      ...mapActions(['fetch_contragent', 'fetch_report_by_data_time', 'fetch_service_group']),
+      ...mapActions(['fetch_contragent', 'fetch_report_by_data_time', 'fetch_service_group', 'fetch_report_by_data_time_excel']),
       ...mapMutations(['district_row_delete']),
 
       add(){
@@ -339,24 +307,57 @@
         this.$refs.listlar.generatePdf()
       },
       deleteRow(data, index){
+        console.log('data')
         console.log(data)
-        this.index = index
-        this.service_id = data.id
+        this.index = index;
+        this.service_id = data.id;
+        this.payment_data = data;
         this.show = true;
       },
       async promiseService(){
+        // const requestOptions = {
+        //   method: "POST",
+        //   headers : { "Content-Type" : "application/json" },
+        //   body : JSON.stringify({
+        //     "deleted_user_name": localStorage.docName,
+        //     "name" : this.payment_data.discount_card_qty,
+        //     "serviceName": this.payment_data.service_name,
+        //     "patientName": this.payment_data.patient_name,
+        //     "serviceTypeId": this.payment_data.serviceTypeId,
+        //     "finish": this.payment_data.finish,
+        //     "authorizationId": this.payment_data.authorizationId,
+        //     "contragentId": this.payment_data.contragentId,
+        //     "registratedDate": this.payment_data.regisdate,
+        //     "finishPayment": this.payment_data.payed,
+        //     "payedDate": this.payment_data.payedDate,
+        //     "dletedAuthId": localStorage.AuthId,
+
+        //   })
+        // };
+        // this.loading = true;
+        // const response = await fetch(this.$store.state.hostname + "/PaymentsDeleteds", requestOptions);
+        // const data = await response.json();
+        // this.loading = false;
+        // if(response.status == 200 || response.status == 201){
+        //   console.log(data);
+        //   await this.PaymentDelete();
+        // }
+        await this.PaymentDelete();
+
+      },
+      async PaymentDelete(){
         const requestOptions = {
-              method : "delete",
-            };
-            const response = await fetch(this.$store.state.hostname + "/Payments/" + this.service_id, requestOptions);
-            const data = await response.json();
-            console.log(data)
-            if(data.id)
-            {
-              this.$refs.message.success('Successfully_removed')
-              this.get_payment_list.splice(this.index, 1);
-              this.show = false;
-            }
+          method : "delete",
+        };
+        const response = await fetch(this.$store.state.hostname + "/Payments/" + this.service_id, requestOptions);
+        const data = await response.json();
+        console.log(data)
+        if(data.id)
+        {
+          this.$refs.message.success('Successfully_removed')
+          this.get_payment_list.splice(this.index, 1);
+          this.show = false;
+        }
       },
       select_service_Group(option){
         this.group_name = option.name;
@@ -389,9 +390,10 @@
         a.time2 = this.End_time + 'T23:59:59.000Z';
         this.loading = true;
         await this.fetch_report_by_data_time(a);
+        await this.fetch_report_by_data_time_excel(a)
         this.get_payment_list = [];
-        this.get_payment_list = this.get_report_by_data_time.rows
-        this.qty = this.get_report_by_time_card_cash.qty
+        this.get_payment_list = this.get_report_by_data_time.rows;
+        this.qty = this.get_report_by_time_card_cash.qty;
         this.summ = this.get_report_by_time_card_cash.summ;
         this.card = this.get_report_by_time_card_cash.card
         this.cash = this.get_report_by_time_card_cash.cash
@@ -411,6 +413,7 @@
         a.time2 = this.End_time + 'T23:59:59.000Z';
         this.loading = true;
         await this.fetch_report_by_data_time(a);
+        await this.fetch_report_by_data_time_excel(a)
         this.get_payment_list = [];
         if(this.group_name == ''){
           this.get_payment_list = this.get_report_by_data_time.rows
@@ -448,90 +451,6 @@
   };
 </script>
 
-<style lang="scss">
-
-
-.add{
-  position: fixed;
-  background: rgba(0, 0, 0, 0.4);
-  height: 100vh;
-  top:0;
-  width:85%;
-}
-
-.addxizmat{
-  width: 470px;
-  // height: 120px;
-  background: #fff;
-  position: relative;
-  z-index: 5000;
-}
-.showing{
-  display: none;
-}
-.timePicer{
-  position: relative;
-  margin-top: -10px;
-  .timeLabel{
-    position: absolute;
-    font-size: 12px;
-    background-color: #fff;
-    padding: 1px 3px;
-    z-index: 1;
-    left: 6px;
-    top: -1px;
-  }
-  .dayLabel{
-    position: absolute;
-    font-size: 12px;
-    background-color: #fff;
-    padding: 0px 3px;
-    z-index: 1;
-    left: 6px;
-    top: -8px;
-  }
-}
-  .myTable {
-  /* border-collapse: collapse; */
-  table-layout:fixed;
-  width: 100%;
-  overflow: hidden;
-  // border: 1px solid #ddd;
-  font-size: 18px;
-  max-height:80px; overflow-x:auto
-}
-.myTable th{
-  font-weight: 600;
-  font-size:12px;
-}
-.myTable td{
-  font-size:13px;
-}
-.myTable th, .myTable td {
-  text-align: left;
-  padding: 10px;
-}
-
-.myTable tr {
-  border-bottom: 1px solid rgb(240, 240, 240);
-}
-.delIcon{
-  color: rgb(251, 70, 70);
-  font-size: 13px;
-}
-.borderSolder{
-  border: 0.5px dashed #D0D3D8;
-
-  span{
-      color:#67676C;
-      font-size: 22px;
-  }
-  p{
-      color:#525255;
-      font-weight:bold;
-      font-size: 24px;
-      margin:0;
-      padding:0;
-  }
-}
+<style lang="scss" scoped>
+  @import "../../../scss/tableAll.scss";
 </style>

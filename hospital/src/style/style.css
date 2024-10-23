@@ -3,7 +3,9 @@
   height: 90%;
 }
 .allWidthLabTable{
-  width: 1460px;
+  /* width: 1460px; */
+  width: 1530px;
+
 }
 .upHeight{
   position:absolute; 
@@ -36,6 +38,7 @@
 .upHeightAllspirma320{
   position:absolute; 
   top:300px; 
+  /* top:330px; novo laborotoriyasi  */
   left:50%; 
   transform: translateX(-50%);
   padding: 10px 0px;
@@ -61,6 +64,21 @@
   transform: translateX(-50%);
   padding: 10px 0px;
 }
+.fs_print_id{
+  font-size: 25px !important;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+}
+.fs_print{
+  font-size: 25px !important;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+}
+.fs_show{
+  font-size: 25px !important;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+}
 .fs{
   font-size: 25px !important;
   border-bottom: 1px solid black;
@@ -81,5 +99,5 @@
   padding: 10px 0px;
 }
 .bg_headertable{
-  background:#41f3c3;
+  background:#98def1;
 }

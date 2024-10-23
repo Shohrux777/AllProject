@@ -38,7 +38,7 @@
               <div style="width: 20%;" class="px-2">
                 <MDBInput v-model="Start_time" type="date" size="sm" label="e_date" />
               </div>
-              <div style="width: 20%;" class="px-2">
+              <div style="width: 20%;" class="px-2" v-show="false">
                 <MDBInput v-model="End_time" type="date" size="sm" label="e_date" />
               </div>
               <div style="width: 20%;" class="px-2">
@@ -132,7 +132,7 @@ export default {
         json_fields: {
           'ФИО': 'fio',
           'User ID': 'userid',
-          'Статус': 'comeInOut',
+          'Статус': 'checktype',
           'Дверь': 'door_name',
           'Дата': 'sana',
           'Время': 'checktime'
@@ -159,7 +159,7 @@ export default {
         let time1 = new Date();
         this.Start_time = time1.toISOString().slice(0,10); 
         this.End_time = time1.toISOString().slice(0,10);
-        let start = this.Start_time + 'T00:00:35.000Z' ;
+        let start = this.Start_time ;
         let end = this.End_time + 'T23:59:59.000Z';
         await this.submit();
         console.log(start)
@@ -178,61 +178,25 @@ export default {
         await this.submit();
       },
       async submit(){
-        let start = this.Start_time + 'T00:00:35.000Z' ;
+        let start = this.Start_time;
         let end = this.End_time + 'T23:58:58.000Z';
         console.log(start)
         console.log(end)
         console.log('submit')
         try{
           this.loading = true;
-          const response = await fetch(this.$store.state.hostname + "/SkudMyCheckinouts/getPaginationGetByDateTime?page=0&size=30000&begin_date=" + start + '&end_date=' + end);
+          const response = await fetch(this.$store.state.hostname + "/SkudMyUserinfoes/getPaginationBy0404AllUsers?page=0&size=5000&date_b=" + start);
           const data = await response.json();
           this.loading = false;
           console.log(data)
-          console.log('data')
           if(this.door_name == ''){
-            this.reportList = []
-            for(let i=0; i<data.items_list.length; i++){
-              let JponItem = {
-                userid : data.items_list[i].userid,
-                userinfo: data.items_list[i].userinfo,
-                fio: data.items_list[i].fio,
-                checktime: data.items_list[i].checktime,
-                checktype: data.items_list[i].checktype,
-                door_name: data.items_list[i].door_name,
-                sana: data.items_list[i].sana.slice(0,10),
-                comeInOut: '',
-              }
-              if(data.items_list[i].checktype == 'O' || data.items_list[i].checktype == 'C'){
-                JponItem.comeInOut = 'Выход'
-              }
-              else{
-                JponItem.comeInOut = 'Входить'
-              }
-              this.reportList.push(JponItem)
-            }
+            this.reportList = data.items_list;
           }
           else{
             this.reportList = []
             for(let i=0; i<data.items_list.length; i++){
               if(data.items_list[i].door_name == this.door_name){
-                let JponItem = {
-                  userid : data.items_list[i].userid,
-                  userinfo: data.items_list[i].userinfo,
-                  fio: data.items_list[i].fio,
-                  checktime: data.items_list[i].checktime,
-                  checktype: data.items_list[i].checktype,
-                  door_name: data.items_list[i].door_name,
-                  sana: data.items_list[i].sana.slice(0,10),
-                  comeInOut: '',
-                }
-                if(data.items_list[i].checktype == 'O' || data.items_list[i].checktype == 'C'){
-                  JponItem.comeInOut = 'Выход'
-                }
-                else{
-                  JponItem.comeInOut = 'Входить'
-                }
-                this.reportList.push(JponItem)
+                this.reportList.push(data.items_list[i])
               }
             }
           }
@@ -249,6 +213,7 @@ export default {
     
 }
 </script>
+
 <style>
 .navbar_Nav_Edit{
     background: #475a65;

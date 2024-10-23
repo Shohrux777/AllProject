@@ -384,7 +384,7 @@ export default {
           // real_time
           columns: ['product','soni','unit','contains_number','price','precent','buyed_price','nds','skidka','end_time','optim_price','summ'],
         },
-        postavchik_name: '',  
+        postavchik_name: '',
         postavchik_id: null,
       }
     },

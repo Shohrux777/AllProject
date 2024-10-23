@@ -100,7 +100,7 @@
         <div class="SearchNameBarcode mt-1">
           <div class="row mb-1" v-on:click.self="focusBarcode">
             <div class="col-5 m-0 mx-2">
-              <input v-model="searchDrag" @keyup="searchFunc" size="sm" ref="barcode"
+              <input v-model="searchDrag" @keyup="searchFunc" size="sm" ref="searchDrag"
               type="text"  id="inputEmail"
               v-on:keyup.38 = "ArrowUp1"
               v-on:keyup.40 = "ArrowDown1"
@@ -132,7 +132,7 @@
                 v-on:keyup.40 = "ArrowDown"
                 v-on:keyup.37 = "ArrowRight"
                 v-on:keyup.39 = "ArrowRight"
-                ref="searchDrag" size="sm" type="text"  
+                ref="barcode" size="sm" type="text"  
                 style="margin-top: 10px;  margin-bottom: 0px; height: 34px; outline:none;"
                 class="w-100  px-2 inputFocusSearch"/>
               <label style="position:absolute; top:-2px; left:20px; font-size:12px;" class="control-label" for="inputEmail1">{{$t('barcode')}}</label>
@@ -689,9 +689,9 @@ export default {
             this.Arrowdown = 0;
             const response = await fetch(this.$store.state.hostname + "/PosInvoiceItems/getProductListForSaleByItemSearchByBarcode?barcode=" + this.barcode + '&res_count=500');
             const data = await response.json();
-            console.log('data')
+            console.log('data barcode err')
             console.log(data)
-            if(data[0].id){
+            if(response.status == 200 || response.status == 201){
               this.barcode = '';
               this.$refs.barcode.focus();
               this.searchBarcodeData = data;
@@ -699,18 +699,23 @@ export default {
                 contains_number_in_pack: 1,
                 expired_date: data[0].exp_date_str,
                 id: data[0].product_id,
-                invoice: data[0].invoice.id,
+                invoice: data[0].id,
                 manifacturer_name: "",
+                measurement: '',
                 name: data[0].product_name,
+                optom_price: 0,
                 ostatka_qty: data[0].real_qty,
                 ostatka_unit: 0,
                 persantage_discount: 0,
-                price: data[0].unit_saled_price,
-                qty: "1",
-                saledPrice: 60000,
+                price: data[0].unit_saled_price.toString(),
+                qty: 1,
+                realPriceSaled: data[0].unit_saled_price,
+                saledPrice: data[0].unit_saled_price,
                 unit: 0,
               }
-              // this.add_product_order(tempingTovar)
+              console.log('tempingTovar')
+              console.log(tempingTovar)
+             this.add_product_order(tempingTovar)
             }
             else{
               this.$refs.message.error('not_found')

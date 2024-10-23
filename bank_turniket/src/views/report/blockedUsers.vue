@@ -217,6 +217,7 @@ export default {
           await this.unblockUser(this.filteredList[i])
         }
         this.loading = false;
+
       },
       async unblockUser(item){
         console.log(item)

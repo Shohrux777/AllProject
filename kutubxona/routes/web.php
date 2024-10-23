@@ -29,6 +29,12 @@ Route::get('/bookId/{id}', [MainController::class, 'book_index'])->name('bookId'
 Route::get('/newsId/{id}', [MainController::class, 'new_index'])->name('newsId');
 Route::get('/noteId/{id}', [MainController::class, 'note_index'])->name('noteId');
 Route::get('/hestory', [MainController::class, 'index'])->name('hestory');
+Route::get('/all_news', [MainController::class, 'all_new'])->name('allNews');
+Route::get('/all_notes', [MainController::class, 'all_notes'])->name('allNotes');
+Route::get('/allNotePage', [MainController::class, 'all_note_page'])->name('allNotePage');
+Route::get('/allNewsPage', [MainController::class, 'all_new_page'])->name('allNewsPage');
+
+
 // Route::get('/category_book', function () {
 //     return view('bookCategory');
 // });
@@ -54,6 +60,7 @@ Route::post('/newstore', [NewsController::class, 'store'])->name('newstore');
 Route::get('/newsEdit/{id}', [NewsController::class, 'edit'])->name('newsEdit');
 Route::put('/newsUpdate', [NewsController::class, 'update'])->name('news_update');
 Route::delete('/newsdestroy', [NewsController::class, 'destroy'])->name('news_destroy');
+
 
 Route::get('/notifications', [NotificationCont::class, 'index'])->name('notifications');
 Route::post('/notestore', [NotificationCont::class, 'store'])->name('notestore');

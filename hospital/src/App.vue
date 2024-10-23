@@ -43,7 +43,7 @@ export default
         this.$store.state.dontShowPagination = false;
         localStorage.numPage = 1;
     }
-  } ,
+  },
 
   components:{
     LoginLayout,EmptyLayout,
@@ -63,7 +63,7 @@ export default
   //     let t_month = new Date().getMonth();
   //     console.log('t_month')
   //     console.log(t_month)
-  //     if(parseInt(t_date) >= 9 && parseInt(t_month)+1>=7){
+  //     if(parseInt(t_date) >= 8 && parseInt(t_month)+1>=10){
   //       this.unpayed = false;
   //     }
   //   },

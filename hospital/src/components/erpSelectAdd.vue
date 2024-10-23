@@ -33,7 +33,11 @@
             <p  :class="{'removetag': !munp}" v-show="search != ''">{{search}} <label class="addtagLabel">{{$t('remove')}}</label></p>
           </div>
       </div>
-
+      <p class="fz-13 py-1"
+          @click="selectOptionDefault()"
+      >
+        {{ $t('default') }}
+      </p>
       <p v-for="option in filteredList" :key="option.id" class="fz-13 py-1"
           @click="selectOption(option)"
       >
@@ -149,6 +153,10 @@ export default {
     selectOption(option)
     {
       this.$emit('select', option);
+      this.areOptionsVisible = false;
+    },
+    selectOptionDefault(){
+      this.$emit('select', {name_1: 'По умолчанию', id: ''});
       this.areOptionsVisible = false;
     },
     btn_add()

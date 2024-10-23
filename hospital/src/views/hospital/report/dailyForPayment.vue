@@ -14,7 +14,7 @@
                   <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -11px; color: #757575;">
                     {{$t('start_time')}}
                   </small>
-                  <mdb-input type="date" size="sm" v-model="Start_time" outline/>
+                  <mdb-input type="date" :disabled="!admin" size="sm" v-model="Start_time" outline/>
                 </div>
               </div>
               <div  class="col-4" >
@@ -24,6 +24,16 @@
                   </small>
                   <mdb-input type="date" size="sm" v-model="End_time" outline/>
                 </div>
+              </div>
+              <div  class="col-4" v-show="false">
+                <RegSelect_casher
+                  class="mt-0"
+                  label="Кассир"
+                  @select="users_func"
+                  :options="get_auth_user_limit"
+                  :selected="user_name"
+                  :searching="true"
+                />
               </div>
             </div>
             <div class="plus">
@@ -43,6 +53,22 @@
                 </svg>
                 {{$t('apply')}}
               </mdb-btn>
+              <mdb-btn v-show="!admin" @click="reportYesterday(1)" color="primary py-2 px-3" style="font-size:10px;"  >
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-filled" width="17" height="17" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M16 2a1 1 0 0 1 .993 .883l.007 .117v1h1a3 3 0 0 1 2.995 2.824l.005 .176v12a3 3 0 0 1 -2.824 2.995l-.176 .005h-12a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-12a3 3 0 0 1 2.824 -2.995l.176 -.005h1v-1a1 1 0 0 1 1.993 -.117l.007 .117v1h6v-1a1 1 0 0 1 1 -1zm3 7h-14v9.625c0 .705 .386 1.286 .883 1.366l.117 .009h12c.513 0 .936 -.53 .993 -1.215l.007 -.16v-9.625z" stroke-width="0" fill="currentColor" />
+                  <path d="M12 12a1 1 0 0 1 .993 .883l.007 .117v3a1 1 0 0 1 -1.993 .117l-.007 -.117v-2a1 1 0 0 1 -.117 -1.993l.117 -.007h1z" stroke-width="0" fill="currentColor" />
+                </svg>
+                Вчера
+              </mdb-btn>
+              <mdb-btn v-show="!admin" @click="reportYesterday(2)" color="primary py-2 px-3" style="font-size:10px;"  >
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-filled" width="17" height="17" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M16 2a1 1 0 0 1 .993 .883l.007 .117v1h1a3 3 0 0 1 2.995 2.824l.005 .176v12a3 3 0 0 1 -2.824 2.995l-.176 .005h-12a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-12a3 3 0 0 1 2.824 -2.995l.176 -.005h1v-1a1 1 0 0 1 1.993 -.117l.007 .117v1h6v-1a1 1 0 0 1 1 -1zm3 7h-14v9.625c0 .705 .386 1.286 .883 1.366l.117 .009h12c.513 0 .936 -.53 .993 -1.215l.007 -.16v-9.625z" stroke-width="0" fill="currentColor" />
+                  <path d="M12 12a1 1 0 0 1 .993 .883l.007 .117v3a1 1 0 0 1 -1.993 .117l-.007 -.117v-2a1 1 0 0 1 -.117 -1.993l.117 -.007h1z" stroke-width="0" fill="currentColor" />
+                </svg>
+                До вчерашнего дня
+              </mdb-btn>
             </div>
           </div>
         </form>
@@ -53,7 +79,7 @@
                 <div class="qty borderSolder py-2">
                     <span class="ml-3">Общий ( Нал + Плас)</span>
                     <div class="text-right px-3 mt-1">
-                      <p>{{(card + cash).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} сум</p>
+                      <p>{{(card + cash + get_bron_cash_card.cash + get_bron_cash_card.card - get_report_by_time_card_cash.vozvrat - get_money).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} сум</p>
                     </div>
                   </div>
               </div>
@@ -63,7 +89,7 @@
                 <div class="qty borderSolder py-2">
                     <span class="ml-3">{{$t('cash')}}</span>
                     <div class="text-right px-3 mt-1">
-                      <p>{{cash.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} сум</p>
+                      <p>{{(cash + get_bron_cash_card.cash - get_report_by_time_card_cash.vozvrat).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} сум</p>
                     </div>
                   </div>
               </div>
@@ -73,7 +99,7 @@
                 <div class="qty borderSolder py-2">
                     <span class="ml-3">{{$t('card')}}</span>
                     <div class="text-right px-3 mt-1">
-                      <p>{{card.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} сум</p>
+                      <p>{{(card + get_bron_cash_card.card).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} сум</p>
                     </div>
                   </div>
               </div>
@@ -94,7 +120,7 @@
                 <div class="qty borderSolder py-2">
                     <span class="ml-3">В кассе есть деньги</span>
                     <div class="text-right px-3 mt-1">
-                      <p>{{(cash - get_money).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} сум</p>
+                      <p>{{(cash + get_bron_cash_card.cash - get_money - get_report_by_time_card_cash.vozvrat).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} сум</p>
                     </div>
                   </div>
               </div>
@@ -102,8 +128,8 @@
           </div>
         </div>
         <div class="TablePatientDocIdset mt-1">
-          <table class="myTable">
-            <thead class="bg_header">
+          <table class="myTableDailery">
+            <thead class="bg_header_dalery">
               <tr class="header text-white ">
                 <th >{{$t('service_group')}}</th>
                 <!-- <th >{{$t('user')}}</th> -->
@@ -115,7 +141,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row,rowIndex) in get_daily_report_list" :key="rowIndex" >
+              <tr v-for="(row,rowIndex) in get_daily_report_list" :key="rowIndex" class="myTableDailery_item">
                 <td> <span >{{row.service_group}}</span> </td>
                 <td> <span >{{row.date}}</span> </td>
                 <td> <span >{{row.cash.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
@@ -126,17 +152,16 @@
               
             </tbody>
             <tbody>
-              <tr v-for="(item,itemIndex) in kunlik_report_list" :key="itemIndex"   
-              :class="{ 'text-danger': item.hospitalServiceTypeGroupName == 'RETURNED',
+              <tr v-for="(item,itemIndex) in kunlik_report_list" :key="itemIndex"  class="myTableDailery_item"  
+                :class="{ 'text-danger': item.hospitalServiceTypeGroupName == 'RETURNED',
                'text-warning': item.hospitalServiceTypeGroupName == 'REJECTED',
                'text-secondary': item.hospitalServiceTypeGroupName == 'VOZVRAT' }"
-               v-show="item.hospitalServiceTypeGroupName == 'RETURNED' || item.hospitalServiceTypeGroupName == 'REJECTED'
-                || item.hospitalServiceTypeGroupName == 'VOZVRAT'">
+               v-show="item.hospitalServiceTypeGroupName == 'RETURNED' || item.hospitalServiceTypeGroupName == 'VOZVRAT'">
                 <td>
                   <span v-if = "item.hospitalServiceTypeGroupName == 'RETURNED'" >РACXOДЫ</span> 
-                  <span v-else-if = "item.hospitalServiceTypeGroupName == 'REJECTED'" >ОТКАЗ</span> 
-                  <span v-else-if = "item.hospitalServiceTypeGroupName == 'VOZVRAT'" >Возвырат</span> 
-                  <span v-else >{{item.hospitalServiceTypeGroupName}}</span> 
+                  <!-- <span v-else-if = "item.hospitalServiceTypeGroupName == 'REJECTED'" >ОТКАЗ</span>  -->
+                  <span v-else-if = "item.hospitalServiceTypeGroupName == 'VOZVRAT'" >Общий возвырат</span> 
+                  <span v-else >{{item.hospitalServiceTypeGroupName}}</span>
                 </td>
                 <!-- <td> <span >{{item.authorization.users.fio}}</span> </td> -->
                 <td> <span >{{item.createdDateTime.slice(0,10)}}</span> </td>
@@ -145,24 +170,34 @@
                 <td> <span >{{item.count}}</span> </td>
                 <td> <span >{{(item.cashSumm + item.cardSumm).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
               </tr>
-              <tr v-if="rasxod_list_month.length">
+              <tr v-if="rasxod_list_month.length" class="myTableDailery_item">
                 <td>
                   <span class="text-danger">РACXOДЫ</span>
                 </td>
                 <td> <span >{{rasxod_list_month[0].registratedDate.slice(0,10)}}</span> </td>
-                <td> <span >{{get_money.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                <td> <span class="text-danger">{{get_money.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
                 <td> <span >0</span> </td>
                 <td> <span ></span> </td>
-                <td> <span >{{get_money.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                <td> <span class="text-danger">{{get_money.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
               </tr>
-              <tr >
+              <tr v-if="get_payed_date_vozvrat_list.length" class="myTableDailery_item">
+                <td>
+                  <span class="text-danger">Прошлые возврат</span>
+                </td>
+                <td> <span v-if="get_payed_date_vozvrat_list[0].payedDate">{{get_payed_date_vozvrat_list[0].payedDate.slice(0,10)}}</span> </td>
+                <td> <span class="text-danger">{{get_report_by_time_card_cash.vozvrat.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                <td> <span >0</span> </td>
+                <td> <span ></span> </td>
+                <td> <span class="text-danger">{{get_report_by_time_card_cash.vozvrat.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+              </tr>
+              <tr class="myTableDailery_item">
                 <td> <span class="text-success">Общий</span> </td>
                 <td> <span ></span></td>
                 <!-- <td> <span ></span></td> -->
-                <td> <span  class="text-success">{{(cash - get_money).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span></td>
+                <td> <span  class="text-success">{{(cash).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span></td>
                 <td> <span  class="text-success">{{card.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span></td>
                 <td> <span  class="text-success">{{qtys}}</span></td>
-                <td> <span  class="text-success">{{(cash + card - get_money).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span></td>
+                <td> <span  class="text-success">{{(cash + card).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span></td>
               </tr>
               <!-- <tr >
                 <td> <span class="text-success"></span>{{$t('cash')}} </td>
@@ -185,8 +220,8 @@
         </div>
 
         <div class="TablePatientDocIdset mt-1">
-          <table class="myTable">
-            <thead class="bg_header">
+          <table class="myTableDailery">
+            <thead class="bg_header_dalery">
               <tr class="header text-white ">
                 <th >{{$t('service_group')}}</th>
                 <!-- <th >{{$t('user')}}</th> -->
@@ -198,7 +233,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <tr class="myTableDailery_item">
                 <td> <span >Стационар</span> </td>
                 <td> <span >{{this.Start_time}}</span> </td>
                 <td> <span >{{get_bron_cash_card.cash.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
@@ -230,7 +265,7 @@
       >
       <div slot="pdf-content">
          <div class="TablePatientDocIdset p-3">
-          <table class="myTable">
+          <table class="myTableDailery">
             <thead>
               <tr class="header ">
                 <th >{{$t('service_group')}}</th>
@@ -294,7 +329,7 @@
                 <td> <span class="text-success"></span>РACXOДЫ </td>
                 <td> <span  class="text-primary">{{get_money}} сум </span></td>
               </tr>
-              <tr >
+              <tr>
                 <td> <span class="text-success"></span>В кассе есть деньги </td>
                 <td> <span  class="text-primary">{{cash - get_money}} сум </span></td>
               </tr>
@@ -327,7 +362,7 @@
 
 <script>
   import VueHtml2pdf from 'vue-html2pdf'
-  // import DatePicker from 'vue2-datepicker';
+  import RegSelect_casher from '../../../components/hospital/UserlineSelect.vue'
   import districtAdd from "../../../components/new_prog_add/district_add"
   import { mdbBtn, mdbInput,  mdbModal, mdbModalHeader,  mdbModalTitle, mdbModalBody,   } from 'mdbvue';
   import {mapActions, mapGetters, mapMutations} from 'vuex'
@@ -337,7 +372,8 @@
       mdbBtn,
       mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbInput,
       districtAdd,
-      VueHtml2pdf
+      VueHtml2pdf,
+      RegSelect_casher
     },
     data(){
       return{
@@ -359,14 +395,17 @@
         allmoney: 0,
         get_money: 0,
         rasxod_list_month: [],
+
+        user_name: '',
+        user_id: localStorage.Authid,
       }
     },
     async mounted(){
       if(localStorage.Type == 0){
         this.admin = true;
       }
-      
       {
+        await this.fetch_auth_list();
         let time1 = new Date();
         this.Start_time = time1.toISOString().slice(0,10); 
         this.End_time = time1.toISOString().slice(0,10);
@@ -380,8 +419,9 @@
         c.time1 = a;
         c.time2 = b;
         this.loading = true;
-        await this.fetch_report_by_data_time(c)
-        await this.fetch_report_by_bron_payed(c)
+        await this.fetch_report_by_data_time(c);
+        await this.fetch_report_by_bron_payed(c);
+        await this.fetch_payed_date_vozvrat_list(c);
         this.loading = false;
         console.log(this.get_daily_report_list)
         this.cash = 0;
@@ -400,6 +440,7 @@
           this.loading = true;
           const response = await fetch(this.$store.state.hostname + "/HospitalManagerReports/getHospitalManagerListByDateForAdmin?dateTimeCur=" + l);
           const dataList = await response.json();
+          console.log('dataList items')
           console.log(dataList)
           this.get_money = 0;
           dataList.forEach((item)=>{
@@ -414,11 +455,68 @@
         // console.log(this.get_report_by_data)
     },
     computed: mapGetters(['get_contragent_list', 'get_report_by_data', 'get_report_by_time_card_cash',
-     'get_report_by_data_time','get_daily_report_list', 'get_bron_cash_card']),
+     'get_report_by_data_time','get_daily_report_list', 'get_bron_cash_card', 'get_payed_date_vozvrat_summa',
+      'get_payed_date_vozvrat_list', 'get_auth_user_limit']),
     methods: {
-      ...mapActions(['fetch_contragent', 'fetch_report_by_data', 'fetch_report_by_data_time', 'fetch_report_by_bron_payed']),
+      ...mapActions(['fetch_contragent', 'fetch_report_by_data', 'fetch_report_by_data_time', 
+        'fetch_report_by_bron_payed', 'fetch_payed_date_vozvrat_list', 'fetch_auth_list']),
       ...mapMutations(['dibet_delite_cont']),
-
+      async reportYesterday(number){
+        console.log('report kecha')
+        {
+        await this.fetch_auth_list();
+        let time1 = new Date();
+        time1.setDate(time1.getDate() - parseInt(number));
+        this.Start_time = time1.toISOString().slice(0,10); 
+        this.End_time = time1.toISOString().slice(0,10);
+        let a = this.Start_time + 'T00:00:35.000Z' ;
+        let b = this.End_time + 'T23:59:59.000Z';
+        let c = {
+          time1: '',
+          time2: '',
+          contId: 0
+        }
+        c.time1 = a;
+        c.time2 = b;
+        this.loading = true;
+        await this.fetch_report_by_data_time(c);
+        await this.fetch_report_by_bron_payed(c);
+        await this.fetch_payed_date_vozvrat_list(c);
+        this.loading = false;
+        console.log(this.get_daily_report_list)
+        this.cash = 0;
+        this.card = 0;
+        this.qtys = 0;
+        this.get_daily_report_list.forEach((item)=>{
+          this.cash += item.cash
+          this.card += item.card
+          this.qtys += item.qty
+        })
+      }
+      {
+        var date = new Date();
+        date.setDate(date.getDate() - parseInt(number));
+          var l = date.toISOString().slice(0,10);
+          console.log(l);
+          this.loading = true;
+          const response = await fetch(this.$store.state.hostname + "/HospitalManagerReports/getHospitalManagerListByDateForAdmin?dateTimeCur=" + l);
+          const dataList = await response.json();
+          console.log('dataList items')
+          console.log(dataList)
+          this.get_money = 0;
+          dataList.forEach((item)=>{
+            if(item.hospitalServiceTypeGroupName == 'RETURNED')
+            this.get_money += item.cashSumm
+          })
+          this.kunlik_report_list = dataList;
+          this.loading = false;
+      }
+      },
+      async users_func(options){
+        console.log(options)
+        this.user_name = options.data.fio
+        this.user_id = options.data.Authid
+      },
       add(){
         this.show =! this.show
         this.editData = {};
@@ -463,6 +561,7 @@
           this.loading = true;
           await this.fetch_report_by_data_time(c);
           await this.fetch_report_by_bron_payed(c);
+          await this.fetch_payed_date_vozvrat_list(c);
           this.loading = false;
           console.log(this.get_daily_report_list)
           this.cash = 0;
@@ -497,6 +596,8 @@
           const responsed = await fetch(this.$store.state.hostname + '/ReturnMoneys/getReturnMoneyListBeatwenDateTimeAndKassirId?beginDate=' + timed1 + 
           '&endDate=' + timed2 + '&kassirId=0')
           const dataJson = await responsed.json()
+          console.log('dataList items')
+          console.log(dataJson)
           this.get_money = 0;
           for(var i = 0; i < dataJson.length; i++) {
             this.get_money += dataJson[i].price;
@@ -513,95 +614,6 @@
   };
 </script>
 
-<style lang="scss">
-
-
-.add{
-  position: fixed;
-  background: rgba(0, 0, 0, 0.4);
-  height: 100vh;
-  top:0;
-  width:85%;
-}
-
-.addxizmat{
-  width: 470px;
-  // height: 120px;
-  background: #fff;
-  position: relative;
-  z-index: 5000;
-}
-.showing{
-  display: none;
-}
-.timePicer{
-  position: relative;
-  margin-top: -10px;
-  .timeLabel{
-    position: absolute;
-    font-size: 12px;
-    background-color: #fff;
-    padding: 1px 3px;
-    z-index: 1;
-    left: 6px;
-    top: -1px;
-  }
-  .dayLabel{
-    position: absolute;
-    font-size: 12px;
-    background-color: #fff;
-    padding: 0px 3px;
-    z-index: 1;
-    left: 6px;
-    top: -8px;
-  }
-}
-  .myTable {
-  /* border-collapse: collapse; */
-  table-layout:fixed;
-  width: 100%;
-  overflow: hidden;
-  // border: 1px solid #ddd;
-  font-size: 18px;
-  max-height:80px; overflow-x:auto
-}
-.myTable th{
-  font-weight: 600;
-  font-size:12px;
-}
-.myTable td{
-  font-size:13px;
-}
-.myTable th, .myTable td {
-  text-align: left;
-  padding: 10px;
-}
-
-.myTable tr {
-  border-bottom: 1px solid rgb(240, 240, 240);
-}
-.delIcon{
-  color: rgb(251, 70, 70);
-  font-size: 13px;
-}
-.price_all_item .borderSolder{
-    // border: 0.5px dashed #D0D3D8;
-    background-image: linear-gradient( 65.9deg,  rgba(85,228,224,1) 5.5%, rgba(75,68,224,0.74) 54.2%, rgba(64,198,238,1) 55.2%, rgba(177,36,224,1) 98.4% );
-
-    span{
-      color:#000000;
-      font-size: 21px;
-      font-weight: 450;
-    }
-    p{
-      color:#ffffff;
-      font-weight:bold;
-      font-size: 23px;
-      margin:0;
-      padding:0;
-    }
-  }
-.bg_header{
-  background-image: linear-gradient( 65.9deg,  rgba(85,228,224,1) 5.5%, rgba(75,68,224,0.74) 54.2%, rgba(64,198,238,1) 55.2%, rgba(177,36,224,1) 98.4% );
-}
+<style lang="scss" scoped>
+  @import "../../../scss/tableAll.scss";
 </style>

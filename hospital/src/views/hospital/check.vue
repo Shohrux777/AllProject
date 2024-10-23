@@ -10,17 +10,23 @@
         <!-- <img src="../../assets/novo.svg" height="80" style="width: 100%;" alt="">
         <h5 style="" class="paymentCheckPrintCheck mt-2 mb-3">OOO 'ExtresMed'</h5> -->
 
-        <!-- <img src="../../assets/Aider.svg" height="80" style="width: 100%;" alt=""> -->
-        <h5 style="" class="paymentCheckPrintCheck mt-2 mb-3">
-          ЧП "GIJDUVON DIAGNOSTIKA MASKANI" GIJDUVON DIAGNOSTIKA MASKANI Алпомиш кучаси
-        </h5>
+        <!-- <img src="../../assets/doctor.jpg" height="80" style="width: 100%;" alt=""> -->
+        <!-- <h5 style="" class="paymentCheckPrintCheck mt-2 mb-3">
+          «Doctor D&U» МЧЖ
+        </h5> -->
+
+        <!-- <h5 style="" class="paymentCheckPrintCheck mt-2 mb-3">
+          «AVITSENNA PLUS MED SERVIS» МЧЖ
+        </h5> -->
 
         <!-- <img src="../../assets/novo.svg" height="80" style="width: 100%;" alt="">
-        <h5 style="" class="paymentCheckPrintCheck mt-2 mb-3">OOO 'NOVO MEDICS' Уратепалик МФЙ. И.Каримов кучаси, 17-уй</h5> -->
-      <!-- 
+        <h5 style="" class="paymentCheckPrintCheck mt-2 mb-3">
+          OOO 'NOVO MEDICS' Уратепалик МФЙ. И.Каримов кучаси, 17-уй
+        </h5> -->
+      
         <img src="../../assets/iymon.svg" height="80" style="width: 100%;" alt="">
-        <h4 style="" class="paymentCheckPrintCheck mt-2 mb-3">IYMON MEDICAL SBJ </h4> 
-      -->
+        <h4 style="" class="paymentCheckPrintCheck mt-2 mb-1">IYMON MEDICAL SBJ </h4> 
+     
         <!-- <h4 style="" class="paymentCheckPrintCheck mt-2 mb-3">AIDER MED CENTR</h4> -->
       </div>
       <div style="display:flex; justify-content: center; padding: 0; padding-top: 0px; margin-top:-5px; margin-bottom: 7px;">
@@ -48,25 +54,38 @@
         <span style="font-size: 16px;" class="paymentCheckPrintCheck">Кассир:</span>
         <span style="font-size: 16.5px;" class="paymentCheckPrintCheck">{{casher}}</span>
      </div>
-     <div v-if="get_check_print_list.length" style="display:flex; justify-content:space-between; padding: 0 0px; padding-top:2px; padding-bottom: 2px;">
-        <span style="font-size: 16px;" class="paymentCheckPrintCheck">Врач</span>
-        <span  style="font-size: 17px; text-align:right;" class="paymentCheckPrintCheck">{{get_check_print_list[indexItem][0].doc_name}}</span>
+     <div style="display:flex; justify-content: start; padding: 0; padding-top: 0px;">
+      <h4 class="line_one ">-----------------------------------------------------</h4>
      </div>
      <div style="display:flex; justify-content:space-between; padding: 0 0px; padding-bottom: 5px;">
         <span style="font-size: 16px;" class="paymentCheckPrintCheck">Пациент:</span>
-        <span  style="font-size: 16.5px; text-align:right;" class="paymentCheckPrintCheck">{{patientFio}}</span>
+        <span  style="font-size: 17.5px; text-align:right;" class="paymentCheckPrintCheck">{{patientFio}}</span>
+        <!-- 19px patient_name  -->
      </div>
-     <div style="display:flex; justify-content: start; padding: 0; padding-top: 10px;">
+     <div style="display:flex; justify-content:space-between; padding: 0 0px; padding-bottom: 5px;">
+        <span style="font-size: 16px;" class="paymentCheckPrintCheck">{{$t('bornDate') }}:</span>
+        <span  style="font-size: 16.5px; text-align:right;" class="paymentCheckPrintCheck">{{patientBorn}}</span>
+     </div>
+     <div v-if="patentAdress" style="display:flex; justify-content:space-between; padding: 0 0px; padding-bottom: 5px;">
+        <span style="font-size: 16px;" class="paymentCheckPrintCheck">Адрес:</span>
+        <span  style="font-size: 16.5px; text-align:right;" class="paymentCheckPrintCheck">{{patentAdress}}</span>
+     </div>
+     <!-- <div v-if="patentContragent" style="display:flex; justify-content:space-between; padding: 0 0px; padding-bottom: 5px;">
+        <span style="font-size: 16px;" class="paymentCheckPrintCheck">Отп. врач:</span>
+        <span  style="font-size: 16.5px; text-align:right;" class="paymentCheckPrintCheck">{{patentContragent}}</span>
+     </div> -->
+     <div style="display:flex; justify-content: start; padding: 0; padding-top: 0px;">
       <h4 class="line_one ">-----------------------------------------------------</h4>
      </div>
 
-     <div  style="padding: 7px 0; ">
+     <div  style="padding: 4px 0;">
        <div  style="display:flex; justify-content: space-between; padding: 0 0px;" v-for="(item, i) in get_check_print_list[indexItem]" :key="i">
-          <span style="font-size: 18px;" class="paymentCheckPrintCheck">{{i+1}}. {{item.serviceName}} (x{{item.qty}})</span>
+          <span style="font-size: 17.5px;" class="paymentCheckPrintCheck">{{i+1}}. {{item.serviceName}} (x{{item.qty}})</span>
+          <!-- 18.5 service_name  -->
           <span style="font-size: 17px;" class="paymentCheckPrintCheck"> = {{item.summ*item.qty}}</span>
        </div>
      </div>
-     <div style="display:flex; justify-content: start; padding: 0; padding-top: 10px;">
+     <div style="display:flex; justify-content: start; padding: 0; padding-top: 0px;">
       <h4 class="line_one ">-----------------------------------------------------</h4>
      </div>
      
@@ -86,6 +105,10 @@
      <div v-show="checkInfo.card!=0" style="display:flex; justify-content: space-between; padding: 0 0px 7px 0px;  border-bottom: 1px dashed black;" >
         <span style="font-size: 16.5px;" class="paymentCheckPrintCheck">Пластик</span>
         <span style="font-size: 16.5px;" class="paymentCheckPrintCheck">{{get_cashSumm_Array[indexItem].all_sum}}</span>
+     </div>
+     <div v-show="debit_sum!=0" style="display:flex; justify-content: space-between; padding: 0 0px 7px 0px;  border-bottom: 1px dashed black;" >
+        <span style="font-size: 16.5px;" class="paymentCheckPrintCheck">Долг</span>
+        <span style="font-size: 16.5px;" class="paymentCheckPrintCheck">{{parseInt(debit_sum)}}</span>
      </div>
      <div style="display:flex; justify-content: start; padding: 0; padding-top: 10px;">
       <h4 class="line_one paymentCheckPrintCheck">-----------------------------------------------------</h4>
@@ -111,8 +134,9 @@
      </div>
      <div style="display:flex; justify-content: center; padding: 0; padding-top: 0px; margin-bottom: 4px;">
       <span style="font-size: 20px;" class="paymentCheckPrintCheck"> 
-        @Gijduvon_diagnostika_bot 
-        <!-- @iymon_medical_bot -->
+        <!-- @Doctor_DU_medical_bot -->
+        <!-- @Avitsenna_med_servis_bot  -->
+        @iymon_medical_bot
         <!-- @novo_medics_bot -->
       </span>
      </div>
@@ -124,7 +148,7 @@
         Талон №
       </span>
      </div>
-     <div v-if="get_check_print_list.length" style="display:flex; justify-content: center; padding: 0; padding-top: 0px; margin-top:-4px; margin-bottom: 1px;">
+     <div v-if="get_check_print_list.length" style="display:flex; justify-content: center; padding: 0; padding-top: 0px; margin-top:-4px; margin-bottom: 0px;">
       <span style="font-size: 35px;" v-if="get_check_print_list[indexItem][0].talon>=10" class="paymentCheckPrintCheck text-center"> 
         {{get_check_print_list[indexItem][0].talon}}
       </span>
@@ -132,6 +156,9 @@
         0{{get_check_print_list[indexItem][0].talon}}
       </span>
      </div>
+     <div v-if="get_check_print_list.length" style="display:flex; justify-content:center; padding: 0 0px; padding-top:0px; padding-bottom: 0px;">
+        <span  style="font-size: 19px; text-align:center;" class="paymentCheckPrintCheck">{{get_check_print_list[indexItem][0].doc_name}}</span>
+      </div>
      <div style="display:flex; justify-content: start; padding: 0; padding-top: 0px;">
       <h4 class="line_one paymentCheckPrintCheck">-----------------------------------------------------</h4>
      </div>
@@ -161,17 +188,16 @@ export default {
       allSumm: 0,
       numberOrder: 1,
       checklist: [],
-      minut: new Date().toISOString().slice(11, 19),
+      minut: new Date().toTimeString().slice(0, 8),
       dataItems: [],
-      value: 'https://t.me/Gijduvon_diagnostika_bot',
+      value: 'https://t.me/iymon_medical_bot',
+      // value: 'https://t.me/Avitsenna_med_servis_bot',
       // value: 'https://t.me/novo_medics_bot',
       size: 90,
     }
   },
   async mounted(){
       this.$forceUpdate();
-
-
       // setTimeout(() => {
       //   window.print();
       //   if(this.get_check_print_list.length == this.indexItem + 1){
@@ -188,12 +214,14 @@ export default {
   },
   methods: {
     ...mapActions(['fetch_unpayed_patient']),
-    async printed(){      
+    async printed(){
+      console.log('printerni ichiga kirdi') 
       setTimeout(() => {
         if(this.get_check_print_list.length == 0){
           this.$emit('close');
         }
         else{
+      console.log('printerni ichiga kirdi printga hamkirdi') 
           window.print();
           if(this.get_check_print_list.length == this.indexItem + 1){
             this.$emit('close');
@@ -202,7 +230,7 @@ export default {
             this.$emit('closeNext');
           }
         }
-      }, 350);
+      }, 400);
 
       // window.print()
       // this.$router.back()
@@ -268,6 +296,15 @@ export default {
     },
     patientFio(){
       return this.$store.state.patient_name_for_cash
+    },
+    patientBorn(){
+      return this.$store.state.patient_born_date_for_cash
+    },
+    patentAdress(){
+      return this.$store.state.patent_address_for_check
+    },
+    patentContragent(){
+      return this.$store.state.patent_cantragent_for_check
     }
   }
 }

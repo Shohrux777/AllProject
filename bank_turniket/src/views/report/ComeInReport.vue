@@ -62,7 +62,7 @@
                     <tr>
                         <th width="40">№</th>
                         <th>{{$t('FIO')}}</th>
-                        <!-- <th width="100">User ID</th> -->
+                        <th width="100">User ID</th>
                         <!-- <th width="100">{{$t('vaqt')}}</th> -->
                         <th>{{$t('otdel')}}</th>
                     </tr>
@@ -79,9 +79,9 @@
                           </div>
                       </div>
                       </td>
-                      <!-- <td style="width:60px;">
+                      <td style="width:60px;">
                         {{ row.userid }}
-                      </td> -->
+                      </td>
                       <!-- <td>
                       <MDBBadge v-if="row.checktype == 'I' || row.checktype == 'K'" badge="success" pill class="d-inline">Входить</MDBBadge>
                       <MDBBadge v-else badge="warning" pill class="d-inline">Выход</MDBBadge>

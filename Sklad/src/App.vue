@@ -46,12 +46,12 @@ export default
   //     ...mapActions(['fetchUsers']),
 
   // },
-  mounted() {
-    // let t_date = new Date().getDate();
-    // if(parseInt(t_date) >= 28){
-    //   this.unpayed = false;
-    // }
-  },
+  // mounted() {
+  //   let t_date = new Date().getDate();
+  //   if(parseInt(t_date) >= 1){
+  //     this.unpayed = false;
+  //   }
+  // },
   async created()
   {
     // await this.fetchUsers();

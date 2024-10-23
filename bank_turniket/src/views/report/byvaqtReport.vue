@@ -41,19 +41,23 @@
               <div v-show="false" style="width: 20%;" class="px-2">
                 <MDBInput v-model="End_time" type="date" size="sm" label="e_date" />
               </div>
+              
               <div style="width: 20%;" class="px-2">
-                <erpSelectAdd
-                  :options = "get_deparment_list.rows"
-                  @select="sub_door_select"
-                  :selected="dept_name"
-                  :label="$t('otdel')"
-                  class="m-0 p-0"
-                  style="margin-top: -30px !important; "
-                />
-              </div>
-              <div style="width: 40%;" class="px-2">
-                <MDBBtn style="font-size: 9px;" @click="submit" color="primary">OK</MDBBtn>
+                <MDBBtn style="font-size: 9px;" @click="fetchWithoutDept" color="primary">OK</MDBBtn>
                 <MDBBtn style="font-size: 9px;" @click="fetchWithoutDept" color="info">Refresh</MDBBtn>
+              </div>
+              <div style="width: 60%;" class="px-2 d-flex justify-content-end ">
+                <div style="width:400px;">
+                  <erpSelectAdd
+                    :options = "get_deparment_list.rows"
+                    @select="sub_door_select"
+                    :selected="dept_name"
+                    :label="$t('otdel')"
+                    class="m-0 p-0"
+                    style="margin-top: -30px !important; "
+                  />
+                </div>
+                
               </div>
             </div>
             <div>
@@ -98,7 +102,7 @@
                       <MDBBadge v-if="row.checktype == 'I' || row.checktype == 'K'" badge="success" pill class="d-inline">Входить</MDBBadge>
                       <MDBBadge v-else badge="warning" pill class="d-inline">Выход</MDBBadge>
                       </td> -->
-                      <td v-if="row.vaqt">{{row.vaqt}}</td>
+                      <td v-if="row.ishlagan_vaqti_yangi_time_format">{{row.ishlagan_vaqti_yangi_time_format}}</td>
                       <td v-else class="text-danger">---</td>
                       <td>{{row.kun}}</td>
                   </tr>
@@ -139,10 +143,11 @@ export default {
         End_time: null,
         reportList: [],
         search: '',
+        main_reportList: [],
         json_fields: {
           'ФИО': 'ism',
           'User ID': 'userid',
-          'Время': 'vaqt',
+          'Время': 'ishlagan_vaqti_yangi_time_format',
           'Дата': 'kun'
         }
       }
@@ -173,10 +178,21 @@ export default {
     },
     methods:{
       ...mapActions([ 'fetch_Department']),
-      sub_door_select(option){
+      async sub_door_select(option){
         console.log(option)
         this.dept_name = option.name;
         this.dept_id = option.id;
+        this.reportList = this.main_reportList;
+        let dept_temp_list = [];
+        for(let i=0; i<this.reportList.length; i++){
+          if(option.id == this.reportList[i].departid){
+            dept_temp_list.push(this.reportList[i]);
+          }
+        }
+        this.reportList = dept_temp_list;
+
+        console.log(this.reportList);
+
       },
       async fetchWithoutDept(){
         let start = this.Start_time + 'T00:00:35.000Z' ;
@@ -184,11 +200,14 @@ export default {
         console.log(start)
         console.log(end)
         console.log('submit')
+        this.dept_name = '';
+        this.dept_id = null;
         try{
-          const response = await fetch(this.$store.state.hostname + "/SkudMyUserinfoes/getReportWithoutSmenaPaginationAllUsers?page=0&size=1000&need_date=" + start);
+          const response = await fetch(this.$store.state.hostname + "/SkudMyUserinfoes/getPaginationIshlaganVohtiYangisi?page=0&size=10000&need_date=" + start);
           const data = await response.json();
           console.log(data)
           this.reportList = data.items_list;
+          this.main_reportList = data.items_list;
         }
         catch(error){
           console.log(error)

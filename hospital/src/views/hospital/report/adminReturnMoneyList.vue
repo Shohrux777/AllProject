@@ -53,23 +53,23 @@
             <tbody>
               <tr v-for="(row,rowIndex) in order_list" :key="rowIndex">
                 <td>{{rowIndex+1}}</td>
-                <td> <span >{{row.patients.fio}}</span> </td>
+                <td> <span >{{row.patients.FIO}}</span> </td>
 
-                <td>   <span>{{row.contragent.name}}</span></td>
-                <td> <span >{{row.serviceName}}</span> </td>
-                <td> <span >{{row.payedDate.slice(0,10)}}  | {{row.payedDate.slice(11,16)}}</span> </td>
-                <td> <span :class="{'text-success': row.paymentInCard>0}">{{row.paymentInCard}}</span> </td>
-                <td> <span :class="{'text-success': row.paymentInCash>0}" >{{row.paymentInCash}}</span> </td>
+                <td> <span>{{row.discount_card_qty}}</span></td>
+                <td> <span >{{row.ServiceName}}</span> </td>
+                <td> <span >{{row.PayedDate.slice(0,10)}}  | {{row.PayedDate.slice(11,16)}}</span> </td>
+                <td> <span :class="{'text-success': row.PaymentInCard>0}">{{row.PaymentInCard}}</span> </td>
+                <td> <span :class="{'text-success': row.PaymentInCash>0}" >{{row.PaymentInCash}}</span> </td>
                 <td>
-                  <mdb-badge v-show="row.finishPayment === true" style="padding: 2px 8px;" pill color="success">{{$t("payed")}}</mdb-badge>
-                  <mdb-badge v-show="row.finishPayment === false" style="padding: 2px 8px;" pill color="danger">{{$t('unpayed')}}</mdb-badge>
+                  <mdb-badge v-show="row.FinishPayment === true" style="padding: 2px 8px;" pill color="success">{{$t("payed")}}</mdb-badge>
+                  <mdb-badge v-show="row.FinishPayment === false" style="padding: 2px 8px;" pill color="danger">{{$t('unpayed')}}</mdb-badge>
                 </td>
                 <td>
-                  <mdb-badge v-show="row.finish === true" style="padding: 2px 8px;" pill color="success">{{$t("проверил")}}</mdb-badge>
-                  <mdb-badge v-show="row.finish === false" style="padding: 2px 8px;" pill color="danger">{{$t('непроверенный')}}</mdb-badge>
+                  <mdb-badge v-show="row.Finish === true" style="padding: 2px 8px;" pill color="success">{{$t("проверил")}}</mdb-badge>
+                  <mdb-badge v-show="row.Finish === false" style="padding: 2px 8px;" pill color="danger">{{$t('непроверенный')}}</mdb-badge>
                 </td>
                 <td> 
-                  <mdb-btn @click="remove(row.id)" style="font-size:9px;" color="danger py-1 px-2">возврат</mdb-btn>  
+                  <mdb-btn @click="remove(row.Id)" style="font-size:9px;" color="danger py-1 px-2">возврат</mdb-btn>  
                 </td>
               </tr>
               <tr >
@@ -83,64 +83,6 @@
       </div>
     </div>
 
-     <vue-html2pdf ref='listlar'
-        :show-layout="false"
-        :float-layout="true"
-        :enable-download="false"
-        :preview-modal="true"
-        :paginate-elements-by-height="1600"
-        filename="hee hee"
-        :pdf-quality="2"
-        :manual-pagination="false"
-        pdf-format="a4"
-        pdf-orientation="landscape"
-        pdf-content-width="100%"
-        @hasStartedGeneration="hasStartedGeneration()"
-        @hasGenerated="hasGenerated($event)"
-      >
-      <div slot="pdf-content">
-        <div class="TablePatientDocIdApply p-3">
-          <table class="myTable">
-            <thead>
-              <tr class="header ">
-                <th width="230">{{$t('contragent')}}</th>
-                <th >{{$t('bemor')}}</th>
-                <th>{{$t('service')}}</th>
-                <th >{{$t('date')}}</th>
-                <th >{{$t('card')}}</th>
-                <th >{{$t('cash')}}</th>
-                <th >{{$t('payed')}}</th>
-                <th >{{$t('finish')}}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(row,rowIndex) in order_list" :key="rowIndex">
-                <td>   <span>{{row.contragent.name}}</span></td>
-                <td> <span >{{row.patients.fio}}</span> </td>
-                <td> <span >{{row.serviceName}}</span> </td>
-                <td> <span >{{row.payedDate.slice(0,10)}}  | {{row.payedDate.slice(11,16)}}</span> </td>
-                <td> <span :class="{'text-success': row.paymentInCard>0}">{{row.paymentInCard}}</span> </td>
-                <td> <span :class="{'text-success': row.paymentInCash>0}" >{{row.paymentInCash}}</span> </td>
-                <td>
-                  <span v-show="row.finishPayment === true" style="padding: 2px 8px;" pill color="success">{{$t("payed")}}</span>
-                  <span v-show="row.finishPayment === false" style="padding: 2px 8px;" pill color="danger">{{$t('unpayed')}}</span>
-                </td>
-                <td>
-                  <span v-show="row.finish === true" style="padding: 2px 8px;" pill color="success">{{$t("проверил")}}</span>
-                  <span v-show="row.finish === false" style="padding: 2px 8px;" pill color="danger">{{$t('непроверенный')}}</span>
-                </td>
-              </tr>
-              <tr >
-                <td> <span class="text-primary">Общий</span> </td>
-                <td> <span ></span> </td>
-                
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </vue-html2pdf>
 
     <!-- <div :class="{'showing':show}">
       <div class="add d-flex justify-content-center align-items-center" >  
@@ -189,7 +131,7 @@
 </template>
 
 <script>
-  import VueHtml2pdf from 'vue-html2pdf'
+  // import VueHtml2pdf from 'vue-html2pdf'
   // import DatePicker from 'vue2-datepicker';
   import districtAdd from "../../../components/new_prog_add/district_add"
   import inputIcon from "../../../components/inputIcon"
@@ -200,8 +142,7 @@
     components: {
       mdbBtn,mdbBadge,
       mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter,
-      districtAdd,
-      VueHtml2pdf, inputIcon
+      districtAdd, inputIcon
     },
     data(){
       return{
@@ -251,26 +192,28 @@
       },
       async refresh(){
         this.loading = true;
-        const response = await fetch(this.$store.state.hostname + "/Payments/getAllUnfinishedPaymentsListForAdmin");
+        const response = await fetch(this.$store.state.hostname + "/Payments/getPaginationAllUnfinishedPaymentsListForAdmin?page=0&size=150");
         const data = await response.json();
         console.log(data)
         this.loading = false;
-        this.kunlik_report_lists = data;
+        this.kunlik_report_lists = data.items_list;
         console.log('this.kunlik_report_lists')
         console.log(this.kunlik_report_lists)
         this.order_list = this.kunlik_report_lists;
       },
-      searchClick(){
+      async searchClick(){
         this.order_list = this.kunlik_report_lists;
         this.loading = true;
         if(this.search != ''){
-          let userSearchList = [];
-          for(let i=0; i<this.order_list.length;i++){
-            if(this.order_list[i].patients.fio.toLowerCase().includes(this.search.toLowerCase()) || this.order_list[i].contragent.name.toLowerCase().includes(this.search.toLowerCase())){
-              userSearchList.push(this.order_list[i])
-            }
+          try{
+            const response = await fetch(this.$store.state.hostname + '/Payments/getPaginationAllUnfinishedPaymentsListForAdminWithName?page=0&size=150&fio=' + this.search)
+            const data = await response.json()
+            console.log(data.items_list)
+            this.order_list = data.items_list;
           }
-          this.order_list = userSearchList;
+          catch(error){
+            console.log(error)
+          }
         }
         else{
           this.order_list = this.kunlik_report_lists;
@@ -344,75 +287,6 @@
   };
 </script>
 
-<style lang="scss">
-
-
-.add{
-  position: fixed;
-  background: rgba(0, 0, 0, 0.4);
-  height: 100vh;
-  top:0;
-  width:85%;
-}
-
-.addxizmat{
-  width: 470px;
-  // height: 120px;
-  background: #fff;
-  position: relative;
-  z-index: 5000;
-}
-.showing{
-  display: none;
-}
-.timePicer{
-  position: relative;
-  margin-top: -10px;
-  .timeLabel{
-    position: absolute;
-    font-size: 12px;
-    background-color: #fff;
-    padding: 1px 3px;
-    z-index: 1;
-    left: 6px;
-    top: -1px;
-  }
-  .dayLabel{
-    position: absolute;
-    font-size: 12px;
-    background-color: #fff;
-    padding: 0px 3px;
-    z-index: 1;
-    left: 6px;
-    top: -8px;
-  }
-}
-  .myTable {
-  /* border-collapse: collapse; */
-  table-layout:fixed;
-  width: 100%;
-  overflow: hidden;
-  // border: 1px solid #ddd;
-  font-size: 18px;
-  max-height:80px; overflow-x:auto
-}
-.myTable th{
-  font-weight: 600;
-  font-size:12px;
-}
-.myTable td{
-  font-size:13px;
-}
-.myTable th, .myTable td {
-  text-align: left;
-  padding: 10px;
-}
-
-.myTable tr {
-  border-bottom: 1px solid rgb(240, 240, 240);
-}
-.delIcon{
-  color: rgb(251, 70, 70);
-  font-size: 13px;
-}
+<style lang="scss" scoped>
+  @import "../../../scss/tableAll.scss";
 </style>

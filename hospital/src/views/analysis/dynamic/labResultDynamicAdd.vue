@@ -37,608 +37,1640 @@
             </div>
         </div>
         <loader v-if="loading"/>
-        <div v-if="result_list.length" class="mx-1 row mt-4" >
+        <div class="row mx-1 mt-4 border-bottom mb-2">
+            <div class="col-1" v-show="main_name_title.name_29 != '+'">
+                <div>
+                    <small class="labTitle_small">Сокр.</small>
+                </div>
+            </div>
+            <div class="col-3">
+                <small class="labTitle_small">Показатель</small>
+            </div>
+            <div class="col-1" v-show="main_name_title.name_29 == '+'">
+                <div>
+                    <small class="labTitle_small">Сокр.</small>
+                </div>
+            </div>
+            <div class=" px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}">
+                <small class="labTitle_small">Результат</small>
+            </div>
+            <div class=" px-1" v-if="main_name_title.name_24 == '+'" :class="{'col-2' : main_name_title.name_24 == '+'}">
+                <small class="labTitle_small">{{main_name_title.name_23}}</small>
+            </div>
+            <div class="col-3">
+                <small class="labTitle_small">Норма</small>
+            </div>
+        </div>
+        <div v-if="result_list.length" class="mx-1 row" >
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_1 != '' && get_lab_name_list[0].name_1 != ''">
                 <h6>{{ get_lab_center_list[0].name_1 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_1 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_1 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_1" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_1 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_1" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_1 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_1" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_1 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[0].result" :label="get_lab_name_list[0].name_1"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_1 != ''" v-html="get_lab_norma_list[0].name_1"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[0].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_1 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[0].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_1 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_1 != ''" >
+                    <small style="font-size:13px " v-html="get_lab_norma_list[0].name_1"></small>
                 </div>
             </div>
 
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_2 != '' && get_lab_name_list[0].name_2 != ''">
                 <h6>{{ get_lab_center_list[0].name_2 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_2 != ''">
-                <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[1].result" :label="get_lab_name_list[0].name_2"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_2 != ''" v-html="get_lab_norma_list[0].name_2"></small>
-                    </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_2 != ''  && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_2" outline/>
                 </div>
             </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_2 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_2" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_2 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_2" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_2 != ''">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[1].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_2 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[1].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_2 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_2 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_2"></small>
+                </div>
+            </div>
+
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_3 != ''  && get_lab_name_list[0].name_3 != ''">
                 <h6>{{ get_lab_center_list[0].name_3 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_3 != ''">
-                <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[2].result" :label="get_lab_name_list[0].name_3"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_3 != ''" v-html="get_lab_norma_list[0].name_3"></small>
-                    </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_3 != ''  && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_3" outline/>
                 </div>
             </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_3 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_3" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_3 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_3" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_3 != ''">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[2].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_3 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[2].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_3 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_3 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_3"></small>
+                </div>
+            </div>
+
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_4 != '' && get_lab_name_list[0].name_4 != ''">
                 <h6>{{ get_lab_center_list[0].name_4 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_4 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_4 != ''  && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_4" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_4 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_4" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_4 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_4" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_4 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[3].result" :label="get_lab_name_list[0].name_4"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_4 != ''" v-html="get_lab_norma_list[0].name_4"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[3].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_4 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[3].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_4 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_4 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_4"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_5 != '' && get_lab_name_list[0].name_5 != ''">
                 <h6>{{ get_lab_center_list[0].name_5 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_5 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_5 != ''  && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_5" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_5 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_5" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_5 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_5" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_5 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[4].result" :label="get_lab_name_list[0].name_5"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_5 != ''" v-html="get_lab_norma_list[0].name_5"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[4].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_5 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[4].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_5 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_5 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_5"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_6 != '' && get_lab_name_list[0].name_6 != ''">
                 <h6>{{ get_lab_center_list[0].name_6 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_6 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_6 != ''  && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_6" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_6 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_6" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_6 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_6" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_6 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[5].result" :label="get_lab_name_list[0].name_6"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_6 != ''" v-html="get_lab_norma_list[0].name_6"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[5].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_6 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[5].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_6 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_6 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_6"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_7 != '' && get_lab_name_list[0].name_7 != ''">
                 <h6>{{ get_lab_center_list[0].name_7 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_7 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_7 != ''  && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_7" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_7 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_7" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_7 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_7" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_7 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[6].result" :label="get_lab_name_list[0].name_7"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_7 != ''" v-html="get_lab_norma_list[0].name_7"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[6].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_7 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[6].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_7 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_7 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_7"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_8 != '' && get_lab_name_list[0].name_8 != ''">
                 <h6>{{ get_lab_center_list[0].name_8 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_8 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_8 != ''  && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_8" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_8 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_8" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_8 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_8" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_8 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[7].result" :label="get_lab_name_list[0].name_8"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_8 != ''" v-html="get_lab_norma_list[0].name_8"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[7].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_8 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[7].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_8 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_8 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_8"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_9 != '' && get_lab_name_list[0].name_9 != ''">
                 <h6>{{ get_lab_center_list[0].name_9 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_9 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_9 != ''  && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_9" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_9 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_9" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_9 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_9" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_9 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[8].result" :label="get_lab_name_list[0].name_9"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_9 != ''" v-html="get_lab_norma_list[0].name_9"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[8].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_9 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[8].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_9 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_9 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_9"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_10 != '' && get_lab_name_list[0].name_10 != ''">
                 <h6>{{ get_lab_center_list[0].name_10 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_10 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_10 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_10" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_10 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_10" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_10 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_10" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_10 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[9].result" :label="get_lab_name_list[0].name_10"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_10 != ''" v-html="get_lab_norma_list[0].name_10"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[9].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_10 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[9].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_10 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_10 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_10"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_11 != '' && get_lab_name_list[0].name_11 != ''">
                 <h6>{{ get_lab_center_list[0].name_11 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_11 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_11 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_11" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_11 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_11" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_11 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_11" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_11 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[10].result" :label="get_lab_name_list[0].name_11"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_11 != ''" v-html="get_lab_norma_list[0].name_11"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[10].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_11 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[10].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_11 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_11 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_11"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_12 != '' && get_lab_name_list[0].name_12 != ''">
                 <h6>{{ get_lab_center_list[0].name_12 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_12 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_12 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_12" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_12 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_12" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_12 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_12" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_12 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[11].result" :label="get_lab_name_list[0].name_12"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_12 != ''" v-html="get_lab_norma_list[0].name_12"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[11].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_12 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[11].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_12 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_12 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_12"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_13 != '' && get_lab_name_list[0].name_13 != ''">
                 <h6>{{ get_lab_center_list[0].name_13 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_13 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_13 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_13" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_13 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_13" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_13 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_13" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_13 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[12].result" :label="get_lab_name_list[0].name_13"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_13 != ''" v-html="get_lab_norma_list[0].name_13"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[12].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_13 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[12].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_13 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_13 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_13"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_14 != '' && get_lab_name_list[0].name_14 != ''">
                 <h6>{{ get_lab_center_list[0].name_14 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_14 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_14 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_14" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_14 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_14" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_14 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_14" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_14 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[13].result" :label="get_lab_name_list[0].name_14"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_14 != ''" v-html="get_lab_norma_list[0].name_14"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[13].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_14 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[13].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_14 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_14 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_14"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_15 != '' && get_lab_name_list[0].name_15 != ''">
                 <h6>{{ get_lab_center_list[0].name_15 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_15 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_15 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_15" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_15 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_15" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_15 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_15" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_15 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[14].result" :label="get_lab_name_list[0].name_15"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_15 != ''" v-html="get_lab_norma_list[0].name_15"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[14].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_15 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[14].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_15 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_15 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_15"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_16 != ''  && get_lab_name_list[0].name_16 != ''">
                 <h6>{{ get_lab_center_list[0].name_16 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_16 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_16 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_16" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_16 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_16" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_16 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_16" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_16 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[15].result" :label="get_lab_name_list[0].name_16"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_16 != ''" v-html="get_lab_norma_list[0].name_16"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[15].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_16 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[15].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_16 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_16 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_16"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_17 != ''  && get_lab_name_list[0].name_17 != ''">
                 <h6>{{ get_lab_center_list[0].name_17 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_17 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_17 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_17" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_17 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_17" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_17 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_17" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_17 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[16].result" :label="get_lab_name_list[0].name_17"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_17 != ''" v-html="get_lab_norma_list[0].name_17"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[16].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_17 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[16].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_17 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_17 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_17"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_18 != ''  && get_lab_name_list[0].name_18 != ''">
                 <h6>{{ get_lab_center_list[0].name_18 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_18 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_18 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_18" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_18 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_18" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_18 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_18" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_18 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[17].result" :label="get_lab_name_list[0].name_18"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_18 != ''" v-html="get_lab_norma_list[0].name_18"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[17].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_18 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[17].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_18 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_18 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_18"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_19 != ''  && get_lab_name_list[0].name_19 != ''">
                 <h6>{{ get_lab_center_list[0].name_19 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_19 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_19 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_19" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_19 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_19" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_19 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_19" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_19 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[18].result" :label="get_lab_name_list[0].name_19"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_19 != ''" v-html="get_lab_norma_list[0].name_19"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[18].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_19 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[18].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_19 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_19 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_19"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_20 != ''  && get_lab_name_list[0].name_20 != ''">
                 <h6>{{ get_lab_center_list[0].name_20 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_20 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_20 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_20" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_20 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_20" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_20 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_20" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_20 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[19].result" :label="get_lab_name_list[0].name_20"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_20 != ''" v-html="get_lab_norma_list[0].name_20"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[19].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_20 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[19].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_20 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_20 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_20"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_21 != ''  && get_lab_name_list[0].name_21 != ''">
                 <h6>{{ get_lab_center_list[0].name_21 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_21 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_21 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_21" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_21 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_21" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_21 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_21" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_21 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[20].result" :label="get_lab_name_list[0].name_21"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_21 != ''" v-html="get_lab_norma_list[0].name_21"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[20].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_21 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[20].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_21 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_21 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_21"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_22 != ''  && get_lab_name_list[0].name_22 != ''">
                 <h6>{{ get_lab_center_list[0].name_22 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_22 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_22 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_22" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_22 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_22" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_22 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_22" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_22 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[21].result" :label="get_lab_name_list[0].name_22"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_22 != ''" v-html="get_lab_norma_list[0].name_22"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[21].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_22 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[21].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_22 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_22 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_22"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_23 != '' && get_lab_name_list[0].name_23 != ''">
                 <h6>{{ get_lab_center_list[0].name_23 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_23 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_23 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_23" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_23 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_23" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_23 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_23" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_23 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[22].result" :label="get_lab_name_list[0].name_23"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_23 != ''" v-html="get_lab_norma_list[0].name_23"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[22].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_23 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[22].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_23 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_23 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_23"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_24 != '' && get_lab_name_list[0].name_24 != ''">
                 <h6>{{ get_lab_center_list[0].name_24 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_24 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_24 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_24" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_24 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_24" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_24 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_24" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_24 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[23].result" :label="get_lab_name_list[0].name_24"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_24 != ''" v-html="get_lab_norma_list[0].name_24"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[23].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_24 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[23].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_24 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_24 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_24"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_25 != '' && get_lab_name_list[0].name_25 != ''">
                 <h6>{{ get_lab_center_list[0].name_25 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_25 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_25 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_25" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_25 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_25" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_25 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_25" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_25 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[24].result" :label="get_lab_name_list[0].name_25"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_25 != ''" v-html="get_lab_norma_list[0].name_25"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[24].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_25 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[24].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_25 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_25 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_25"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_26 != '' && get_lab_name_list[0].name_26 != ''">
                 <h6>{{ get_lab_center_list[0].name_26 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_26 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_26 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_26" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_26 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_26" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_26 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_26" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_26 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[25].result" :label="get_lab_name_list[0].name_26"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_26 != ''" v-html="get_lab_norma_list[0].name_26"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[25].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_26 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[25].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_26 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_26 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_26"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_27 != '' && get_lab_name_list[0].name_27 != ''">
                 <h6>{{ get_lab_center_list[0].name_27 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_27 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_27 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_27" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_27 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_27" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_27 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_27" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_27 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[26].result" :label="get_lab_name_list[0].name_27"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_27 != ''" v-html="get_lab_norma_list[0].name_27"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[26].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_27 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[26].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_27 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_27 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_27"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_28 != '' && get_lab_name_list[0].name_28 != ''">
                 <h6>{{ get_lab_center_list[0].name_28 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_28 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_28 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_28" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_28 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_28" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_28 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_28" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_28 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[27].result" :label="get_lab_name_list[0].name_28"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_28 != ''" v-html="get_lab_norma_list[0].name_28"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[27].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_28 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[27].result1"  outline/>
+                </div>
+            </div>
+            
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_28 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_28 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_28"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_29 != '' && get_lab_name_list[0].name_29 != ''">
                 <h6>{{ get_lab_center_list[0].name_29 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_29 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_29 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_29" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_29 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_29" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_29 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_29" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_29 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[28].result" :label="get_lab_name_list[0].name_29"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_29 != ''" v-html="get_lab_norma_list[0].name_29 "></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[28].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_29 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[28].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_29 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_29 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_29"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_30 != '' && get_lab_name_list[0].name_30 != ''">
                 <h6>{{ get_lab_center_list[0].name_30 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_30 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_30 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_30" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_30 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_30" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_30 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_30" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_30 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[29].result" :label="get_lab_name_list[0].name_30"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_30 != ''" v-html="get_lab_norma_list[0].name_30"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[29].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_30 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[29].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_30 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_30 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_30"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_31 != '' && get_lab_name_list[0].name_31 != ''">
                 <h6>{{ get_lab_center_list[0].name_31 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_31 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_31 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_31" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_31 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_31" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_31 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_31" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_31 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[30].result" :label="get_lab_name_list[0].name_31"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_31 != ''" v-html="get_lab_norma_list[0].name_31"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[30].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_31 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[30].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_31 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_31 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_31"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_32 != '' && get_lab_name_list[0].name_32 != ''">
                 <h6>{{ get_lab_center_list[0].name_32 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_32 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_32 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_32" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_32 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_32" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_32 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_32" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_32 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[31].result" :label="get_lab_name_list[0].name_32"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_32 != ''" v-html="get_lab_norma_list[0].name_32"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[31].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_32 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[31].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_32 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_32 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_32"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_33 != '' && get_lab_name_list[0].name_33 != ''">
                 <h6>{{ get_lab_center_list[0].name_33 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_33 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_33 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_33" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_33 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_33" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_33 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_33" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_33 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[32].result" :label="get_lab_name_list[0].name_33"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_33 != ''" v-html="get_lab_norma_list[0].name_33"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[32].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_33 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[32].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_33 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_33 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_33"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_34 != '' && get_lab_name_list[0].name_34 != ''">
                 <h6>{{ get_lab_center_list[0].name_34 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_34 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_34 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_34" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_34 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_34" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_34 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_34" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_34 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[33].result" :label="get_lab_name_list[0].name_34"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_34 != ''" v-html="get_lab_norma_list[0].name_34"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[33].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_34 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[33].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_34 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_34 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_34"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_35 != '' && get_lab_name_list[0].name_35 != ''">
                 <h6>{{ get_lab_center_list[0].name_35 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_35 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_35 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_35" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_35 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_35" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_35 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_35" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_35 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[34].result" :label="get_lab_name_list[0].name_35"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_35 != ''" v-html="get_lab_norma_list[0].name_35"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[34].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_35 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[34].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_35 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_35 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_35"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_36 != '' && get_lab_name_list[0].name_36 != ''">
                 <h6>{{ get_lab_center_list[0].name_36 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_36 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_36 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_36" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_36 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_36" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_36 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_36" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_36 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[35].result" :label="get_lab_name_list[0].name_36"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_36 != ''" v-html="get_lab_norma_list[0].name_36"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[35].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_36 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[35].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_36 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_36 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_36"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_37 != '' && get_lab_name_list[0].name_37 != ''">
                 <h6>{{ get_lab_center_list[0].name_37 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_37 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_37 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_37" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_37 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_37" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_37 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_37" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_37 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[36].result" :label="get_lab_name_list[0].name_37"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_37 != ''" v-html="get_lab_norma_list[0].name_37"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[36].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_37 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[36].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_37 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_37 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_37"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_38 != '' && get_lab_name_list[0].name_38 != ''">
                 <h6>{{ get_lab_center_list[0].name_38 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_38 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_38 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_38" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_38 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_38" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_38 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_38" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_38 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[37].result" :label="get_lab_name_list[0].name_38"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_38 != ''" v-html="get_lab_norma_list[0].name_38"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[37].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_38 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[37].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_38 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_38 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_38"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_39 != '' && get_lab_name_list[0].name_39 != ''">
                 <h6>{{ get_lab_center_list[0].name_39 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_39 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_39 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_39" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_39 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_39" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_39 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_39" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_39 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[38].result" :label="get_lab_name_list[0].name_39"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_39 != ''" v-html=" get_lab_norma_list[0].name_39"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[38].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_39 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[38].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_39 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_39 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_39"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_40 != '' && get_lab_name_list[0].name_40 != ''">
                 <h6>{{ get_lab_center_list[0].name_40 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_40 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_40 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_40" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_40 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_40" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_40 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_40" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_40 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[39].result" :label="get_lab_name_list[0].name_40"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_40 != ''" v-html="get_lab_norma_list[0].name_40"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[39].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_40 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[39].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_40 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_40 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_40"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_41 != '' && get_lab_name_list[0].name_41 != ''">
                 <h6>{{ get_lab_center_list[0].name_41 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_41 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_41 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_41" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_41 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_41" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_41 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_41" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_41 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[40].result" :label="get_lab_name_list[0].name_41"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_41 != ''" v-html=" get_lab_norma_list[0].name_41 "></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[40].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_41 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[40].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_41 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_41 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_41"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_42 != '' && get_lab_name_list[0].name_42 != ''">
                 <h6>{{ get_lab_center_list[0].name_42 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_42 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_42 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_42" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_42 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_42" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_42 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_42" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_42 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[41].result" :label="get_lab_name_list[0].name_42"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_42 != ''" v-html="get_lab_norma_list[0].name_42"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[41].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_42 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[41].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_42 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_42 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_42"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_43 != '' && get_lab_name_list[0].name_43 != ''">
                 <h6>{{ get_lab_center_list[0].name_43 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_43 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_43 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_43" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_43 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_43" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_43 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_43" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_43 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[42].result" :label="get_lab_name_list[0].name_43"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_43 != ''" v-html="get_lab_norma_list[0].name_43"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[42].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_43 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[42].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_43 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_43 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_43"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_44 != '' && get_lab_name_list[0].name_44 != ''">
                 <h6>{{ get_lab_center_list[0].name_44 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_44 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_44 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_44" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_44 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_44" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_44 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_44" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_44 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[43].result" :label="get_lab_name_list[0].name_44"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_44 != ''" v-html="get_lab_norma_list[0].name_44"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[43].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_44 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[43].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_44 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_44 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_44"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_45 != '' && get_lab_name_list[0].name_45 != ''">
                 <h6>{{ get_lab_center_list[0].name_45 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_45 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_45 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_45" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_45 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_45" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_45 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_45" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_45 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[44].result" :label="get_lab_name_list[0].name_45"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_45 != ''" v-html="get_lab_norma_list[0].name_45"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[44].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_45 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[44].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_45 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_45 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_45"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_46 != '' && get_lab_name_list[0].name_46 != ''">
                 <h6>{{ get_lab_center_list[0].name_46 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_46 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_46 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_46" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_46 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_46" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_46 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_46" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_46 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[45].result" :label="get_lab_name_list[0].name_46"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_46 != ''" v-html="get_lab_norma_list[0].name_46"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[45].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_46 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[45].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_46 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_46 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_46"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_47 != '' && get_lab_name_list[0].name_47 != ''">
                 <h6>{{ get_lab_center_list[0].name_47 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_47 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_47 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_47" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_47 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_47" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_47 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_47" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_47 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[46].result" :label="get_lab_name_list[0].name_47"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_47 != ''" v-html="get_lab_norma_list[0].name_47"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[46].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_47 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[46].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_47 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_47 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_47"></small>
                 </div>
             </div>
             
             <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_48 != '' && get_lab_name_list[0].name_48 != ''">
                 <h6>{{ get_lab_center_list[0].name_48 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_48 != ''">
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_48 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_48" outline/>
+                </div>
+            </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_48 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_48" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_48 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_48" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_48 != ''">
                 <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[47].result" :label="get_lab_name_list[0].name_48"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_48 != ''" v-html="get_lab_norma_list[0].name_48"></small>
-                    </div>
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[47].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_48 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[47].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_48 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_48 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_48"></small>
                 </div>
             </div>
             
-            <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_49 != '' && get_lab_name_list[0].name_49 != ''">
+            <!-- <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_49 != '' && get_lab_name_list[0].name_49 != ''">
                 <h6>{{ get_lab_center_list[0].name_49 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_49 != ''">
-                <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[48].result" :label="get_lab_name_list[0].name_49"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_49 != ''" v-html="get_lab_norma_list[0].name_49"></small>
-                    </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_49 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_49" outline/>
                 </div>
             </div>
-            <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_50 != '' && get_lab_name_list[0].name_50 != ''">
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_49 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_49" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_49 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_49" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_49 != ''">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[48].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_49 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[48].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_49 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_49 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_49"></small>
+                </div>
+            </div> -->
+            <!-- <div class="col-12 text-center m-0 p-0" v-if="main_name_title.extra_status && get_lab_center_list[0].name_50 != '' && get_lab_name_list[0].name_50 != ''">
                 <h6>{{ get_lab_center_list[0].name_50 }}</h6>
             </div>
-            <div class="col-4 px-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_50 != ''">
-                <div class="pos_relative">
-                    <mdb-input class="m-0 p-0 mb-4" v-model="result_list[49].result" :label="get_lab_name_list[0].name_50"  outline/>
-                    <div class="pos_absolute" v-if="main_name_title.norma_status">
-                        <small v-if="get_lab_norma_list[0].name_50 != ''" v-html="get_lab_norma_list[0].name_50"></small>
-                    </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_50 != '' && main_name_title.name_29 != '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_firs_name_list[0].name_50" outline/>
                 </div>
             </div>
+            <div class="col-3" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_50 != ''">
+                <mdb-input size="sm" disabled class="m-0 p-0 mb-3" v-model="get_lab_name_list[0].name_50" outline/>
+            </div>
+            <div class="col-1" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_50 != '' && main_name_title.name_29 == '+'">
+                <div>
+                    <mdb-input size="sm"  disabled class="m-0 p-0 mb-3" v-model="get_lab_second_name_list[0].name_50" outline/>
+                </div>
+            </div>
+            <div class="px-1" :class="{'col-5' : main_name_title.name_24 != '+', 'col-3' : main_name_title.name_24 == '+'}" v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_50 != ''">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_list[49].result"  outline/>
+                </div>
+            </div>
+            <div class="px-1 col-2"  v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_50 != '' && main_name_title.name_24 == '+'">
+                <div class="pos_relative">
+                    <mdb-input size="sm" class="m-0 p-0 mb-3" v-model="result_first_list[49].result1"  outline/>
+                </div>
+            </div>
+            <div class="col-3 " v-if="main_name_title.lab_name_status && get_lab_name_list[0].name_50 != ''">
+                <div class="normClass rounded px-2 border"  v-if="get_lab_norma_list[0].name_50 != ''" >
+                    <small style="font-size:13px;" v-html="get_lab_norma_list[0].name_50"></small>
+                </div>
+            </div> -->
         </div>
-        <div class="text-right mx-4 py-2 border-top">
-        <mdb-btn color="primary" class="m-0 p-0"   p="r4 l4 t2 b2" @click="send" style="font-size:10px;">{{$t('Send')}}</mdb-btn>  
+        
+        <div class="text-right mx-4 py-2 border-top" style="position: relative;">
+            <div v-if="main_name_title.name_21" class="d-flex py-2" style="position: absolute; top:0;">
+                <mdb-input size="sm" class="m-0 p-0 mb-3" placeholder="Дата" v-model="result_list[48].result"  outline/>
+                <mdb-input size="sm" class="m-0 p-0 mb-3 ml-3" placeholder="Ид" v-model="result_list[49].result"  outline/>
+            </div>
+            <mdb-btn color="primary" class="m-0 p-0"   p="r4 l4 t2 b2" @click="send" style="font-size:10px;">{{$t('Send')}}</mdb-btn>  
         </div>
     </div>
     <div class="dynamic_update" v-if="labUpdate_show">
@@ -699,13 +1731,14 @@ export default {
       doctor_name: localStorage.docName,
       id: this.$route.params.id,
       result_list: [],
+      result_first_list: [],
       labUpdate_show: false,
       phone_number: '',
     }
   },
   computed:{
     ...mapGetters(['get_patient_client_list', 'get_lab_firs_name_list', 'get_lab_name_list', 'get_lab_norma_list', 
-        'get_lab_edzm_list','get_lab_center_list', 'get_client_info']),
+        'get_lab_edzm_list','get_lab_center_list', 'get_client_info', 'get_lab_result_list', 'get_lab_second_name_list']),
     filteredList: function(){
       if(this.search)
       {
@@ -717,38 +1750,96 @@ export default {
         return this.get_patient_client_list;
       }
       }
-  },
+    },
   async mounted(){
     this.result_list = [];
+    this.result_first_list = [];
     for(let i=0; i<50; i++){
       let obj_name = {
         result: ''
       }
+      let obj_name1 = {
+        result1: ''
+      }
       this.result_list.push(obj_name);
-    //   console.log(this.result_list)
+      this.result_first_list.push(obj_name1);
     }
     this.fetch_patient_client();
     await this.fetch_lab_name_list(this.main_id);
-    if(this.main_name_title.norma_status == true){
-        await this.fetch_lab_norma_list(this.main_id);
-    }
+    await this.fetch_lab_norma_list(this.main_id);
     await this.fetch_lab_center_list(this.main_id);
     await this.fetch_lab_firs_name_list(this.main_id);
+    await this.fetch_lab_result_list(this.main_id);
+    await this.fetch_lab_second_name_list(this.main_id);
+    this.result_data_get();
+
     
-    // console.log('this.get_lab_name_list')
-    // console.log(this.main_name_title)
+    console.log('this.get_lab_name_list')
+    console.log(this.main_name_title.name_24)
     // console.log(this.get_lab_name_list)
     // console.log(this.get_lab_norma_list)
     // console.log(this.get_lab_center_list)
   },
   methods:{
-    ...mapActions(['fetch_patient_client', 'fetch_lab_name_list', 'fetch_lab_firs_name_list',
-         'fetch_lab_norma_list', 'fetch_lab_edzm_list', 'fetch_lab_center_list', 'fetch_client_info']),
+    ...mapActions(['fetch_patient_client', 'fetch_lab_name_list', 'fetch_lab_firs_name_list', 'fetch_lab_result_list',
+         'fetch_lab_norma_list', 'fetch_lab_edzm_list', 'fetch_lab_center_list', 'fetch_client_info', 'fetch_lab_second_name_list']),
     selectPatient(option){
       console.log(option)
       this.patient_name = option.data.fio;
       this.patient_id = option.data.id;
       this.phone_number = option.data.phoneNumber;
+    },
+    result_data_get(){
+        this.result_list[0].result = this.get_lab_result_list[0].name_1;
+        this.result_list[1].result = this.get_lab_result_list[0].name_2;
+        this.result_list[2].result = this.get_lab_result_list[0].name_3;
+        this.result_list[3].result = this.get_lab_result_list[0].name_4;
+        this.result_list[4].result = this.get_lab_result_list[0].name_5;
+        this.result_list[5].result = this.get_lab_result_list[0].name_6;
+        this.result_list[6].result = this.get_lab_result_list[0].name_7;
+        this.result_list[7].result = this.get_lab_result_list[0].name_8;
+        this.result_list[8].result = this.get_lab_result_list[0].name_9;
+        this.result_list[9].result = this.get_lab_result_list[0].name_10;
+        this.result_list[10].result = this.get_lab_result_list[0].name_11;
+        this.result_list[11].result = this.get_lab_result_list[0].name_12;
+        this.result_list[12].result = this.get_lab_result_list[0].name_13;
+        this.result_list[13].result = this.get_lab_result_list[0].name_14;
+        this.result_list[14].result = this.get_lab_result_list[0].name_15;
+        this.result_list[15].result = this.get_lab_result_list[0].name_16;
+        this.result_list[16].result = this.get_lab_result_list[0].name_17;
+        this.result_list[17].result = this.get_lab_result_list[0].name_18;
+        this.result_list[18].result = this.get_lab_result_list[0].name_19;
+        this.result_list[19].result = this.get_lab_result_list[0].name_20;
+        this.result_list[20].result = this.get_lab_result_list[0].name_21;
+        this.result_list[21].result = this.get_lab_result_list[0].name_22;
+        this.result_list[22].result = this.get_lab_result_list[0].name_23;
+        this.result_list[23].result = this.get_lab_result_list[0].name_24;
+        this.result_list[24].result = this.get_lab_result_list[0].name_25;
+        this.result_list[25].result = this.get_lab_result_list[0].name_26;
+        this.result_list[26].result = this.get_lab_result_list[0].name_27;
+        this.result_list[27].result = this.get_lab_result_list[0].name_28;
+        this.result_list[28].result = this.get_lab_result_list[0].name_29;
+        this.result_list[29].result = this.get_lab_result_list[0].name_30;
+        this.result_list[30].result = this.get_lab_result_list[0].name_31;
+        this.result_list[31].result = this.get_lab_result_list[0].name_32;
+        this.result_list[32].result = this.get_lab_result_list[0].name_33;
+        this.result_list[33].result = this.get_lab_result_list[0].name_34;
+        this.result_list[34].result = this.get_lab_result_list[0].name_35;
+        this.result_list[35].result = this.get_lab_result_list[0].name_36;
+        this.result_list[36].result = this.get_lab_result_list[0].name_37;
+        this.result_list[37].result = this.get_lab_result_list[0].name_38;
+        this.result_list[38].result = this.get_lab_result_list[0].name_39;
+        this.result_list[39].result = this.get_lab_result_list[0].name_40;
+        this.result_list[40].result = this.get_lab_result_list[0].name_41;
+        this.result_list[41].result = this.get_lab_result_list[0].name_42;
+        this.result_list[42].result = this.get_lab_result_list[0].name_43;
+        this.result_list[43].result = this.get_lab_result_list[0].name_44;
+        this.result_list[44].result = this.get_lab_result_list[0].name_45;
+        this.result_list[45].result = this.get_lab_result_list[0].name_46;
+        this.result_list[46].result = this.get_lab_result_list[0].name_47;
+        this.result_list[47].result = this.get_lab_result_list[0].name_48;
+        this.result_list[48].result = this.get_lab_result_list[0].name_49;
+        this.result_list[49].result = this.get_lab_result_list[0].name_50;
     },
     async closeUpdateLab(id_lab){
         // console.log(id_lab)
@@ -840,16 +1931,109 @@ export default {
     },
     cls_wnd(){
         this.result_list = [];
+        this.result_first_list = [];
         for(let i=0; i<50; i++){
         let obj_name = {
             result: ''
         }
+        let obj_name1 = {
+            result1: ''
+        }
         this.result_list.push(obj_name);
+        this.result_first_list.push(obj_name1);
         //   console.log(this.result_list)
         }
         this.patient_name = '';
         this.patient_id = null;
         this.numberEnter = null;
+    },
+    async first_result(){
+        try{
+            const requestOptions = {
+            method : "POST",
+            headers: { "Content-Type" : "application/json" },
+            body: JSON.stringify({
+            "hospitalAnalizDynamicmainId": this.main_id,
+            "name": this.patient_name,
+            "name_title": this.main_name_title.name_title,
+            "patientsId": this.patient_id,
+            "extra1": this.doctor_name,
+            "lab_name": this.main_name_title.lab_name,
+            "lab_name_status": this.main_name_title.lab_name_status,
+            "norma": this.main_name_title.norma,
+            "norma_status": this.main_name_title.norma_status,
+            "first_name": this.main_name_title.first_name,
+            "firs_name_status": this.main_name_title.firs_name_status,
+            "unit_measurment": this.main_name_title.unit_measurment,
+            "unit_measurment_status": this.main_name_title.unit_measurment_status,
+            "extra": this.main_name_title.extra,
+            "extra_status": this.main_name_title.extra_status,
+            "name_1": this.result_first_list[0].result1,
+            "name_2": this.result_first_list[1].result1,
+            "name_3": this.result_first_list[2].result1,
+            "name_4": this.result_first_list[3].result1,
+            "name_5": this.result_first_list[4].result1,
+            "name_6": this.result_first_list[5].result1,
+            "name_7": this.result_first_list[6].result1,
+            "name_8": this.result_first_list[7].result1,
+            "name_9": this.result_first_list[8].result1,
+            "name_10": this.result_first_list[9].result1,
+            "name_11": this.result_first_list[10].result1,
+            "name_12": this.result_first_list[11].result1,
+            "name_13": this.result_first_list[12].result1,
+            "name_14": this.result_first_list[13].result1,
+            "name_15": this.result_first_list[14].result1,
+            "name_16": this.result_first_list[15].result1,
+            "name_17": this.result_first_list[16].result1,
+            "name_18": this.result_first_list[17].result1,
+            "name_19": this.result_first_list[18].result1,
+            "name_20": this.result_first_list[19].result1,
+            "name_21": this.result_first_list[20].result1,
+            "name_22": this.result_first_list[21].result1,
+            "name_23": this.result_first_list[22].result1,
+            "name_24": this.result_first_list[23].result1,
+            "name_25": this.result_first_list[24].result1,
+            "name_26": this.result_first_list[25].result1,
+            "name_27": this.result_first_list[26].result1,
+            "name_28": this.result_first_list[27].result1,
+            "name_29": this.result_first_list[28].result1,
+            "name_30": this.result_first_list[29].result1,
+            "name_31": this.result_first_list[30].result1,
+            "name_32": this.result_first_list[31].result1,
+            "name_33": this.result_first_list[32].result1,
+            "name_34": this.result_first_list[33].result1,
+            "name_35": this.result_first_list[34].result1,
+            "name_36": this.result_first_list[35].result1,
+            "name_37": this.result_first_list[36].result1,
+            "name_38": this.result_first_list[37].result1,
+            "name_39": this.result_first_list[38].result1,
+            "name_40": this.result_first_list[39].result1,
+            "name_41": this.result_first_list[40].result1,
+            "name_42": this.result_first_list[41].result1,
+            "name_43": this.result_first_list[42].result1,
+            "name_44": this.result_first_list[43].result1,
+            "name_45": this.result_first_list[44].result1,
+            "name_46": this.result_first_list[45].result1,
+            "name_47": this.result_first_list[46].result1,
+            "name_48": this.result_first_list[47].result1,
+            "name_49": this.result_first_list[48].result1,
+            "name_50": this.result_first_list[49].result1,
+            "auth_id": localStorage.AuthId,
+            "creator_id": localStorage.AuthId,
+            "id": 0,
+            })
+        };
+        this.loading = true;
+        const response = await fetch(this.$store.state.hostname + '/HospitalAnalizDynamicResultFirst', requestOptions)
+        const data = await response.json()
+        console.log('data result titr')
+        console.log(data)
+    }
+    catch{
+        this.loading = false;
+        this.modal_info = "Server no connect";
+        this.modal_status = true;
+    }
     },
     async send(){
         if(this.$v.$invalid )
@@ -939,8 +2123,9 @@ export default {
         // console.log('data addDynamic')
         // console.log(data)
         if(data.id){
+        await this.first_result();
           this.sendFinish()
-          await this.sendMessage();
+        //   await this.sendMessage();
           this.loading = false;
           this.cls_wnd();
           this.$refs.message.success('Added_successfully')
@@ -1078,5 +2263,30 @@ export default {
     display: inline-block;
     overflow: hidden;
     height: 20px;
+}
+.normClass{
+    height: 31px;
+    overflow: hidden;
+    overflow-y: scroll;
+    padding-top: 5px;
+}
+.normClass:hover{
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: #fff;
+    overflow: hidden;
+    overflow-y: scroll;
+    padding-top: 5px;
+}
+.labTitle_small{
+    border-bottom: 2px solid #04A4D8;
+    padding: 3px 15px;
+}
+.normClass p{
+  margin:0;
+  padding:0;
+  font-size: 13.5px !important;
+  font-weight: 400 !important;
 }
 </style>

@@ -1,71 +1,75 @@
-<template>
-  <div class="check" style="z-index: 1000;">
-    <div  class="ckeck_mainCheck  ">
+﻿<template>
+  <div class="check" style="background:#fff; z-index: 1000;">
+    <div  class="ckeck_main_pharmacy " style="width:260px !important;">
       <div  style="text-align:center; margin: 10px 0;">
-        <h5>INTERTEHNIKA</h5>
+        <h6 class="paymentCheckPrintCheck_main" style="font-weight: bold; font-size:11px;">Bilaz savdo</h6>
       </div>
-      <div class="infoHeaderCheck">
-        <table style="width:100% !important;">
+      <div class="infoHeader">
+        <table style="width:100%;">
           <tbody>
             <tr>
-              <th class="paymentCheckPrintCheck" style="font-weight: bold; font-size:15px;">Накладной №</th>
-              <td class="paymentCheckPrintCheck text-right" style="font-weight: bold; font-size:15px;">{{CheckId}}</td>
+              <th class="paymentCheckPrintCheck_main" style="font-weight: bold; font-size:8.5px;">Чек №</th>
+              <td class="paymentCheckPrintCheck_main text-right" style="font-weight: bold; font-size:8.5px;">{{CheckId}}</td>
             </tr>
             <tr style="padding-top:10px;">
-              <th class="paymentCheckPrintCheck" style="font-weight: bold; font-size:15px;">Пользователь</th>
-              <td class="paymentCheckPrintCheck text-right" style="font-weight: bold; font-size:15px;">{{kassir}}</td>
+              <th class="paymentCheckPrintCheck_main" style="font-weight: bold; font-size:8.5px;">Кассир</th>
+              <td class="paymentCheckPrintCheck_main text-right" style="font-weight: bold; font-size:8.5px;">{{kassir}}</td>
             </tr>
             <tr style="padding-top:10px;" v-if="get_skidka_dolg.client_name != ''">
-              <th class="paymentCheckPrintCheck" style="font-weight: bold; font-size:15px;">Клиент</th>
-              <td class="paymentCheckPrintCheck text-right" style="font-weight: bold; font-size:15px;">{{get_skidka_dolg.client_name}}</td>
+              <th class="paymentCheckPrintCheck_main" style="font-weight: bold; font-size:8.5px;">Клиент</th>
+              <td class="paymentCheckPrintCheck_main text-right" style="font-weight: bold; font-size:8.5px;">{{get_skidka_dolg.client_name}}</td>
             </tr>
             <tr style="padding-top:10px;"> 
-              <th class="paymentCheckPrintCheck" style="font-weight: bold; font-size:15px; padding-right: 35px;">Напечатан</th>
-              <td class="paymentCheckPrintCheck text-right" style="font-weight: bold; font-size:15px;">{{dateTime}}</td>
+              <th class="paymentCheckPrintCheck_main" style="font-weight: bold; font-size:8.5px; padding-right: 35px;">Напечатан</th>
+              <td class="paymentCheckPrintCheck_main text-right" style="font-weight: bold; font-size:8.5px;">{{dateTime}}</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div class="infoListCheck">
-        <table style="width:100% !important;">
+      <div class="infoList">
+        <table>
           <thead>
               <tr style="border-bottom: 1px dashed #000;">
-                <th  style="font-weight: bold; font-size:16px; width: 140px;">{{$t('name')}}</th>
-                <th  style="font-weight: bold; font-size:16px; width: 55px; text-align: center">{{$t('soni')}}</th>
-                <th  style="font-weight: bold; font-size:16px; width: 80px; text-align: right">{{$t('price')}}</th>
-                <th  style="font-weight: bold; font-size:16px; width: 100px; text-align: right">{{$t('total')}}</th>
+                <th  style="font-weight: bold; font-size:8px !important; width: 140px;">{{$t('name')}}</th>
+                <th  style="font-weight: bold; font-size:8px !important; width: 55px; text-align: center">{{$t('soni')}}</th>
+                <th  style="font-weight: bold; font-size:8px !important; width: 80px; text-align: right">{{$t('price')}}</th>
+                <th  style="font-weight: bold; font-size:8px !important; width: 100px; text-align: right">{{$t('total')}}</th>
               </tr>
           </thead>
           <tbody>
   
             <tr v-for="(item,i) in get_zakaz_product_all_list[get_page_savat]" :key="i" style="border-bottom: 1px dashed #000;">
-              <td style="font-weight:bold; font-size:16px;">{{item.name}}</td>
-              <td v-if="item.contains_number_in_pack>1" style="text-align: center;font-weight:bold; font-size:16px;">{{item.qty + ' / ' + item.qty_in_pack}}</td>
-              <td v-else style="text-align: center; font-weight:bold; font-size:16px;">{{item.qty}}</td>
-              <td style="text-align: right; font-weight:bold; font-size:16px;">{{item.real_sum}}</td>
-              <td style="text-align: right;font-weight:bold; font-size:16px;">{{item.summ}}</td>
+              <td style="font-weight:bold; font-size:8px;">{{item.name}}</td>
+              <td v-if="item.contains_number_in_pack>1" style="text-align: center;font-weight:bold; font-size:8px;">{{item.qty + ' / ' + item.qty_in_pack}}</td>
+              <td v-else style="text-align: center; font-weight:bold; font-size:8px;">{{item.qty}}</td>
+              <td style="text-align: right; font-weight:bold; font-size:8px;">{{item.real_sum}}</td>
+              <td style="text-align: right;font-weight:bold; font-size:8px;">{{item.summ}}</td>
             </tr>
           </tbody>
         </table>
       </div>
 
       <div class="totalInfo" style="border-top: 1px dashed black;">
-        <h6 style="margin:0; padding:0 2px; font-weight:bold; font-size:16.5px;">{{$t('total')}}</h6>
-        <h5 style="margin:0; padding:0 2px; font-weight:bold; font-size:16.5px;">{{parseFloat(get_skidka_dolg.summa) + parseFloat(get_skidka_dolg.dolg)}} <span style="font-size:13px;"></span></h5>
+        <h6 style="margin:0; padding:0; font-weight:bold; font-size:8.5px;">{{$t('total')}}</h6>
+        <h5 style="margin:0; padding:0; font-weight:bold; font-size:8.5px;">{{get_all_summa[get_page_savat]}} <span style="font-size:8.5px;">Сум</span></h5>
       </div>
-
+      <div class="totalInfo" style="border-top: 1px dashed black;" v-if="get_skidka_dolg.skidka">
+        <h6 style="margin:0; padding:0; font-weight:bold; font-size:8.5px;">{{$t('skidka')}}</h6>
+        <h5 style="margin:0; padding:0; font-weight:bold; font-size:8.5px;">{{get_skidka_dolg.skidka}} <span style="font-size:8.5px;">Сум</span></h5>
+      </div>
       <div class="totalInfo" style="border-top: 1px dashed black;" v-if="get_skidka_dolg.dolg">
-        <h6 style="margin:0; padding:0 2px; font-weight:bold; font-size:16.5px;">{{$t('creditd_summ')}}</h6>
-        <h5 style="margin:0; padding:0 2px; font-weight:bold; font-size:16.5px;">{{get_skidka_dolg.dolg}} <span style="font-size:13px;">  </span></h5>
+        <h6 style="margin:0; padding:0; font-weight:bold; font-size:8.5px;">{{$t('creditd_summ')}}</h6>
+        <h5 style="margin:0; padding:0; font-weight:bold; font-size:8.5px;">{{get_skidka_dolg.dolg}} <span style="font-size:8.5px;">Сум</span></h5>
       </div>
 
       <div class="totalInfo" style="border-top: 1px dashed black;">
-        <h6 style="margin:0; padding:0 2px; font-weight:bold; font-size:16.5px;">К оплате</h6>
-        <h4 style="margin:0; padding:0 2px; font-weight:bold; font-size:16.5px;" >{{get_skidka_dolg.summa}} <span style="font-size:13.5px;"></span></h4>
+        <h6 style="margin:0; padding:0; font-weight:bold; font-size:8.5px;">К оплате</h6>
+        <h4 style="margin:0; padding:0; font-weight:bold; font-size:8.5px;" >{{parseInt(parseFloat(get_all_summa[get_page_savat])-parseFloat(get_skidka_dolg.skidka)-parseFloat(get_skidka_dolg.dolg))}} <span style="font-size:10.5px;">Сум</span></h4>
       </div>
 
       <div class="d-flex justify-content-center" style="border-top: 1px dashed black;">
-        <h6 class="mt-3" style="margin:0; padding:0 2px; font-weight:bold; font-size:15px;">Xaridingiz uchun raxmat!</h6>
+        <h6 class="mt-3 text-center" style="margin:0; padding:0; font-weight:bold; font-size:8.5px !important;">Проданный товар обмену и возврату не подлежит.
+Спасибо за покупку!!!</h6>
       </div>
 
       <div style="margin-top:15px; border:1px solid black;"></div>
@@ -87,10 +91,9 @@ export default {
   },
   mounted(){
     window.print();
+    // window.onload = function() { window.print(); window.close();}
     this.$emit('close')
     this.clear_order();
-    // window.onload = function() { window.print(); window.close();}
-
   },
   created() {
     this.$root.$refs.check = this;
@@ -103,6 +106,10 @@ export default {
 </script>
 
 <style lang="scss">
+@font-face{
+  font-family: "Ubuntu";
+  src: url("../../font/Ubuntu/Ubuntu-Bold.ttf")
+}
 .check {
   position: fixed;
   top: 0;
@@ -112,35 +119,37 @@ export default {
   display: flex;
   justify-content: center;
 
-  .ckeck_mainCheck{
-    width: 100%; // 58 lik printerga
+  .ckeck_main_pharmacy{
+    width: 260px !important; // 58 lik printerga
     // width: 400px;  80 mm lik printerga
     
 
-    .infoHeaderCheck{
-      width: 100%;
+    .infoHeader{
       border-bottom: 1px dashed black;
-      padding: 0 10px 10px 10px; 
+      padding: 0 5px 5px 0px; 
     }
-    .infoListCheck{
-      width: 100% !important;
-      padding: 10px 10px 15px 10px; 
+    .infoList{
+      padding: 10px 5px 5px 0px; 
     }
     .totalInfo{
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 5px 10px 5px 10px; 
+      padding: 5px 5px 5px 0px; 
 
     }
   }
 }
-.paymentCheckPrintCheck{
+.paymentCheckPrintCheck_main{
   font-weight: bold;
-  // font-family: 'Ubuntu';
+  font-family: 'Ubuntu';
 }
 span, th, td, h4, h5, h6{
  font-weight: bold;
-//  font-family: 'Ubuntu';
+ font-family: 'Ubuntu';
+}
+.ckeck_main_pharmacy span, th, td, h4, h5, h6{
+ font-weight: bold;
+ font-family: 'Ubuntu';
 }
 </style>

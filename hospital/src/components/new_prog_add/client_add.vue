@@ -105,8 +105,8 @@
                     <img src="../../assets/patientAvatar.png" style="height: 45px; overflow: none; " class="img-fluid" alt="">
                   </div>
                   <div class="px-3">
-                    <p class="m-0 p-0" style="font-size: 13px;">{{item.fio}}</p>
-                    <p class="m-0 rang" style="font-size:10px;">Год: <span class="px-2">{{item.bornDate.slice(0,4)}}</span> 
+                    <p class="m-0 p-0" style="font-size: 13.5px;">{{item.fio}}</p>
+                    <p class="m-0 rang" style="font-size:10.5px;">Год: <span class="px-2">{{item.bornDate.slice(0,4)}}</span> 
                      Тел: <span class="px-2">{{item.phoneNumber}}</span></p>
                   </div>
                 </div>
@@ -246,7 +246,7 @@ export default {
     this.$root.$refs.clientAdd = this;
   },
     methods: {
-      ...mapActions(['fetch_district', 'fetch_client', 'fetch_patient_client', 'fetch_contragent', 'fetch_search_patient', 'fetch_patient_list_last']),
+      ...mapActions(['fetch_district', 'fetch_client','fetch_patient_bron_payment', 'fetch_patient_client', 'fetch_contragent', 'fetch_search_patient', 'fetch_patient_list_last']),
       ...mapMutations(['choose_patient_client']),
       changeInput(){
         var x = this.tel.replace(/\D/g, '').match(/(\d{0,2})(\d{0,3})(\d{0,4})/);
@@ -398,6 +398,7 @@ export default {
         this.patient_info.patient_name = this.name
         this.cls_wnd()
         this.choose_patient_client(this.patient_info)
+        await this.fetch_patient_bron_payment(this.bemorId);
         this.loading = false;
         this.$emit('close')
       },
@@ -504,6 +505,7 @@ export default {
           this.cls_wnd()
           // this.fetch_client()
           this.choose_patient_client(this.patient_info)
+          await this.fetch_patient_bron_payment(data.id);
           this.fetch_patient_list_last()
           this.$emit('close')
           this.$refs.message.success('Added_successfully')

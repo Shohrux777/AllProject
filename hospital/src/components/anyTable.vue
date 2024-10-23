@@ -69,7 +69,7 @@
                     <td class="text-center">
                       <i class="fas fa-poll text-info mask waves-effect t m-0 pr-3" style="font-size: 15px;" v-if="analizPrint"  v-on:click="showRow" :data-row="rowIndex"></i>
                       <i class="fas fa-pen text-success mask waves-effect t m-0 pr-2" v-if="analizPrint"  v-on:click="editRow" :data-row="rowIndex"></i>
-                      <i class="fas fa-pen editIcon mask waves-effect t m-0 pr-2 pl-2" v-if="!analizPrint" :class="{'applied': disable}" v-on:click="editRow" :data-row="rowIndex"></i>
+                      <i class="fas fa-pen editIcon mask waves-effect t m-0 pr-2 pl-2" v-if="!analizPrint" :class="{'applied': disable && !openSer}" v-on:click="editRow" :data-row="rowIndex"></i>
                       <i class="fas fa-trash delIcon mask waves-effect m-0 pl-2" :class="{'applied': disable}" v-on:click="deleteRow" :data-row="rowIndex"></i>
                     </td>
                 </tr>

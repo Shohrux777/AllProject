@@ -39,8 +39,22 @@
               </small>
 
             <!-- <mdb-input :label="$t('note')" v-model="note" outline /> -->
-            
+            <mdb-input :label="$t('ovqat_puli_room')" type="number" v-model="ovqat_puli_room" outline />
+            <mdb-input :label="$t('ovqat_puli_patient')" type="number" v-model="ovqat_puli_patient" outline />
+            <mdb-input :label="$t('ovqat_puli_qarovchi')" type="number" v-model="ovqat_puli_qarovchi" outline />
+            <mdb-input v-show="false" :label="$t('doctor_price')" type="number" v-model="doctor_price" outline />
+            <mdb-input :label="$t('free_day')" type="number" v-model="free_day" outline />
+            <div>
+              <lineSelect
+                :options="get_package_list.rows"
+                :searchshow="true"
+                @select="select_package"
+                :selected="package_name"
+                :label="$t('package_service')"
+              />
+            </div>
           </div>
+
 
           <div class="text-right container" style="margin-top: -20px;">
             <mdb-btn
@@ -67,13 +81,14 @@
 <script>
 import { mdbBtn, mdbInput } from "mdbvue";
 import { required } from "vuelidate/lib/validators";
-
+import lineSelect from "../../components/lineSelect.vue";
 import { mapActions, mapGetters } from "vuex";
 
 export default {
   components: {
     mdbBtn,
     mdbInput,
+    lineSelect
   },
   data() {
     return {
@@ -86,7 +101,14 @@ export default {
       price: null,
       patient_price: null,
       no_patient_price: null,
+      ovqat_puli_patient: 0,
+      ovqat_puli_room: 0,
+      ovqat_puli_qarovchi: 0,
+      doctor_price: 0,
+      free_day: 0,
       id: 0,
+      package_name: '',
+      package_id: 0,
     };
   },
   validations: {
@@ -104,7 +126,7 @@ export default {
       },
     },
   },
-  computed: mapGetters(["get_province_list"]),
+  computed: mapGetters(["get_province_list", "get_package_list"]),
   async mounted() {
     await this.options;
     if (Object.keys(this.options).length != 0) {
@@ -112,9 +134,11 @@ export default {
     } else {
       this.cls_wnd();
     }
+    await this.fetch_m_package();
+    console.log(this.get_package_list);
   },
   methods: {
-    ...mapActions([ "fetch_price_type_room"]),
+    ...mapActions([ "fetch_price_type_room", 'fetch_m_package']),
     update() {
       console.log("da salom");
       console.log(this.options);
@@ -123,9 +147,19 @@ export default {
       this.price = this.options.room_price;
       this.patient_price = this.options.room_bed_price;
       this.no_patient_price = this.options.room_bed_price_not_patient;
-      
+      this.ovqat_puli_patient = this.options.ovqat_puli_patient;
+      this.ovqat_puli_room = this.options.ovqat_puli_room;
+      this.ovqat_puli_qarovchi = this.options.ovqat_puli_qarovchi;
+      this.doctor_price = this.options.doctor_price;
+      this.free_day = this.options.reserved_number_2;
+      this.package_id = this.options.reserved_number_3;
+      this.package_name = this.options.reserved_name_3;
     },
-
+    async select_package(option){
+      console.log(option)
+      this.package_name = option.data.name;
+      this.package_id = option.data.id;
+    },
     cls_wnd() {
       this.price = null;
       this.patient_price = null;
@@ -133,6 +167,11 @@ export default {
       this.name = "";
       this.note = "";
       this.id = 0;
+      this.ovqat_puli_patient = 0;
+      this.ovqat_puli_room = 0;
+      this.ovqat_puli_qarovchi = 0;
+      this.doctor_price = 0;
+      this.free_day = 0;
     },
     async submit() {
       if (this.$v.$invalid) {
@@ -148,6 +187,13 @@ export default {
           room_price: this.price,
           room_bed_price: this.patient_price,
           room_bed_price_not_patient: this.no_patient_price,
+          ovqat_puli_patient: this.ovqat_puli_patient,
+          ovqat_puli_room: this.ovqat_puli_room,
+          ovqat_puli_qarovchi: this.ovqat_puli_qarovchi,
+          doctor_price: this.doctor_price,
+          reserved_number_2: this.free_day,
+          reserved_number_3: this.package_id,
+          reserved_name_3: this.package_name,
           // note: this.note,
           id: this.id,
           // "code" : 0

@@ -101,6 +101,9 @@
           img_str: '',
           switch1: false,
           gr: 0,
+          res_badgenumber: 0,
+          without_gr_id: 0,
+
         }
       },
       props:{
@@ -125,6 +128,8 @@
             this.card_number = this.select_data.cardno;
             this.subdept_name = this.select_data.familiya;
             this.subdept_id = this.select_data.departid;
+            this.res_badgenumber = this.select_data.res_badgenumber;
+            this.without_gr_id = this.select_data.without_gr_id;
         }
       
     },
@@ -161,6 +166,8 @@
             "departid" : this.subdept_id,
             "familiya": this.subdept_name,
             "image_url": this.img_str,
+            // "res_badgenumber": this.res_badgenumber,
+            // "without_gr_id": this.without_gr_id,
             "gr": this.gr
             })
           };

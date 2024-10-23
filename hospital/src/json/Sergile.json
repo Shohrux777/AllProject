@@ -1,4 +1,5 @@
 [
+    { "title": "Mazok", "icon": "ambulance", "url": "/mazok", "view": false, "link": "/mazok_add/0", "color":"#4682B4" },
     { "title": "CovidExpress", "icon": "clinic-medical", "url": "/covidExpress", "view": false, "color": "#FF7F50" },
     { "title": "CovidQon", "icon": "hospital-alt", "url": "/covidQon", "view": false, "color": "#4B0082" }
 ]

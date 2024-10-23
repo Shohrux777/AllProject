@@ -23,10 +23,10 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        hostname: 'https://192.168.0.170:5006/api',
-        server_ip: 'https://192.168.0.170:5006/',
-        // hostname: 'https://localhost:5006/api',
-        // server_ip: 'https://localhost:5006/',
+        // hostname: 'https://192.168.0.170:5006/api',
+        // server_ip: 'https://192.168.0.170:5006/',
+        hostname: 'https://localhost:5006/api',
+        server_ip: 'https://localhost:5006/',
         deviceId: '',
         // hostname: 'http://10.1.12.27:5003/api',
         // server_ip: 'http://10.1.12.27:5003/',

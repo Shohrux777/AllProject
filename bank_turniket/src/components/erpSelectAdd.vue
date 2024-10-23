@@ -34,7 +34,7 @@
           </div> -->
       </div>
 
-      <p v-for="option in filteredList" :key="option.id" class="fz-13 py-1"
+      <p v-for="option in filteredList" :key="option.id" class="py-1" style="font-size: 13px;"
           @click="selectOption(option)"
       >
         {{option.name}}

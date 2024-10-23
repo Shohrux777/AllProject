@@ -214,6 +214,13 @@ const routes = [{
             import ('../views/hospital/send doctor/doctor_info.vue')
     },
     {
+        path: '/debit_doc',
+        name: 'debit_doc',
+        meta: { layout: 'hospital' },
+        component: () =>
+            import ('../views/hospital/send doctor/debit_doc.vue')
+    },
+    {
         path: '/doc_info_drag',
         name: 'doc_info_drag',
         meta: { layout: 'hospital' },
@@ -233,6 +240,27 @@ const routes = [{
         meta: { layout: 'hospital' },
         component: () =>
             import ('../views/hospital/report/payment_docReport.vue')
+    },
+    {
+        path: '/pay_salary_list',
+        name: 'pay_salary_list',
+        meta: { layout: 'hospital' },
+        component: () =>
+            import ('../views/hospital/report/pay_salary_list.vue')
+    },
+    {
+        path: '/pay_salary_list_all',
+        name: 'pay_salary_list_all',
+        meta: { layout: 'hospital' },
+        component: () =>
+            import ('../views/hospital/report/pay_salary_list_all.vue')
+    },
+    {
+        path: '/bron_docReport',
+        name: 'bron_docReport',
+        meta: { layout: 'hospital' },
+        component: () =>
+            import ('../views/hospital/report/bron_docReport.vue')
     },
     {
         path: '/update',
@@ -261,6 +289,34 @@ const routes = [{
         meta: { layout: 'hospital' },
         component: () =>
             import ('../views/bron/bron.vue')
+    },
+    {
+        path: '/not_payed_list_regis',
+        name: 'not_payed_list_regis',
+        meta: { layout: 'hospital' },
+        component: () =>
+            import ('../views/bron/not_payed_list_regis.vue')
+    },
+    {
+        path: '/invoice_add/:id',
+        name: 'invoice_add',
+        meta: { layout: 'regis' },
+        component: () =>
+            import ('../views/market/invoice/invoice_add.vue')
+    },
+    {
+        path: '/package_add/:id',
+        name: 'package_add',
+        meta: { layout: 'regis' },
+        component: () =>
+            import ('../views/hospital/package_service/package_add.vue')
+    },
+    {
+        path: '/package',
+        name: 'package',
+        meta: { layout: 'regis' },
+        component: () =>
+            import ('../views/hospital/package_service/package.vue')
     },
     {
         path: '/word',
@@ -331,6 +387,69 @@ const routes = [{
         meta: { layout: 'hospital' },
         component: () =>
             import ('../views/hospital/report/bytime.vue')
+    },
+    {
+        path: '/mazok',
+        name: 'mazokpage',
+        meta: { layout: 'analysis' },
+        component: () =>
+            import ('../views/analysis/mazok.vue')
+    },
+    {
+        path: '/mazok_add/:id',
+        name: 'mazok',
+        meta: { layout: 'analysis' },
+        component: () =>
+            import ('../views/analysis/mazok_add.vue')
+    },
+    {
+        path: '/mazok_show/:id',
+        name: 'mazok_show',
+        meta: { layout: 'empty' },
+        component: () =>
+            import ('../views/showLaboratory/mazok_print.vue')
+    },
+    {
+        path: '/mazok_print/:id',
+        name: 'mazok_print',
+        meta: { layout: 'empty' },
+        component: () =>
+            import ('../views/laboratory/mazok_print.vue')
+    },
+    {
+        path: '/bytime_kassir',
+        name: 'bytime_kassir',
+        meta: { layout: 'hospital' },
+        component: () =>
+            import ('../views/hospital/kassir_report/bytime.vue')
+    },
+    {
+        path: '/covidExpress_show/:id',
+        name: 'covidExpress_show',
+        meta: { layout: 'empty' },
+        component: () =>
+            import ('../views/showLaboratory/covidExpress_print.vue')
+    },
+    {
+        path: '/covidExpress_print/:id',
+        name: 'covidExpress_print',
+        meta: { layout: 'empty' },
+        component: () =>
+            import ('../views/laboratory/covidExpress_print.vue')
+    },
+    {
+        path: '/dailyForPayment_kassir',
+        name: 'dailyForPayment_kassir',
+        meta: { layout: 'hospital' },
+        component: () =>
+            import ('../views/hospital/kassir_report/dailyForPayment.vue')
+    },
+    {
+        path: '/bytimeservice_bron',
+        name: 'bytimeservice_bron',
+        meta: { layout: 'hospital' },
+        component: () =>
+            import ('../views/hospital/report/bytimeservice_bron.vue')
     },
     {
         path: '/infoPatient',
@@ -445,6 +564,13 @@ const routes = [{
             import ('../views/hospital/report/kassirReturnMoney.vue')
     },
     {
+        path: '/check_payment_list',
+        name: 'check_payment_list',
+        meta: { layout: 'hospital' },
+        component: () =>
+            import ('../views/hospital/report/check_payment_list.vue')
+    },
+    {
         path: '/return_report',
         name: 'return_report',
         meta: { layout: 'hospital' },
@@ -523,6 +649,13 @@ const routes = [{
         meta: { layout: 'empty' },
         component: () =>
             import ('../views/analysis/dynamic/servecResultDynamic')
+    },
+    {
+        path: '/paymentsGroupLab',
+        name: 'paymentsGroupLab',
+        meta: { layout: 'empty' },
+        component: () =>
+            import ('../views/analysis/dynamic/paymentsGroupLab')
     },
     {
         path: '/lab_print/:id',
@@ -633,6 +766,13 @@ const routes = [{
             import ('../views/bron/not_payed_list.vue')
     },
     {
+        path: '/doc_patient_list',
+        name: 'doc_patient_list',
+        meta: { layout: 'empty' },
+        component: () =>
+            import ('../views/bron/doc_patient_list.vue')
+    },
+    {
         path: '/bron_time_payment',
         name: 'bron_time_payment',
         meta: { layout: 'hospital' },
@@ -698,26 +838,33 @@ router.beforeEach((to, from, next) => {
                     to.path == '/medicine' || to.path == '/apply_admin' || to.path == '/return_report' || to.path == '/m_users' || to.path == '/bytime' || 
                     to.path == '/bycont_data' || to.path == '/info'  || to.path == '/biox'  || to.path == '/send_doc' || to.path == '/cashbox'
                     || to.path == '/bycontragent'  || to.path == '/dailyForPayment' || to.path == '/kunlik' || to.path == '/return_money'
-                    || to.path == '/bonus_contragent' || to.path == '/payment_docReport' || to.path == '/bydoctorMoneyEarn' || to.path == '/bonus_repot' || to.path == '/bonus_full' || to.path == '/bydoctorMoneyEarn' || to.path == '/debitReport' || to.path == '/debitPayReport') {
+                    || to.path == '/bonus_contragent' || to.path == '/payment_docReport' || to.path == '/bydoctorMoneyEarn' || to.path == '/bonus_repot' 
+                    || to.path == '/bonus_full' || to.path == '/bydoctorMoneyEarn' || to.path == '/debitReport' 
+                    || to.path == '/debitPayReport' || to.path == '/bytimeservice_bron' || to.path == '/pay_salary_list_all') {
                     next('/doctor')
                 }
             } else if (localStorage.Type == 0) {
                 next()
             } else if (localStorage.Type == 2) {
                 if (to.path == '/doctor' || to.path == '/antigen' || to.path == '/bron' || to.path == '/medicineMin' ||
-                    to.path == '/medicine'  || to.path == '/return_report' || to.path == '/m_users' || 
+                    to.path == '/medicine' || to.path == '/m_users' || 
                     to.path == '/bycont_data' || to.path == '/result_lab' || to.path == '/info'  || to.path == '/biox'  || to.path == '/send_doc'
-                    || to.path == '/bycontragent' || to.path == '/kunlik' || to.path == '/return_money'
+                    || to.path == '/bycontragent' || to.path == '/kunlik' 
                     || to.path == '/bonus_contragent' || to.path == '/bonus_repot' || to.path == '/bonus_full' || to.path == '/byuzi_date' 
-                    || to.path == '/groupReport' || to.path == '/bydate' || to.path == '/payment_docReport' || to.path == '/bydoctorMoneyEarn') {
+                    || to.path == '/groupReport' || to.path == '/bydate' || to.path == '/payment_docReport' || to.path == '/bydoctorMoneyEarn'
+                     || to.path == '/bytimeservice_bron' || to.path == '/pay_salary_list_all'
+                    ) {
                     next('/cashbox')
                 }
+                // || to.path == '/return_money'
             } else if (localStorage.Type == 3) {
                 if (to.path == '/bron' || to.path == '/medicineMin' || to.path == '/byuzi_date' || to.path == '/groupReport' || to.path == '/bydate' ||
                     to.path == '/medicine' || to.path == '/apply_admin' || to.path == '/return_report' || to.path == '/m_users' || 
                     to.path == '/bycont_data' || to.path == '/info'  || to.path == '/send_doc' || to.path == '/cashbox' || to.path == '/bytime'
                     || to.path == '/bycontragent' || to.path == '/dailyForPayment' || to.path == '/kunlik' || to.path == '/return_money'
-                    || to.path == '/bonus_contragent' || to.path == '/bydoctorMoneyEarn' || to.path == '/payment_docReport' || to.path == '/bonus_repot' || to.path == '/bonus_full'  || to.path == '/bydoctorMoneyEarn' || to.path == '/debitReport' || to.path == '/debitPayReport') {
+                    || to.path == '/bonus_contragent' || to.path == '/bydoctorMoneyEarn' || to.path == '/payment_docReport'
+                    || to.path == '/bonus_repot' || to.path == '/bonus_full'  || to.path == '/bydoctorMoneyEarn' 
+                    || to.path == '/debitReport' || to.path == '/debitPayReport' || to.path == '/bytimeservice_bron' || to.path == '/pay_salary_list_all') {
                     next('/doctor')
                 }
                 // if (to.path == '/profil' || to.path == '/antigen' || to.path == '/selectShablon' || to.path == '/blankaPrint' ) {
@@ -737,7 +884,10 @@ router.beforeEach((to, from, next) => {
                     to.path == '/bycont_data' || to.path == '/info'  || to.path == '/biox'  || to.path == '/doctor'
                     || to.path == '/bycontragent'
                     || to.path == '/bonus_contragent' || to.path == '/bydoctorMoneyEarn' || to.path == '/bonus_repot' || 
-                    to.path == '/payment_docReport' || to.path == '/bonus_full') {
+                    to.path == '/payment_docReport' || to.path == '/bonus_full' || to.path == '/cashbox' || to.path == '/pay_salary_list_all'
+                    || to.path == '/bytimeservice_bron' || to.path == '/pay_salary_list_all' || to.path == '/dailyForPayment' || to.path == '/kunlik' 
+                    || to.path == '/debitReport' || to.path == '/debitPayReport' || to.path == '/return_money' || to.path == '/bron_time_payment' 
+                    || to.path == '/apply_admin') {
                     next('/send_doc')
                     // || to.path == '/cashbox'
                 }

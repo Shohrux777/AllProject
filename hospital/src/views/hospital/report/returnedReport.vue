@@ -10,7 +10,7 @@
             <div class="title w-100 row align-items-center">
               <div class="col-3">
                 <div style="position: relative; margin-top: 40px;"> 
-                  <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -8px; color: #757575;">
+                  <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -14px; color: #757575;">
                     {{$t('start_time')}}
                   </small>
                   <mdb-input type="date" size="sm" v-model="Start_time" outline/>
@@ -18,7 +18,7 @@
               </div>
               <div class="col-3">
                 <div style="position: relative; margin-top: 40px;"> 
-                  <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -8px; color: #757575;">
+                  <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -14px; color: #757575;">
                     {{$t('end_time')}}
                   </small>
                   <mdb-input type="date" size="sm"  v-model="End_time" outline/>
@@ -59,6 +59,7 @@
                 <th >{{$t('serivce_type')}}</th>
                 <th>{{$t('service_group')}}</th>
                 <th >{{$t('date')}}</th>
+                <th >Опл. дата</th>
                 <th>{{$t('price')}}</th>
               </tr>
             </thead>
@@ -70,6 +71,7 @@
                 <td> <span >{{row.serivceTypeName}}</span> </td>
                 <td> <span >{{row.serviceGroupName}}</span> </td>
                 <td> <span >{{row.dateTime.slice(0,10) + ' | ' + row.dateTime.slice(11,16)}}</span> </td>
+                <td> <span >{{row.payedDate.slice(0,10)}}</span> </td>
                 <td> <span >{{row.summa}}</span> </td>
               </tr>
             </tbody>
@@ -175,15 +177,15 @@
         bonus_contragent_list: []
       }
     },
-    mounted(){
+    async mounted(){
       console.log('date')
-      // this.get_get_()
-      //   this.fetch_contragent()
-      //   this.fetch_auth_list()
+      this.Start_time = new Date().toISOString().slice(0, 10);
+      this.End_time = new Date().toISOString().slice(0, 10);
+      await this.submit();
     },
     computed: mapGetters(['get_contragent_list', 'get_auth_user_limit', 'get_report_by_data_contragent', 'get_report_qty_summ', 'get_report_by_cont_card_cash']),
     methods: {
-      ...mapActions(['fetch_contragent','fetch_auth_list', 'fetch_report_by_data_cont']),
+      ...mapActions(['fetch_contragent','fetch_auth_list', 'fetch_report_by_data_cont',]),
       ...mapMutations(['district_row_delete']),
 
       async selectcontragent(option){
@@ -209,18 +211,14 @@
         this.user_id = options.data.Authid
       },
       async submit(){
-        console.log(this.Start_time)
-        console.log(this.End_time)
         var time1 = this.Start_time + 'T00:00:35.000Z'
         var time2 = this.End_time + 'T23:59:35.000Z'
-        console.log(time1)
-        console.log(time2)
         const response = await fetch(this.$store.state.hostname + '/VozvratAlreadyPaidPaymentLists/getVozvratByDateTimeAsList?beginDate=' + time1 + 
         '&endDate=' + time2 )
-        const data = await response.json()
-        this.bonus_contragent_list = data
-        console.log('test uchun')
-        console.log(data)
+        const data = await response.json();
+        this.bonus_contragent_list = data;
+        console.log('test uchun');
+        console.log(data);
       },
     }
   }

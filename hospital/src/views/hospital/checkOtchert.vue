@@ -2,8 +2,13 @@
   <div class="checkPrint paymentCheckPrintCheck" style="z-index: 1000;">
     <div  id="printForm"  class="ckeck_main_sell  border" style="width:100%; height: 100%;">
       <div  style="text-align:center; margin: 10px 0 0 0; padding: 5px 7px; font-size:12px;">
-        <!-- <h6 style="font-size:12px;" class="paymentCheckPrintCheck">ISTIQBOL <i class="fas fa-heartbeat"></i> MED CENTER </h6> -->
-        <img src="../../assets/logoIST.svg" height="45" alt="">
+        <!-- <h5 class="paymentCheckPrintCheck">«AVITSENNA PLUS MED SERVIS» МЧЖ</h5> -->
+        <img src="../../assets/iymon.svg" height="80" style="width: 100%;" alt="">
+        <h4 style="" class="paymentCheckPrintCheck mt-2 mb-1">IYMON MEDICAL SBJ </h4>
+
+        <!-- <img src="../../assets/novo.svg" height="45" alt="">
+        <h5 class="paymentCheckPrintCheck">OOO 'NOVO MEDICS' Уратепалик МФЙ. И.Каримов кучаси, 17-уй</h5> -->
+        <!-- <img src="../../assets/doctor.jpg" height="45" alt=""> -->
       </div>
       <div class="infoHeader" style="width:100%;">
         <div style="margin: 5px 0px;">
@@ -41,7 +46,7 @@
       </div>
       <div  style="padding: 7px 0; border-bottom: 0.5px solid #000000;">
        <div  style="display:flex; justify-content: space-between; padding: 0 0px;" v-for="(item, i) in get_ochredService" :key="i">
-          <span style="font-size: 10.5px;">{{i+1}}. {{item.name}})</span>
+          <span style="font-size: 10.5px;">{{i+1}}. {{item.name}}) </span>
           <span style="font-size: 11px;"> ={{item.price}}</span>
        </div>
      </div>

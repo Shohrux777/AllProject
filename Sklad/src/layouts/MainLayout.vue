@@ -15,7 +15,7 @@
           </svg>
           <div  v-if="show_title" class="ml-3 pt-1 d-flex align-items-center">
             <!-- <img src="../assets/apteka1.jpg" style="height: 40px; width:100%;" class="img-fluid img-zoom" alt=""> -->
-            <span style="font-size: 22px; " class="mb-1 text-white">Маркет</span>
+            <span style="font-size: 22px; " class="mb-1 text-white">Extres SRM</span>
           </div>
         </div>
         <div class="" v-for="(link,index) in links" :key="index" >

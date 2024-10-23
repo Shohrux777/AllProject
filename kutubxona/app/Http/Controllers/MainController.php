@@ -21,6 +21,36 @@ class MainController extends Controller
         // dd($books);
          return view('index', compact('news', 'books', 'categories', 'notes'));
     }
+    public function all_new()
+    {
+        $news = News::all();
+        $books = Book::latest()->paginate(8);
+        $notes = Notification::latest()->paginate(4);
+        $categories = Category::all();
+        // dd($books);
+         return view('index', compact('news', 'books', 'categories', 'notes'));
+    }
+    public function all_notes()
+    {
+        $news = News::latest()->paginate(8);
+        $books = Book::latest()->paginate(8);
+        $notes = Notification::all();
+        $categories = Category::all();
+        // dd($books);
+         return view('index', compact('news', 'books', 'categories', 'notes'));
+    }
+    public function all_new_page()
+    {
+        $news = News::all();
+        // dd($books);
+         return view('allNewsPage', compact('news'));
+    }
+    public function all_note_page()
+    {
+        $notes = Notification::all();
+        // dd($books);
+         return view('allNotePage', compact('notes'));
+    }
     public function category_index($id){
         $categories = Category::all();
         $books = Book::all();

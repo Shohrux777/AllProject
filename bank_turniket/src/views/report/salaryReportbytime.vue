@@ -19,7 +19,7 @@
                         <small class="text-white" style="font-size: 12px;">
                             <MDBIcon  icon="file-excel" />
                             EXCEL
-                        </small> 
+                        </small>
                       </download-excel>
                         
                     </div>
@@ -35,26 +35,38 @@
 
         <div class="mainpage ">
           <div class="main_table">
-            <div class="date_time_header d-flex">
+            <div class="date_time_header d-flex mt-2 mb-0">
               <div style="width: 20%;" class="px-2">
                 <MDBInput v-model="Start_time" type="date" size="sm" label="e_date" />
               </div>
               <div style="width: 20%;" class="px-2">
                 <MDBInput v-model="End_time" type="date" size="sm" label="e_date" />
               </div>
-              <div style="width: 20%;" class="px-2" v-show="false">
-                <erpSelectDoor
-                  :options = "get_door_list.rows"
-                  @select="sub_door_select"
-                  :selected="door_name"
-                  :label="$t('door')"
-                  class="m-0 p-0"
-                  style="margin-top: -30px !important; "
-                />
-              </div>
-              <div style="width: 40%;" class="px-2">
+              
+              <div style="width: 20%;" class="px-2">
                 <MDBBtn style="font-size: 9px;" @click="submit" color="primary">OK</MDBBtn>
                 <MDBBtn style="font-size: 9px;" @click="refresh" color="info">Refresh</MDBBtn>
+              </div>
+              <div style="width: 60%;" class="px-0 d-flex" >
+                <div style="width:300px;">
+                  <erpSelectDoor
+                    :options = "get_deparment_list.rows"
+                    @select="sub_door_select"
+                    :selected="dept_name"
+                    :label="$t('otdel')"
+                    class="m-0 p-0"
+                    style="margin-top: -30px !important;"
+                  />
+                </div>
+                <MDBSwitch
+                  label="Почасовая"
+                  v-model="switch1"
+                />
+                <MDBSwitch
+                  label="Дневная"
+                  v-model="switch2"
+                />
+                
               </div>
             </div>
             <div class="mt-3">
@@ -173,10 +185,11 @@ import {
     MDBModalHeader,
     MDBModalTitle,
     MDBModalBody,
+    MDBSwitch 
   } from 'mdb-vue-ui-kit';
   import { ref } from 'vue';
 
-import erpSelectDoor from '@/components/erpSelectDoor.vue'
+import erpSelectDoor from '@/components/erpSelectAdd.vue'
 import {mapActions, mapGetters} from 'vuex'
 import Loader from '@/components/loader.vue';
 import downloadExcel from "vue-json-excel3";
@@ -184,8 +197,12 @@ import downloadExcel from "vue-json-excel3";
 export default {
     setup() {
       const exampleModal = ref(false);
+      const switch1 = ref(false);
+      const switch2 = ref(false);
       return {
         exampleModal,
+        switch1,
+        switch2
       };
     },
     components: {
@@ -200,17 +217,19 @@ export default {
         MDBModalBody,
         erpSelectDoor,
         Loader,
-        downloadExcel
+        downloadExcel,
+        MDBSwitch
     },
     
     data(){
       return{
         loading: false,
-        door_name: '',
-        door_id: null,
+        dept_name: '',
+        dept_id: null,
         Start_time: null,
         End_time: null,
         reportList: [],
+        main_reportList: [],
         userWorkTime: [],
         search: '',
         json_fields: {
@@ -224,7 +243,7 @@ export default {
       }
     },
     computed: {
-      ...mapGetters(['get_door_list']),
+      ...mapGetters(['get_door_list', 'get_deparment_list']),
       filteredList: function(){
         if(this.search)
         {
@@ -238,7 +257,7 @@ export default {
       }
     },
     async mounted(){
-        await this.fetch_Door();
+        await this.fetch_Department();
         let time1 = new Date();
         this.Start_time = time1.toISOString().slice(0,10); 
         this.End_time = time1.toISOString().slice(0,10);
@@ -249,11 +268,20 @@ export default {
         console.log(end)
     },
     methods:{
-      ...mapActions([ 'fetch_Door']),
+      ...mapActions([ 'fetch_Door', 'fetch_Department']),
       sub_door_select(option){
         console.log(option)
-        this.door_name = option.acc_name;
-        this.door_id = option.id;
+        this.dept_name = option.name;
+        this.dept_id = option.id;
+        console.log(this.reportList);
+        this.reportList = this.main_reportList;
+        let dept_temp_list = [];
+        for(let i=0; i<this.reportList.length; i++){
+          if(option.id == this.reportList[i].departid){
+            dept_temp_list.push(this.reportList[i]);
+          }
+        }
+        this.reportList = dept_temp_list;
       },
       async show_user_report(userId){
         this.exampleModal = true;
@@ -265,7 +293,7 @@ export default {
           const data = await response.json();
           this.loading = false;
           this.userWorkTime = []
-          console.log('userIdReport') 
+          console.log('userIdReport')
           console.log(data.items_list) 
           this.userWorkTime = data.items_list;
         }
@@ -285,7 +313,8 @@ export default {
           const response = await fetch(this.$store.state.hostname + "/SkudMyUserinfoes/getReportWithoutSmenaPaginationByAllUserAndOylik?page=0&size=1000&begin_date=" + start + '&end_date=' + end);
           const data = await response.json();
           this.loading = false;
-          this.reportList = []
+          this.reportList = [];
+          console.log('data itemlist') 
           console.log(data) 
           for(let i=0; i<data.items_list.length; i++){
             let a = {
@@ -293,15 +322,19 @@ export default {
               familiya: data.items_list[i].familiya,
               userid: data.items_list[i].userid,
               ishlagan_vaqtlar_ls: data.items_list[i].ishlagan_vaqtlar_ls,
+              // day: data.items_list[i].ishlagan_vaqtlar_ls,
               day: data.items_list[i].ishlagan_vaqtlar_ls.length,
               kun: data.items_list[i].kun,
               ishlagan_puli: data.items_list[i].ishlagan_puli.toFixed(0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 '),
               oylik_nomi: data.items_list[i].oylik_nomi,
               worked_hours_itm: '',
+              departid: data.items_list[i].departid,
+              without_gr_id: data.items_list[i].without_gr_id,
             }
             a.worked_hours_itm = this.timeConvert(data.items_list[i].worked_hours_itm)
             this.reportList.push(a);
           }
+          this.main_reportList = this.reportList;
           // this.reportList = data.items_list;
         }
         catch(error){

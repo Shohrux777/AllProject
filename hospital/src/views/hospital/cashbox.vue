@@ -1,23 +1,27 @@
 ﻿<template>
   <div class="cashbox bg-white">
-    <check v-show="check_show" @close="closeCheck" :indexItem="checkIndex" @closeNext = "closeNext" ref="checkP"/>
-    <div v-show="!check_show" class="cash-header  pt-2">
-      <div class="cashbox_page border-bottom pb-3 px-3">
+    <check v-show="check_show" @close="close_service_check" :indexItem="checkIndex" @closeNext = "closeNext" ref="checkP"/>
+    <checkbroncheck v-if="checkbron" @closeCheck="closeCheck_bron"/>
+    <checkDebit v-if="dolg_pay_check" @close="closeCheck_dolg"/>
+    <div v-show="!check_show && !checkbron && !dolg_pay_check" class="cash-header  pt-2">
+      <div class="cashbox_page border-bottom pb-2 px-3">
         <div class="row ">
           <div class="col-3 pl-3 pr-0">
-            <lineSelect
-              class="mt-1 ml-0 mr-3"
-              :options="get_unpay_patient_list"
-              :searchshow="true"
-              @select="selectPatient"
-              :selected="patient_name"
-              :label="$t('patient list')"
-            />
+            <div @click="fetch_all_unpayed_users">
+              <lineSelect
+                class="mt-1 ml-0 mr-3"
+                :options="get_unpay_patient_all_list"
+                :searchshow="true"
+                @select="selectPatient"
+                :selected="patient_name"
+                :label="$t('patient list')"
+              />
+            </div>
             <small class="mt-1 " style="color:#67676C;">
               Последние 5 пациентов
             </small>
             <div class=" last_unpay_patient">
-              <div class="choosePatientLast px-1" v-for="option in get_unpay_patient_list" :key="option.id" 
+              <div class="choosePatientLast px-1" v-for="option in get_unpay_patient_list_today" :key="option.id" 
                   :class="{'activ_last_patient': activ_id == option.id}"
                   @click="selectOption(option)"
               >
@@ -41,27 +45,53 @@
           <div class="col-4 px-2 pl-4 mt-1">
             <div class="summa_content">
               <div class="w-100">
-                <div class="qty borderSolder py-2">
+                <div class="qty borderSolder py-0">
                   <span class="ml-3">Пациент</span>
                   <div class="text-right px-3 mt-1">
-                    <p>{{ patient_name }}</p>
+                    <p>{{ get_cashbox_patient_info.patient_name }}</p>
                   </div>
                 </div>
               </div>
               <div class="d-flex">
                 <div class="w-50">
-                  <div class="qty borderSolder py-2">
-                    <span class="ml-3">{{$t('summ')}}</span>
-                    <div class="text-right px-3 mt-1">
+                  <div class="qty borderSolder py-0">
+                    <span class="ml-3">{{$t('summ_service')}}</span>
+                    <div class="text-right px-3 mt-0">
                       <p>{{summaString}}</p>
                     </div>
                   </div>
                 </div>
                 <div class="w-50">
-                  <div class="qty borderSolder py-2">
+                  <div class="qty borderSolder py-0">
+                    <span class="ml-3">Стационар</span>
+                    <div class="text-right px-3 mt-0">
+                      <p>{{ get_bron_list_patient_id.need_payed.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex">
+                <!-- <div class="w-50">
+                  <div class="qty borderSolder py-0">
                     <span class="ml-3">{{$t('discount')}}</span>
-                    <div class="text-right px-3 mt-1">
+                    <div class="text-right px-3 mt-0">
                       <p>{{ skidkaString }}</p>
+                    </div>
+                  </div>
+                </div> -->
+                <div class="w-50" @click="pay_debit_cashbox" style="cursor: pointer;">
+                  <div class="qty borderSolder py-0">
+                    <span class="ml-3">{{$t('debit')}}</span>
+                    <div class="text-right px-3 mt-0">
+                      <p class="text-danger">{{ get_dolg_patient_id_list.summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="w-50">
+                  <div class="qty borderSolder py-0">
+                    <span class="ml-3 text-primary">Общий сумма</span>
+                    <div class="text-right px-3 mt-0">
+                      <p class=" text-primary">{{(summa + get_bron_list_patient_id.need_payed + get_dolg_patient_id_list.summ).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</p>
                     </div>
                   </div>
                 </div>
@@ -69,7 +99,7 @@
               
             </div>
           </div>
-          <div class="col-5 px-4 ">
+          <div class="col-5 px-4">
             <div class="row">
               <div class="col-4 mt-1 px-1">
                 <div class="btn_pay bg-success" @click="payCash">
@@ -174,9 +204,9 @@
                   </small>
                 </div>
               </div>
-              <div class="col-4 mt-1 px-1">
+              <div class="col-4 mt-1 px-1" @click="$router.push('/check_payment_list')">
                 <div class="btn_pay bg-primary" >
-                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chart-infographic" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <!-- <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chart-infographic" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <circle cx="7" cy="7" r="4" />
                     <path d="M7 3v4h4" />
@@ -184,39 +214,88 @@
                     <line x1="17" y1="14" x2="17" y2="21" />
                     <line x1="13" y1="13" x2="13" y2="21" />
                     <line x1="21" y1="12" x2="21" y2="21" />
+                  </svg> -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clipboard-data" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" />
+                    <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
+                    <path d="M9 17v-4" />
+                    <path d="M12 17v-1" />
+                    <path d="M15 17v-2" />
+                    <path d="M12 17v-1" />
                   </svg>
                   <small class="ml-1">
-                    Статистика
+                    Чек
                   </small>
                 </div>
               </div>
+              <!-- <div class="col-4 mt-1 px-1" v-show="get_bron_list_patient_id.unpayedlist.length">
+                <div class="btn_pay bg-success">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-bed" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M3 7v11m0 -4h18m0 4v-8a2 2 0 0 0 -2 -2h-8v6" />
+                    <circle cx="7" cy="10" r="1" />
+                  </svg>
+                  <small class="ml-1">
+                    СТАЦ. Наличный
+                  </small>
+                </div>
+              </div>
+              <div class="col-4 mt-1 px-1" v-show="get_bron_list_patient_id.unpayedlist.length">
+                <div class="btn_pay bg-primary" >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-bed" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M3 7v11m0 -4h18m0 4v-8a2 2 0 0 0 -2 -2h-8v6" />
+                    <circle cx="7" cy="10" r="1" />
+                  </svg>
+                  <small class="ml-1">
+                    СТАЦ. ПЛАС.КАРТА
+                  </small>
+                </div>
+              </div>
+              <div class="col-4 mt-1 px-1" v-show="get_bron_list_patient_id.unpayedlist.length">
+                <div class="btn_pay bg_dolg" >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-bed" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M3 7v11m0 -4h18m0 4v-8a2 2 0 0 0 -2 -2h-8v6" />
+                    <circle cx="7" cy="10" r="1" />
+                  </svg>
+                  <small class="ml-1">
+                    СТАЦ. ДОЛГ
+                  </small>
+                </div>
+              </div> -->
             </div>
           </div>
         </div>
       </div>
       
       <div class="cash-table ">
-        <div class="TablePatientDocId mt-1  ">
-          <table class="myTable px-3">
-            <thead class="bg_table_header" style="position: sticky; top:-17px; z-index: 1;">
+        <div class=" mt-1  " :class="{'TablePatientDocId_withoutBron': get_bron_list_patient_id.unpayedlist.length == 0, 'TablePatientDocId': get_bron_list_patient_id.unpayedlist.length>0}">
+          <table class="myTablecashboxItem px-3">
+            <thead class="bg_table_header" style="position: sticky; top:0px; z-index: 1;">
               <tr class="header">
-                <th>{{$t('serviceName')}}</th>
-                <th>{{$t('summ')}}</th>
-                <th>{{$t('discount_persantage_qty')}}</th>
-                <th>{{$t('discount_qty')}}</th>
-                <th>{{$t('payedDate')}}</th>
+                <th width="400">{{$t('serviceName')}}</th>
+                <th >{{$t('summ')}}</th>
+                <th >{{$t('discount_persantage_qty')}}</th>
+                <th >{{$t('discount_qty')}}</th>
+                <th >{{$t('menu_partner')}}</th>
+                <th >{{$t('regis_name')}}</th>
+                <th >{{$t('payedDate')}}</th>
                 <th width="150">{{$t('paid')}}</th>
-                <th width="150">{{$t('payed')}}</th>
+                <th width="120">{{$t('payed')}}</th>
                 <th width="80">{{$t('Action')}}</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row,rowIndex) in get_service_pay_list" :key="rowIndex" class="bg_table_tr">
+              <tr v-for="(row,rowIndex) in get_service_pay_list" :key="rowIndex" :class="{'alert-warning': row.discount_persantage_qty>0}" class="bg_table_tr_item">
                 <td> <span >{{row.serviceName}}</span> </td>
                 <td> <span >{{row.summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
-                <td> <span >{{row.discount_persantage_qty}} %</span> </td>
+                <td> <span >{{row.discount_persantage_qty.toFixed()}} %</span> </td>
                 <!-- <td> <span >{{row.discount_qty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td> -->
                 <td> <span >{{row.discount_qty}}</span> </td>
+                <td> <span style="font-size: 12px;">{{row.discount_card_qty}}</span> </td>
+                <td> <span style="font-size: 12px;">{{row.patientName}}</span> </td>
                 <td> <span >{{row.payedDate.slice(0,10)}}</span> </td>
                 <td>
                   <mdb-badge v-show="row.finishPayment === true" style="padding: 2px 8px;" pill color="success">{{$t("payed")}}</mdb-badge>
@@ -230,11 +309,112 @@
                   <i class="fas fa-trash delIcon mask waves-effect m-0 pl-2" disabled @click="delService(row, rowIndex)" :data-row="rowIndex"></i>
                 </td>
               </tr>
+              <!-- <tr>
+                <td>Общий</td>
+                <td></td>
+              </tr> -->
             </tbody>
           </table>
         </div>
       </div>
+      <div class="startsionar_list_cash_box_bron" v-show="get_bron_list_patient_id.unpayedlist.length">
+          <div class="mt-1">
+            <table class="myTablecashboxItem px-3">
+              <thead class="bg_table_header" style="position: sticky; top: 0; z-index: 1;">
+                <tr class="header">
+                  <th>{{$t('patient')}}</th>
+                  <th >Врач</th>
+                  <th >День</th>  
+                  <th >Время начала</th>
+                  <th >Время окончания</th>
+                  <th >Цена за один день</th>
+                  <th width="150">Платная сумма</th>
+                  <th width="150">Не оплатет сумма</th>
+                  <th width="120">{{$t('payed')}}</th>
+                  <th width="70">{{$t('Action')}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(row,rowIndex) in get_bron_list_patient_id.unpayedlist" :key="rowIndex" 
+                  class="bg_table_tr_item" style="cursor:pointer;" @click="payed_bron_payment(row)">
+                  <td> <span >{{row.reserved_name_1}}</span> </td>
+                  <td> <span >{{row.reserved_name_3}}</span> </td>
+                  <td> <span >{{row.reserved_number_1}}</span> </td>
+                  <!-- <td> <span >{{row.discount_qty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td> -->
+                  <td> <span >{{row.begin_date_bron.slice(0,10)}}</span> </td>
+                  <td> <span >{{row.end_date_bron.slice(0,10)}}</span> </td>
+                  <td> <span >{{row.price_for_one_day.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                  <td> <span  class="text-success">{{row.payed_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                  <td> <span class="text-danger">{{row.need_payed_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                  
+                  <td>
+                    <mdb-btn @click="payed_bron_payment(row)"  color="success" class="m-0 p-0" style="font-size: 8px;"  p="r3 l3 t1 b1">{{$t('pay')}}</mdb-btn>  
+                  </td>
+                  <td class="text-center">
+                    <!-- <i class="fas fa-pen editIcon mask waves-effect t m-0 pr-2" disabled  :data-row="rowIndex"></i> -->
+                    <i class="fas fa-trash delIcon mask waves-effect m-0 pl-2" disabled @click="delService(row, rowIndex)" :data-row="rowIndex"></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        <div class="row px-4" v-show="false">
+          <div class="item_list_patient_bron_info p-2 mt-2 col-6" v-for="(item, i) in get_bron_list_patient_id.unpayedlist" :key="i">
+            <!-- {{ get_bron_list_patient_id }} -->
+            <div class="d-flex w-100 " style="cursor:pointer" @click="payed_bron_payment(item)">
+              <div style="width:40%" >
+                <div class="alert-info rounded text-center">
+                  <small class="font-weight-bold">Нач:</small>
+                  <small class="ml-2">{{ item.begin_date_bron.slice(0,10) }}</small>
+                </div>
+              </div>
+              <div style="width:40%" >
+                <div class="alert-info rounded text-center" >
+                  <small class="font-weight-bold">Окон:</small>
+                  <small class="ml-2">{{ item.end_date_bron.slice(0,10) }}</small>
+                </div>
+              </div>
+              <div style="width:20%" >
+                <div class="alert-info rounded text-center">
+                  <small class="font-weight-bold">День:</small>
+                  <small class="ml-2">{{ item.reserved_number_1 }}</small>
+                </div>
+              </div>
+            </div>
+            <div class="pay_need_payed_patient d-flex w-100  " style="cursor:pointer" @click="payed_bron_payment(item)">
+              <div style="width:33%">
+                <div class="alert-success rounded text-center">
+                  <small class="font-weight-bold">Опл:</small>
+                  <small class="ml-2">{{ item.payed_summ }}</small>
+                </div>
+              </div>
+              <div style="width:33%">
+                <div class="alert-danger rounded text-center">
+                  <small class="font-weight-bold">Неопл:</small>
+                  <small class="ml-2">{{ item.need_payed_summ }}</small>
+                </div>
+              </div>
+              <div style="width:34%">
+                <div class="alert-primary rounded text-center">
+                  <small class="font-weight-bold">День:</small>
+                  <small class="ml-2">{{ item.price_for_one_day }}</small>
+                </div>
+              </div>
+            </div>
+            <div class="text-right">
+              <mdb-btn v-show="item.payed_summ == 0"  color="danger" @click="del_patient_payment(item)" class="my-0"  style="font-size: 9px;" p="r4 l4 t1 b1">{{$t('Delete')}}</mdb-btn>  
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+   
+    <ModalUser  :show="dolg_pay_show" classes="bg_dolg" closeColor="white" titlecolor="white" 
+        :title="$t('debit')" @close="dolg_pay_show = false" width="70%">
+        <template v-slot:body>
+          <payDebit_component :option = "get_dolg_patient_id_list" :patient_info="get_cashbox_patient_info_selected" @close="close_dolg_pay"/>
+        </template>
+      </ModalUser>
     <mdb-modal :show="confirm" @close="confirm = false" size="sm" class="text-center" success>
         <mdb-modal-header center :close="false">
           <p class="heading">{{$t('Are_you_sure')}}</p>
@@ -243,7 +423,7 @@
           <mdb-icon icon="check" size="4x" class="animated rotateIn"/>
         </mdb-modal-body>
         <mdb-modal-footer center>
-          <mdb-btn color="success" @click="promise">{{$t('Yes')}}</mdb-btn>
+          <mdb-btn color="success" @click.once="promise">{{$t('Yes')}}</mdb-btn>
           <mdb-btn color="danger" @click="confirm = false">{{$t('No')}}</mdb-btn>
         </mdb-modal-footer>
     </mdb-modal>
@@ -277,6 +457,12 @@
           <debit :option="summa" :summa="summaString" :patient="patient_id" @close="debit_close" />
         </template>
       </ModalUser>
+      <ModalUser  :show="payment_bron_show" classes="bg_dolg" closeColor="white" titlecolor="white" 
+          :title="$t('bron_patient')" @close="payment_bron_show = false" width="600px">
+          <template v-slot:body>
+            <pay_cash :option = "payment_data" @close="payed_bron_close"/>
+          </template>
+        </ModalUser>
     <Toast ref="message"></Toast>
     
   </div>
@@ -292,12 +478,17 @@ import cashpay from "./cashpaydevice.vue";
 import debit from "./debit.vue";
 import returnMoney from "./returnMoney.vue";
 import check from "./check.vue"
+import checkDebit from "./checkDebit.vue"
+import pay_cash from '../bron/pay_cash.vue'
+import checkbroncheck from '../bron/checkbron.vue'
+import payDebit_component from './payDebit_component.vue'
 // import DatePicker from 'vue2-datepicker';
 // import 'vue2-datepicker/index.css';
 export default {
   components: {
-    lineSelect, mdbBtn, mdbBadge, ModalUser, cashpay, check,
-     mdbModal, mdbModalHeader, mdbModalBody, mdbModalFooter, mdbIcon, returnMoney, debit
+    lineSelect, mdbBtn, mdbBadge, ModalUser, cashpay, check,pay_cash, checkbroncheck,
+     mdbModal, mdbModalHeader, mdbModalBody, mdbModalFooter, mdbIcon, returnMoney, debit,
+     payDebit_component, checkDebit
   },
   data(){
     return{
@@ -341,21 +532,37 @@ export default {
       activ_id : -1,
       skidkaString: '0',
       skidka: 0,
+      payment_bron_show : false,
+      payment_data : {},
+      checkbron: false,
+      contragent_name_for_check: '',
+      patient_adress_for_check: '',
+      dolg_pay_show: false,
+      dolg_pay_check: false,
     }
   },
-  computed: mapGetters(['get_unpay_patient_list', 'get_service_pay_list', 'summa', 'get_check_print_list', 'get_code_patient', 'get_skidka']),
-  mounted(){
-    this.fetch_unpayed_patient();
+  computed: mapGetters(['get_unpay_patient_list', 'get_service_pay_list', 'summa', 'get_unpay_patient_list_today',
+    'get_unpay_patient_all_list', 'get_check_print_list', 'get_code_patient', 'get_skidka', 'get_cashbox_patient_info_selected',
+    'get_bron_list_patient_id', 'get_cashbox_patient_info', 'get_client_info', 'get_dolg_patient_id_list']),
+  async mounted(){
+    await this.fetch_unpayed_patient();
+    await this.fetch_all_patient_unpayed_lists();
     setInterval(this.fetch_unpayed_patient, 4000);
-    console.log(this.get_service_pay_list)
+    console.log(this.get_service_pay_list);
+    console.log('get_cashbox_patient_info_selected')
+    console.log(this.get_cashbox_patient_info_selected)
+    if(this.get_cashbox_patient_info_selected.id != 0){
+      await this.selectOption(this.get_cashbox_patient_info_selected)
+    }
   },
   methods: {
-    ...mapActions(['fetch_unpayed_patient', 'fetch_service_pay_list', 'fetch_get_code']),
-    ...mapMutations(['update_patient_name', 'Update_check_data', 'updateDebit', 'UpdatecheckInfo']),
+    ...mapActions(['fetch_unpayed_patient', 'fetch_service_pay_list', 'fetch_get_code', 'fetch_patient_bron_payment',
+     'fetch_all_patient_unpayed_lists', 'fetch_client_info', 'fetch_dolg_patient_id_list']),
+    ...mapMutations(['update_patient_name', 'Update_check_data', 'updateDebit', 'UpdatecheckInfo', 
+      'Update_cashbox_patient_info', 'UpdateCashbox_patient_info_selected', 'UpdateDolgCheck_data']),
     debit(){
       this.Update_check_data(this.get_service_pay_list);
       this.debit_show = true;
-      console.log('dasdas')
     },
     updatePatients(){
       this.fetch_unpayed_patient();
@@ -363,7 +570,7 @@ export default {
     debit_pay(){
       this.$router.push('/pay_debit')
     },
-    async closeCheck(){
+    async close_service_check(){
       this.check_show = false;
       this.patient_name = '...';
       this.patient_id = null;
@@ -373,9 +580,7 @@ export default {
       this.checkIndex = 0;
       console.log('this.cashOption')
       console.log(this.cashOption)
-      if(this.get_service_pay_list.length > 1){
-        await this.selectOption(this.cashOption);
-      }
+      await this.selectOption(this.cashOption);
     },
     closeNext(){
       this.check_show = false;
@@ -383,38 +588,82 @@ export default {
       this.check_show = true;
       this.$refs.checkP.printed()
     },
-    
+    async pay_debit_cashbox(){
+      this.dolg_pay_show = true;
+    },
+    async close_dolg_pay(data){
+      this.dolg_pay_show = false;
+      this.dolg_pay_check = true;
+      this.UpdateDolgCheck_data(data);
+      await this.fetch_dolg_patient_id_list(this.get_cashbox_patient_info_selected.id);
+      console.log('pay debit check');
+      console.log(data)
+    },
+    async closeCheck_dolg(){
+      this.dolg_pay_check = false;
+    },
+    async fetch_all_unpayed_users(){
+      await this.fetch_all_patient_unpayed_lists();
+    },
     async selectPatient(option){
-      console.log('option');
-      console.log(option);
-      this.cashOption = option.data;
-      this.update_patient_name(option.data.fio)
+      this.Update_cashbox_patient_info({name: option.data.fio, id:option.data.id})
+      await this.fetch_client_info(option.data.id);
+      this.cashOption = this.get_client_info;
+      this.UpdateCashbox_patient_info_selected(this.get_client_info);
       this.patient_name = option.data.fio;
       this.patient_id = option.data.id;
       this.activ_id = option.data.id;
       this.patient_id_for_ochred = option.data.id;
+      this.patient_adress_for_check = this.get_client_info.address;
       await this.fetch_service_pay_list(option.data.id);
       this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
       this.skidkaString = this.get_skidka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-      // this.$nextTick(function () {
-      //   this.$refs.enterSumma.focus();
-      //   this.enterSumma = '';
-      // })
-      console.log(this.get_service_pay_list)
+      await this.fetch_patient_bron_payment(option.data.id);
+      await this.fetch_dolg_patient_id_list(option.data.id);
+      if(this.get_service_pay_list.length>0){
+        await this.contragentId_forName(this.get_service_pay_list[0].contragentId);
+      }
+      this.update_patient_name({name: option.data.fio, born:this.get_client_info.bornDate.slice(0,4), address:this.get_client_info.address, contragent: this.contragent_name_for_check})
+
     },
     async selectOption(option){
-      console.log('option');
-      console.log(option);
+      this.Update_cashbox_patient_info({name: option.fio, id:option.id})
+      this.UpdateCashbox_patient_info_selected(option);
       this.cashOption = option;
-      this.update_patient_name(option.fio)
       this.patient_name = option.fio;
       this.patient_id = option.id;
       this.activ_id = option.id;
       this.patient_id_for_ochred = option.id;
+      this.patient_adress_for_check = option.address;
       await this.fetch_service_pay_list(option.id);
       this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
       this.skidkaString = this.get_skidka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-      
+      await this.fetch_patient_bron_payment(option.id);
+      await this.fetch_dolg_patient_id_list(option.id);
+      if(this.get_service_pay_list.length>0){
+        await this.contragentId_forName(this.get_service_pay_list[0].contragentId);
+      }
+      this.update_patient_name({name: option.fio, born:option.bornDate.slice(0,4), address:option.address, contragent: this.contragent_name_for_check})
+
+    },
+
+    async contragentId_forName(id){
+      console.log(id)
+      try{
+        const response = await fetch(this.$store.state.hostname + "/Contragents/" + id);
+        const data = await response.json();
+        console.log(data)
+        if(response.status ==200 || response.status ==201){
+          this.contragent_name_for_check = data.name;
+        }
+      }
+      catch{
+        console.log('error')
+      }
+      console.log('this.contragent_name_for_check')
+      console.log(this.contragent_name_for_check)
+      console.log(this.patient_adress_for_check)
+
     },
     funcCurrency(n){
       console.log(n)
@@ -455,10 +704,12 @@ export default {
       // this.$root.$refs.check.printed()
     },
     async promise(){
+      console.log('localStorage.AuthId')
+      console.log(localStorage.AuthId)
       this.confirm = false;
       if(this.cash === true){
         this.Update_check_data(this.get_service_pay_list);
-        const respon = await fetch(this.$store.state.hostname + '/Payments/payPaymentsAllCardOrCash?PatientId=' + this.patient_id + '&Card=false')
+        const respon = await fetch(this.$store.state.hostname + '/Payments/payPaymentsAllCardOrCash?PatientId=' + this.patient_id + '&Card=false&payed_auth_id=' + localStorage.AuthId)
         const data = await respon.json()
         this.$store.state.cashPay_card = true;
         console.log('shuni izlayabmzn');
@@ -483,7 +734,7 @@ export default {
         }
       }
       else{
-        const respon = await fetch(this.$store.state.hostname + '/Payments/payPaymentsAllCardOrCash?PatientId=' + this.patient_id + '&Card=true')
+        const respon = await fetch(this.$store.state.hostname + '/Payments/payPaymentsAllCardOrCash?PatientId=' + this.patient_id + '&Card=true&payed_auth_id=' + localStorage.AuthId)
         const data = await respon.json()
         this.Update_check_data(this.get_service_pay_list);
         this.$store.state.cashPay_card = false;
@@ -520,9 +771,9 @@ export default {
           {
             this.$refs.message.error('Successfully_removed')
             this.show = false;
-            if(this.auth_qty == 1){
-              await this.fetchNextOchred();
-            }
+            // if(this.auth_qty == 1){
+            //   await this.fetchNextOchred();
+            // }
             await this.fetch_service_pay_list(this.patient_id);
             this.fetch_unpayed_patient();
             this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
@@ -596,8 +847,8 @@ export default {
       }
     },
     infocash(){
-      // this.$router.push('/dailyForPayment')
-      this.$router.push('/kunlikkassa')
+      this.$router.push('/dailyForPayment')
+      // this.$router.push('/kunlikkassa')
 
     },
     async payCash(){
@@ -648,6 +899,32 @@ export default {
       this.ServicName = serviceName;
       this.ServicePayId = id
     },
+    async del_patient_payment(item){
+      const requestOptions = {
+            method : "delete",
+          };
+          const response = await fetch(this.$store.state.hostname + "/HospitalBronRoomPayments/" + item.id, requestOptions);
+          const data = await response.json();
+          // console.log(data)
+          if(data.id)
+          {
+            this.$refs.message.success('Successfully_removed')
+            await this.fetch_patient_bron_payment(this.patient_id);
+          }
+    },
+    async payed_bron_payment(item){
+      this.payment_bron_show = true;
+      this.payment_data = item;
+    },
+    async payed_bron_close(){
+      this.checkbron = true;
+      this.payment_bron_show = false;
+    },
+    async closeCheck_bron(){
+      this.checkbron = false;
+      this.payment_bron_show = false;
+      await this.fetch_patient_bron_payment(this.patient_id);
+    },
   }
 
 
@@ -669,13 +946,27 @@ span, th, td, a, p{
  font-weight: bold;
  font-family: 'Ubuntu';
 }
+.startsionar_list_cash_box_bron{
+  height: 130px;
+  overflow: hidden;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  position: relative;
+}
 .TablePatientDocId{
-    height: calc(100vh - 320px);
-    overflow: hidden;
-    overflow-y: auto;
-    // border: 1px solid #ddd;
-  }
-  .myTable {
+  height: calc(100vh - 410px);
+  overflow: hidden;
+  overflow-y: auto;
+  // border: 1px solid #ddd;
+}
+.TablePatientDocId_withoutBron{
+  height: calc(100vh - 290px);
+  overflow: hidden;
+  overflow-y: auto;
+  // border: 1px solid #ddd;
+}
+
+  .myTablecashboxItem {
   /* border-collapse: collapse; */
   table-layout:fixed;
   width: 100%;
@@ -684,24 +975,20 @@ span, th, td, a, p{
   font-size: 18px;
   max-height:80px; overflow-x:auto
 }
-.myTable th{
+.myTablecashboxItem th{
   font-weight: 600;
   font-size:12px;
 }
-.myTable td{
+.myTablecashboxItem td{
   font-size:13px;
 }
-.myTable th, .myTable td {
+.myTablecashboxItem th, .myTablecashboxItem td {
   text-align: left;
-  padding: 9px;
+  padding: 6px 5px;
 }
 
-.myTable tr {
+.myTablecashboxItem tr {
   border-bottom: 1px solid rgb(240, 240, 240);
-}
-
-.myTable tr.header, .myTable tr:hover {
-  // background-color: #f1f1f1;
 }
 
 .editIcon{
@@ -725,12 +1012,12 @@ color: #000;
 
     span{
       color:#67676C;
-      font-size: 21px;
+      font-size: 18px;
     }
     p{
       color:#525255;
       font-weight:bold;
-      font-size: 23px;
+      font-size: 21px;
       margin:0;
       padding:0;
     }
@@ -807,14 +1094,17 @@ color: #000;
   top:0;
   background-image: linear-gradient(to right, rgb(182, 244, 146), rgb(51, 139, 147));
 }
-.bg_table_tr:hover{
+.bg_table_tr_item:hover{
   background-image: radial-gradient( circle farthest-corner at 1.3% 2.8%,  rgb(207, 219, 238) 100.2%, rgb(198, 214, 241) 100.2% );
 }
 .bg_table_header{
-  background-image: linear-gradient( 65.9deg,  rgba(85,228,224,1) 5.5%, rgba(75,68,224,0.74) 54.2%, rgba(64,198,238,1) 55.2%, rgba(177,36,224,1) 98.4% );
+  background-image: linear-gradient( 65.9deg,  rgba(85,228,224,1) 5.5%, rgba(75,68,224,0.74) 54.2%, rgba(64,198,238,1) 55.2%, rgba(177,36,224,1) 98.4% ) !important;
   th,td{
     color:white;  
   }
   padding: 50px !important;
 }
-// </style>
+.item_list_patient_bron_info{
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+</style>

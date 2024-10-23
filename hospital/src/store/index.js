@@ -50,6 +50,9 @@ import dragMin from './modules/hospital/dragmin'
 import serviceGroupShowDoc from './modules/hospital/serviceGroupShowDoc'
 import activeService from './modules/hospital/activeService'
 import laboratory from './modules/hospital/laboratory'
+import laboratory_up from './modules/hospital/laboratory_up'
+import vozvrat from './modules/hospital/vozvrat'
+
 
 Vue.use(Vuex)
 
@@ -58,13 +61,35 @@ export default new Vuex.Store({
         // hostname: 'http://192.168.0.227:5003/api',
         // hostname: 'http://192.168.100.250:5003/api',
         // hostname: 'http://62.209.128.51:5003/api',
-        hostname: 'http://192.168.1.222:5003/api',
-        hostname1: 'http://192.168.1.222:5003/',
-        hostname2: 'http://192.168.1.222:8088/',
+
+        // hostname: 'http://192.168.1.3:5003/api',
+        // hostname1: 'http://192.168.1.3:5003/',
+        // hostname2: 'http://192.168.1.3:8088/',
+
+        // hostname: 'http://192.168.1.177:5003/api',
+        // hostname1: 'http://192.168.1.177:5003/',
+        // hostname2: 'http://192.168.1.177:8088/',
+
+
+        // hostname: 'http://169.254.180.17:5003/api',
+        // hostname1: 'http://169.254.180.17:5003/',
+        // hostname2: 'http://169.254.180.17:8088/',
+
+        hostname: 'http://localhost:5003/api',
+        hostname1: 'http://localhost:5003/',
+        hostname2: 'http://localhost:8088/',
+
+        // hostname: 'http://192.168.165.2:5003/api',
+        // hostname1: 'http://192.168.165.2:5003/',
+        // hostname2: 'http://192.168.165.2:8088/',
+
         alert: false,
         info_product: false,
         cashPay_card: true,
         patient_name_for_cash: '',
+        patient_born_date_for_cash: '',
+        patent_address_for_check: '',
+        patent_cantragent_for_check: '',
         get_analiz_list: [],
         
         result_list: [],
@@ -130,7 +155,10 @@ export default new Vuex.Store({
             state.sablonSavepatient.title = data.title
         },
         update_patient_name(state, data) {
-            state.patient_name_for_cash = data
+            state.patient_name_for_cash = data.name;
+            state.patient_born_date_for_cash = data.born;
+            state.patent_address_for_check = data.address;
+            state.patent_cantragent_for_check = data.contragent;
         },
         update_pagination(state, { size, page }) {
             // console.log('hiy girl')
@@ -244,6 +272,8 @@ export default new Vuex.Store({
         dragMin,
         serviceGroupShowDoc,
         activeService,
-        laboratory
+        laboratory,
+        laboratory_up,
+        vozvrat
     }
 })

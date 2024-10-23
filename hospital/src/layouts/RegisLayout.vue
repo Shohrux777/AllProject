@@ -95,10 +95,7 @@
           // { title: "min drag", icon: 'capsules', url: '/medicineMin', view: false, color:'#ddd' },
           { title: "transit", icon: 'file-invoice', url: '/medicineMin', view: false, color: '#ddd' },
           { title: 'agent', icon: 'address-book', url: '/agent', view: false, color: '#ddd' },
-          
-          
-
-
+          { title: 'package_service', icon: 'address-book', url: '/package', view: false, color: '#ddd' },
           // { title: "num_service", icon: 'diagnoses', url: '/number_into', view: false, color: '#ddd' },
           // { title: "type_patient", icon: 'users', url: '/patient_type', view: false, color:'#ddd' },
           { title: "service_group_show_doc", icon: 'eye-slash', url: '/ServiceGroup_show_doc', view: false, color:'#ddd' },
@@ -249,6 +246,16 @@
                 <path d="M18 3v4l-3.857 6h3.857v4h-6.429l-2.571 4h-3v-4l3.857 -6h-3.857v-4h6.429l2.571 -4z" />
               </svg>`
           },
+          {ico:
+            `<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-sitemap" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 15m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
+              <path d="M15 15m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
+              <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
+              <path d="M6 15v-1a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v1" />
+              <path d="M12 9l0 3" />
+            </svg>`
+          },  
           {ico:
             `<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pinned-off" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"/>

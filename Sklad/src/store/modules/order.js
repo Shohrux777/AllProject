@@ -81,7 +81,7 @@ export default {
 
         add_product_order(state, data) {
             console.log('data order')
-            console.log(data.price)
+            console.log(data)
             // state.product_qty += parseFloat(data.qty)+(parseFloat(parseFloat(data.unit)/parseFloat(data.contains_number_in_pack))).toFixed(2);
             state.product_summ[state.page_savat] += parseFloat(data.price);
             state.product_summ[state.page_savat] = parseFloat(state.product_summ[state.page_savat].toFixed(2))

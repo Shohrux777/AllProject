@@ -710,7 +710,7 @@
         const data = await response.json();
         this.loading = false;
         this.option = data;
-        console.log('data')
+        console.log('data update tugri kirayabdi menimcha')
         console.log(data)
         this.patient_id = data.patientsId;
         this.patient_name = data.name;
@@ -962,8 +962,13 @@
           // console.log('data addDynamic')
           // console.log(data)
           if(data.id){
-            this.cls_wnd()
-            this.sendFinish()
+            this.cls_wnd();
+            console.log('this.main_name_title.creator_id')
+            console.log(this.option.creator_id)
+            if(this.option.creator_id > 150){
+                await this.fetch_delete_lab_picture();
+            }
+            this.sendFinish();
             this.loading = false;
             this.$refs.message.success('Added_successfully')
             this.$router.push('/lab_print/' + data.id)
@@ -982,7 +987,26 @@
           this.modal_info = "Server no connect";
           this.modal_status = true;
         }
-      }
+      },
+      async fetch_delete_lab_picture(){
+        console.log('this.lab_pic_id')
+        console.log(this.lab_pic_id)
+            const requestOptions = {
+                method : "delete",
+            };
+            const response = await fetch(this.$store.state.hostname + "/HospitalPatientAnalizHistory/" + this.option.creator_id, requestOptions);
+            // const data = await response.text();
+            if(response.status == 201 || response.status == 200)
+            {
+                console.log('response')
+                console.log(response)
+                // this.$refs.message.success('Successfully_removed')
+            }
+            // else{
+            //     this.modal_info = data;
+            //     this.modal_status = true;
+            // }
+        },
     }
   }
   </script>

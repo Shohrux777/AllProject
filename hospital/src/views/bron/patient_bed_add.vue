@@ -210,6 +210,10 @@ export default {
       this.price_list.push({name:'patient', price: roomType.room_bed_price})
       this.price_list.push({name:'for_room', price: roomType.room_price})
       this.price_list.push({name:'care_patient', price: roomType.room_bed_price_not_patient})
+
+      this.price = roomType.room_bed_price;
+      this.price_name = 'patient';
+      this.price_activ = 0;
     },
     func_activ_price(i, data){
       console.log(data)
@@ -307,6 +311,7 @@ export default {
           "reserved_number_1": this.days,
           "reserved_name_1": this.patient_name,
           "reserved_name_2": this.room_info.name,
+          "reserved_name_3": this.contragent_name,
           "finish_payment": false,
           // "authorizationId": localStorage.AuthId,
           // "note": this.note,

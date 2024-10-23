@@ -25,7 +25,7 @@
                       <img src="../../assets/patientAvatar.png" style="height: 45px; overflow: none; " class="img-fluid" alt="">
                     </div>
                     <div class="px-3">
-                      <p class="m-0 p-0" >{{item.fio}}</p>
+                      <p class="m-0 p-0" style="font-size: 14.4px;">{{item.fio}}</p>
                       <p class="m-0 rang" style="font-size:10px;">{{$t('bemor')}}</p>
                     </div>
                   </div>
@@ -148,8 +148,17 @@
               <router-link to="/doctor_info">
                 <mdb-btn  color="primary" class="p-0" style="font-size: 9.8px; margin: 2px 5px;"  p="r3 l3 t2 b2">{{$t('info_report')}}</mdb-btn>
               </router-link>
-              <router-link to="/doc_patient_info">
+              <router-link to="/bron_docReport" v-if="!laborantType">
+                <mdb-btn  color="primary" class="p-0" style="font-size: 9.8px; margin: 2px 5px;"  p="r3 l3 t2 b2">{{$t('bron_report')}}</mdb-btn>
+              </router-link>
+              <router-link to="/debit_doc" v-if="!laborantType">
+                <mdb-btn  color="danger" class="p-0" style="font-size: 9.8px; margin: 2px 5px;"  p="r3 l3 t2 b2">{{$t('debit')}}</mdb-btn>
+              </router-link>
+              <!-- <router-link to="/doc_patient_info" v-if="!laborantType">
                 <mdb-btn  color="primary" class="p-0" style="font-size: 9.8px; margin: 2px 5px;"  p="r3 l3 t2 b2">{{$t('send_report')}}</mdb-btn>
+              </router-link> -->
+              <router-link to="/doc_patient_list" v-if="!laborantType">
+                <mdb-btn  color="warning" class="p-0" style="font-size: 9.8px; margin: 2px 5px;"  p="r3 l3 t2 b2">{{$t('bron_patient')}}</mdb-btn>
               </router-link>
               <!-- <router-link to="/doc_info_drag">
                 <mdb-btn  color="primary" class="p-0" style="font-size: 9.8px; margin: 2px 5px;"  p="r3 l3 t2 b2">{{$t('info_drug')}}</mdb-btn>
@@ -203,19 +212,19 @@
           </div>
         </div>
         <div v-if="selectPatient.patient_id" class="d-flex justify-content-center align-items-center  shadow" :class="{'InfoIcoFixedOpen': showSending, 'InfoIcoFixed': !showSending}"  @click="showSending = !showSending">
-          <mdb-icon icon="share-square" far class="text-white ml-1" style="font-size: 22px;" />
+          <mdb-icon icon="share-square" far class="text-white ml-1" style="font-size: 19px;" />
         </div>
         <div v-if="selectPatient.patient_id" class="d-flex justify-content-center align-items-center  shadow" :class="{'InfoIcoFixedOpenInfo': showInfoPatientID, 'InfoIcoFixedInfo': !showInfoPatientID}"  @click="show_patient_info">
-          <mdb-icon icon="info" class="text-white ml-1" style="font-size: 22px;" />
+          <mdb-icon icon="info" class="text-white ml-1" style="font-size: 19px;" />
         </div>
         <!-- <div v-if="selectPatient.patient_id" class="d-flex justify-content-center align-items-center  shadow" :class="{'InfoIcoFixedOpenDrag': showSendingDrug, 'InfoIcoFixedDrag': !showSendingDrug}"  @click="showSendingDrug = !showSendingDrug">
           <mdb-icon icon="capsules" class="text-white ml-1" style="font-size: 22px;" />
         </div> -->
         <div :class="{'infoLab': showSending, 'infoLabNo': !showSending}">
-          <send_doctor :patient="selectPatient" @closed="showSending=false"/>
+          <send_doctor :patient="selectPatient" @closed="showSending=false" :showSending="showSending"/>
         </div>
         <div :class="{'infoPatientId': showInfoPatientID, 'infoPatientIdNo': !showInfoPatientID}">
-          <patient_info_id :status_info="showInfoPatientID_status" ref="patient_info_id" :patientId="selectPatient.patient_id" @closed="showSending=false"/>
+          <patient_info_id v-if="showInfoPatientID" :status_info="showInfoPatientID_status" ref="patient_info_id" :patientId="selectPatient.patient_id" @closed="showSending=false"/>
         </div>
         <div :class="{'infoPatientIdDrug': showSendingDrug, 'infoPatientIdNo': !showSendingDrug}">
           <Send_drug_doc @close="showSendingDrug = false" :patient="selectPatient"/>
@@ -326,28 +335,15 @@ export default {
   computed: {
     ...mapGetters(['get_patient_auth_id','get_service_patientId', 'get_service_patientId_for_finish', 'shablonLists', 
       'ServiceListForSelect', 'get_analiz_list', 'selectPatient']),
-    // filteredList: function(){
-    //   if(this.search)
-    //   {
-    //     return this.get_patient_auth_id.filter((item)=>{
-    //       return this.search.toLowerCase().split(' ').every(v => item.fio.toLowerCase().includes(v))
-    //     })
-    //   }else
-    //   {
-    //     return this.get_patient_auth_id;
-    //   }
-    //   }
   },
   async mounted(){
     if(localStorage.Type == 3){
         this.laborantType = true;
       }
-    
     await this.fetch_authId_patient_list()
+    setInterval(this.update, 20000);
     this.uppdateServiceEmpty();
     this.filteredList = this.get_patient_auth_id;
-    // console.log(this.get_patient_auth_id)
-
   },
   methods: {
     ...mapActions(['fetch_authId_patient_list', 'fetch_service_patientId', 'fetch_service_patientId_for_finish']),
@@ -505,14 +501,14 @@ export default {
       if(data[0].id)
       {
         this.$refs.message.success('Added_successfully');
-        await this.fetch_service_patientId_for_finish(this.selectPatient.patient_id)
-          console.log('kirdiku ichiga nega uchmadui')
+        await this.fetch_service_patientId_for_finish(this.selectPatient.patient_id);
           this.loading = false;
           await this.fetch_service_patientId(this.selectPatient.patient_id);
-          this.AddServiceListForSelect(this.get_service_patientId)
+          this.AddServiceListForSelect(this.get_service_patientId);
           if(this.get_service_patientId.length == 0){
             await this.fetch_authId_patient_list();
             this.filteredList = this.get_patient_auth_id;
+            await this.next_ochred(this.selectPatient.patient_id, localStorage.docId);
             if(this.get_patient_auth_id.length == this.active_bemor){
               this.active_bemor = 0;
               await this.getBemorId(this.active_bemor, this.get_patient_auth_id[this.active_bemor])
@@ -703,14 +699,14 @@ export default {
       console.log(data);
       if(data.id){
           await this.fetch_service_patientId_for_finish(this.selectPatient.patient_id)
-          this.$refs.message.success('Added_successfully')
-          this.DelServiceListForSelect(index)
-          console.log(this.ServiceListForSelect.length)  
+          this.$refs.message.success('Added_successfully');
+          this.DelServiceListForSelect(index);
+          console.log(this.ServiceListForSelect.length);
           if(this.ServiceListForSelect.length < 1){
+            await this.next_ochred(this.selectPatient.patient_id, localStorage.docId)
             await this.fetch_authId_patient_list();
             this.filteredList = this.get_patient_auth_id;
-            // this.all_finish();
-            // console.log('last finish lest');
+            
           }
           await this.fetch_service_patientId(this.selectPatient.patient_id)
       }
@@ -745,7 +741,6 @@ export default {
         {
           const data = await response.json();
           console.log(data, 'jsonini ckeck ochret oldim')
-          
           this.$refs.message.success('Added_successfully')
           return true;
         }
@@ -925,8 +920,8 @@ export default {
   z-index: 11111;
   right:0; 
   top:145px; 
-  width: 50px; 
-  height:50px; 
+  width: 45px; 
+  height:45px; 
   cursor:pointer;
   background-image: radial-gradient( circle farthest-corner at 12.3% 19.3%,  rgba(85,88,218,1) 0%, rgba(95,209,249,1) 100.2% );
   border-top-left-radius:5px; 
@@ -937,9 +932,9 @@ export default {
   position:fixed;
   z-index: 11111;
   right:0; 
-  top:200px; 
-  width: 50px; 
-  height:50px; 
+  top:195px; 
+  width: 45px; 
+  height:45px; 
   cursor:pointer;
   background-image: linear-gradient( 83.2deg,  rgba(150,93,233,1) 10.8%, rgba(99,88,238,1) 94.3% );
   border-top-left-radius:5px; 
@@ -951,8 +946,8 @@ export default {
   z-index: 11111;
   right:50%; 
   top:145px; 
-  width: 50px; 
-  height:50px; 
+  width: 45px; 
+  height:45px; 
   cursor:pointer;
   background-image: radial-gradient( circle farthest-corner at 12.3% 19.3%,  rgba(85,88,218,1) 0%, rgba(95,209,249,1) 100.2% );
   border-top-left-radius:5px; 
@@ -964,13 +959,14 @@ export default {
   z-index: 11111;
   right:70%; 
   top:200px; 
-  width: 50px; 
-  height:50px; 
+  width: 45px; 
+  height:45px; 
   cursor:pointer;
   background-image: linear-gradient( 83.2deg,  rgba(150,93,233,1) 10.8%, rgba(99,88,238,1) 94.3% );
   border-top-left-radius:5px; 
   border-bottom-left-radius:5px;
 }
+
 
 .InfoIcoFixedDrag{
   transition: 0.5s;
@@ -978,8 +974,8 @@ export default {
   z-index: 11111;
   right:0; 
   top:260px; 
-  width: 50px; 
-  height:50px; 
+  width: 45px; 
+  height:45px; 
   cursor:pointer;
   background-image: radial-gradient( circle 860px at 11.8% 33.5%,  rgba(240,30,92,1) 0%, rgba(244,49,74,1) 30.5%, rgba(249,75,37,1) 56.1%, rgba(250,88,19,1) 75.6%, rgba(253,102,2,1) 100.2% );
   border-top-left-radius:5px; 
@@ -991,8 +987,8 @@ export default {
   z-index: 11111;
   right:75%; 
   top:260px; 
-  width: 50px; 
-  height:50px; 
+  width: 45px; 
+  height:45px; 
   cursor:pointer;
   background-image: radial-gradient( circle 860px at 11.8% 33.5%,  rgba(240,30,92,1) 0%, rgba(244,49,74,1) 30.5%, rgba(249,75,37,1) 56.1%, rgba(250,88,19,1) 75.6%, rgba(253,102,2,1) 100.2% );
   border-top-left-radius:5px; 

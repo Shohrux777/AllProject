@@ -232,7 +232,11 @@
             { title: 'user', icon: 'user', url: '/user', view: false, color: '#ddd', 
               down_list:[]
             },
-            { title: "otdel", icon: 'users', url: '/department', view: false, color: '#ddd', down_list:[] },
+            { title: "otdel", icon: 'users', url: '', view: false, color: '#ddd', 
+              down_list:[
+              { title: "otdel", url: '/department', dview: false, color: '#ddd', down_list:[] },
+              { title: "otdel_connect", url: '/depart_connect_user', dview: false, color: '#ddd', down_list:[] },
+              ] },
             { title: 'company', icon: 'landmark', url: '/company', view: false, color: '#ddd', down_list:[] },
 
             { title: 'salary', icon: 'hand-holding-usd', url: '', view: false, color: '#ddd', down_list:[
@@ -242,14 +246,19 @@
 
             { title: 'report', icon: 'clipboard', url: '', view: false, color: '#ddd', down_list:[
               { title: "report_user", url: '/bytimeInOut', dview: false, color: '#ddd', down_list:[] },
-              { title: "report", url: '/byvaqtReport', dview: false, color: '#ddd', down_list:[] },
-              { title: "report_salary", url: '/salaryReportbytime', dview: false, color: '#ddd', down_list:[] },
+              { title: "report_user_one", url: '/bytimeInOutOne', dview: false, color: '#ddd', down_list:[] },
+              // { title: "report", url: '/byvaqtReport', dview: false, color: '#ddd', down_list:[] },
+              { title: "report_salary", url: '/salaryReportbytimeNow', dview: false, color: '#ddd', down_list:[] },
+              { title: "report_qarovul", url: '/qarovulxona_salary', dview: false, color: '#ddd', down_list:[] },
               { title: "come_in_out", url: '/come_in_out', dview: false, color: '#ddd', down_list:[] },
-              { title: "later_come", url: '/LaterUser', dview: false, color: '#ddd', down_list:[] },
               { title: "ComeInReport", url: '/ComeInReport', dview: false, color: '#ddd', down_list:[] },
               { title: "notComeInReport", url: '/notComeInReport', dview: false, color: '#ddd', down_list:[] },
               { title: "blockedUsers", url: '/blockedUsers', dview: false, color: '#ddd', down_list:[] },
             ]},
+            { title: 'note', icon: 'chart-line', url: '', view: false, color: '#ddd', down_list:[
+                { title: "userAddRemoveDay", url: '/userAddRemoveDay', dview: false, color: '#ddd', down_list:[] },
+                { title: "userRasxod", url: '/userRasxod', dview: false, color: '#ddd', down_list:[] },
+            ] },
 
             { title: 'smena', icon: 'desktop', url: '', view: false, color: '#ddd', down_list:[
                 { title: "userconnect_grafik", url: '/userconnect_grafik', dview: false, color: '#ddd', down_list:[] },

@@ -15,11 +15,12 @@
         />
       </div>
 
-      <p v-for="option in filteredList" :key="option.id"
+      <p v-for="option in filteredList" :key="option.id" v-show="option.userType == 0 || option.userType == 2"
           @click="selectOption(option)"
       >
         {{option.fio}}
       </p>
+      
 
     </div>
   </div>

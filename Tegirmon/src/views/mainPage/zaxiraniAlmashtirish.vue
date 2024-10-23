@@ -651,7 +651,7 @@ data(){
       this.phone_number = option.note
       this.born_date = option.addiotionala_information;
       this.oshibka_client = option.auth_user_updator_id;
-      this.fetchOstatka(option.id);
+      await this.fetchOstatka(option.id);
       this.davernost_list = [];
       this.davernost_name = '';
       this.showObyom = false;
@@ -671,7 +671,7 @@ data(){
       this.phone_number = option.note;
       this.born_date = option.addiotionala_information;
       this.oshibka_client = option.auth_user_updator_id;
-      this.fetchOstatka(option.id);
+      await this.fetchOstatka(option.id);
       this.davernost_list = [];
       this.showObyom = false;
       this.davernost_name = '';
@@ -691,7 +691,7 @@ data(){
       this.phone_number = option.note
       this.born_date = option.addiotionala_information;
       this.oshibka_client = option.auth_user_updator_id;
-      this.fetchOstatka(option.id);
+      await  this.fetchOstatka(option.id);
       this.davernost_list = [];
       this.showObyom = false;
       this.davernost_name = '';
@@ -713,7 +713,7 @@ data(){
       this.phone_number = option.note
       this.born_date = option.addiotionala_information;
       this.oshibka_client = option.auth_user_updator_id;
-      this.fetchOstatka(option.id);
+      await this.fetchOstatka(option.id);
       this.davernost_list = [];
       this.showObyom = false;
       this.davernost_name = '';
@@ -1069,9 +1069,15 @@ data(){
           if(response.status == 201 || response.status == 200)
           {
             this.fetchSendTgMessage(this.olib_ketuvchi, this.product_name, this.main_client_id, this.useQty )
-            this.fetchOstatka(this.user_id)
+            await this.fetchOstatka(this.user_id)
             this.show_check = true;
             this.$refs.message.success('Added_successfully')
+            console.log('this.bugdoy_kg');
+            console.log(this.product_real_qty_fix);
+            if(this.product_real_qty_fix >= -1 && this.product_real_qty_fix <= 1){
+              console.log('this.product_real_qty_fix');
+              console.log(this.product_real_qty_fix);
+            }
             this.showObyom = false;
             this.image_url_str = '';
           }

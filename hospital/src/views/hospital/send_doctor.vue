@@ -4,13 +4,13 @@
     <div v-else class="send_page">
       <loader v-if="loading"/>
         <form v-on:submit.prevent="submit">
-          <div class="d-flex bg-white ">
-            <div class="doctor_list bg-white  px-2">
+          <div class="d-flex bg-white">
+            <div class="doctor_list_send_page bg-white  px-2">
               <small v-if="$v.doc_name.$dirty && user_id == null" class="text-danger pt-4 pl-5" >
                 {{$t('select_item')}}
               </small>
               <div  v-for="(doc,i) in get_doctor_list_by_casher.rows" :key="i"
-                @click="show_serv(i,doc.DocAuthId,doc.doctorAuth.users.id, doc.fio, doc.doctorAuth.users.phoneNumber, doc.doctorAuth.users.image )"  
+                @click="show_serv(i,doc.DocAuthId,doc.doctorAuth.users.id, doc.fio, doc.doctorAuth.users.position.name, doc.doctorAuth.users.image )"  
                 class="item px-2" :class="{ 'activeUser' : active_el == i }"
               >
               <!-- @dblclick="show_service(doc.doctorAuth.users.id)" -->
@@ -36,104 +36,120 @@
             </div>
             <div class="Information w-100">
               <div class="PatientInfo d-flex justify-content-center">
-                <div>
-                  <div class="d-flex">
-                    <div class="text-center">
-                      <h4 class="m-0 pt-3 mr-3" style="font-weight: 550; ">{{get_patient_info.patient_name}} (ID:  {{ get_patient_info.patient_id }})</h4>
-                      <h5 class="m-0 pt-1 mr-3 text-danger" style="font-weight: 100 !important; font-size: 16px;" v-if="get_patient_info.patient_born">
-                        <small class="pb-1" style="border-bottom: 1px dashed black; font-weight: 100 !important;">Тел: {{get_patient_info.patient_tel}}</small>
-                        <small class="pb-1 ml-2" style="border-bottom: 1px dashed black;" >Дата рож: {{get_patient_info.patient_born}}</small></h5>
-                      <small v-if="$v.patient_name.$dirty && patient_id == null" class="text-danger pt-4 pl-5" >
+                <div class="w-100" @click="addpatient">
+                  <div class="d-flex  w-100 " style="cursor:pointer;" >
+                    <div class="text-center w-50">
+                      <div class="patient_name_box border">
+                        <h4 class="m-0 pt-2 pb-1 mr-3" style="font-weight: 550; ">{{get_patient_info.patient_name}} (ID:  {{ get_patient_info.patient_id }})</h4>
+                      </div>
+                      <div class="patient_info_box d-flex w-100">
+                        <div class="w-50 border">
+                          <small class="pb-1" style="font-weight: 100 !important;">
+                            <span class=" text-primary">Тел:</span> 
+                            {{get_patient_info.patient_tel}}
+                          </small>
+                        </div>
+                        <div class="w-50 border">
+                          <small class="pb-1 ml-2" >
+                            <span class=" text-primary">Дата рож:</span> 
+                            {{get_patient_info.patient_born}}</small>
+                        </div>
+                      </div>
+                      <!-- <h5 class="m-0 pt-1 mr-3 text-danger" style="font-weight: 100 !important; font-size: 16px;" v-if="get_patient_info.patient_born"> -->
+                      <small v-if="$v.patient_name.$dirty && patient_id == null" class="text-danger pt-4 pl-5">
                         {{$t('select_item')}}
                       </small>
                     </div>
-                    <div class="border-left" style="position:relative;">
+                    <div class="text-center w-50">
+                      <div class="patient_name_box border">
+                        <h4 class="m-0 pt-2 pb-1 mr-3" style="font-weight: 550; ">Цена:  {{(summa + get_bron_list_patient_id.need_payed).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} 
+                          <small style="font-size: 19px;" class="px-2">сум </small></h4>
+                      </div>
+                      <div class="patient_info_box d-flex w-100">
+                        <div class="w-25 border">
+                          <small class="pb-1" style="font-weight: 100 !important;">
+                            <span class=" text-primary">Услуга: </span> 
+                            {{ServiceTypesCount.length}}
+                          </small>
+                        </div>
+                        <div class="w-25 border">
+                          <small class="pb-1 ml-2"  >
+                            <span class=" text-primary">Усл. сумма:</span> 
+                            {{summaString}}</small>
+                        </div>
+                        <div class="w-25 border">
+                          <small class="pb-1 ml-2"  >
+                            <span class=" text-primary">Стац:</span> 
+                            {{get_bron_list_patient_id.need_payed.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small>
+                        </div>
+                        <!-- <div class="w-25 border">
+                          <small class="pb-1 ml-2"  >
+                            <span class=" text-primary">Скидка:</span> 
+                            {{discount_summaString}}</small>
+                        </div> -->
+                        <div class="w-25 border bg-primary">
+                          <small class="pb-1 ml-2"  >
+                            <span class=" text-white">Добавить</span> 
+                            </small>
+                        </div>
+                      </div>
+                      <!-- <h5 class="m-0 pt-1 mr-3 text-danger" style="font-weight: 100 !important; font-size: 16px;" v-if="get_patient_info.patient_born"> -->
+                      
+                    </div>
+                    <!-- <div class="border-left w-50" style="position:relative;">
                       <h4 class="m-0 pt-3 pl-4" style="font-weight: 550;">Цена:  {{summaString}} <small style="font-size: 19px;" class="px-2">сум </small></h4>
                       <h5 class="m-0 pt-1 pl-4 ml-1 text-danger text-left pb-1" style="font-size: 16px;">
-                        <small class="pb-1" style="border-bottom: 1px dashed black;" >Услуга: {{ServiceTypesCount.length}}</small>
-                        <small class="pb-1 ml-4" style="border-bottom: 1px dashed black;" >Скидка: {{ discount_summaString }}</small>
+                        <small class="pb-1" style="border-bottom: 1px dashed black;">Услуга: {{ServiceTypesCount.length}}</small>
+                        <small class="pb-1 ml-4" style="border-bottom: 1px dashed black;">Скидка: {{ discount_summaString }}</small>
                       </h5>
-                      <!-- <div style="position:absolute; top: 100%; width: 500px; height: 100%; z-index: 11;" class="card ml-4 mt-2">
-                        <span>service not sent delete</span>
-                      </div> -->
-                    </div>
+                      
+                    </div> -->
                   </div>
                 </div>
-                <div style="position: absolute; bottom: 5px; right: 5px; font-size:10px;">
-                    <mdb-btn style=" font-size:10px;" class="blue-gradient" @click="infopatient"  p="r4 l4 t2 b2">{{$t('info')}}</mdb-btn>  
-                    <mdb-btn style=" font-size:10px;" class="blue-gradient" @click="addpatient"  p="r4 l4 t2 b2">{{$t('add')}}</mdb-btn>  
-                </div>
-              
               </div>
+              <div :class="{'bg_choose_graduind': !get_patient_info.patient_id, 'bg_choosen_graduind': get_patient_info.patient_id}">
+                    <!-- <mdb-btn style=" font-size:10px;" class="blue-gradient" @click="addpatient"  p="r4 l4 t2 b2">{{$t('add')}}</mdb-btn>   -->
+                </div>
               <div class="DoctorInfo d-flex">
                 <!-- <div style="width: 18%">
                   <div class="picture shadow border  picture_background zoom mt-5">
                       <img :src="img" style="height: 100%; overflow: none; " class="img-fluid " alt="">
                   </div>
                 </div> -->
-                <div class="info_doc px-4 m-2" style="width: 100%">
-                  <div class="border-bottom ">
+                <div class="info_doc px-4 my-1 mx-2" style="width: 100%">
+                  <div class="border-bottom m-0">
                     <div class="d-flex justify-content-between">
                       <div class="d-flex align-items-center w-75">
                         <div class="mr-3">
-                          <div class="picture shadow border rounded-circle  picture_background zoom ">
+                          <div class="picture m-0 mt-1 mb-1 shadow border rounded-circle  picture_background zoom ">
                               <img :src="img" style="height: 100%; overflow: none; " class="img-fluid rounded-circle" alt="">
                           </div>
                         </div>
                         <div>
-                          <h3 class="mb-1 mt-1">{{doc_name}}</h3>
-                          <p class="text-primary px-1 mb-1">{{doc_position}}</p>
+                          <h4 class="mb-1 mt-1">{{doc_name}}</h4>
+                          <!-- <p class="text-primary px-1 mb-1">{{doc_position}}</p> -->
                         </div>
                       </div>
                       <div class="w-50 d-flex align-items-end">
-                        <mdb-input label="Скидка $" v-model="discount" type="number" class="m-0 p-0 w-100" size="sm"  @input="discount_func"/>
-                        <mdb-input label="Поиск услуга" v-model="search" ref="refSearchService" class="m-0 ml-5 p-0 w-100" size="sm"  @input="search_func"/>
+                        <mdb-input label="Скидка %" v-model="discount" type="number" class="m-0 p-0 " style="width:270px;" size="sm"  @input="discount_func"/>
+                        <mdb-input label="Скидка сум" v-model="discount_summ" type="number" class="m-0 p-0 ml-3" style="width:270px;" size="sm"  @input="discount_summ_func"/>
+                        <mdb-input label="Поиск услуга" v-model="search" ref="refSearchService" class="m-0 ml-3 p-0 w-100" size="sm"  @input="search_func"/>
                       </div>
                     </div>
                   </div>
                   <div class="service_list">
-                    <div class="row mt-3">
-                      <div class="col-12">
-                        <accordion>
-                          <div class="row" v-show="serviceListGroupItem.length">
-                            <div class="col-6" v-for="(accorSer,indexAc) in serviceListGroupItem" :key="indexAc +1000">
-                              <accordion-item class="p-0 mb-1">
-                                <template slot="accordion-trigger">
-                                  <span style="color:#597e8d;">{{accorSer[0].serviceType.link_str2}}</span>
-                                </template>
-                                <template slot="accordion-content" >
-                                  <div class="row">
-                                    <div class="col-6" v-for="(servicAc,indexAc1) in accorSer" :key="indexAc1 +5000">
-                                      <div class="d-flex align-items-center" >
-                                        <div class="d-flex mt-0 p-0" style="margin-top: -5px !important;" v-if="servicAc.serviceType.link_str == '1'">
-                                          <div @click="AddServ_link(servicAc,indexAc,indexAc1)" style="font-size: 10px; width: 20px; height: 16px; background: #00C851; cursor: pointer;" 
-                                            class="d-flex rounded justify-content-center align-items-center">
-                                            <span class="text-white">+</span>
-                                          </div>
-                                          <input type="text" class="px-1 inputMinMax" :value="servicAc.qty" >
-                                          <div @click="RemoveServ_link(servicAc,indexAc,indexAc1)" style="font-size: 10px; width: 20px; height: 16px; background: #FF3547; cursor: pointer;" 
-                                            class="d-flex rounded justify-content-center align-items-center">
-                                            <span class="text-white">-</span>
-                                          </div>
-                                        </div>
-                                        <div v-else>
-                                          <input type="checkbox" style="width: 17px; height: 17px;" :value="servicAc.serviceType.id" v-model="checkedCategories[servicAc.serviceType.id]" :id="servicAc.serviceType.name" @click="check_service($event, servicAc.serviceType.name, servicAc.serviceType.price)" />
-                                        </div>
-                                        <div class="pb-2 px-2">
-                                          <label style="font-weight:500; font-size:13.5px" :class="{'text-primary': servicAc.qty >0}"  :for="servicAc.serviceType.name" class="m-0">{{servicAc.serviceType.name}}  ({{servicAc.serviceType.price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}})</label>
-                                          <!-- <label style="font-weight:500; font-size:13.5px"  :for="servic.serviceType.name" class="m-0">{{servic.serviceType.name}}  ({{servic.serviceType.hospitalServiceTypeGroupId}})</label> -->
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </template>
-                              </accordion-item>
+                    <div class="row " v-if="search == ''">
+                      <div class="col-12 " v-if="serviceGroupList.length>1">
+                          <div class=" group_list_service">
+                            <div class="group_item_service" :class="{'activ_group_item': index == activ_group.index}"
+                              v-for="(item, index) in serviceGroupList" :key="index" 
+                              @click="selectActiveGroup(item, index)">
+                              <p>{{ item.group_name }}</p>
                             </div>
                           </div>
-                        </accordion>
                       </div>
-                      <div v-for="(servic,i) in searchServicelist" :key="i"  class="col-4" v-show="servic.according == null || servic.according == ''">
-                        <div class="d-flex align-items-center">
+                      <div v-for="(servic,i) in searchServicelist" :key="i"  class="col-4" v-show="activ_group.link == servic.according ">
+                        <div class="d-flex align-items-center" >
                           <div class="d-flex mt-0 p-0" style="margin-top: -5px !important;" v-if="servic.serviceType.link_str == '1'">
                             <div @click="AddServ_link(servic,null,null)" style="font-size: 10px; width: 20px; height: 16px; background: #00C851; cursor: pointer;" 
                               class="d-flex rounded justify-content-center align-items-center">
@@ -151,9 +167,41 @@
                             <input type="checkbox" style="width: 17px; height: 17px;" :value="servic.serviceType.id" v-model="checkedCategories[servic.serviceType.id]" :id="servic.serviceType.name" @click="check_service($event, servic.serviceType.name, servic.serviceType.price)" />
                           </div>
                           <div class="pb-2 px-2">
-                            {{ servic.according }}
                             <label style="font-weight:500; font-size:13.5px" :class="{'text-primary': servic.qty >0}"  :for="servic.serviceType.name" class="m-0">{{servic.serviceType.name}}  ({{servic.serviceType.price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}})</label>
-                            <!-- <label style="font-weight:500; font-size:13.5px"  :for="servic.serviceType.name" class="m-0">{{servic.serviceType.name}}  ({{servic.serviceType.hospitalServiceTypeGroupId}})</label> -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row mt-1" v-else>
+                      <div class="col-12" v-if="serviceGroupList.length>1">
+                        <div class="d-flex group_list_service" >
+                          <div class="group_item_service" :class="{'activ_group_item': index == activ_group.index}"
+                            v-for="(item, index) in serviceGroupList" :key="index" 
+                            @click="selectActiveGroup(item, index)">
+                            <p>{{ item.group_name }}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div v-for="(servic,i) in searchServicelist" :key="i"  class="col-4" >
+                        <div class="d-flex align-items-center" >
+                          <div class="d-flex mt-0 p-0" style="margin-top: -5px !important;" v-if="servic.serviceType.link_str == '1'">
+                            <div @click="AddServ_link(servic,null,null)" style="font-size: 10px; width: 20px; height: 16px; background: #00C851; cursor: pointer;" 
+                              class="d-flex rounded justify-content-center align-items-center">
+                              <span class="text-white">+</span>
+                            </div>
+                            <input type="text" class="px-1 " :value="servic.qty" style="width: 20px; height: 16px; outline: none; 
+                              border-left: none; border-right: none; border-top: 0.1px solid rgb(220, 220, 220);
+                              border-bottom: 0.1px solid rgb(220, 220, 220);  font-size: 13px;">
+                            <div @click="RemoveServ_link(servic,null,null)" style="font-size: 10px; width: 20px; height: 16px; background: #FF3547; cursor: pointer;" 
+                              class="d-flex rounded justify-content-center align-items-center">
+                              <span class="text-white">-</span>
+                            </div>
+                          </div>
+                          <div v-else>
+                            <input type="checkbox" style="width: 17px; height: 17px;" :value="servic.serviceType.id" v-model="checkedCategories[servic.serviceType.id]" :id="servic.serviceType.name" @click="check_service($event, servic.serviceType.name, servic.serviceType.price)" />
+                          </div>
+                          <div class="pb-2 px-2">
+                            <label style="font-weight:500; font-size:13.5px" :class="{'text-primary': servic.qty >0}"  :for="servic.serviceType.name" class="m-0">{{servic.serviceType.name}}  ({{servic.serviceType.price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}})</label>
                           </div>
                         </div>
                       </div>
@@ -190,7 +238,7 @@
 
               <div class=" m-3 mt-2" :class="{'TablePatientDocIdSendNotBahila' : service_bahila_list_database.length == 0, 'TablePatientDocIdSend': service_bahila_list_database.length > 0}">
                 <table class="myTable">
-                  <thead>
+                  <thead >
                     <tr class="header ">
                       <th width="50">№</th>
                       <th>{{$t('FIO')}}</th>
@@ -221,7 +269,8 @@
             </div>
           </div>
           <div style="position: absolute; bottom: 7px; right: 15px;">
-            <mdb-btn color="secondary" @click="blankaShow" style=" font-size:10px;"   p="r5 l5 t2 b2">{{$t('blanka')}}</mdb-btn>  
+            <mdb-btn style=" font-size:10px;" class="blue-gradient" @click="infopatient"  p="r4 l4 t2 b2">{{$t('info')}}</mdb-btn>  
+            <!-- <mdb-btn color="secondary" @click="blankaShow" style=" font-size:10px;"   p="r5 l5 t2 b2">{{$t('blanka')}}</mdb-btn>   -->
             <mdb-btn color="warning" :disabled="user_id == null" @click="$router.push('/otcheritList/' + user_id)" style=" font-size:10px;" p="r4 l4 t2 b2">{{$t('otchrit')}}</mdb-btn>  
             <mdb-btn  color="primary" type="submit" style=" font-size:10px;"  p="r4 l4 t2 b2">{{$t('Send')}}</mdb-btn>
           </div>
@@ -231,13 +280,35 @@
             <clientAdd  @close="show = false"/>
           </template>
         </ModalUser>
+
         <ModalUser  :show="service_show" headerbackColor="info" closeColor="white" titlecolor="white" :title="$t('Choose service type')" @close="service_show = false" width="80%">
           <template v-slot:body>
-            <div style="min-height: 300px;">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <mdb-input label="Поиск" v-model="search_service_doctor_add" type="text" class="m-0 p-0 " style="width:320px;" size="sm"/>
+              </div>
+              <div>
+                <mdb-btn  color="secondary" @click="service_doc_change_activ = !service_doc_change_activ" style="font-size:10px"  p="r4 l4 t2 b2">
+                  <mdb-icon icon="undo-alt"/>
+                  {{$t('change')}}
+                </mdb-btn>
+              </div>
+            </div>
+            <div style="min-height: 300px;" v-if="service_doc_change_activ">
               <div class="row px-1">
-                <div class="col-4" v-for="(item,i) in get_service_no_chosen_list" :key="i">
+                <div class="col-4" v-for="(item,i) in filteredList" :key="i">
                   <div :class="{'bg-info': item.status, 'text-white': item.status}" style="height: 55px; overflow: hidden; overflow-y: auto" @click="choosenServiceType({data: item, index: i})" class="wrap_chip  border rounded d-flex my-2 px-3 text-center justify-content-center">
                     <p class="my-1"> {{item.name}} ({{item.groupSer}})</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="min-height: 300px;" v-else>
+              <div class="row px-1">
+                <div class="col-4" v-for="(item,i) in get_user_service_list" :key="i">
+                  <div  style="height: 55px; overflow: hidden; overflow-y: auto" class="wrap_chip  border rounded d-flex my-2 px-3 text-center justify-content-center align-items-center">
+                    <p class="my-1"> {{item.serviceType.name}} ({{item.serviceType.price}})</p>
+                    <i class="fas fa-trash delIcon mask waves-effect m-0 pl-1"  v-on:click="deleteDoc_service(item.serviceType.id)"></i>
                   </div>
                 </div>
               </div>
@@ -248,18 +319,14 @@
             </div>
           </template>
         </ModalUser>
+
           <mdb-modal  :show="show_surov"  @close="show_surov = false" size="lg" light>
-            <!-- <mdb-modal-header>
-              <mdb-modal-title style="font-weight:  500;">{{$t('Surovnoma')}}</mdb-modal-title>
-            </mdb-modal-header> -->
             <mdb-modal-body>
               <surovnomaPatient @close="show_surov = false"/>
             </mdb-modal-body>
           </mdb-modal>
+
           <mdb-modal  :show="show_service_patient_id"  @close="show_service_patient_id = false" size="lg" light>
-            <!-- <mdb-modal-header>
-              <mdb-modal-title style="font-weight:  500;">{{$t('Surovnoma')}}</mdb-modal-title>
-            </mdb-modal-header> -->
             <mdb-modal-body>
               <div class="d-flex justify-content-between border-bottom">
                 <h4>{{patientNmaeService}}</h4>
@@ -296,13 +363,24 @@
 
           <div v-if="get_patient_info.patient_id" class="d-flex justify-content-center align-items-center  shadow" 
           :class="{'InfoIcoFixedOpenInfo': showInfoPatientID, 'InfoIcoFixedInfo': !showInfoPatientID}"  @click="show_patient_info">
-            <mdb-icon icon="info" class="text-white ml-1" style="font-size: 22px;" />
+            <mdb-icon icon="info" class="text-white ml-1" style="font-size: 17px;" />
           </div>
           <div :class="{'InfoIcoFixedOpenInfoPatient': showInfoPatientID, 'infoPatientIdNo': !showInfoPatientID}">
-            <!-- <p>dasdasdas</p> -->
             <patient_info_id :status_info="showInfoPatientID_status" ref="patient_info_id" :patientId="get_patient_info.patient_id" @closed="showSending=false"/>
-            <!--  @closed="showSending=false" -->
           </div>
+
+          <!-- Startsionar registratsiya qilish knopkasi -->
+          <div v-if="get_patient_info.patient_id" class="d-flex justify-content-center align-items-center shadow Bron_patient_added_btn" 
+            @click="show_startsionar_add_patient = !show_startsionar_add_patient">
+            <mdb-icon icon="bed" class="text-white ml-1" style="font-size: 17px;" />
+          </div>
+          <ModalUser :show="show_startsionar_add_patient" :title="$t('bron_add_patient')" @close="show_startsionar_add_patient = false" width="72%">
+            <template v-slot:body>
+              <!-- <clientAdd  @close="show_startsionar_add_patient = false"/> -->
+              <bron_add_client @close="show_startsionar_add_patient = false" v-if="show_startsionar_add_patient" :patient="get_patient_info"/>
+            </template>
+          </ModalUser>
+          <!-- Startsionar registratsiya qilish knopkasi -->
     </div>
     <Toast ref="message"></Toast>
     <AlertError ref="msg"></AlertError>
@@ -312,6 +390,7 @@
 </template>
 
 <script>
+import bron_add_client from '../bron/bron_add_client.vue'
 import checkOtchert from './checkOtchert'
 import {mdbBtn,  mdbModal, mdbModalBody,mdbInput, mdbModalHeader, mdbModalFooter, mdbIcon} from "mdbvue";
 import {mapActions, mapGetters, mapMutations} from 'vuex'
@@ -320,14 +399,12 @@ import { required } from 'vuelidate/lib/validators'
 // import clients from '../../components/hospital/client_choose.vue'
 import clientAdd from "../../components/new_prog_add/client_add"
 import surovnomaPatient from "../../components/hospital/surovnomaPatient"
-import Accordion from "../../components/accordion/accordion.vue";
-import AccordionItem from "../../components/accordion/accordion_item.vue";
 import patient_info_id from './doc_func/patient_info_id.vue'
 
 export default {
   components: {
     mdbBtn, ModalUser, clientAdd, mdbModal, surovnomaPatient, mdbModalBody, checkOtchert, mdbInput,
-    mdbModalHeader, mdbModalFooter, mdbIcon, Accordion, AccordionItem, patient_info_id
+    mdbModalHeader, mdbModalFooter, mdbIcon, patient_info_id, bron_add_client
   },
   validations: {
       doc_name: {required},
@@ -336,7 +413,7 @@ export default {
     },
   data(){
     return{
-       modal_info: '',
+      modal_info: '',
       modal_status: false,
 
       show: false,
@@ -345,7 +422,7 @@ export default {
       patientNmaeService: '',
       patientsInfoFull: {},
       show_patientId_ServiceList: [],
-
+      show_startsionar_add_patient: false,
       show_otchert: false,
 
        
@@ -368,6 +445,7 @@ export default {
       summa: 0,
       summaString: '0',
       discount_summa: 0,
+      discount_summ: 0,
       discount_summaString: '0',
       show_service_patient_id: false,
 
@@ -382,6 +460,11 @@ export default {
       serviceListGroup: [],
       serviceListGroupItem: [],
 
+      serviceGroupList: [],
+      activ_group: {
+        link: '',
+        index: 0,
+      },
       discount: 0,
 
       ocherd_list: [],
@@ -389,21 +472,24 @@ export default {
       showInfoPatientID: false,
       showInfoPatientID_status: true,
       showSending: false,
-      
+      search_service_doctor_add: '',
+      service_doc_change_activ: true,
+      connect_doc_service_list: [],
     }
   },
    async mounted(){
+    console.log('send_docga kirdi')
     await this.fetch_bahila_service_type_group()
      console.log(this.get_bahila_service_type_group.rows)
      this.service_bahila_list_database = this.get_bahila_service_type_group.rows.map(item => {
-              return {
-                  id: item.id.toString(),
-                  service_id: item.serviceType.id,
-                  service_name: item.serviceType.name,
-                  service_price: item.serviceType.price,
-                  qty: 0,
-              }
-            })
+        return {
+            id: item.id.toString(),
+            service_id: item.serviceType.id,
+            service_name: item.serviceType.name,
+            service_price: item.serviceType.price,
+            qty: 0,
+        }
+      })
     
     this.fetch_get_doctor_list(localStorage.AuthId)
     this.fetch_auth_list();
@@ -417,10 +503,67 @@ export default {
       this.patient_id = this.get_patient_info.patient_id
     }
   },
-  computed: mapGetters(['auth_user_list','get_service_patientId','get_serviceChosenList','get_contragent_list', 'get_bahila_service_type_group', 'get_service_no_chosen_list', 'get_user_service_list', 'get_patient_info', 'get_patient_list_doc_id', 'get_doctor_list_by_casher']),
+  computed: {
+    ...mapGetters(['auth_user_list','get_service_patientId','get_serviceChosenList',
+    'get_contragent_list', 'get_bahila_service_type_group', 'get_service_no_chosen_list',
+    'get_user_service_list', 'get_patient_info', 'get_patient_list_doc_id', 'get_doctor_list_by_casher',
+    'get_bron_list_patient_id']),
+    // get_service_no_chosen_list     groupSer
+    filteredList: function(){
+        if(this.search_service_doctor_add)
+        {
+          return this.get_service_no_chosen_list.filter((item)=>{
+            return this.search_service_doctor_add.toLowerCase().split(' ').every(v => item.name.toLowerCase().includes(v)) || this.search_service_doctor_add.toLowerCase().split(' ').every(v => item.groupSer.toLowerCase().includes(v))
+          })
+        }else
+        {
+          return this.get_service_no_chosen_list;
+        }
+      }
+  },
   methods:{
     ...mapActions(['fetch_auth_list','fetch_service_patientId', 'fetch_patient_client','fetch_contragent' ,'fetch_bahila_service_type_group', 'fetch_service_type', 'fetch_add_service_to_user', 'fetch_users_service_list', 'fetch_get_patient_list_Doc_Id','fetch_get_doctor_list']),
-    ...mapMutations(['Users_service_list','update_patient_list', 'ochred_add_check', 'ochred_add_service', 'choosenServiceType', 'choose_patient_client']),
+    ...mapMutations(['Users_service_list','update_patient_list','bron_patient_summ_nol', 'ochred_add_check', 'ochred_add_service', 'choosenServiceType', 'choose_patient_client']),
+    async deleteDoc_service(serv_id){
+      console.log(this.user_id)
+      console.log(serv_id)
+      for(let i=0; i<this.connect_doc_service_list.length; i++){
+        if(this.connect_doc_service_list[i].serviceTypeId == serv_id){
+          console.log(this.connect_doc_service_list[i])
+          await this.delete_connect_doc_service(this.connect_doc_service_list[i].id);
+          break;
+        }
+      }
+    },
+    async fetch_connect_doc_serv_list(){
+      try{
+        const response = await fetch(this.$store.state.hostname + "/ServiceTypeDetails/getServiceTypeDetailByUserId?UserId=" + this.user_id);
+        const data = await response.json();
+        if(response.status == 200 || response.status == 201){
+          console.log('connect data')
+          console.log(data)
+          this.connect_doc_service_list = data;
+        }
+      }
+      catch(error){
+        console.log(error)
+      } 
+    },
+    async delete_connect_doc_service(id){
+      try{
+        const requestOptions = {
+          method : "delete",
+        };
+        const response = await fetch(this.$store.state.hostname + "/ServiceTypeDetails/" + id, requestOptions);
+        if(response.status == 200 || response.status == 201){
+          this.$refs.message.success('Successfully_removed')
+          await this.fetch_users_service_list(this.user_id)
+        }
+      }
+      catch(error){
+        console.log(error);
+      }
+    },
     search_func(){
       // this.get_user_service_list = this.searchServicelist;
       this.renderFunc(this.get_user_service_list)
@@ -444,14 +587,24 @@ export default {
     discount_func(){
       console.log(this.discount);
       if(this.discount != null && this.discount != ''){
-        this.discount_summa = parseFloat((100 * this.discount)/this.summa);
-        this.discount_summaString = this.discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-        // this.discount_summa = parseInt((this.summa * this.discount)/100);
-        // this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+        this.discount_summa = parseInt((this.summa * this.discount)/100);
+        this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
       }
       else{
         this.discount_summa = 0;
-        this.discount_summaString = this.discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+        this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+      }
+    },
+    discount_summ_func(){
+      if(this.discount_summ != null && this.discount_summ != ''){
+        this.discount = this.discount_summ * 100 / this.summa;
+        this.discount_func();
+      }
+      else{
+        this.discount = 0;
+        this.discount_summa = 0;
+        this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+        this.discount_func();
       }
     },
     
@@ -462,6 +615,8 @@ export default {
       this.img = img;
       this.doc_name = name;
       this.doc_position = position;
+      this.activ_group.link = '';
+      this.activ_group.index = 0;
       await this.fetch_users_service_list(UserId);
       // this.searchServicelist = ;
       console.log('this.get_patient_list_doc_id')
@@ -477,7 +632,38 @@ export default {
       // this.ServiceTypesCount = []
       console.log(localStorage.AuthId)
     },
+    async selectActiveGroup(data, i){
+      console.log(data, i)
+      this.activ_group.link = data.link_str1;
+      this.activ_group.index = i;
+      this.$refs.refSearchService.focus();
+    },
     async renderFunc(data){
+      this.serviceGroupList = [
+        {
+          index: 0,
+          link_str1: '',
+          group_name: 'По умолчанию'
+        }
+      ];
+      for(let i=0; i<data.length; i++){
+        var serQty_count = 0;
+        for(let j=0; j<this.serviceGroupList.length; j++){
+          if(data[i].serviceType.link_str1 == this.serviceGroupList[j].link_str1){
+            serQty_count ++;
+          }
+        }
+        if(serQty_count == 0){
+          let temp = {
+            index: 0,
+            link_str1: data[i].serviceType.link_str1,
+            group_name: data[i].serviceType.link_str2
+          }
+          this.serviceGroupList.push(temp)
+        }
+      }
+      console.log('this.serviceGroupList')
+      console.log(this.serviceGroupList)
       this.searchServicelist = data.map(item => {
         return {
             id: item.id,
@@ -490,48 +676,6 @@ export default {
             qty: 0,
         }
       });
-          // Bu gruppasi bor servicelarni ajratib olish
-      this.serviceListGroup = [];
-      for(let i=0; i<data.length; i++){
-        if(data[i].serviceType.link_str1 != null && data[i].serviceType.link_str1 != ""){
-          let amp = {
-            id: data[i].id,
-            serviceTypeId: data[i].serviceTypeId,
-            serviceType: data[i].serviceType,
-            users: data[i].users,
-            usersId: data[i].usersId,
-            activeStatus: data[i].activeStatus,
-            according: data[i].serviceType.link_str1,
-            qty: 0,
-          }
-          this.serviceListGroup.push(amp);
-        }
-      }
-
-      for(let i = 0; i < this.ServiceTypesCount.length; i++){
-        for(let j = 0; j < this.serviceListGroup.length; j++){
-          if(this.ServiceTypesCount[i].id == this.serviceListGroup[j].serviceType.id){
-            this.serviceListGroup[j].qty++;
-          }
-        }
-      }
-
-          // Bu gruppasi bor serviclarni bir xil gruppalilarini gruppa qilish
-      this.serviceListGroupItem = [];
-      for(let i=0; i<this.serviceListGroup.length; i++){
-        var serviceItemBox = [];
-        serviceItemBox.push(this.serviceListGroup[i])
-        for(let j=i+1; j<this.serviceListGroup.length; j++){
-          if(this.serviceListGroup[i].according == this.serviceListGroup[j].according){
-            serviceItemBox.push(this.serviceListGroup[j])
-            this.serviceListGroup.splice(j,1)
-            j--;
-          }
-        }
-        this.serviceListGroupItem.push(serviceItemBox)
-      }
-
-
       for(let i = 0; i < this.ServiceTypesCount.length; i++){
         for(let j = 0; j < this.searchServicelist.length; j++){
           if(this.ServiceTypesCount[i].id == this.searchServicelist[j].serviceType.id){
@@ -542,12 +686,14 @@ export default {
               // if(this.ServiceTypesCount[j].id == data.serviceType.id){
     },
     async show_service(userId){
-      this.service_show =true;
+      this.service_show = true;
       this.user_id = userId;
       await this.fetch_users_service_list(userId)
       this.renderFunc(this.get_user_service_list)
       this.search = '';
+      this.search_service_doctor_add = '';
       this.Users_service_list()
+      await this.fetch_connect_doc_serv_list()
     },
     delServiceNopayed(data, index){
       console.log(data)
@@ -595,7 +741,6 @@ export default {
       this.renderFunc(this.get_user_service_list)
       this.search = '';
       this.service_show = false
-
     },
     async ocherd_add_service(){
       this.show_service_patient_id = false;
@@ -665,10 +810,8 @@ export default {
               this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
             }
             if(this.discount != null && this.discount != ''){
-              this.discount_summa = parseFloat((100 * this.discount)/this.summa);
-              this.discount_summaString = this.discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-              // this.discount_summa = parseInt((this.summa * this.discount)/100);
-              // this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+              this.discount_summa = parseInt((this.summa * this.discount)/100);
+              this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
             }
           return
         }
@@ -678,6 +821,7 @@ export default {
       if(indx1 != null && indx2 != null){
         this.serviceListGroupItem[indx1][indx2].qty ++;
       }
+      this.$refs.refSearchService.focus();
       console.log(data) 
       for(let i=0; i<this.searchServicelist.length; i++){
         if(this.searchServicelist[i].id == data.id){
@@ -702,10 +846,8 @@ export default {
               this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
             }
             if(this.discount != null && this.discount != ''){
-              this.discount_summa = parseFloat((100 * this.discount)/this.summa);
-              this.discount_summaString = this.discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-              // this.discount_summa = parseInt((this.summa * this.discount)/100);
-              // this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+              this.discount_summa = parseInt((this.summa * this.discount)/100);
+              this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
             }
           return
         }
@@ -728,10 +870,8 @@ export default {
                   this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
                 }
                 if(this.discount != null && this.discount != ''){
-                  this.discount_summa = parseFloat((100 * this.discount)/this.summa);
-                  this.discount_summaString = this.discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-                  // this.discount_summa = parseInt((this.summa * this.discount)/100);
-                  // this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+                  this.discount_summa = parseInt((this.summa * this.discount)/100);
+                  this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
                 }
                 return;
               }
@@ -749,6 +889,7 @@ export default {
         }
       }
       console.log(data)
+      this.$refs.refSearchService.focus();
       for(let i=0; i<this.searchServicelist.length; i++){
         if(this.searchServicelist[i].id == data.id){
           if(this.searchServicelist[i].qty != 0){
@@ -763,10 +904,8 @@ export default {
                   this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
                 }
                 if(this.discount != null && this.discount != ''){
-                  this.discount_summa = parseFloat((100 * this.discount)/this.summa);
-                  this.discount_summaString = this.discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-                  // this.discount_summa = parseInt((this.summa * this.discount)/100);
-                  // this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+                  this.discount_summa = parseInt((this.summa * this.discount)/100);
+                  this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
                 }
                 return;
               }
@@ -776,8 +915,6 @@ export default {
           }
         }
       }
-      
-      
     },
     check_service: function(e, serv_name, narx) {
       this.serviceCheck = false;
@@ -801,10 +938,8 @@ export default {
           this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
         }
         if(this.discount != null && this.discount != ''){
-          this.discount_summa = parseFloat((100 * this.discount)/this.summa);
-          this.discount_summaString = this.discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-          // this.discount_summa = parseInt((this.summa * this.discount)/100);
-          // this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+          this.discount_summa = parseInt((this.summa * this.discount)/100);
+          this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
         }
       }
       else{
@@ -819,17 +954,15 @@ export default {
               this.summaString = this.summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
             }
             if(this.discount != null && this.discount != ''){
-              this.discount_summa = parseFloat((100 * this.discount)/this.summa);
-              this.discount_summaString = this.discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-              // this.discount_summa = parseInt((this.summa * this.discount)/100);
-              // this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+              this.discount_summa = parseInt((this.summa * this.discount)/100);
+              this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
             }
             return
           }
         }
       }
       console.log(this.ServiceTypesCount);
-      
+      this.$refs.refSearchService.focus();
     },
     blankaShow(){
       this.show_surov = true;
@@ -838,7 +971,6 @@ export default {
     async submit(){
       if(this.discount == null || this.discount == ''){
         this.discount = 0;
-        this.discount_summa = 0;
       }
       // this.ochred_add_service(this.ServiceTypesCount)
       this.patient_name = this.get_patient_info.patient_name
@@ -884,7 +1016,7 @@ export default {
         var jsonData = []
       for(let i=0; i<this.ServiceTypesCount.length; i++){
         let tempSumm = this.ServiceTypesCount[i].price;
-        let tempDiscount = this.discount_summa.toFixed(1);
+        let tempDiscount = this.discount;
         let tempDiscountSumm = 0;
         var a = {
           serviceTypeId: null,
@@ -893,6 +1025,7 @@ export default {
           patientsId: null,
           summ: 0,
           name: '',
+          patientName: '',
           authorizationId: null,
           creatorAuthId: null,
           discount_qty: 0,
@@ -901,12 +1034,12 @@ export default {
           discount_real_qty: 0,
         }
         if(this.discount != 0){
-          tempDiscountSumm = ((this.ServiceTypesCount[i].price * this.discount_summa)/100);
-          tempSumm = (this.ServiceTypesCount[i].price - tempDiscountSumm);
+          tempDiscountSumm = parseInt((this.ServiceTypesCount[i].price * this.discount)/100);
+          tempSumm = this.ServiceTypesCount[i].price - tempDiscountSumm;
         }
         a.discount_card_qty = this.ServiceTypesCount[i].doc_name
         a.discount_real_qty = parseInt(this.ServiceTypesCount[i].talon)
-        a.discount_qty = tempDiscountSumm.toFixed(1);
+        a.discount_qty = tempDiscountSumm;
         a.discount_persantage_qty = tempDiscount;
         a.serviceTypeId = this.ServiceTypesCount[i].id;
         a.contragentId = this.get_patient_info.contragent_id;
@@ -914,6 +1047,7 @@ export default {
         a.patientsId =  this.get_patient_info.patient_id;
         a.summ = tempSumm;
         a.name = this.get_patient_info.reason;
+        a.patientName = localStorage.docName;
         a.authorizationId = this.ServiceTypesCount[i].authId; // this.auth_id
         a.creatorAuthId = localStorage.AuthId;
         jsonData.push(a);
@@ -921,7 +1055,7 @@ export default {
       console.log(jsonData)
       const requestOptions = {
         method: "POST",
-        headers: { "Content-Type" : "application/json"},
+        headers: { "Content-Type" : "application/json" },
         body: JSON.stringify(jsonData)
       };
       console.log(requestOptions)
@@ -949,9 +1083,10 @@ export default {
         this.search = '';
         this.discount = 0;
         this.discount_summa = 0;
-        this.discount_summaString = this.discount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+        this.discount_summaString = this.discount_summa.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
         this.fetch_get_patient_list_Doc_Id(this.auth_id)
         this.service_bahila_list_database = [];
+        this.bron_patient_summ_nol();
         await this.fetch_ocherd_list();
         this.service_bahila_list_database = this.get_bahila_service_type_group.rows.map(item => {
               return {
@@ -1172,7 +1307,7 @@ export default {
   height: calc(100vh - 50px);
   overflow: hidden;
 }
-.doctor_list{
+.doctor_list_send_page{
   width: 28%;
   height: calc(100vh - 50px);
   overflow: hidden;
@@ -1183,12 +1318,12 @@ export default {
   width: 72%;
 }
 .Information .PatientInfo {
-  min-height: 90px;
+  min-height: 73px;
   position: relative;
   // border-bottom: 1px solid rgb(155, 155, 155);
   box-shadow: 0 2px 8px rgb(187, 187, 187);
 }
-.doctor_list .item{
+.doctor_list_send_page .item{
   .user_text_boxs{
     width: 100% !important;
     overflow: hidden;
@@ -1237,19 +1372,19 @@ export default {
         transition: all 0.1s ease-in-out;
       }
     }
-  .doctor_list .add_icon{
+  .doctor_list_send_page .add_icon{
     border-radius: 50%;
     &:hover{
       box-shadow: 2px 2px 12px rgb(197, 197, 197), -1px -1px 10px rgb(224, 224, 224);
     }
   }
-  .doctor_list .user_photo_back{
+  .doctor_list_send_page .user_photo_back{
     background-image: url('../../assets/doc_icon.jpg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
 }
-.doctor_list .activeUser{
+.doctor_list_send_page .activeUser{
   cursor: pointer;
   box-shadow: 2px 2px 5px rgb(224, 224, 224);
   background-color: rgb(179, 230, 255);
@@ -1292,7 +1427,7 @@ export default {
     }
   }
   .service_list{
-    height: calc(100vh - 530px);
+    height: calc(100vh - 400px);
     overflow: hidden;
     overflow-y: auto;
   }
@@ -1303,9 +1438,12 @@ export default {
     // border: 1px solid #ddd;
   }
   .TablePatientDocIdSendNotBahila{
-    height: 240px;
+    height: 170px;
     overflow: hidden;
     overflow-y: auto;
+    margin: 0 !important;
+    margin-right: 16px !important;
+    margin-left: 16px !important;
     // border: 1px solid #ddd;
   }
   .myTable {
@@ -1370,9 +1508,9 @@ color: #000;
   position:fixed;
   z-index: 11111;
   right:50%; 
-  top:150px; 
-  width: 50px; 
-  height:50px; 
+  top:135px; 
+  width: 40px; 
+  height:40px; 
   cursor:pointer;
   background-image: linear-gradient( 83.2deg,  rgba(150,93,233,1) 10.8%, rgba(99,88,238,1) 94.3% );
   border-top-left-radius:5px; 
@@ -1383,11 +1521,24 @@ color: #000;
   position:fixed;
   z-index: 11111;
   right:0; 
-  top:150px; 
-  width: 50px; 
-  height:50px; 
+  top:135px; 
+  width: 40px; 
+  height:40px; 
   cursor:pointer;
   background-image: linear-gradient( 83.2deg,  rgba(150,93,233,1) 10.8%, rgba(99,88,238,1) 94.3% );
+  border-top-left-radius:5px; 
+  border-bottom-left-radius:5px;
+}
+.Bron_patient_added_btn{
+  transition: 0.5s;
+  position:fixed;
+  z-index: 11111;
+  right:0; 
+  top:180px;
+  width: 40px;
+  height:40px;
+  cursor:pointer;
+  background: linear-gradient(to right, rgb(242, 112, 156), rgb(255, 148, 114));
   border-top-left-radius:5px; 
   border-bottom-left-radius:5px;
 }
@@ -1423,5 +1574,42 @@ color: #000;
   right:-100%;
   background: white;
   z-index: 1111111111;
+}
+.bg_choose_graduind{
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(25deg,#d64c7f,#ee4758 50%);
+}
+.bg_choosen_graduind{
+  width: 100%;
+  height: 3px;
+  background-image: radial-gradient( circle farthest-corner at 10% 20%,  rgba(14,174,87,1) 0%, rgba(12,116,117,1) 90% );
+}
+.group_list_service{
+  display: flex;
+  flex-wrap:wrap;
+  // width: 90% !important;
+  margin-bottom:5px;
+}
+.group_list_service .group_item_service{
+  border-radius: 4px;
+  margin-right: 10px;
+  background: #22ff7b;
+  cursor: pointer;
+  margin-top: 5px;  
+}
+.group_list_service .group_item_service p{
+  font-size: 14px;
+  padding: 4px 9px;
+  margin: 0;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+.activ_group_item{
+  background: #25a1ff !important;
+  color:#fff;
+}
+.delIcon{color: rgb(251, 70, 70);
+  font-size: 13px;
 }
 </style>

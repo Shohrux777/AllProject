@@ -108,7 +108,6 @@
                         <a href="{{route('newsId', $new->id)}}">
                             <span>{{$new->date}}</span>
                         </a>
-
                     </div>
                     <a href="{{route('newsId', $new->id)}}">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-narrow-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -130,7 +129,9 @@
       <div class="col-12">
         <div class="btn_box">
           <button class="send_btn">
-            Barcha Yangiliklar
+            <a class="all_items_a_href text-white" href="{{route('allNews')}}">
+                Barcha Yangiliklar
+            </a>
           </button>
         </div>
       </div>
@@ -395,9 +396,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="text_elon">
+                    <div class="text_elon" style=" width: 100%; height: 45px !important; overflow-y: hidden;">
                         <a href="{{route('noteId', $note->id)}}">
-                            <p>{{$note->text}}</p>
+                            <p style="margin: 0; padding: 0; font-size: 14px; color: rgb(98, 98, 98); font-weight: 500;">
+                                {{$note->text}}</p>
                         </a>
                     </div>
                   </div>
@@ -405,6 +407,17 @@
               </div>
             </div>
             @endforeach
+            <div class="row row_contents m-0 p-0 w-100">
+                <div class="col-12">
+                    <div class="btn_box">
+                    <button class="send_btn">
+                        <a class="all_items_a_href text-white" href="{{route('allNotes')}}">
+                            Barcha Elonlar
+                        </a>
+                    </button>
+                    </div>
+                </div>
+            </div>
           </div>
         </div>
     </div>

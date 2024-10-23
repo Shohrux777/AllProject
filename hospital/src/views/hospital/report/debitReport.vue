@@ -6,29 +6,13 @@
         <form @submit.prevent="submit">
           <div style="height: 60px;" class="d-flex justify-content-between border-bottom align-items-center  ">
             <div class="title w-75 row align-items-center">
-               <div class="col-4">
-                <div style="position: relative; margin-top: 25px;"> 
-                  <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -8px; color: #757575;">
-                    {{$t('start_time')}}
-                  </small>
-                  <mdb-input type="date"  v-model="Start_time" outline/>
-                </div>
-              </div>
-              <div class="col-4">
-                <div style="position: relative; margin-top: 25px;"> 
-                  <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -8px; color: #757575;">
-                    {{$t('end_time')}}
-                  </small>
-                  <mdb-input type="date"  v-model="End_time" outline/>
-                </div>
-              </div>
-              
+               <h5 class="m-0">{{ $t('debit') }} лист</h5>
             </div>
             <div class="plus">
               <mdb-btn @click="print" color="info py-2 px-4"  style="font-size:10px;" >
                 {{$t('print')}}
               </mdb-btn>
-              <mdb-btn type="submit" color="primary py-2 px-4" style="font-size:10px;"  >
+              <mdb-btn type="submit" v-show="false" color="primary py-2 px-4" style="font-size:10px;"  >
                 {{$t('apply')}}
               </mdb-btn>
             </div>
@@ -40,20 +24,20 @@
               <tr class="header ">
                 <th  width="40" class="text-left">№</th>
                 <th width="200">{{$t('patient_name')}}</th>
-                <th>{{$t('real_qty')}}</th>
-                <th>{{$t('summ_dolg')}}</th>
-                <th >{{$t('date')}}</th>
+                <th>{{$t('id')}}</th>
+                <th>{{$t('phoneNumber')}}</th>
+                <th >{{$t('summ_dolg')}}</th>
                 <th width="120">{{$t('Action')}}</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(row,rowIndex) in get_payment_list" :key="rowIndex">
                 <td> <span >{{rowIndex+1}}</span> </td>
-                <td> <span >{{row.patient_name}}</span> </td>
-                <td> <span >{{row.real_qty}}</span> </td>
-                <td> <span >{{row.summ_dolg}}</span> </td>
-                <td> <span >{{row.created_date_time}}</span> </td>
-                <td> <mdb-btn @click="showed(row.id)" color="info py-1 px-4"  style="font-size:10px;" >
+                <td> <span >{{row.fio}}</span> </td>
+                <td> <span >{{row.patient_id}}</span> </td>
+                <td> <span >{{row.phone}}</span> </td>
+                <td> <span >{{row.dolg}}</span> </td>
+                <td> <mdb-btn @click="showPatientIdDebitPayment(row.patient_id)" color="info py-1 px-4"  style="font-size:10px;" >
                 {{$t('details')}}
               </mdb-btn></td>
               </tr>
@@ -112,20 +96,39 @@
 
     </vue-html2pdf>
 
-    <!-- <div :class="{'showing':show}">
-      <div class="add d-flex justify-content-center align-items-center" >  
-        <districtAdd/>
-      </div>
-    </div> -->
-      <!-- <mdb-modal  :show="show"  @close="show = false"  light>
-        <mdb-modal-header>
-          <mdb-modal-title style="font-weight:  500;">{{$t('Добавить Район')}}</mdb-modal-title>
-        </mdb-modal-header>
-        <mdb-modal-body>
-          <districtAdd :options="editData"/>
-        </mdb-modal-body>
-      </mdb-modal> -->
-      
+    <ModalUser  :show="show" headerbackColor="danger" closeColor="white" titlecolor="white" 
+      :title="$t('debit')" @close="show = false" width="80%">
+      <template v-slot:body>
+        <div class="TablePatientDocId p-3">
+          <table class="myTabledebit">
+            <thead>
+              <tr class="header ">
+                <th  width="40" class="text-left">№</th>
+                <th width="200">{{$t('patient_name')}}</th>
+                <th >{{$t('service_name')}}</th>
+                <th >{{$t('doctor_name')}}</th>
+                <th >{{$t('summa')}}</th>
+                <th>{{$t('payed')}}</th>
+                <th>{{$t('debit')}}</th>
+                <th>{{$t('dolg_date')}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row,rowIndex) in debit_list_patient_id" :key="rowIndex">
+                <td> <small style="font-size: 12.5px;">{{rowIndex+1}}</small> </td>
+                <td> <small style="font-size: 12.5px;">{{row.patient_name}}</small> </td>
+                <td> <small style="font-size: 12.5px;">{{row.service_name}}</small> </td>
+                <td> <small style="font-size: 12.5px;">{{row.payments.discount_card_qty}}</small> </td>
+                <td> <small style="font-size: 12.5px;">{{row.payments.Summ}}</small> </td>
+                <td> <small style="font-size: 12.5px;">{{row.payments.PaymentInCash + row.payments.PaymentInCard}}</small> </td>
+                <td> <small style="font-size: 12.5px;" class="text-danger">{{row.payments.dolg_summ}}</small> </td>
+                <td> <small style="font-size: 12.5px;">{{row.dolgDate.slice(0,10)}}</small> </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+    </ModalUser>
     <Toast ref="message"></Toast>
      <massage_box :hide="modal_status" :detail_info="modal_info"
       :m_text="$t('Failed_to_delete')" @to_hide_modal = "modal_status= false"/>
@@ -138,15 +141,15 @@
   // import DatePicker from 'vue2-datepicker';
   // import RegSelect from '../../../components/RegSelect.vue'
   // import districtAdd from "../../../components/new_prog_add/district_add"
-  import { mdbBtn, mdbInput  } from 'mdbvue';
+  import { mdbBtn, } from 'mdbvue';
+import ModalUser from '../../../components/modal.vue'
   import {mapActions, mapGetters, mapMutations} from 'vuex'
   // import 'vue2-datepicker/index.css';
   export default {
     components: {
       mdbBtn,
-     
-       mdbInput,
-      VueHtml2pdf, 
+      VueHtml2pdf,
+      ModalUser
     },
     data(){
       return{
@@ -170,7 +173,8 @@
         qty: 0,
         summ: 0,
         card: 0,
-        cash: 0
+        cash: 0,
+        debit_list_patient_id: [],
       }
     },
     async mounted(){
@@ -178,17 +182,23 @@
         this.admin = true;
       }
       {
-        let time1 = new Date();
-        this.Start_time = time1.toISOString().slice(0,10); 
-        this.End_time = time1.toISOString().slice(0,10);
-        let a = this.Start_time + 'T00:00:35.000Z' ;
-        let b = this.End_time + 'T23:59:59.000Z';
+        this.loading = true;
+        // let time1 = new Date();
+        // this.Start_time = time1.toISOString().slice(0,10); 
+        // this.End_time = time1.toISOString().slice(0,10);
+        // let a = this.Start_time + 'T00:00:35.000Z' ;
+        // let b = this.End_time + 'T23:59:59.000Z';
+        try{
+          const resp = await fetch(this.$store.state.hostname + '/HospitalPatientDolgPaymentInfoes/getPaginationQarzdorlik?page=0&size=1000')
+          const dataStr = await resp.json();
+          console.log('dataStr')
+          console.log(dataStr)
+          this.get_payment_list = dataStr.items_list
+        }
+        catch(error){
+          console.log(error)
+        }
         
-        const resp = await fetch(this.$store.state.hostname + '/HospitalPatientDolg/getPaginationByBeatweenDateTime?page=0&size=10000&begin_date_time=' + a + 
-        '&end_date_time=' + b)
-        const dataStr = await resp.json();
-        console.log(dataStr)
-        this.get_payment_list = dataStr.items_list
 
         this.loading = false;
       }
@@ -199,7 +209,19 @@
     methods: {
       ...mapActions(['fetch_contragent', 'fetch_report_by_data_time', 'fetch_service_group']),
       ...mapMutations(['district_row_delete']),
-
+      async showPatientIdDebitPayment(id){
+        try{
+          const res = await fetch(this.$store.state.hostname + '/HospitalPatientDolgPaymentInfoes/getPaginationByPatientId?page=0&size=100&patient_id=' + id);
+          const res_data = await res.json();
+          console.log('res_data_patient_id_list');
+          console.log(res_data.items_list);
+          this.debit_list_patient_id = res_data.items_list;
+          this.show = true;
+        }
+        catch{
+          console.log('server error')
+        }
+      },
       add(){
         this.show =! this.show
         this.editData = {};
@@ -216,111 +238,10 @@
         this.service_id = data.id
         this.show = true;
       },
-      
-      
-      async submit(){
-        let a = {
-          time1: "2021-09-01T09:15:28.886Z",
-          time2: new Date(),
-          contId: 0
-        }
-        a.time1 = this.Start_time + 'T00:00:35.000Z';
-        a.time2 = this.End_time + 'T23:59:59.000Z';
-        this.loading = true;
-        const resp = await fetch(this.$store.state.hostname + '/HospitalPatientDolg/getPaginationByBeatweenDateTime?page=0&size=10000&begin_date_time=' + a.time1 + 
-        '&end_date_time=' + a.time2)
-        const dataStr = await resp.json();
-        console.log(dataStr)
-        this.get_payment_list = dataStr.items_list
-        this.loading = false;
-        
-        
-        
-      },
-
     },
   };
 </script>
 
-<style lang="scss">
-
-
-.add{
-  position: fixed;
-  background: rgba(0, 0, 0, 0.4);
-  height: 100vh;
-  top:0;
-  width:85%;
-}
-
-.addxizmat{
-  width: 470px;
-  // height: 120px;
-  background: #fff;
-  position: relative;
-  z-index: 5000;
-}
-.showing{
-  display: none;
-}
-.timePicer{
-  position: relative;
-  margin-top: -10px;
-  .timeLabel{
-    position: absolute;
-    font-size: 12px;
-    background-color: #fff;
-    padding: 1px 3px;
-    z-index: 1;
-    left: 6px;
-    top: -1px;
-  }
-  .dayLabel{
-    position: absolute;
-    font-size: 12px;
-    background-color: #fff;
-    padding: 0px 3px;
-    z-index: 1;
-    left: 6px;
-    top: -8px;
-  }
-}
-.TablePatientDocId{
-    // height: 400px;
-    // overflow: hidden;
-    // overflow-y: auto;
-    // border: 1px solid #ddd;
-  }
-  .myTable {
-  /* border-collapse: collapse; */
-  table-layout:fixed;
-  width: 100%;
-  overflow: hidden;
-  // border: 1px solid #ddd;
-  font-size: 18px;
-  max-height:80px; overflow-x:auto
-}
-.myTable th{
-  font-weight: 600;
-  font-size:12px;
-}
-.myTable td{
-  font-size:13px;
-}
-.myTable th, .myTable td {
-  text-align: left;
-  padding: 10px;
-}
-
-.myTable tr {
-  border-bottom: 1px solid rgb(240, 240, 240);
-}
-
-.myTable tr.header, .myTable tr:hover {
-  // background-color: #f1f1f1;
-}
-.delIcon{
-  color: rgb(251, 70, 70);
-  font-size: 13px;
-}
+<style lang="scss" scoped>
+  @import "../../../scss/tableAll.scss";
 </style>

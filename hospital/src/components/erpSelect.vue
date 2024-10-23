@@ -115,17 +115,17 @@ export default {
   },
 
    computed:{
-            filteredList: function(){
-                if(this.search)
-                {
-                  return this.options.filter((item)=>{
-                    return this.search.toLowerCase().split(' ').every(v => item.name.toLowerCase().includes(v))
-                  })
-                }else
-                {
-                  return this.options;
-                }
-              }
+      filteredList: function(){
+        if(this.search)
+        {
+          return this.options.filter((item)=>{
+            return this.search.toLowerCase().split(' ').every(v => item.name.toLowerCase().includes(v))
+          })
+        }else
+        {
+          return this.options;
+        }
+      }
     }
 }
 </script>

@@ -11,9 +11,10 @@
               {{$t('name_invalid_text')}}
             </small>
             <mdb-input label="Цена" class="mt-3" v-model="price" type="number" outline/>
-            <small class="invalid-text"  v-if="$v.price.$dirty && !$v.price.required" >
+            <small class="invalid-text" v-if="$v.price.$dirty && !$v.price.required" >
               {{$t('enter_price')}}
             </small>
+            <!-- :disabled="disable"  registratura narxni uzgartira olmasligi uchun -->
 
             <erpSelect
                 :options = "get_service_group_list"  @btn_add="addGroup = true"
@@ -62,6 +63,12 @@
                 </label>
               </div>
             </div>
+            <!-- <div class="mt-2">
+              <div class="custom-control custom-switch ml-2">
+                <input v-model="operatsion_status" type="checkbox" class="custom-control-input " id="customSwitch4" checked>
+                <label class="custom-control-label " for="customSwitch4">{{$t('operatsion_service')}}</label>
+              </div>
+            </div> -->
             
           </div>
           
@@ -140,6 +147,8 @@ export default {
         labLink: [],
         labLink_name: ' ',
         labLink_link: null,
+        disable: false,
+        operatsion_status: false,
       }
     },
     props:{
@@ -179,6 +188,18 @@ export default {
     }
     else{
       this.cls_wnd();
+    }
+    if(localStorage.Type == 0){
+      this.disable = false;
+    }
+    else{
+      if(this.id > 0){
+        this.disable = true;
+      }
+      else{
+        this.disable = false;
+      }
+      
     }
   },
     methods: {

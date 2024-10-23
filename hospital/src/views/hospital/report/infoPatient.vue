@@ -1,5 +1,5 @@
 <template>
-  <div class="fullInfoPatient bg_choose_patient">
+  <div class="fullInfoPatient_send_doc bg_choose_patient_send_doc">
     <loader v-if="loading"/>
     <div class="p-4">
       <div class="mb-2 pt-2 px-4 pb-1 " style="border-radius:5px; position:relative;">
@@ -23,22 +23,26 @@
             </div>
           </div>
         </form>
-
+        <div class="container-fluid text-right">
+          <p class="text-white font-weight-bold mt-2 mb-0" style="font-size: 22px;">Баланс: {{ (bron_dolg + moneyInfo.debit + moneyInfo.nopayed).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} сум </p>
+        </div>
         <div class="row" v-if="patientInfo.fio">
-          <div class="col-6  mt-4 patient_anketa">
+          <div class="col-6  mt-2 patient_anketa">
             <div class="card px-3 py-3 patient_info">
+              <p class="text_content_border">{{$t('unpayed')}} <span>{{moneyInfo.nopayed}} сум</span></p>
+              <p class="text_content_border">{{$t('debit')}} услуга<span class="text-danger">{{moneyInfo.debit}} сум</span></p>
+              <p class="text_content_border">Стационар долг<span>{{bron_dolg}} сум</span></p>
+              <p class="text_content_border">Общий долг<span>{{bron_dolg + moneyInfo.debit + moneyInfo.nopayed}} сум</span></p>
+
               <p class="text_content_border">{{$t('cash')}} <span class="text-success">{{moneyInfo.cash}} сум</span></p>
                   <p class="text_content_border">{{$t('card')}} <span class="text-info">{{moneyInfo.card}} сум</span></p>
-                  <p class="text_content_border">{{$t('debit')}} <span class="text-danger">{{moneyInfo.debit}} сум</span></p>
 
                   <p class="text_content_border">{{$t('payed')}} <span>{{moneyInfo.payed}} сум</span></p>                  
-                  <p class="text_content_border">{{$t('unpayed')}} <span>{{moneyInfo.nopayed}} сум</span></p>
-                  <p class="text_content_border">Скидка <span>0%</span></p>
+                  <!-- <p class="text_content_border">Скидка <span>0%</span></p> -->
                   
-                  <p class="text_content_border">{{$t('menu_general')}} <span>{{moneyInfo.payed + moneyInfo.nopayed+ moneyInfo.debit}} сум</span></p>
             </div>
           </div>
-          <div class="col-6 mt-4 ">
+          <div class="col-6 mt-2 ">
             <div class="card  px-3 py-2">
               <div class=" patient_anketa">
                 <div class="patient_img">
@@ -61,13 +65,64 @@
           </div>
         </div>
         <div class="row">
+          <div class="col-6">
+            <div class="item_list_patient_bron_info bg-white p-2 mt-2 w-100" v-for="(item, i) in bron_list" :key="i">
+              <!-- {{ get_bron_list_patient_id }} -->
+              <div class="d-flex w-100">
+                <div style="width:40%" >
+                  <div class="alert-info rounded text-center">
+                    <small class="font-weight-bold">Нач:</small>
+                    <small class="ml-2">{{ item.begin_date_bron.slice(0,10) }}</small>
+                  </div>
+                </div>
+                <div style="width:40%" >
+                  <div class="alert-info rounded text-center">
+                    <small class="font-weight-bold">Окон:</small>
+                    <small class="ml-2">{{ item.end_date_bron.slice(0,10) }}</small>
+                  </div>
+                </div>
+                <div style="width:20%" >
+                  <div class="alert-info rounded text-center">
+                    <small class="font-weight-bold">День:</small>
+                    <small class="ml-2">{{ item.reserved_number_1 }}</small>
+                  </div>
+                </div>
+              </div>
+              <div class="pay_need_payed_patient d-flex w-100  ">
+                <div style="width:33%">
+                  <div class="alert-success rounded text-center">
+                    <small class="font-weight-bold">Опл:</small>
+                    <small class="ml-2">{{ item.payed_summ }}</small>
+                  </div>
+                </div>
+                <div style="width:33%">
+                  <div class="alert-danger rounded text-center">
+                    <small class="font-weight-bold">Неопл:</small>
+                    <small class="ml-2">{{ item.need_payed_summ }}</small>
+                  </div>
+                </div>
+                <div style="width:34%">
+                  <div class="alert-primary rounded text-center">
+                    <small class="font-weight-bold">День:</small>
+                    <small class="ml-2">{{ item.price_for_one_day }}</small>
+                  </div>
+                </div>
+              </div>
+              <div class="text-right">
+                <mdb-btn v-show="item.need_payed_summ == 0 && item.finish_payment == false"  color="primary" @click="finish_patient_payment(item)" class="my-0"  style="font-size: 9px;" p="r4 l4 t1 b1">{{$t('finish')}}</mdb-btn>  
+                <mdb-btn v-show="item.payed_summ == 0"  color="danger" @click="del_patient_payment(item)" class="my-0"  style="font-size: 9px;" p="r4 l4 t1 b1">{{$t('Delete')}}</mdb-btn>  
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
           <div class="col-12 mt-4" v-for="(item,i) in doctorPaymentInfo" :key="i">
             <div class="card px-3 py-2">
               <div class="d-flex justify-content-between border_dashed">
                 <h6 class="pb-3 pt-2 m-0 text-primary">{{item.doctor}}</h6>
                 <h6 class="pb-3 pt-2 m-0 text-primary">{{item.doctorPhone}}</h6>
               </div>
-              <table class="myTableFullInfo">
+              <table class="myTableFullInfo_send_doc_info">
                 <thead>
                   <tr class="header ">
                     <th  width="40" class="text-left">№</th>
@@ -123,73 +178,6 @@
       </div>
     </div>
 
-     <vue-html2pdf ref='listlar'
-        :show-layout="false"
-        :float-layout="true"
-        :enable-download="false"
-        :preview-modal="true"
-        :paginate-elements-by-height="1600"
-        filename="hee hee"
-        :pdf-quality="2"
-        :manual-pagination="false"
-        pdf-format="a4"
-        pdf-orientation="landscape"
-        pdf-content-width="100%"
-        @hasStartedGeneration="hasStartedGeneration()"
-        @hasGenerated="hasGenerated($event)"
-      >
-      <div slot="pdf-content">
-       <div class="col-12 mt-4" v-for="(item,i) in doctorPaymentInfo" :key="i">
-          <div class="card px-3 py-2">
-            <div class="d-flex justify-content-between border_dashed">
-              <h6 class="pb-3 pt-2 m-0 text-primary">{{item.doctor}}</h6>
-              <h6 class="pb-3 pt-2 m-0 text-primary">{{item.doctorPhone}}</h6>
-            </div>
-            <table class="myTableFullInfo">
-              <thead>
-                <tr class="header ">
-                  <th  width="40" class="text-left">№</th>
-                  <th width="200">{{$t('patient_name')}}</th>
-                  <th>{{$t('contragent_name')}}</th>
-                  <th>{{$t('service_name')}}</th>
-                  <th >{{$t('service_price')}}</th>
-                  <th >{{$t('paymentInCash')}}</th>
-                  <th >{{$t('paymentInCard')}}</th>
-                  <th >{{$t('regisdate')}}</th>
-                  <th >{{$t('payed')}}</th>
-                  <th >{{$t('finish')}}</th>
-
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(row,rowIndex) in item.item" :key="rowIndex">
-                  <td> <span >{{rowIndex+1}}</span> </td>
-                  <td> <span >{{row.patients.FIO}}</span> </td>
-                  <td> <span >{{row.contragent.Name}}</span> </td>
-                  <td> <span >{{row.ServiceName}}</span> </td>
-                  <td> <span >{{row.Summ}}</span> </td>
-                  <td> <span :class="{'text-danger': row.PaymentInCash == 0, 'text-success': row.PaymentInCash != 0}">{{row.PaymentInCash}}</span> </td>
-                  <td> <span :class="{'text-danger': row.PaymentInCard == 0, 'text-success': row.PaymentInCard != 0}">{{row.PaymentInCard}}</span> </td>
-                  <td> <p class="m-0">{{row.RegistratedDate.slice(0,10)}}</p> <p class="m-0">{{row.RegistratedDate.slice(11,19)}}</p> </td>
-
-                  <td>
-                    <mdb-badge v-show="row.FinishPayment === true" style="padding: 2px 8px;" pill color="success">{{$t("payed")}}</mdb-badge>
-                    <mdb-badge v-show="row.FinishPayment === false" style="padding: 2px 8px;" pill color="danger">{{$t('unpayed')}}</mdb-badge>
-                  </td>
-                  <td>
-                    <mdb-badge v-show="row.Finish === true" style="padding: 2px 8px;" pill color="success">{{$t("проверил")}}</mdb-badge>
-                    <mdb-badge v-show="row.Finish === false" style="padding: 2px 8px;" pill color="danger">{{$t('непроверенный')}}</mdb-badge>
-                  </td>
-
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-    </vue-html2pdf>
-
     <mdb-modal  :show="change_doc_patient_id"  @close="change_doc_patient_id = false" size="md" info>
       <mdb-modal-header>
         <mdb-modal-title style="font-weight: 500;">{{$t('change_doctor')}}</mdb-modal-title>
@@ -225,7 +213,7 @@
 </template>
 
 <script>
-  import VueHtml2pdf from 'vue-html2pdf'
+  // import VueHtml2pdf from 'vue-html2pdf'
   import lineSelectAuth from "../../../components/lineSelectAuth.vue";
 
   import lineSelect from "../../../components/hospital/cashUserSelectForAnalysis.vue";
@@ -237,7 +225,7 @@
   export default {
     components: {
       mdbBadge, lineSelectAuth,
-      VueHtml2pdf, lineSelect,
+      lineSelect,
       mdbBtn, mdbModalHeader, mdbModal, mdbModalBody,mdbModalTitle
     },
     data(){
@@ -246,9 +234,6 @@
         admin:false,
         snipper: true,
         loading:false,
-
-
-
         editData: {},
         modal_info : '',
         modal_status: false,
@@ -283,6 +268,9 @@
         ],
         change_doc_patient_id: false,
         patient_data: {patients:{FIO:''}},
+        dolg_list: [],
+        bron_list: [],
+        bron_dolg: 0,
       }
     },
     async mounted(){
@@ -300,7 +288,35 @@
         'fetch_client_info', 'fetch_auth_list']),
       ...mapMutations(['district_row_delete']),
 
-      
+      async finish_patient_payment(item){
+        try{
+          const res = await fetch(this.$store.state.hostname + '/HospitalBronRoomPayments/finishPayment?id=' + item.id);
+          const res_data = await res.json();
+          console.log('res_data')
+          console.log(res_data)
+          if(res_data.id){
+              this.$refs.message.success('Successfully_added')
+              await this.fetchPatientIdBron();
+          }
+        }
+        catch(error){
+          console.log(error)
+        }
+        
+      },
+      async del_patient_payment(item){
+        const requestOptions = {
+              method : "delete",
+            };
+            const response = await fetch(this.$store.state.hostname + "/HospitalBronRoomPayments/" + item.id, requestOptions);
+            const data = await response.json();
+            // console.log(data)
+            if(data.id)
+            {
+              this.$refs.message.success('Successfully_removed')
+              await this.fetchPatientIdBron();
+            }
+      },
       print(){
         this.$refs.listlar.generatePdf()
       },
@@ -339,7 +355,7 @@
         this.patientInfo = option.data
         this.patient_name = option.data.fio
         this.patient_id = option.data.id
-
+        this.patientId = option.data.id
         this.moneyInfo = {
           cash:0,
           card: 0,
@@ -350,16 +366,16 @@
         }
 
         try{
-          const response = await fetch(this.$store.state.hostname + "/HospitalPatientDolg/getPaginationByPatientId?page=0&size=100&patient_id=" +  this.patient_id);
+          const response = await fetch(this.$store.state.hostname + "/HospitalPatientDolgPaymentInfoes/getPaginationByPatientId?page=0&size=1000&patient_id=" +  this.patient_id);
           const data = await response.json();
           console.log('debit')
             console.log(data)
-          if(data.items_list[0].qty)
+          if(response.status == 200 || response.status == 201)
           {
-            
-            // this.alert_text = localizeFilter('Successfully_removed');
-            // this.$refs.message.success('Added_successfully')
-            this.moneyInfo.debit = data.items_list[0].real_qty;
+            this.dolg_list = data.items_list;
+            this.moneyInfo.debit = data.items_list.reduce((total, item) => {
+                return total + parseInt(item.dolg_summ)
+            }, 0);
           }
           else{
             this.moneyInfo.debit = 0
@@ -419,102 +435,138 @@
             }
           }
         }
-
+        await this.fetchPatientIdBron();
         this.loading = false;
         console.log(this.doctorPaymentInfo)
       },
-      async IdFunc(){
-        await this.fetch_client_info(this.patientId);
-        this.patient_id = this.patientId;
-        this.patientInfo = this.get_client_info
-        this.patient_name = this.get_client_info.fio
-        this.moneyInfo = {
-          cash:0,
-          card: 0,
-          debit: 0,
-          payed:0,
-          nopayed:0,
-          summ:0,
-        }
+      async fetchPatientIdBron(){
         try{
-          const response = await fetch(this.$store.state.hostname + "/HospitalPatientDolg/getPaginationByPatientId?page=0&size=100&patient_id=" +  this.patient_id);
+          const response = await fetch(this.$store.state.hostname + "/HospitalBronRoomPayments/getPaginationByPatientIdYangi?page=0&size=100&patient_id=" +  this.patient_id);
           const data = await response.json();
-          if(data.items_list[0].qty)
+          console.log('debit')
+            console.log(data)
+          if(response.status == 200 || response.status == 201)
           {
-            
-            // this.alert_text = localizeFilter('Successfully_removed');
-            // this.$refs.message.success('Added_successfully')
-            this.moneyInfo.debit = data.items_list[0].real_qty;
+            this.bron_list = data.items_list;
+            this.bron_dolg = data.items_list.reduce((total, item) => {
+                return total + parseInt(item.need_payed_summ)
+            }, 0);
+            this.moneyInfo.cash += data.items_list.reduce((total, item) => {
+                return total + parseInt(item.cash_summ)
+            }, 0);
+            this.moneyInfo.card += data.items_list.reduce((total, item) => {
+                return total + parseInt(item.card_summ)
+            }, 0);
+            this.moneyInfo.summ += data.items_list.reduce((total, item) => {
+                return total + parseInt(item.payed_summ)
+            }, 0);
           }
           else{
-            this.moneyInfo.debit = 0
+            this.bron_dolg = 0
             this.modal_info = data.detail + "    (" + data.routine + ")";
             this.modal_status = true;
           }
         }
         catch{
-          this.moneyInfo.debit = 0
+          this.bron_dolg = 0
           console.log("Ошибка долг");
         }
+      },
+      async IdFunc(){
+        console.log('this.patientId')
+        console.log(this.patientId)
+        await this.fetch_client_info(this.patientId);
+        this.patient_id = this.patientId;
+        this.patientInfo = this.get_client_info
+        this.patient_name = this.get_client_info.fio;
+        await this.selectPatient({data:this.get_client_info})
+        // this.moneyInfo = {
+        //   cash:0,
+        //   card: 0,
+        //   debit: 0,
+        //   payed:0,
+        //   nopayed:0,
+        //   summ:0,
+        // }
+        // try{
+        //   const response = await fetch(this.$store.state.hostname + "/HospitalPatientDolg/getPaginationByPatientId?page=0&size=100&patient_id=" +  this.patient_id);
+        //   const data = await response.json();
+        //   if(data.items_list[0].qty)
+        //   {
+            
+        //     // this.alert_text = localizeFilter('Successfully_removed');
+        //     // this.$refs.message.success('Added_successfully')
+        //     this.moneyInfo.debit = data.items_list[0].real_qty;
+        //   }
+        //   else{
+        //     this.moneyInfo.debit = 0
+        //     this.modal_info = data.detail + "    (" + data.routine + ")";
+        //     this.modal_status = true;
+        //   }
+        // }
+        // catch{
+        //   this.moneyInfo.debit = 0
+        //   console.log("Ошибка долг");
+        // }
 
-        const response = await fetch(this.$store.state.hostname + "/Payments/getPaginationByPatientId?page=0&size=400&patient_id=" + this.patientId);
-        const data = await response.json();
-        console.log('payment')
-        console.log(data)
-        var test = data
-        console.log(test.items_list)
+        // const response = await fetch(this.$store.state.hostname + "/Payments/getPaginationByPatientId?page=0&size=400&patient_id=" + this.patientId);
+        // const data = await response.json();
+        // console.log('payment')
+        // console.log(data)
+        // var test = data
+        // console.log(test.items_list)
 
-        this.get_payment_list = data.items_list;
+        // this.get_payment_list = data.items_list;
 
-        this.moneyInfo.summ = 0;
-        this.moneyInfo.cash = 0;
-        this.moneyInfo.card = 0;
-        for(let i = 0; i < this.get_payment_list.length; i++) {
-          this.moneyInfo.summ += this.get_payment_list[i].Summ
-          this.moneyInfo.card += this.get_payment_list[i].PaymentInCard
-          this.moneyInfo.cash += this.get_payment_list[i].PaymentInCash
-          if(this.get_payment_list[i].FinishPayment == false){
-            this.moneyInfo.nopayed += this.get_payment_list[i].Summ
-          }
-          else{
-            this.moneyInfo.payed += (this.get_payment_list[i].PaymentInCard + this.get_payment_list[i].PaymentInCash);
-          }
-          // this.summa += this.get_report_by_data[i].summa;
-        }
-        console.log(this.moneyInfo)
+        // this.moneyInfo.summ = 0;
+        // this.moneyInfo.cash = 0;
+        // this.moneyInfo.card = 0;
+        // for(let i = 0; i < this.get_payment_list.length; i++) {
+        //   this.moneyInfo.summ += this.get_payment_list[i].Summ
+        //   this.moneyInfo.card += this.get_payment_list[i].PaymentInCard
+        //   this.moneyInfo.cash += this.get_payment_list[i].PaymentInCash
+        //   if(this.get_payment_list[i].FinishPayment == false){
+        //     this.moneyInfo.nopayed += this.get_payment_list[i].Summ
+        //   }
+        //   else{
+        //     this.moneyInfo.payed += (this.get_payment_list[i].PaymentInCard + this.get_payment_list[i].PaymentInCash);
+        //   }
+        //   // this.summa += this.get_report_by_data[i].summa;
+        // }
+        // console.log(this.moneyInfo)
 
-        this.doctorPaymentInfo = []
-        for(let i=0; i<this.get_payment_list.length; i++){
-          let newItem = {
-            doctor: '',
-            doctorId: null,
-            doctorPhone: '',
-            item: []
-          }
-          this.doctorPaymentInfo.push(newItem);
-          this.doctorPaymentInfo[i].doctor = this.get_payment_list[i].authorization.users.FIO;
-          this.doctorPaymentInfo[i].doctorId = this.get_payment_list[i].authorization.users.Id;
-          this.doctorPaymentInfo[i].doctorPhone = this.get_payment_list[i].authorization.users.PhoneNumber;
-          this.doctorPaymentInfo[i].item.push(this.get_payment_list[i]);
+        // this.doctorPaymentInfo = []
+        // for(let i=0; i<this.get_payment_list.length; i++){
+        //   let newItem = {
+        //     doctor: '',
+        //     doctorId: null,
+        //     doctorPhone: '',
+        //     item: []
+        //   }
+        //   this.doctorPaymentInfo.push(newItem);
+        //   this.doctorPaymentInfo[i].doctor = this.get_payment_list[i].authorization.users.FIO;
+        //   this.doctorPaymentInfo[i].doctorId = this.get_payment_list[i].authorization.users.Id;
+        //   this.doctorPaymentInfo[i].doctorPhone = this.get_payment_list[i].authorization.users.PhoneNumber;
+        //   this.doctorPaymentInfo[i].item.push(this.get_payment_list[i]);
 
-          for(let j=i+1; j<this.get_payment_list.length; j++){
-            if(this.get_payment_list[i].AuthorizationId == this.get_payment_list[j].AuthorizationId){
-              this.doctorPaymentInfo[i].item.push(this.get_payment_list[j]);
-              this.get_payment_list.splice(j,1)
-              j--;
-            }
-          }
-        }
+        //   for(let j=i+1; j<this.get_payment_list.length; j++){
+        //     if(this.get_payment_list[i].AuthorizationId == this.get_payment_list[j].AuthorizationId){
+        //       this.doctorPaymentInfo[i].item.push(this.get_payment_list[j]);
+        //       this.get_payment_list.splice(j,1)
+        //       j--;
+        //     }
+        //   }
+        // }
 
-        this.loading = false;
-        console.log(this.doctorPaymentInfo)
+        // this.loading = false;
+        // console.log(this.doctorPaymentInfo)
       }
     },
   };
 </script>
 
 <style lang="scss">
-.fullInfoPatient{
+.fullInfoPatient_send_doc{
   min-height: 100vh;
   background: rgb(248, 248, 248);
 }
@@ -568,13 +620,7 @@
     top: -8px;
   }
 }
-.TablePatientDocId{
-    // height: 400px;
-    // overflow: hidden;
-    // overflow-y: auto;
-    // border: 1px solid #ddd;
-  }
-  .myTableFullInfo {
+  .myTableFullInfo_send_doc_info {
   /* border-collapse: collapse; */
   table-layout:fixed;
   width: 100%;
@@ -583,23 +629,23 @@
   font-size: 18px;
   max-height:80px; overflow-x:auto
 }
-.myTableFullInfo th{
+.myTableFullInfo_send_doc_info th{
   font-weight: 600;
   font-size:11px;
 }
-.myTableFullInfo td{
+.myTableFullInfo_send_doc_info td{
   font-size:11.5px;
 }
-.myTableFullInfo th, .myTableFullInfo td {
+.myTableFullInfo_send_doc_info th, .myTableFullInfo_send_doc_info td {
   text-align: left;
   padding: 8px;
 }
 
-.myTableFullInfo tr {
+.myTableFullInfo_send_doc_info tr {
   border-bottom: 1px dashed rgb(240, 240, 240);
 }
 
-.myTableFullInfo tr.header, .myTableFullInfo tr:hover {
+.myTableFullInfo_send_doc_info tr.header, .myTableFullInfo_send_doc_info tr:hover {
   // background-color: #f1f1f1;
 }
 .delIcon{
@@ -639,7 +685,10 @@
 .border_dashed{
   border-bottom: 1px dashed #ddd;
 }
-.bg_choose_patient{
+.bg_choose_patient_send_doc{
   background-image: linear-gradient( 109.6deg,  rgba(156,252,248,1) 11.2%, rgba(110,123,251,1) 91.1% );
+}
+.item_list_patient_bron_info{
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 </style>

@@ -42,15 +42,10 @@
               </div>
             </div>
           </form>
+          <div class="summa_header_doc mt-2">
+            <span class="summa_header_title pr-3 py-1">{{ $t('report_service') }}</span>
+          </div>
           <div class="row mt-3 border-bottom pb-3">
-            <div class="col-2">
-                <div class="qty borderSolder py-2">
-                    <span class="ml-3">{{$t('patient')}}</span>
-                    <div class="text-right px-3 mt-1">
-                        <p>{{get_report_by_time_card_cash_bydoctorInfo.users}}</p>
-                    </div>
-                </div>
-            </div>
             <div class="col-2">
                 <div class="qty borderSolder py-2">
                     <span class="ml-3">{{$t('service_qty')}}</span>
@@ -61,9 +56,19 @@
             </div>
             <div class="col-2">
                 <div class="qty borderSolder py-2">
+                    <span class="ml-3">Нал + Плас - Воз</span>
+                    <div class="text-right px-3 mt-1">
+                      <p>{{(get_report_by_time_card_cash_bydoctorInfo.cash + get_report_by_time_card_cash_bydoctorInfo.card - get_report_by_time_card_cash_bydoctorInfo.vozvrat).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</p>
+
+                        <!-- <p>{{get_report_by_time_card_cash_bydoctorInfo.summ}}</p> -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="qty borderSolder py-2">
                     <span class="ml-3">{{$t('cash')}}</span>
                     <div class="text-right px-3 mt-1">
-                        <p>{{get_report_by_time_card_cash_bydoctorInfo.cash}}</p>
+                        <p>{{get_report_by_time_card_cash_bydoctorInfo.cash.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</p>
                     </div>
                 </div>
             </div>
@@ -71,17 +76,36 @@
                 <div class="qty borderSolder py-2">
                     <span class="ml-3">{{$t('card')}}</span>
                     <div class="text-right px-3 mt-1">
-                        <p>{{get_report_by_time_card_cash_bydoctorInfo.card}}</p>
+                        <p>{{get_report_by_time_card_cash_bydoctorInfo.card.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</p>
                     </div>
                 </div>
             </div>
             <div class="col-2">
                 <div class="qty borderSolder py-2">
-                    <span class="ml-3">{{$t('summ')}}</span>
+                    <span class="ml-3">Долг</span>
                     <div class="text-right px-3 mt-1">
-                        <p>{{get_report_by_time_card_cash_bydoctorInfo.summ}}</p>
+                      <!-- <p>{{(get_report_by_time_card_cash_bydoctorInfo.cash + get_report_by_time_card_cash_bydoctorInfo.card).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</p> -->
+                      <p>{{ get_payment_list.reduce((total, item) => {return total + parseInt(item.dolg_summ)}, 0) }}</p>
                     </div>
                 </div>
+            </div>
+            <div class="col-2">
+                <div class="qty borderSolder py-2">
+                    <span class="ml-3">Возврат</span>
+                    <div class="text-right px-3 mt-1">
+                        <p class="text-danger">{{get_report_by_time_card_cash_bydoctorInfo.vozvrat.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</p>
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div class="d-flex border-bottom" >
+            <div class="ml-3 d-flex align-items-center">
+              <mdb-icon class="text-danger mr-1" icon="circle" />
+              <span>{{ $t('debit') }}</span>
+            </div>
+            <div class="ml-3 d-flex align-items-center">
+              <mdb-icon class="text-success mr-1" icon="circle" />
+              <span>{{ $t('pay_debit') }}</span>
             </div>
           </div>
           <div class="TablePatientDocId p-3">
@@ -95,6 +119,7 @@
                   <th >{{$t('service_price')}}</th>
                   <th >{{$t('paymentInCash')}}</th>
                   <th >{{$t('paymentInCard')}}</th>
+                  <th >{{$t('vozvrat')}}</th>
                   <th >{{$t('regisdate')}}</th>
                   <th >{{$t('payed')}}</th>
                   <th >{{$t('finish')}}</th>
@@ -102,7 +127,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(row,rowIndex) in get_payment_list" :key="rowIndex">
+                <tr v-for="(row,rowIndex) in get_payment_list" :key="rowIndex" :class="{'alert-danger': row.dolg_summ, 'alert-success': row.dolg_status, 'alert-secondary': row.pay_num1>0}">
                   <td> <span >{{rowIndex+1}}</span> </td>
                   <td> <span >{{row.patients.FIO}}</span> </td>
                   <td> <span >{{row.contragent.Name}}</span> </td>
@@ -110,6 +135,10 @@
                   <td> <span >{{row.Summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
                   <td> <span :class="{'text-danger': row.PaymentInCash == 0, 'text-success': row.PaymentInCash != 0}">{{row.PaymentInCash.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
                   <td> <span :class="{'text-danger': row.PaymentInCard == 0, 'text-success': row.PaymentInCard != 0}">{{row.PaymentInCard.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                  <td > 
+                    <span v-if="row.pay_num1 != null && row.pay_num1 != ''" class="text-secondary">{{row.pay_num1.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> 
+                    <span v-else> 0</span>
+                  </td>
                   <td> <span >{{row.RegistratedDate.slice(0,10)}}</span> 
                     <span class="ml-1" style="font-size: 12px;">{{row.RegistratedDate.slice(11,16)}}</span></td>
   
@@ -138,84 +167,137 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+
+          <div class="operatsion">
+            <div class="border-bottom">
+              <div class="summa_header_doc mt-2">
+                <span class="summa_header_title pr-3 py-1">{{ $t('report_operatsion') }}</span>
+              </div>
+              <div class="d-flex mt-3 pb-0">
+                <div style="width:20%;">
+                    <div class="qty borderSolder py-2">
+                        <span class="ml-3">{{$t('service_qty')}}</span>
+                        <div class="text-right px-3 mt-1">
+                            <p>{{get_report_operatsion_service.qty}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="width:20%;">
+                    <div class="qty borderSolder py-2">
+                        <span class="ml-3">Нал + Плас - Воз</span>
+                        <div class="text-right px-3 mt-1">
+                            <p>{{(get_report_operatsion_service.cash + get_report_operatsion_service.card - get_report_operatsion_service.vozvrat).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="width:20%;">
+                    <div class="qty borderSolder py-2">
+                        <span class="ml-3">{{$t('cash')}}</span>
+                        <div class="text-right px-3 mt-1">
+                            <p>{{get_report_operatsion_service.cash.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="width:20%;">
+                    <div class="qty borderSolder py-2">
+                        <span class="ml-3">{{$t('card')}}</span>
+                        <div class="text-right px-3 mt-1">
+                            <p>{{get_report_operatsion_service.card.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="width:20%;">
+                  <div class="qty borderSolder py-2">
+                    <span class="ml-3">Долг</span>
+                    <div class="text-right px-3 mt-1">
+                      <!-- <p>{{(get_report_by_time_card_cash_bydoctorInfo.cash + get_report_by_time_card_cash_bydoctorInfo.card).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</p> -->
+                      <p>{{ get_report_operatsion_service.rows.reduce((total, item) => {return total + parseInt(item.dolg_summ)}, 0) }}</p>
+                    </div>
+                  </div>
+                </div>
+                <div style="width:20%;">
+                    <div class="qty borderSolder py-2">
+                        <span class="ml-3">Возврат</span>
+                        <div class="text-right px-3 mt-1">
+                          <p class="text-danger">{{get_report_operatsion_service.vozvrat.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</p>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex border-bottom" >
+              <div class="ml-3 d-flex align-items-center">
+                <mdb-icon class="text-danger mr-1" icon="circle" />
+                <span>{{ $t('debit') }}</span>
+              </div>
+              <div class="ml-3 d-flex align-items-center">
+                <mdb-icon class="text-success mr-1" icon="circle" />
+                <span>{{ $t('pay_debit') }}</span>
+              </div>
+            </div>
+            <div class="TablePatientDocId p-3">
+              <table class="myTable">
+                <thead>
+                  <tr class="header ">
+                    <th  width="40" class="text-left">№</th>
+                    <th width="200">{{$t('patient_name')}}</th>
+                    <th>{{$t('contragent_name')}}</th>
+                    <th>{{$t('service_name')}}</th>
+                    <th >{{$t('service_price')}}</th>
+                    <th >{{$t('paymentInCash')}}</th>
+                    <th >{{$t('paymentInCard')}}</th>
+                    <th >{{$t('vozvrat')}}</th>
+                    <th >{{$t('regisdate')}}</th>
+                    <th >{{$t('payed')}}</th>
+                    <th >{{$t('finish')}}</th>
+                    <th v-show="admin" width="70">{{$t('Action')}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(row,rowIndex) in get_report_operatsion_service.rows" :key="rowIndex" :class="{'alert-danger': row.dolg_summ, 'alert-success': row.dolg_status, 'alert-secondary': row.pay_num1>0}">
+                    <td> <span >{{rowIndex+1}}</span> </td>
+                    <td> <span >{{row.patients.FIO}}</span></td>
+                    <td> <span >{{row.contragent.Name}}</span></td>
+                    <td> <span >{{row.ServiceName}}</span> </td>
+                    <td> <span >{{row.Summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                    <td> <span :class="{'text-danger': row.PaymentInCash == 0, 'text-success': row.PaymentInCash != 0}">{{row.PaymentInCash.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                    <td> <span :class="{'text-danger': row.PaymentInCard == 0, 'text-success': row.PaymentInCard != 0}">{{row.PaymentInCard.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                    <td> 
+                      <span v-if="row.pay_num1 != null && row.pay_num1 != ''" class="text-secondary">{{row.pay_num1.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> 
+                      <span v-else> 0</span>
+                    </td>
+                    <td> <span >{{row.RegistratedDate.slice(0,10)}}</span>
+                      <span class="ml-1" style="font-size: 12px;">{{row.RegistratedDate.slice(11,16)}}</span></td>
+                    <td>
+                      <mdb-badge v-show="row.FinishPayment === true" style="padding: 2px 8px;" pill color="success">{{$t("payed")}}</mdb-badge>
+                      <mdb-badge v-show="row.FinishPayment === false" style="padding: 2px 8px;" pill color="danger">{{$t('unpayed')}}</mdb-badge>
+                    </td>
+                    <td>
+                      <mdb-badge v-show="row.Finish === true" style="padding: 2px 8px;" pill color="success">{{$t("проверил")}}</mdb-badge>
+                      <mdb-badge v-show="row.Finish === false" style="padding: 2px 8px;" pill color="danger">{{$t('непроверенный')}}</mdb-badge>
+                    </td>
+                    <td v-show="admin" class="text-center">
+                        <i class="fas fa-trash delIcon mask waves-effect m-0 pl-2" v-on:click="deleteRow(row,rowIndex)" :data-row="rowIndex"></i>
+                    </td>
+                  </tr>
+                  <tr >
+                    <td> <span class="text-primary">Общий</span> </td>
+                    <td> <span ></span> </td>
+                    <td> <span ></span> </td>
+                    <td> <span class="text-primary">{{get_report_operatsion_service.qty}}</span></td>
+                    <td>  </td>
+                    <td> <span class="text-danger">{{get_report_operatsion_service.cash.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                    <td> <span class="text-danger">{{get_report_operatsion_service.card.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
-  
-       <vue-html2pdf ref='listlar'
-          :show-layout="false"
-          :float-layout="true"
-          :enable-download="false"
-          :preview-modal="true"
-          :paginate-elements-by-height="1600"
-          filename="hee hee"
-          :pdf-quality="2"
-          :manual-pagination="false"
-          pdf-format="a4"
-          pdf-orientation="landscape"
-          pdf-content-width="100%"
-          @hasStartedGeneration="hasStartedGeneration()"
-          @hasGenerated="hasGenerated($event)"
-        >
-        <div slot="pdf-content">
-            <div class="TablePatientDocId p-3">
-            <table class="myTable">
-              <thead>
-                <tr class="header ">
-                  <th  width="40" class="text-left">№</th>
-                  <th width="200">{{$t('patient_name')}}</th>
-                  <th>{{$t('contragent_name')}}</th>
-                  <th>{{$t('service_name')}}</th>
-                  <th >{{$t('service_price')}}</th>
-                  <th >{{$t('paymentInCash')}}</th>
-                  <th >{{$t('paymentInCard')}}</th>
-                  <th >{{$t('regisdate')}}</th>
-                  <th >{{$t('payed')}}</th>
-                  <th >{{$t('finish')}}</th>
-                  <th v-show="admin" width="70">{{$t('Action')}}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(row,rowIndex) in get_payment_list" :key="rowIndex">
-                  <td> <span >{{rowIndex+1}}</span> </td>
-                  <td> <span >{{row.patients.FIO}}</span> </td>
-                  <td> <span >{{row.contragent.Name}}</span> </td>
-                  <td> <span >{{row.ServiceName}}</span> </td>
-                  <td> <span >{{row.Summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
-                  <td> <span :class="{'text-danger': row.PaymentInCash == 0, 'text-success': row.PaymentInCash != 0}">{{row.PaymentInCash.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
-                  <td> <span :class="{'text-danger': row.PaymentInCard == 0, 'text-success': row.PaymentInCard != 0}">{{row.PaymentInCard.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
-                  <td> <span >{{row.RegistratedDate.slice(0,10)}}</span> 
-                    <span class="ml-1" style="font-size: 12px;">{{row.RegistratedDate.slice(11,16)}}</span></td>
-  
-                  <td>
-                    <mdb-badge v-show="row.FinishPayment === true" style="padding: 2px 8px;" pill color="success">{{$t("payed")}}</mdb-badge>
-                    <mdb-badge v-show="row.FinishPayment === false" style="padding: 2px 8px;" pill color="danger">{{$t('unpayed')}}</mdb-badge>
-                  </td>
-                  <td>
-                    <mdb-badge v-show="row.Finish === true" style="padding: 2px 8px;" pill color="success">{{$t("проверил")}}</mdb-badge>
-                    <mdb-badge v-show="row.Finish === false" style="padding: 2px 8px;" pill color="danger">{{$t('непроверенный')}}</mdb-badge>
-                  </td>
-                  <td v-show="admin" class="text-center">
-                      <i class="fas fa-trash delIcon mask waves-effect m-0 pl-2" v-on:click="deleteRow(row,rowIndex)" :data-row="rowIndex"></i>
-                  </td>
-                </tr>
-                <tr >
-                  <td> <span class="text-primary">Общий</span> </td>
-                  <td> <span ></span> </td>
-                  <td> <span ></span> </td>
-                  <td> <span class="text-primary">{{get_report_by_time_card_cash_bydoctorInfo.qty}}</span></td>
-                  <td>  </td>
-                  <td> <span class="text-danger">{{get_report_by_time_card_cash_bydoctorInfo.cash.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
-                  <td> <span class="text-danger">{{get_report_by_time_card_cash_bydoctorInfo.card.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
-                  <td></td>
-                  <td></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-  
-      </vue-html2pdf>
   
       <!-- <div :class="{'showing':show}">
         <div class="add d-flex justify-content-center align-items-center" >  
@@ -250,7 +332,7 @@
   </template>
   
   <script>
-    import VueHtml2pdf from 'vue-html2pdf'
+    // import VueHtml2pdf from 'vue-html2pdf'
     // import DatePicker from 'vue2-datepicker';
     // import RegSelect from '../../../components/RegSelect.vue'
     // import districtAdd from "../../../components/new_prog_add/district_add"
@@ -262,7 +344,7 @@
         mdbBtn,
         mdbModal, mdbModalHeader, mdbIcon, mdbModalBody, mdbModalFooter,
         mdbBadge, mdbInput,
-        VueHtml2pdf
+        
       },
       data(){
         return{
@@ -310,17 +392,18 @@
           this.loading = true;
           console.log(c)
           await this.fetch_report_by_data_time_by_doctorinfo(c)
+          // await this.fetch_payed_date_vozvrat_list_doc(c);
           this.get_payment_list = this.get_report_by_time_card_cash_bydoctorInfo.rows
           this.loading = false;
         }
   
           this.fetch_service_group()
       },
-      computed: mapGetters(['get_report_by_time_card_cash_bydoctorInfo', 'get_report_by_data_time', 'get_report_by_time_card_cash', 'get_service_group_list']),
+      computed: mapGetters(['get_report_by_time_card_cash_bydoctorInfo','get_report_operatsion_service', 'get_report_by_data_time',
+       'get_report_by_time_card_cash', 'get_service_group_list', 'get_payed_date_vozvrat_list_doc_service', 'get_payed_date_vozvrat_list_doc_operatsion']),
       methods: {
-        ...mapActions(['fetch_contragent', 'fetch_report_by_data_time_by_doctorinfo', 'fetch_service_group']),
+        ...mapActions(['fetch_contragent', 'fetch_report_by_data_time_by_doctorinfo', 'fetch_service_group', 'fetch_payed_date_vozvrat_list_doc']),
         ...mapMutations(['district_row_delete']),
-  
         add(){
           this.show =! this.show
           this.editData = {};
@@ -358,6 +441,7 @@
           a.time2 = this.End_time + 'T23:59:59.000Z';
           this.loading = true;
           await this.fetch_report_by_data_time_by_doctorinfo(a);
+          await this.fetch_payed_date_vozvrat_list_doc(a);
           this.get_payment_list = [];
           this.get_payment_list = this.get_report_by_time_card_cash_bydoctorInfo.rows
           this.loading = false;
@@ -462,5 +546,8 @@
         margin:0;
         padding:0;
     }
+}
+.summa_header_title{
+  border-bottom: 2px solid #00ace0;
 }
   </style>

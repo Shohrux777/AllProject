@@ -26,15 +26,16 @@ import MainLayout from "@/layouts/MainLayout"
         return (this.$route.meta.layout || 'empty') + '-layout'
       }
     },
-    mounted() {
-      let t_date = new Date().getDate();
-      let t_month = new Date().getMonth();
-      console.log('t_month')
-      console.log(t_month)
-      if(parseInt(t_date) >= 25 && parseInt(t_month)+1>=6){
-        this.unpayed = false;
-      }
-    },
+    // mounted() {
+    //   let t_date = new Date().getDate();
+    //   let t_month = new Date().getMonth();
+    //   console.log('t_month')
+    //   console.log(t_month)
+    //   if(parseInt(t_date) >= 2 && parseInt(t_month)+1>=4){
+    //     this.unpayed = false;
+    //   }
+    // },
+    
   }
 </script>
 <style lang="scss">

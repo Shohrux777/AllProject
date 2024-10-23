@@ -9,7 +9,7 @@
         @click ="update_down(index, link)"
         class=" d-flex pl-2 px-3 menuitem justify-content-between" style="font-size:12.5px; padding: 8px 0; "
         >
-        <span>{{link.name}}</span>
+        <span class="bron_room_name_text">{{link.name}}</span>
         <div>
           <span><span>{{ link.bed_bron_qty }}</span> <span>/</span> {{link.beds_count}}</span>
           <img src="../../assets/bed.png" class="ml-2" style="margin-right: -10px;" alt="" width="18px">
@@ -283,9 +283,12 @@
   display: flex;
 }
 .bronHospital .leftmenu{
-  width: 20%;
+  width: 22%;
+  height: calc(100vh - 46px);
   background: #f0f0f0;
   color: #00183f;
+  overflow: hidden;
+  overflow-y: scroll;
 }
 .bronHospital .mainmenu{
   width: 80%;
@@ -298,7 +301,7 @@
   
 }
 .bronHospital .mainmenu .shadowbackground{
-  min-height: 100vh;
+  min-height: calc(100vh - 46px);
   background: rgba(232, 232, 232, 0.75);
 }
 .leftmenu{
@@ -324,6 +327,7 @@
   background-image: radial-gradient( circle 400px at 6.8% 8.3%,  rgba(255,244,169,1) 0%, rgba(255,244,234,1) 100.2% );background-image: radial-gradient( circle farthest-corner at 10% 20%,  rgba(255,229,168,1) 0%, rgba(251,174,222,1) 100.7% );
   p{
     color: #1266F1;
+
   }
   .ico{
     color: #1266F1;
@@ -356,5 +360,11 @@
     height: 1px;
     background-image: linear-gradient( 102.4deg,  rgba(253,189,85,1) 7.8%, rgba(249,131,255,1) 100.3% );
   }
+}
+.bron_room_name_text{
+  text-overflow: ellipsis; 
+  overflow: hidden; 
+  white-space: nowrap;
+  width: 82%;
 }
 </style>

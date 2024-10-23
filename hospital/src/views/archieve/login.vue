@@ -74,6 +74,10 @@ export default {
     },
   async mounted(){
     this.$refs.loginINP.focus();
+    localStorage.oylik_user_id = null;
+    localStorage.cashbox_patient_data = {
+      id:0
+    };
     localStorage.cont_name = '';
     localStorage.client_id_Lab = null;
     localStorage.finish_serv_Lab = [];
@@ -90,7 +94,7 @@ export default {
     localStorage.docName = ""
     localStorage.Type = null;
     localStorage.docId = null;
-    localStorage.size_value = 1000000;
+    localStorage.size_value = 15;
     localStorage.numPage = 1
     localStorage.pageNum = 1
     localStorage.Items_count = 10
@@ -119,14 +123,14 @@ export default {
         const response = await fetch(this.$store.state.hostname + '/Authorization/checkuser?password=' + this.md + '&login=' + this.login)
         const data = await response.json()
         this.loading = false;
-        // console.log(data)
+        console.log(data)
         if(data.id != 0){
           localStorage.Login = data.login
           localStorage.AuthId = data.id
           localStorage.docId = data.users.id
           localStorage.docName = data.users.fio
           localStorage.Type = data.userType
-          localStorage.Image = data.users.image
+          // localStorage.Image = data.users.image
           if(data.userType == 1 || data.userType == 3){
             this.$router.push('/doctor')
           }

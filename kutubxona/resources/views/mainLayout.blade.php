@@ -51,7 +51,7 @@
                         <a href="https://www.facebook.com/profile.php?id=100087778332042" target="_blank" class="facebook"><i class="bx bxl-facebook" style="font-size:16px;"></i></a>
                         <a href="https://www.instagram.com/mirzachol_akm?r=nametag" target="_blank" class="instagram"><i class="bx bxl-instagram" style="font-size:16px;"></i></a>
                         <a href="https://t.me/MT_AKM" target="_blank" class="google-plus"><i class="bx bxl-telegram" style="font-size:16px;"></i></a>
-                        
+
                     </div>
                 </div>
             </div>
@@ -73,6 +73,8 @@
                 <div class="col-3 col-md-8 col-lg-9 col-xl-9 main_nav p-0">
                     <nav id="navbar" class="navbar">
                         <ul>
+                            <li ><a class="nav-link headerText scrollto active" href="/">E'lonlar</a></li>
+                            <li ><a class="nav-link headerText scrollto active" href="/">Yangiliklar</a></li>
                             <li ><a class="nav-link headerText scrollto active" href="/">Bosh sahifa</a></li>
                             <li class="dropdown"><a class="headerText" href="#">AKM haqida<i style="font-size: 9.5px;" class="bi bi-chevron-down"></i></a>
                                 <ul>
@@ -86,13 +88,13 @@
 
                             <li  class="dropdown"><a class="headerText" href="#">Bo'limlar <i style="font-size: 9.5px;" class="mt-1 bi bi-chevron-down"></i></a>
                                 <ul>
-                                <li><a class="headerDownText" 
+                                <li><a class="headerDownText"
                                 href="/info1">Abonement va foydalanuvchilarga xizmat ko‘rsatish xizmati</a></li>
-                                <li><a class="headerDownText" 
+                                <li><a class="headerDownText"
                                 href="/info2">Axborot-bibliografiya xizmati</a></li>
-                                <li><a class="headerDownText" 
+                                <li><a class="headerDownText"
                                 href="/fond1">Fondlarni to‘ldirish, saqlash ishlov berish xizmati</a></li>
-                                <li><a href="/komuni" 
+                                <li><a href="/komuni"
                                 >Axborot kommunikatsiya texnalogiyalari va raqamlashtirish xizmati</a></li>
                                 </ul>
                             </li>

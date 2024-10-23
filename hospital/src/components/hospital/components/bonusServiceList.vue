@@ -127,36 +127,6 @@ import addBonusToContragent from '../../../views/hospital/addBonusToCont'
   };
 </script>
 
-<style lang="scss">
-
-
-.add{
-  position: fixed;
-  background: rgba(0, 0, 0, 0.4);
-  height: 100vh;
-  top:0;
-  width:85%;
-  
-}
-
-.addxizmat{
-  width: 470px;
-  // height: 120px;
-  background: #fff;
-  position: relative;
-  z-index: 5000;
-}
-.showing{
-  display: none;
-}
-.wrap_chip{
-  box-shadow: 2px 2px 15px rgb(225, 225, 225), -1px -1px 5px rgb(224, 224, 224);
-  cursor: pointer;
-  &:hover{
-    // box-shadow: 2px 2px 10px rgb(193, 181, 251), -1px -1px 3px rgb(224, 224, 224);
-    // border-bottom: 1px solid green;
-    background-color: rgb(113, 222, 252);
-  }
-}
-
+<style lang="scss" scoped>
+  @import "../../../scss/tableAll.scss";
 </style>

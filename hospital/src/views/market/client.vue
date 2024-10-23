@@ -1,54 +1,35 @@
 <template>
   <div>
-    <div class="" >
-      <div class="bg-white p-2  mb-3 " style="border-radius:5px; position:relative;">
-        <div style="height: 60px;" class="d-flex justify-content-between border-bottom align-items-center  ">
-          <div class="title d-flex align-items-center">
-            <h5 class="m-0 ">{{$t('Client table')}}</h5>
+    <loader v-if="loading"/>
+    <div v-else class="m-0" >
+      <div class="bg-white p-2  mb-0 " style="border-radius:5px; position:relative;">
+        <div class="d-flex w-100">
+          <div class="  border_green w-50">
+            <p class="item_select_list text-center"><mdb-icon class="text-success" icon="user-check" /> Подключенный врач</p>
           </div>
-          <div class="plus">
-            <mdb-btn tag="a" @click="add" color="info py-2 px-4"   style="background-color: rgb(85, 172, 238); font-size:10px;">
-              <mdb-icon  icon="plus" class="mr-2"></mdb-icon>{{$t('add')}}
-            </mdb-btn>
+          <div class=" border_red w-50">
+            <p class="item_select_list text-center"><mdb-icon class="text-danger" icon="user-plus" /> Не подключенный врач</p>
           </div>
         </div>
-        <anyTable
-          :datasource="get_doctor_list_by_casher"
-          @for_edit="for_edit"
-          @for_delete="for_delete"
-          />
+        <div class="d-flex w-100">
+          <div class="selected_doctor border-right w-50">
+            <p class="item_select_list"> </p>
+            <p v-for="(user,i) in selected_doctor_list" :key="i" @click="for_delete(user,i)" class="item_select_list border-bottom">
+              <span class="mr-2 font-weight-bold">{{i+1}}.</span> 
+              {{user.fio}}
+            </p>
+          </div>
+          <div class="doctor_list w-50">
+            <p v-for="(item,i) in auth_doctor_list" :key="i" v-show="item.userType==1 || item.userType==3" 
+              class="item_select_list border-bottom" @click="getDoctor(item)">
+              <span class="mr-2 font-weight-bold">{{i+1}}.</span> 
+              {{item.users.fio}}({{item.userType}})
+            </p>
+          </div>
+        </div>
       </div>
     </div>
-    <!-- <div :class="{'showing':show}">
-      <div class="add d-flex justify-content-center align-items-center" >  
-        <ClientAdd/>
-      </div>
-    </div> -->
-      <!-- <mdb-modal  :show="show"  @close="show = false"  light>
-        <mdb-modal-header>
-          <mdb-modal-title style="font-weight:  500;">{{$t('Add Client')}}</mdb-modal-title>
-        </mdb-modal-header>
-        <mdb-modal-body>
-          <ClientAdd @close="show = false" :options="editData"/>
-        </mdb-modal-body>
-      </mdb-modal> -->
-      <ModalAddReg  :show="show" headerbackColor="success" closeColor="white" titlecolor="white" :title="$t('Choose_users')" @close="show = false" width="700px">
-        <template v-slot:body>
-          <div style="min-height: 300px;">
-            <div class="row">
-              <div class="col-4"  v-for="(item,i) in auth_user_list" :key="i" v-show="item.userType==1 || item.userType==3">
-                <div style="height: 45px; overflow: hidden; overflow-y: auto"  @click="getDoctor(item)" class="wrap_chip  border rounded d-flex my-2 px-3 text-center justify-content-center">
-                  <p class="my-1">{{item.users.fio}} ({{item.userType}}) </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="text-right">
-            <mdb-btn  color="danger" @click="show = false"  p="r4 l4 t2 b2" style="font-size:10px;">{{$t('close')}}</mdb-btn>  
-            <mdb-btn  color="primary"  p="r4 l4 t2 b2" style="font-size:10px;">{{$t('Send')}}</mdb-btn>  
-          </div>
-        </template>
-      </ModalAddReg>
+      
     <Toast ref="message"></Toast>
      <massage_box :hide="modal_status" :detail_info="modal_info"
       :m_text="$t('Failed_to_delete')" @to_hide_modal = "modal_status= false"/>
@@ -58,16 +39,12 @@
 
 <script>
   // import ClientAdd from "./client_add"
-  import ModalAddReg from '../../components/modal'
-  import anyTable from "../../components/market_add/clientTable"
-  import { mdbBtn,  mdbIcon,   } from 'mdbvue';
+  import { mdbIcon,} from 'mdbvue';
   import {mapActions, mapGetters, mapMutations} from 'vuex'
   export default {
     components: {
-      mdbBtn,
-    ModalAddReg,
       mdbIcon,
-      anyTable,
+      
       // ClientAdd
     },
     data(){
@@ -78,6 +55,9 @@
         modal_info : '',
         modal_status: false,
         loading: false,
+
+        selected_doctor_list: [],
+        auth_doctor_list:[],
       }
     },
     async mounted(){
@@ -93,23 +73,54 @@
         // this.$router.push('/m_client_add/'+ data.id)
         console.log(data)
       },
+      async refresh(){
+        console.log('refresh ishladi');
+        await this.fetch_auth_list();
+        this.synxronConnect();
+      },
+      async synxronConnect(){
+        this.auth_doctor_list = [];
+        console.log(this.get_doctor_list_by_casher.rows)
+        console.log(this.auth_user_list)
+        this.selected_doctor_list = this.get_doctor_list_by_casher.rows;
+        for(let i=0; i<this.auth_user_list.length; i++){
+          let s = 0;
+          for(let j=0; j<this.get_doctor_list_by_casher.rows.length; j++){
+            if(this.auth_user_list[i].id == this.get_doctor_list_by_casher.rows[j].DocAuthId){
+              s++;
+            }
+          }
+          if(s==0){
+            this.auth_doctor_list.push(this.auth_user_list[i])
+          }
+        }
+      },
       async getDoctor(option){
-        const requestOptions = {
-          method: "POST",
-          headers: { "Content-Type" : "application/json" },
-          body: JSON.stringify({
-            "registraterAuthId": localStorage.UserIDFor,
-            "doctorAuthId": option.id
-          })  
-        };
-        this.loading = true;
-        const response = await fetch(this.$store.state.hostname + "/HospitalRegistrationPermissionDoctors", requestOptions);
-        const data = await response.json();
-        this.fetch_get_doctor_list(localStorage.UserIDFor);
-
-        this.show = false;
-        console.log(data)
-        this.loading = false;
+        try{
+          const requestOptions = {
+            method: "POST",
+            headers: { "Content-Type" : "application/json" },
+            body: JSON.stringify({
+              "registraterAuthId": localStorage.UserIDFor,
+              "doctorAuthId": option.id
+            })  
+          };
+          this.loading = true;
+          const response = await fetch(this.$store.state.hostname + "/HospitalRegistrationPermissionDoctors", requestOptions);          
+          this.loading = false;
+          if(response.status == 200 || response.status == 201){
+            await this.fetch_get_doctor_list(localStorage.UserIDFor);
+            // await this.fetch_auth_list();
+            this.$refs.message.success('Added_successfully')
+            this.synxronConnect();
+          }
+          else{
+            this.$refs.message.warning('server_not_working')
+          }
+        }
+        catch{
+          this.$refs.message.warning('server_not_working')
+        }
         
       },
       async for_delete(del_data,index){
@@ -124,6 +135,7 @@
             // this.alert_text = localizeFilter('Successfully_removed');
             this.$refs.message.error('Successfully_removed')
             this.m_client_by_row_delete(index);
+            this.synxronConnect();
           }
           else{
             this.modal_info = data.detail + "    (" + data.routine + ")";
@@ -171,5 +183,31 @@
     background-color: rgb(113, 222, 252);
   }
 }
-
+.item_select_list{
+  padding: 6px 5px;
+  margin: 0;
+  font-size: 13.5px;
+  cursor:pointer;
+  color: rgb(74, 74, 74);
+  &:hover{
+    background-color: rgb(113, 222, 252);
+  }
+}
+.selected_doctor{
+  height: 70vh;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+.doctor_list{
+  height: 70vh;
+  overflow: hidden;
+  overflow-y: scroll;
+  padding-left: 10px;
+}
+.border_green{
+  border-bottom: 2px solid rgb(82, 255, 82);
+}
+.border_red{
+  border-bottom: 2px solid rgb(254, 92, 92);
+}
 </style>

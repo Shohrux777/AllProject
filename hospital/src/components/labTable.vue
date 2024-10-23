@@ -42,7 +42,7 @@
           </mdb-row>
 
       </div>
-      <table  class="myTable">
+      <table  class="myTableLab">
                 <thead class="bg-white" style="position:sticky; top:-7px; z-index: 0;">
                 <tr class="header ">
                     <th width="60">№</th>
@@ -421,7 +421,7 @@ export default {
   position: relative;
 }
 
-.myTable {
+.myTableLab {
   /* border-collapse: collapse; */
   table-layout:fixed;
   width: 100%;
@@ -429,32 +429,32 @@ export default {
   font-size: 18px;
   max-height:80px; overflow-x:auto
 }
-.myTable th{
+.myTableLab th{
   font-weight: 600;
-  font-size:12.5px;
+  font-size:12px;
 }
-.myTable td{
-  text-overflow: ellipsis; 
+.myTableLab td{
+  text-overflow: ellipsis;
   overflow: hidden; 
   white-space: nowrap;
-  font-size:13.4px;
+  font-size:12.5px;
 }
-.myTable th, .myTable td {
+.myTableLab th, .myTableLab td {
   text-align: left;
-  padding: 12px;
+  padding: 8px;
 }
 
-.myTable tr {
+.myTableLab tr {
   border-bottom: 1px solid rgb(240, 240, 240);
 }
 
-.myTable tr.header, .myTable tr:hover {
+.myTableLab tr.header, .myTableLab tr:hover {
   // background-color: #f1f1f1;
 }
 
 .editIcon{
   color:#01b348;
-  font-size: 13px;
+  font-size: 12px;
 
 }
 .editIcon:hover{
@@ -465,7 +465,7 @@ color: #000;
 color: #000;
 }
 .delIcon{color: rgb(251, 70, 70);
-  font-size: 13px;
+  font-size: 12px;
 
 }
 .delete{

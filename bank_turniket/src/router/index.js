@@ -27,6 +27,12 @@ const routes = [
     component: () => import( '../views/department/department.vue')
   },
   {
+    path: '/depart_connect_user',
+    name: 'depart_connect_user',
+    meta: { layout: 'main' },
+    component: () => import( '../views/department/depart_connect_user.vue')
+  },
+  {
     path: '/company',
     name: 'company',
     meta: { layout: 'main' },
@@ -111,16 +117,28 @@ const routes = [
     component: () => import( '../views/report/bytimeInOut.vue')
   },
   {
-    path: '/LaterUser',
-    name: 'LaterUser',
+    path: '/bytimeInOutOne',
+    name: 'bytimeInOutOne',
     meta: { layout: 'main' },
-    component: () => import( '../views/report/LaterUser.vue')
+    component: () => import( '../views/report/bytimeInOutOne.vue')
   },
   {
     path: '/salaryReportbytime',
     name: 'salaryReportbytime',
     meta: { layout: 'main' },
     component: () => import( '../views/report/salaryReportbytime.vue')
+  },
+  {
+    path: '/salaryReportbytimeNow',
+    name: 'salaryReportbytimeNow',
+    meta: { layout: 'main' },
+    component: () => import( '../views/report/salaryReportbytimeNow.vue')
+  },
+  {
+    path: '/qarovulxona_salary',
+    name: 'qarovulxona_salary',
+    meta: { layout: 'main' },
+    component: () => import( '../views/report/qarovulxona_salary.vue')
   },
   {
     path: '/notComeInReport',
@@ -151,6 +169,18 @@ const routes = [
     name: 'come_in_out',
     meta: { layout: 'main' },
     component: () => import( '../views/report/come_in_out.vue')
+  },
+  {
+    path: '/userAddRemoveDay',
+    name: 'userAddDay',
+    meta: { layout: 'main' },
+    component: () => import( '../views/rasxod/userAddDay.vue')
+  },
+  {
+    path: '/userRasxod',
+    name: 'userRasxod',
+    meta: { layout: 'main' },
+    component: () => import( '../views/rasxod/userRasxod.vue')
   },
 ]
 

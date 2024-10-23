@@ -6,7 +6,7 @@
       <mdb-input v-model="CardMoney" :label="$t('card')" size="md" outline type="number" />
       <mdb-input v-model="DebitMoney" :label="$t('debit')" size="md" outline type="number" />
     </div>
-    <div class="text-right">
+    <div class="text-right" v-if="show_btn">
       <div @click="payDivece()">
         <mdb-btn color="success"  p="r4 l4 t2 b2" style="font-size:10px;">{{$t('pay')}} </mdb-btn>  
       </div>
@@ -33,6 +33,7 @@ export default {
       CardMoney: null,
       database: [],
       DebitMoney: null,
+      show_btn: true,
     }
   },
   computed: mapGetters(['get_code_patient']),
@@ -41,6 +42,7 @@ export default {
     ...mapMutations([ 'Update_check_data', 'updateDebit', 'UpdatecheckInfo']),
     ...mapActions(['fetch_unpayed_patient', 'fetch_get_code']),
     async payDivece(){
+        this.show_btn = false;
         if( this.CashMoney == null){
             this.CashMoney = 0;
           }
@@ -62,13 +64,14 @@ export default {
         console.log(this.option)
         if(checkSum != this.option || checkSum == 0){
           this.$refs.message.error('deffirent_sum')
+          this.show_btn = true;
         }
         else{
-          const respon = await fetch(this.$store.state.hostname + '/Payments/payPaymentsAllCardAndCashAndDolg?PatientId=' + this.patient + '&card_summ=' + this.CardMoney + '&cash_sum=' + this.CashMoney + '&dolg_sum=' + this.DebitMoney)
+          const respon = await fetch(this.$store.state.hostname + '/Payments/payPaymentsAllCardAndCashAndDolg?PatientId=' + this.patient + '&card_summ=' + this.CardMoney + '&cash_sum=' + this.CashMoney + '&dolg_sum=' + this.DebitMoney + '&payed_auth_id=' + localStorage.AuthId)
           const data = await respon.json()
           console.log('shuni kur')
           console.log(data)
-          
+          this.show_btn = true;
           if(data[0].id){
             await this.fetch_get_code(data[0].patientsId)
             this.UpdatecheckInfo({check:data[0].patientsId, cash: this.CashMoney, card: this.CardMoney, code: this.get_code_patient})
@@ -78,8 +81,10 @@ export default {
             this.ServicePayId = 0;
             await this.fetch_unpayed_patient();
             this.$emit('close');
+            this.show_btn = true;
           }
           else{
+            this.show_btn = true;
             this.$refs.message.error('deffirent_sum')
           }
         }

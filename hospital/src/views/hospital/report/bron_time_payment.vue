@@ -23,14 +23,24 @@
                 </div>
               </div>
             </div>
-            <div class="plus">
+            <div class="plus d-flex">
               <mdb-btn type="submit" color="primary py-2 px-4" style="font-size:10px;"  >
                 {{$t('apply')}}
               </mdb-btn>
               <mdb-btn @click="print" color="info py-2 px-4"  style="font-size:10px;" >
                 {{$t('print')}}
               </mdb-btn>
-              
+              <div>
+                <download-excel
+                  :data = "get_payment_payed_history_excel"
+                  :fields = "json_fields"
+                  name="Стационар.xls">
+                  <mdb-btn color="info py-2 px-4"  style="font-size:10px;" >
+                    <mdb-icon icon="file-excel" class="mr-1"></mdb-icon>
+                    Excel
+                  </mdb-btn>
+                </download-excel>
+              </div>
             </div>
           </div>
         </form>
@@ -77,99 +87,82 @@
               <tr class="header ">
                 <th  width="40" class="text-left">№</th>
                 <th width="200">{{$t('patient_name')}}</th>
+                <th width="200">{{$t('doctor_name')}}</th>
                 <th>{{$t('Room')}}</th>
+                <th>День</th>
                 <th>{{$t('cash')}}</th>
                 <th>{{$t('card')}}</th>
-             
+                <th>Деньги на еду</th>
+                <th>Осталь. денег</th>
+                <th>Возврат</th>
+                <th>Неоплачено</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row,rowIndex) in get_payment_list" :key="rowIndex">
+              <tr v-for="(row,rowIndex) in get_payment_list" :key="rowIndex" :class="{'alert-danger' : row.vozvrat_sum}">
                 <td> <span >{{rowIndex+1}}</span> </td>
                 <td><span>{{ row.hospitalBronRoomPayments.reserved_name_1 }}</span></td>
+                <td><span>{{ row.hospitalBronRoomPayments.reserved_name_3 }}</span></td>
                 <td><span>{{ row.hospitalBronRoomPayments.reserved_name_2 }}</span></td>
-                <td><span>{{ row.cash_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span></td>
-                <td><span>{{ row.card_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span></td>
+                <td><span>{{ row.hospitalBronRoomPayments.reserved_number_1 }}</span></td>
+                <td class="alert-success"><span>{{ row.cash_sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span></td>
+                <td class="alert-success"><span>{{ row.card_sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span></td>
+                <td>
+                  <span>{{ row.ovqat_puli.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
+                </td>
+                <td>
+                  <span>{{ row.qolgan_pul.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
+                </td>
+                <td>
+                  <span v-if="row.vozvrat_sum == null">---</span>
+                  <span v-else class="font-weight-bold text-secondary">{{ row.vozvrat_sum }}</span>
+                </td>
+                <td><span class="font-weight-bold text-danger">{{ row.hospitalBronRoomPayments.need_payed_summ }}</span></td>
               </tr>
               <tr >
                 <td> <span class="text-primary">Общий</span> </td>
-                <!-- <td> <span ></span> </td> -->
+                <td> <span ></span> </td>
+                <td> <span ></span> </td>
                 <td> <span class="text-primary"></span></td>
-                <td> <span class="text-danger">{{(card+cash).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
-
-                <td> <span class="text-danger">{{cash.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
-                <td> <span class="text-danger">{{card.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
-
+                <td> <span class="text-primary">{{(card+cash).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                <td class="alert-success"> <span class="text-primary font-weight-bold">{{cash.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                <td class="alert-success"> <span class="text-primary font-weight-bold">{{card.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                <td> <span class="text-primary">{{get_bron_cash_card.ovqat_puli.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                <td> <span class="text-primary">{{get_bron_cash_card.qolgan_pul.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                <td> <span class="text-secondary font-weight-bold">{{get_bron_cash_card.vozvrat_sum.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+                <td> <span class="text-danger font-weight-bold">{{get_bron_cash_card.need_payed_summ.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="p-3">
+          <table>
+            <tbody>
+              <tr class="py-3 border-bottom">
+                <td><span class="text-primary">Общий сумма: </span></td>
+                <td><span class="text-primary pl-4">{{(card+cash).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} сум</span></td>
+              </tr>
+              <tr class="py-3 border-bottom">
+                <td><span class="text-primary">Возврат: </span></td>
+                <td><span class="text-primary pl-4">{{get_bron_cash_card.vozvrat_sum.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} сум</span></td>
+              </tr>
+              <tr class="py-3 border-bottom">
+                <td><span class="text-primary">Деньги на еду: </span></td>
+                <td><span class="text-primary pl-4">{{get_bron_cash_card.ovqat_puli.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} сум</span></td>
+              </tr>
+              <tr class="py-3 border-bottom">
+                <td><span class="text-primary">Осталь. денег: </span></td>
+                <td><span class="text-primary pl-4">{{get_bron_cash_card.qolgan_pul.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} сум</span></td>
+              </tr>
+              <tr class="py-3 border-bottom">
+                <td><span class="text-primary">Долг: </span></td>
+                <td><span class="text-primary pl-4">{{get_bron_cash_card.need_payed_summ.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} сум</span></td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
-
-     <vue-html2pdf ref='listlar'
-        :show-layout="false"
-        :float-layout="true"
-        :enable-download="false"
-        :preview-modal="true"
-        :paginate-elements-by-height="1600"
-        filename="hee hee"
-        :pdf-quality="2"
-        :manual-pagination="false"
-        pdf-format="a4"
-        pdf-orientation="landscape"
-        pdf-content-width="100%"
-        @hasStartedGeneration="hasStartedGeneration()"
-        @hasGenerated="hasGenerated($event)"
-      >
-      <div slot="pdf-content">
-       <div class="TablePatientDocId p-3">
-          <table class="myTable">
-            <thead>
-              <tr class="header ">
-                <th >{{$t('patient_name')}}</th>
-                <th >{{$t('contragent_name')}}</th>
-                <th>{{$t('service_name')}}</th>
-                <th width="100">{{$t('service_price')}}</th>
-                <th width="120">{{$t('paymentInCash')}}</th>
-                <th width="120">{{$t('paymentInCard')}}</th>
-                <th width="100">{{$t('payed')}}</th>
-                <th width="150">{{$t('finish')}}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(row,rowIndex) in get_payment_list" :key="rowIndex">
-                <td> <span >{{row.patient_name}}</span></td>
-                <td> <span >{{row.contragent_name}}</span></td>
-                <td> <span >{{row.service_name}}</span></td>
-                <td> <span >{{row.service_price}}</span></td>
-                <td> <span >{{row.paymentInCash}}</span></td>
-                <td> <span >{{row.paymentInCard}}</span></td>
-                <td>
-                  <span v-show="row.payed === true" style="padding: 2px 8px;" pill color="success">{{$t("payed")}}</span>
-                  <span v-show="row.payed === false" style="padding: 2px 8px;" pill color="danger">{{$t('unpayed')}}</span>
-                </td>
-                <td>
-                  <span v-show="row.finish === true" style="padding: 2px 8px;" pill color="success">{{$t("проверил")}}</span>
-                  <span v-show="row.finish === false" style="padding: 2px 8px;" pill color="danger">{{$t('непроверенный')}}</span>
-                </td>
-              </tr>
-              <tr>
-                <td> <span class="text-primary">Общий</span> </td>
-                <td> <span ></span> </td>
-                <td> <span class="text-primary">{{qty}}</span></td>
-                <td> <span class="text-danger">{{summ}}</span> </td>
-                <td> <span class="text-danger">{{cash}}</span> </td>
-                <td> <span class="text-danger">{{card}}</span> </td>
-                <td></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </vue-html2pdf>
 
     <!-- <div :class="{'showing':show}">
       <div class="add d-flex justify-content-center align-items-center" >  
@@ -204,7 +197,7 @@
 </template>
 
 <script>
-  import VueHtml2pdf from 'vue-html2pdf'
+  // import VueHtml2pdf from 'vue-html2pdf'
   // import DatePicker from 'vue2-datepicker';
   // import districtAdd from "../../../components/new_prog_add/district_add"
   import { mdbBtn, mdbInput, mdbIcon,  mdbModal, mdbModalHeader,  mdbModalBody,mdbModalFooter   } from 'mdbvue';
@@ -214,8 +207,7 @@
     components: {
       mdbBtn,
       mdbModal, mdbModalHeader, mdbIcon, mdbModalBody, mdbModalFooter,
-       mdbInput,
-      VueHtml2pdf
+      mdbInput,
     },
     data(){
       return{
@@ -241,6 +233,12 @@
         card: 0,
         cash: 0,
         discount_qty: 0,
+        json_fields: {
+          'Имя пациента': 'hospitalBronRoomPayments.reserved_name_1',
+          'Имя врача': 'hospitalBronRoomPayments.reserved_name_3',
+          'День': 'hospitalBronRoomPayments.reserved_number_1',
+          'Сумма': 'summ',
+        },  
       }
     },
     async mounted(){
@@ -252,7 +250,7 @@
         this.Start_time = time1.toISOString().slice(0,10); 
         this.End_time = time1.toISOString().slice(0,10);
         let a = this.Start_time + 'T00:00:35.000Z' ;
-        let b = this.End_time + 'T23:59:59.000Z';
+        let b = this.End_time + 'T23:59:50.000Z';
         let c = {
           time1: '',
           time2: '',
@@ -260,7 +258,8 @@
         c.time1 = a;
         c.time2 = b;
         this.loading = true;
-        await this.fetch_report_by_bron_payed(c)
+        await this.fetch_report_by_bron_payed(c);
+        await this.fetch_report_by_bron_payed_excel(c);
         this.get_payment_list = this.get_payment_payed_history
         this.qty = this.get_bron_cash_card.qty
         this.summ = this.get_bron_cash_card.cash + this.get_bron_cash_card.card;
@@ -272,9 +271,10 @@
 
         this.fetch_service_group()
     },
-    computed: mapGetters(['get_contragent_list', 'get_report_by_data_time', 'get_report_by_time_card_cash', 'get_payment_payed_history', 'get_bron_cash_card']),
+    computed: mapGetters(['get_contragent_list', 'get_report_by_data_time', 'get_report_by_time_card_cash',
+     'get_payment_payed_history', 'get_bron_cash_card', 'get_payment_payed_history_excel']),
     methods: {
-      ...mapActions(['fetch_contragent', 'fetch_report_by_bron_payed', 'fetch_service_group']),
+      ...mapActions(['fetch_contragent', 'fetch_report_by_bron_payed', 'fetch_service_group', 'fetch_report_by_bron_payed_excel']),
       ...mapMutations(['district_row_delete']),
 
       add(){
@@ -282,7 +282,7 @@
         this.editData = {};
       },
       print(){
-        this.$refs.listlar.generatePdf()
+        window.print();
       },
       deleteRow(data, index){
         console.log(data)
@@ -309,10 +309,16 @@
           time1: "2021-09-01T09:15:28.886Z",
           time2: new Date(),
         }
+        console.log('this.Start_time')
+        console.log(this.Start_time)
+        console.log(this.End_time)
         a.time1 = this.Start_time + 'T00:00:35.000Z';
-        a.time2 = this.End_time + 'T23:59:59.000Z';
+        a.time2 = this.End_time + 'T23:59:50.000Z';
         this.loading = true;
         await this.fetch_report_by_bron_payed(a);
+        await this.fetch_report_by_bron_payed_excel(a);
+        console.log('this.get_payment_payed_history')
+        console.log(this.get_payment_payed_history)
         this.get_payment_list = [];
           this.get_payment_list = this.get_payment_payed_history
           this.qty = this.get_bron_cash_card.qty
@@ -328,90 +334,6 @@
   };
 </script>
 
-<style lang="scss">
-
-
-.add{
-  position: fixed;
-  background: rgba(0, 0, 0, 0.4);
-  height: 100vh;
-  top:0;
-  width:85%;
-}
-
-.addxizmat{
-  width: 470px;
-  // height: 120px;
-  background: #fff;
-  position: relative;
-  z-index: 5000;
-}
-.showing{
-  display: none;
-}
-.timePicer{
-  position: relative;
-  margin-top: -10px;
-  .timeLabel{
-    position: absolute;
-    font-size: 12px;
-    background-color: #fff;
-    padding: 1px 3px;
-    z-index: 1;
-    left: 6px;
-    top: -1px;
-  }
-  .dayLabel{
-    position: absolute;
-    font-size: 12px;
-    background-color: #fff;
-    padding: 0px 3px;
-    z-index: 1;
-    left: 6px;
-    top: -8px;
-  }
-}
-  .myTable {
-  /* border-collapse: collapse; */
-  table-layout:fixed;
-  width: 100%;
-  overflow: hidden;
-  // border: 1px solid #ddd;
-  font-size: 18px;
-  max-height:80px; overflow-x:auto
-}
-.myTable th{
-  font-weight: 600;
-  font-size:12px;
-}
-.myTable td{
-  font-size:13px;
-}
-.myTable th, .myTable td {
-  text-align: left;
-  padding: 10px;
-}
-
-.myTable tr {
-  border-bottom: 1px solid rgb(240, 240, 240);
-}
-.delIcon{
-  color: rgb(251, 70, 70);
-  font-size: 13px;
-}
-.borderSolder{
-  border: 0.5px dashed #D0D3D8;
-
-  span{
-      color:#67676C;
-      font-size: 22px;
-  }
-  p{
-      color:#525255;
-      font-weight:bold;
-      font-size: 24px;
-      margin:0;
-      padding:0;
-  }
-}
-</style>
+ <style lang="scss" scoped>
+    @import "../../../scss/tableAll.scss";
+  </style>

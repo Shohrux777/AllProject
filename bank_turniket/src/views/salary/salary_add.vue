@@ -20,6 +20,11 @@
       <!-- <MDBIcon icon="exclamation-circle" class="trailing"></MDBIcon> -->
     </MDBInput>
 
+    <div class="d-flex my-3">
+      <MDBRadio label="Почасовая" value="1" v-model="radio2" inline name="inlineRadioOptions" />
+      <MDBRadio label="Дневная" class="ml-5" value="2" v-model="radio2" inline name="inlineRadioOptions" />
+    </div>
+
     <div>
       <MDBModalFooter>
         <MDBBtn style="font-size: 11px;" @click="$emit('close')" color="secondary" >Close</MDBBtn>
@@ -32,13 +37,21 @@
 <script>
 import { MDBInput, MDBIcon, MDBModalFooter, MDBBtn } from "mdb-vue-ui-kit";
 import {mapActions, mapGetters} from 'vuex'
-
+import { MDBRadio } from 'mdb-vue-ui-kit';
+import { ref } from 'vue';
 export default {
+  setup() {
+      const radio2 = ref('1');
+      return {
+        radio2,
+      };
+    },
   components: {
       MDBInput,
       MDBIcon,
       MDBModalFooter,
-      MDBBtn
+      MDBBtn,
+      MDBRadio
     },
     data(){
       return{
@@ -53,6 +66,7 @@ export default {
         money: null,
         subdept_name: '',
         subdept_id: null,
+        work_type: 0,
       }
     },
     computed: mapGetters(['get_salary_list']),
@@ -60,7 +74,7 @@ export default {
       this.id = this.select_data.id;
       this.name = this.select_data.name;
       this.money = this.select_data.value;
-
+      this.radio2 = this.select_data.reserved_value;
     },
     props:{
         select_data:{
@@ -84,7 +98,8 @@ export default {
           body: JSON.stringify({
             "id": this.id,
             "name" : this.name,
-            "value": this.money
+            "value": this.money,
+            "reserved_value": parseInt(this.radio2),
             })
           };
           const response = await fetch(this.$store.state.hostname + "/SkudOyliks", requestOptions);

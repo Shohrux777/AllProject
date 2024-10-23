@@ -6,42 +6,57 @@
         <form @submit.prevent="submit">
           <div style="height: 60px;" class="d-flex justify-content-between border-bottom align-items-center  ">
             <div class="title w-75 row align-items-center">
-              <!-- <div class="col-4">
-                <lineSelect
-                  :options="get_contragent_list.rows"
-                  :searchshow="true"
-                  @select="selectcontragent"
-                  :selected="contragent_name"
-                  :label="$t('contragent')"
-                />
-                <div class="col-12">
-                  <small v-if="$v.contragent_name.$dirty && contragent_id == null" class="invalid-text pt-4" >
-                      {{$t('select_item')}}
-                    </small>
-                </div>
-              </div> -->
-              <div class="col-4">
-                <mdb-input type="text" v-model="search" size="sm" :label="$t('search_here')" outline></mdb-input>
+              <div class="col-4 m-0 pr-0">
+                <mdb-input type="text" v-model="search" @input="submit" size="sm" :label="$t('search_here')" outline></mdb-input>
               </div>
-              <!-- <div class="col-4">
-                <mdb-input type="number" v-model="price" size="sm" :label="$t('price')" outline></mdb-input>
-                <small class="invalid-text"  v-if="$v.price.$dirty && !$v.price.required" >
-                  {{$t('name_invalid_text')}}
-                </small>
-              </div> -->
+              <div class="col-1 m-0 pl-0">
+                <mdb-btn type="submit" color="primary py-2 px-4"  style="font-size:10px;" >
+                  {{$t('search')}}
+                </mdb-btn>
+              </div>
             </div>
             <div class="plus">
-              <mdb-btn type="submit" color="primary py-2 px-4"  style="font-size:10px;" >
-                {{$t('search')}}
+              <mdb-btn @click="$router.back()" color="primary py-2 px-4"  style="font-size:10px;" >
+                {{$t('back')}}
               </mdb-btn>
             </div>
           </div>
         </form>
+        <div class="newTableDebit">
+          <div class="TablePatientDocId p-3">
+            <table class="myTabledebit">
+              <thead>
+                <tr class="header ">
+                  <th  width="40" class="text-left">№</th>
+                  <th width="200">{{$t('patient_name')}}</th>
+                  <th >{{$t('id')}}</th>
+                  <th>{{$t('phone')}}</th>
+                  <th>{{$t('debit')}}</th>
+                  <th  width="160">{{$t('Action')}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(row,rowIndex) in filteredList" :key="rowIndex">
+                  <td> <small style="font-size: 12.5px;">{{rowIndex+1}}</small> </td>
+                  <td> <small style="font-size: 12.5px;">{{row.fio}}</small> </td>
+                  <td> <small style="font-size: 12.5px;">{{row.patient_id}}</small> </td>
+                  <td> <small style="font-size: 12.5px;">{{row.phone}}</small> </td>
+                  <td> <small style="font-size: 12.5px;" class="text-danger">{{row.dolg.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small> </td>
+                  <td  class="text-center d-flex align-items-center">
+                      <i class="fas fa-eye  mask waves-effect m-0 mr-2 pl-2 text-warning" v-on:click="showPatientIdDebitPayment(row.patient_id)" :data-row="rowIndex"></i>
+                      <mdb-btn @click="payedDebitPayment(row)" color="primary py-1 px-3"  style="font-size:10px;" >
+                        {{$t('pay')}}
+                      </mdb-btn>
+                  </td>
+                </tr>
+                
+              </tbody>
+            </table>
+          </div>
+        </div>
         <div class="TablePatientDocIds p-1 m-0">
           <anyTable
           :datasource="m_contragent"
-          @page="page"
-          @size="size"
           @pay="pay_debit"
           @showed = "showed"
           :debit="debit"
@@ -50,46 +65,72 @@
       </div>
     </div>
 
-     <vue-html2pdf ref='listlar'
-        :show-layout="false"
-        :float-layout="true"
-        :enable-download="false"
-        :preview-modal="true"
-        :paginate-elements-by-height="1600"
-        filename="hee hee"
-        :pdf-quality="2"
-        :manual-pagination="false"
-        pdf-format="a4"
-        pdf-orientation="landscape"
-        pdf-content-width="100%"
-        @hasStartedGeneration="hasStartedGeneration()"
-        @hasGenerated="hasGenerated($event)"
-      >
-      <div slot="pdf-content">
-        <anyTable
-          :datasource="m_contragent"
-          @page="page"
-          @size="size"
-          @pay="pay_debit"
-          :debit="debit"
-          />
-      </div>
-
-    </vue-html2pdf>
 
     <!-- <div :class="{'showing':show}">
       <div class="add d-flex justify-content-center align-items-center" >  
         <districtAdd/>
       </div>
     </div> -->
-      <mdb-modal  :show="show"  @close="show = false"  light>
+      <mdb-modal  :show="pay_debit_show"  @close="pay_debit_show = false" size="md"  light>
         <mdb-modal-header>
-          <mdb-modal-title style="font-weight:  500;">{{$t('Добавить Район')}}</mdb-modal-title>
+          <mdb-modal-title style="font-weight:  500;">Долг платить</mdb-modal-title>
         </mdb-modal-header>
         <mdb-modal-body>
-          <districtAdd :options="editData"/>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-12 text-center">
+                <span class="text-primary" style="font-size: 22px;">{{ dolg_info_patient.fio }}</span>
+              </div>
+              <div class="col-12 text-center mb-2" v-if="dolg_info_patient.dolg">
+                <span class="text-danger" style="font-size: 18px;">{{ dolg_info_patient.dolg.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
+              </div>
+              <div class="col-12">
+                <mdb-input type="number" class="m-0 p-0" v-model="debit_pay_cash" size="md" :label="$t('cash')" outline></mdb-input>
+              </div>
+              <div class="col-12 mt-3">
+                <mdb-input type="number" class="m-0 p-0" v-model="debit_pay_card" size="md" :label="$t('card')" outline></mdb-input>
+              </div>
+              <div class="col-12 mt-2 pt-1 text-right border-top">
+                <mdb-btn @click="payedDebit_summa" color="success py-2 px-5"  style="font-size:10px;" >
+                  {{$t('pay')}}
+                </mdb-btn>  
+              </div>
+            </div>
+          </div>
         </mdb-modal-body>
       </mdb-modal>
+      
+      <ModalUser  :show="show" headerbackColor="danger" closeColor="white" titlecolor="white" 
+        :title="$t('debit')" @close="show = false" width="80%">
+        <template v-slot:body>
+          <div class="TablePatientDocId p-3">
+            <table class="myTabledebit">
+              <thead>
+                <tr class="header ">
+                  <th  width="40" class="text-left">№</th>
+                  <th width="200">{{$t('patient_name')}}</th>
+                  <th >{{$t('service_name')}}</th>
+                  <th >{{$t('doctor_name')}}</th>
+                  <th >{{$t('summa')}}</th>
+                  <th>{{$t('payed')}}</th>
+                  <th>{{$t('debit')}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(row,rowIndex) in debit_list_patient_id" :key="rowIndex">
+                  <td> <small style="font-size: 12.5px;">{{rowIndex+1}}</small> </td>
+                  <td> <small style="font-size: 12.5px;">{{row.patient_name}}</small> </td>
+                  <td> <small style="font-size: 12.5px;">{{row.service_name}}</small> </td>
+                  <td> <small style="font-size: 12.5px;">{{row.payments.discount_card_qty}}</small> </td>
+                  <td> <small style="font-size: 12.5px;">{{row.payments.Summ}}</small> </td>
+                  <td> <small style="font-size: 12.5px;">{{row.payments.PaymentInCash + row.payments.PaymentInCard}}</small> </td>
+                  <td> <small style="font-size: 12.5px;" class="text-danger">{{row.payments.dolg_summ}}</small> </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </template>
+      </ModalUser>
        <ModalUser  :show="debit_show" headerbackColor="success" closeColor="white" titlecolor="white" 
         :title="$t('debit')" @close="debit_show = false" width="500px">
         <template v-slot:body>
@@ -104,14 +145,13 @@
 </template>
 
 <script>
-  import VueHtml2pdf from 'vue-html2pdf'
   import anyTable from "../../components/ContragentTable"
 import { required } from 'vuelidate/lib/validators'
 import debit from "./payedDebit.vue";
 import ModalUser from '../../components/modal.vue'
 
   // import lineSelect from "../../components/lineSelect.vue";
-  import districtAdd from "../../components/new_prog_add/district_add"
+  // import districtAdd from "../../components/new_prog_add/district_add"
   import { mdbBtn, mdbInput,  mdbModal, mdbModalHeader,  mdbModalTitle, mdbModalBody,   } from 'mdbvue';
   import {mapActions, mapGetters, mapMutations} from 'vuex'
   // import 'vue2-datepicker/index.css';
@@ -119,8 +159,7 @@ import ModalUser from '../../components/modal.vue'
     components: {
       mdbBtn,
       mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, 
-      districtAdd,
-      VueHtml2pdf, mdbInput,anyTable, ModalUser, debit
+      mdbInput,anyTable, ModalUser, debit
     },
     data(){
       return{
@@ -151,6 +190,12 @@ import ModalUser from '../../components/modal.vue'
           columns: ['patient_name', 'real_qty', 'created_date_time'],
           col : []
         },
+        debit_new_list: [],
+        debit_list_patient_id: [],
+        pay_debit_show: false,
+        debit_pay_cash: 0,
+        debit_pay_card: 0,
+        dolg_info_patient: {},
       }
     },
     validations: {
@@ -159,26 +204,88 @@ import ModalUser from '../../components/modal.vue'
     },
     async mounted(){
       this.refresh();
+      await this.newRefresh();
       if(localStorage.AuthId === 0){
         this.showen_Auth = true
         console.log(localStorage.Auth)
       } 
-      // console.log('date')
-      // console.log(this.End_time.toISOString())
-      // let time2 = this.End_time.toISOString()
-      //   let a = {
-      //     time1: "2021-09-01T09:15:28.886Z",
-      //     time2: null,
-      //     contId: 0
-      //   }
-      //   a.time2 = time2
-        // this.fetch_report_by_data_time(a)
         this.fetch_contragent()
     },
-    computed: mapGetters(['get_contragent_list', 'get_report_by_data_time', 'get_report_by_time_card_cash','get_pagination']),
+    computed: {
+      ...mapGetters(['get_contragent_list', 'get_report_by_data_time', 
+        'get_report_by_time_card_cash','get_pagination']),
+      filteredList: function () {
+      if (this.search) {
+        return this.debit_new_list.filter((item) => {
+          return this.search.toLowerCase().split(' ').every(v => item.fio.toLowerCase().includes(v))
+        })
+      } else {
+        return this.debit_new_list
+      }
+    }
+    },
     methods: {
       ...mapActions(['fetch_contragent', 'fetch_report_by_data_time']),
       ...mapMutations(['district_row_delete', 'update_pagination_first']),
+      async showPatientIdDebitPayment(id){
+        try{
+          const res = await fetch(this.$store.state.hostname + '/HospitalPatientDolgPaymentInfoes/getPaginationByPatientId?page=0&size=100&patient_id=' + id);
+          const res_data = await res.json();
+          console.log('res_data_patient_id_list')
+          console.log(res_data.items_list)
+          this.debit_list_patient_id = res_data.items_list;
+          this.show = true;
+        }
+        catch{
+          console.log('server error')
+        }
+      },
+      async payedDebitPayment(data){
+        this.dolg_info_patient = data;
+        this.pay_debit_show = true;
+      },
+      async payedDebit_summa(){
+        if(this.debit_pay_cash == null || this.debit_pay_cash == ''){
+          this.debit_pay_cash = 0;
+        }
+        if(this.debit_pay_card == null || this.debit_pay_card == ''){
+          this.debit_pay_card = 0;
+        }
+        if((parseInt(this.debit_pay_cash) + parseInt(this.debit_pay_card))>parseInt(this.dolg_info_patient.dolg) || (parseInt(this.debit_pay_cash) + parseInt(this.debit_pay_card)) == 0){
+          console.log('return')
+          return;
+        }
+        else{
+          try{
+            const respon = await fetch(this.$store.state.hostname + '/HospitalPatientDolgPaymentInfoes/getPaginationByPatientIdQarzdorlikTolash?page=0&size=1000&patient_id=' + this.dolg_info_patient.patient_id + '&cash=' + this.debit_pay_cash + '&card=' + this.debit_pay_card)
+            const data = await respon.json()
+            if(respon.status == 200 || respon.status == 201){
+              console.log(data)
+              this.pay_debit_show = false;
+              await this.newRefresh();
+              this.search = '1';
+              this.search = '';
+              this.debit_pay_card = 0;
+              this.debit_pay_cash = 0;
+            }
+          }
+          catch(error){
+            console.log(error)
+          }
+        }
+      },
+      async newRefresh(){
+        try{
+          const res = await fetch(this.$store.state.hostname + '/HospitalPatientDolgPaymentInfoes/getPaginationQarzdorlik?page=0&size=1000');
+          const res_data = await res.json();
+          console.log('res_data')
+          console.log(res_data.items_list)
+          this.debit_new_list = res_data.items_list;
+        }
+        catch{
+          console.log('server error')
+        }
+      },
       cls_wnd(){
         this.price =  null;
         this.reason =  '';
@@ -189,24 +296,19 @@ import ModalUser from '../../components/modal.vue'
         this.debit_show = false;
         await this.$router.push('/checkDebit')
         this.$root.$refs.checkDebit.printed()
-
-
       },
-      page(){
-      this.refresh();
-      },
-      size(){
-        this.refresh();
-      },
+      
       async refresh(){
-        const res = await fetch(this.$store.state.hostname + '/HospitalPatientDolg/getPagination?page=' + this.get_pagination.page + '&size=' + this.get_pagination.size);
+        const res = await fetch(this.$store.state.hostname + '/HospitalPatientDolg/getPagination?page=0&size=1000');
         const res_data = await res.json();
-        console.log('res_data')
+        console.log('res_data_old_dolg')
+        this.m_contragent.rows = [];
         console.log(res_data)
-
-
-        this.update_pagination_first({current_item_count: res_data.current_item_count, current_page: res_data.current_page+1, items_count: res_data.items_count});
-        this.m_contragent.rows = res_data.items_list;
+        for(let i=0; i<res_data.items_list.length; i++){
+          if(new Date(res_data.items_list[i].created_date_time) < new Date('2023-09-24T17:16:08.157324')){
+            this.m_contragent.rows.push(res_data.items_list[i]);
+          }
+        }
         this.loading = false;
       },
       pay_debit(option){
@@ -258,7 +360,13 @@ import ModalUser from '../../components/modal.vue'
             this.loading = false;
             console.log(data)
             if(data.items_count){
-              this.m_contragent.rows = data.items_list;
+              this.m_contragent.rows = [];
+              console.log(data)
+              for(let i=0; i<data.items_list.length; i++){
+                if(new Date(data.items_list[i].created_date_time) < new Date('2023-09-24T17:16:08.157324')){
+                  this.m_contragent.rows.push(data.items_list[i]);
+                }
+              }
               this.$refs.message.success('Added_successfully')
             }
             else{
@@ -284,85 +392,6 @@ import ModalUser from '../../components/modal.vue'
   };
 </script>
 
-<style lang="scss">
-
-
-.add{
-  position: fixed;
-  background: rgba(0, 0, 0, 0.4);
-  height: 100vh;
-  top:0;
-  width:85%;
-}
-
-.addxizmat{
-  width: 470px;
-  // height: 120px;
-  background: #fff;
-  position: relative;
-  z-index: 5000;
-}
-.showing{
-  display: none;
-}
-.timePicer{
-  position: relative;
-  margin-top: -10px;
-  .timeLabel{
-    position: absolute;
-    font-size: 12px;
-    background-color: #fff;
-    padding: 1px 3px;
-    z-index: 1;
-    left: 6px;
-    top: -1px;
-  }
-  .dayLabel{
-    position: absolute;
-    font-size: 12px;
-    background-color: #fff;
-    padding: 0px 3px;
-    z-index: 1;
-    left: 6px;
-    top: -8px;
-  }
-}
-.TablePatientDocIds{
-    // height: 400px;
-    // overflow: hidden;
-    // overflow-y: auto;
-    // border: 1px solid #ddd;
-  }
-  .myTable {
-  /* border-collapse: collapse; */
-  table-layout:fixed;
-  width: 100%;
-  overflow: hidden;
-  // border: 1px solid #ddd;
-  font-size: 18px;
-  max-height:80px; overflow-x:auto
-}
-.myTable th{
-  font-weight: 600;
-  font-size:12px;
-}
-.myTable td{
-  font-size:13px;
-}
-.myTable th, .myTable td {
-  text-align: left;
-  padding: 10px;
-}
-
-.myTable tr {
-  border-bottom: 1px solid rgb(240, 240, 240);
-}
-
-.myTable tr.header, .myTable tr:hover {
-  // background-color: #f1f1f1;
-}
-.delIcon{
-  color: rgb(251, 70, 70);
-  font-size: 13px;
-}
+<style scoped>
+@import "../../scss/tableAll.scss";
 </style>

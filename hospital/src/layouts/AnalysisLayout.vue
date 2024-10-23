@@ -6,7 +6,7 @@
         <div class="" v-for="(item,i) in get_lab_main_list" :key="i+100" @click="chooseFunc(item.id, item)">
           <!-- :class="{'active_link_dynamic': link.view}" -->
           <div
-          class="text-dark  d-flex py-2 menuitem border-bottom" :class="{'active_link_dynamic': item.id == lab_main_id}"
+          class="text-dark  d-flex py-2 menuitem_dynamic border-bottom" :class="{'active_link_dynamic': item.id == lab_main_id}"
 
           >
           <!-- <MDBIcon style="color: red; margin-right: 10px; padding-left: 15px;" icon="camera-retro" />
@@ -24,7 +24,7 @@
           :to="link.url" 
           :class="{'active_link_dynamic': index == itter && lab_main_id == null}"
           
-          class="text-dark d-flex py-2 menuitem border-bottom"
+          class="text-dark d-flex py-2 menuitem_dynamic border-bottom"
           >
           <!-- <MDBIcon style="color: red; margin-right: 10px; padding-left: 15px;" icon="camera-retro" />
           Xodimlar -->
@@ -40,7 +40,7 @@
           <router-link
           tag="li" custom v-slot="{ navigate }"
           to="/Laboratoriya_add" 
-          class="text-dark d-flex py-2 menuitem border-bottom bg-success"
+          class="text-dark d-flex py-2 menuitem_dynamic border-bottom bg-success"
           >
          <li @click="navigate" role="link">
              <div style="width:100%; text-align:left">
@@ -109,9 +109,7 @@
         this.$router.push('/laboratory_list/' + this.get_lab_main_list[0].id)
       }
       else{
-        // this.show_lab_add = localStorage.labBack;
-        // console.log('this.$route.fullPath')
-        // console.log(this.pathLab)
+       
         for(let i=0; i<this.get_lab_main_list.length; i++){
           if(this.get_lab_main_list[i].id == this.router_id){
             this.lab_main_id = this.get_lab_main_list[i].id;
@@ -127,7 +125,6 @@
           return
         }
       }
-      
     },
     computed: mapGetters(['get_lab_main_list']),
     methods: {
@@ -201,7 +198,7 @@
     color: #1266F1;
   }
 }
-.menuitem:hover{
+.menuitem_dynamic:hover{
   background: rgba(113, 184, 255, 0.2);
   p{
     color: #1266F1;

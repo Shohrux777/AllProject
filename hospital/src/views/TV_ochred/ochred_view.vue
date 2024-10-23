@@ -2,12 +2,12 @@
   <div class="ochred_views bg_warning">
     <div class="bg_shadow p-4 ">
       <div class="row ">
-        <div class="col-6 mt-4" v-for="(item, i) in getList" :key="i">
+        <div class="col-4 mt-4" v-for="(item, i) in getList" :key="i">
           <div class="border shadow rounded bg-white">
             <div class="border-bottom d-flex justify-content-center py-2">
               <h3 class="m-0 text-center" style="font-size: 45px;">{{item.users.FIO}}</h3>
             </div>
-            <div class=" d-flex justify-content-center">
+            <div class="d-flex justify-content-center">
               <h1 class="font-weight-bold text-success mb-0 mt-1" style="font-size:65px;">{{item.ochred_list[0].ochred_name_aout_genereted}}</h1>
             </div>
             <div class=" d-flex justify-content-center">
@@ -38,7 +38,7 @@ async mounted() {
   await this.fetchOchred();
 },
 created() {
-  setInterval(this.fetchOchred, 10000);
+  setInterval(this.fetchOchred, 2000);
 },
 methods: {
   async fetchOchred(){

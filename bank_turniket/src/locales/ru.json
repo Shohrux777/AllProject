@@ -49,6 +49,7 @@
   "vaqt": "Время",
   "salary": "Зарплата",
   "connect_user_salary": "Зарплата подк. польз.",
+  "otdel_connect": "Отдел подк. польз.",
   "userconnect_grafik": "График подк. польз.",
   "value": "Зарплата",
   "action": "Действие",
@@ -70,6 +71,13 @@
   "come_in_out": "Отчет пользователь",
   "comeinout": "Сутствующих",
   "unlock": "Разблокировать",
-  "later_come": "Опоздавшие"
+  "report_user_one": "Первый ввод",
+  "reserved_value": "Тип работы",
+  "report_qarovul": "Отчет охранника",
+  "day_add": "Добавить ден",
+  "note": "Примечание",
+  "user_add_remove_day_list": "Пользователь добавляет и удаляет рабочий день",
+  "userAddRemoveDay": "Добавляет рабочий день",
+  "userRasxod": "Расходь"
 	
 }

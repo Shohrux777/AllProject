@@ -1,0 +1,134 @@
+.applied{
+    pointer-events: none;
+    background:#fcfcfc;
+  }
+  .smallFont{
+    font-weight: 400 !important;
+    font-size: 12.5px;
+  }
+  .d_table{
+    position: relative;
+  }
+  
+  .myTableUser {
+    /* border-collapse: collapse; */
+    table-layout:fixed;
+    width: 100%;
+    // border: 1px solid #ddd;
+    font-size: 18px;
+    max-height:80px; overflow-x:auto
+  }
+  .myTableUser th{
+    font-weight: 600;
+    font-size:12px;
+  }
+  .myTableUser td{
+    text-overflow: ellipsis; 
+    overflow: hidden; 
+    white-space: nowrap;
+    font-size:12.5px;
+  }
+  .myTableUser th, .myTableUser td {
+    text-align: left;
+    padding: 10px;
+  }
+  
+  .myTableUser tr {
+    border-bottom: 1px solid rgb(240, 240, 240);
+  }
+  
+  .myTableUser tr:hover {
+    background-color: #effaff;
+  }
+  .myTableUser tr.header{
+    padding: 0px !important;
+  }
+  .editIcon{
+    color:#01b348;
+    font-size: 13px;
+  
+  }
+  .editIcon:hover{
+  color: #000;
+  }
+  
+  .delIcon:hover{
+  color: #000;
+  }
+  .delIcon{color: rgb(251, 70, 70);
+    font-size: 13px;
+  
+  }
+  .delete{
+    
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    top:0;
+    animation: logo 0.2s linear;
+    z-index:111111;
+    left:0;
+    width:100%;
+    height:100vh;
+    background:rgba(0, 0, 0, 0.5);
+    .delete_form{
+      background: white;
+      border-radius: 5px;
+      // box-shadow: 0 0 3px rgb(121, 121, 121);
+      max-height: 135px;
+      width: 420px;
+      transform: translate(0, 20px);
+      animation: anime 0.2s linear;
+      p{
+        padding: 0px 35px;
+      }
+      .delete_btn{
+        text-align: right;
+        button{
+          border-radius: 5px;
+          padding: 3px 20px;
+        }
+      }
+    }
+  }
+  @keyframes anime
+  {
+    0%{
+      transform: translate(0, -130px);
+      opacity: 0;
+    }
+    100%{
+      transform: translate(0, 20px);
+      opacity: 1;
+    }
+  }
+  @keyframes logo
+  {
+    0%{
+      opacity: 0;
+    }
+    100%{
+      opacity: 1;
+    }
+  }
+  // true and false background
+  .span_bg{
+    border-radius: 3px;
+    font-family: roboto, sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 1px 5px;
+    box-shadow: 1px 2px 7px rgb(191, 191, 191);
+  }
+  .multiselect__tag {
+      min-height: calc(1.5em + .75rem + 2px);
+      display: block;
+      padding: 0 40px 0 8px;
+      border-radius: 5px;
+      border: 1px solid #e8e8e8;
+      background: #fff;
+      font-size: 12px;
+  }
+  .fioWidth{
+    width:300px !important;
+  }

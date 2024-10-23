@@ -2,7 +2,7 @@ export default {
     state: {
         salary_list: {
             rows: [],
-            columns: [ 'id','name', 'value'],
+            columns: [ 'id','name', 'value', 'reserved_value'],
             col: []
         },
     },
