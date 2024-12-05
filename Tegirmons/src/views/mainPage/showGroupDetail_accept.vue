@@ -116,13 +116,12 @@
               class="bg-white font-weight-bold px-2 py-0"
               >{{ $t("reason") }}</small>
           </div>
-          
           <div class="col-6 mt-1">
             <div class="text-right">
               <mdb-btn  v-show="false" @click="sendZaxira(item,indexRow)" color="success" m="r2" style="font-size: 8.5px"
                 p="r4 l4 t2 b2"> <mdb-icon fas class="mr-1"  icon="share-square"></mdb-icon>  {{$t('zaxira')}}
               </mdb-btn>
-              <mdb-btn :disabled="item.zaxira_qty == item.qty" v-show="item.ruyxat_id>0"  @click="changingAdd(item,indexRow)" color="info" m="r2" style="font-size: 8.5px"
+              <mdb-btn :disabled="item.zaxira_qty == item.qty" v-show="item.ruyxat_id>0 && (item.kassa_id == kassa_id || item.summ == 0)"  @click="changingAdd(item,indexRow)" color="info" m="r2" style="font-size: 8.5px"
                 p="r3 l3 t2 b2"> <mdb-icon fas class="mr-2"  icon="sync"></mdb-icon>  {{$t('changing')}}
               </mdb-btn>
             </div>
@@ -299,12 +298,13 @@
         :m_text="$t('Failed_to_add')" @to_hide_modal="modal_status= false"/>
 
       <Toast ref="message"></Toast>
+      <Alert ref="alert"></Alert> 
     </div>
  </div>
 </template>
 
 <script>
-import checkgroup from '../sell/checkgroup'
+import checkgroup from '../sell/checkgroup.vue'
 import changeProduct from './changeComponent.vue'
 import erpSelectFio from "../../components/erpSelectFioSearchRow.vue";
 import erpSelect from "../../components/erpSelectRow.vue";
@@ -333,6 +333,7 @@ export default {
       change_unit_qty: 0,
       group_data: {},
       zaxiraInvoiceList: [],
+      kassa_id : localStorage.kassa_id,
     }
   },
   async created()
@@ -355,9 +356,9 @@ export default {
   async mounted(){
     // await this.fetchClient();
   },
-  computed: mapGetters([ 'allClient', 'all_product_t']),
+  computed: mapGetters([ 'allClient', 'all_product_t', 'user_kassa_list']),
   methods: {
-    ...mapActions(['fetchClient', 'fetch_product_t']),
+    ...mapActions(['fetchClient', 'fetch_product_t', 'fetchKassa_userId']),
     ...mapMutations(['getAllCheck', 'zaxiragaUtkazishList']),
     async fetchZaxiraList(){
       this.zaxiraInvoiceList = [];
@@ -449,12 +450,16 @@ export default {
           invoice_note: 0,
           kassir: '',
           date: '',
+          kassa_id: -1,
         }
         if(data[i].invoice.note == null || data[i].invoice.note == ''){
           info.invoice_note = 0;
         }
         else{
           info.invoice_note = parseFloat(data[i].invoice.note)
+        }
+        if(data[i].invoice.kassa_id){
+          info.kassa_id = data[i].invoice.kassa_id;
         }
         info.date = this.group_data.updated_date_time;
         info.group_note = data[i].note;
@@ -586,7 +591,6 @@ export default {
     async GetChangeProduct(option){
       this.change_unit_qty = 0;
       this.change_pro = false;
-      this.invoice_list[option.index].changeProduct = option.data;
       let summ_all = 0;
       let item_list_change = [];
       let skidkaItem = 0;
@@ -611,6 +615,26 @@ export default {
         }
         summ_all += parseFloat(option.data[i].summ)
       }
+
+      // agar pulli amalyot bajarilsa kassa biriktirilgan yoki yuqligini tekshiradi ==>
+      if(summ_all>0){
+        await this.fetchKassa_userId(localStorage.user_id);
+        if(this.user_kassa_list.length){
+          localStorage.kassa_id = this.user_kassa_list[0].id;
+          localStorage.kassa_num = this.user_kassa_list[0].num_1;
+        }
+        else{
+          this.$refs.alert.error('Bu foydalanuvchi kassaga biriktirilmagan, unda savdo qilish huquqi yuq !');
+          localStorage.kassa_id = 0;
+          localStorage.kassa_num = 0;
+          item_list_change = [];
+          // this.invoice_list[option.index].changeProduct = [];
+          this.loading = false;
+          return;
+        }
+      }
+      this.invoice_list[option.index].changeProduct = option.data;
+      // agar pulli amalyot bajarilsa kassa biriktirilgan yoki yuqligini tekshiradi <==
       const requestOptions = {
         method : "POST",
         headers: { "Content-Type" : "application/json" },
@@ -623,7 +647,8 @@ export default {
           "note": this.change_unit_qty,
           "tegirmonAuthid": localStorage.AuthId,
           "user_name": localStorage.user_name,
-          "image_str_url": skidkaItem
+          "image_str_url": skidkaItem,
+          "kassa_id": localStorage.kassa_id
         })
       };
       try{
@@ -722,7 +747,9 @@ export default {
       }
     },
     async sendAll(){
-      // this.getAllCheck(this.invoice_list)
+      this.getAllCheck(this.invoice_list);
+
+      
       this.checkShow = true;
     },
     closeAllGroup(){

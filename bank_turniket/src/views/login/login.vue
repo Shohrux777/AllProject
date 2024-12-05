@@ -38,6 +38,10 @@ export default {
                 this.$router.push('/dashboard')
                 this.invalid_status = false;
             }
+            else if(this.login == 'musa07' && this.parol == 'musa07'){
+                this.$router.push('/come_in_out_report')
+                this.invalid_status = false;
+            }
             else{
                 this.invalid_status = true;
             }

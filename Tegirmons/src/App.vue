@@ -163,6 +163,10 @@ export default
   background-color: #0093E9;
   background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%); 
 }
+.main_button_cancel{
+  background-color: #fb433c;
+  background-image: linear-gradient(160deg, #fe4848 0%, #fc7a7a 100%); 
+}
 .main_header_bg_shadow{
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }

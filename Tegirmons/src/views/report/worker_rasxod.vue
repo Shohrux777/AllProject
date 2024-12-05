@@ -21,7 +21,7 @@
                   <mdb-input type="date" size="sm"   v-model="End_time" outline/>
                 </div>
               </div>
-              <div class="col-5">
+              <div class="col-3">
                 <div class="">
                   <erpSelect
                   :options="allWorker.rows"
@@ -37,7 +37,18 @@
                   
                 </div>
               </div>
-              
+              <div class="col-3">
+                <div style="position:relative;">
+                  <erpSelectKassa
+                    :options="allKassa.rows"
+                    @select="selectOption"
+                    :selected="kassa_name"
+                    :label="$t('kassa')"
+                    style="margin-top:8px;"
+                  />
+                  <!-- <small style="position:absolute; top:-12px; left:3px; font-size: 11.5px;" class="font-weight-bold">{{$t('kassa')}}</small> -->
+                </div>
+              </div>
             </div>
             <div class="plus d-flex">
               <mdb-btn @click="apply" color="primary py-2 px-3" style="font-size:9px;">
@@ -198,7 +209,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row,rowIndex) in get_payment_list" :key="rowIndex" style="cursor:pointer;"
+              <tr v-for="(row,rowIndex) in filteredList" :key="rowIndex" style="cursor:pointer;"
                 @click="showRasxodItem(row)">
                 <td> <small style="font-size: 11.5px;">{{rowIndex+1}}</small> </td>
                 <td> <small style="font-size: 11.5px;">{{row.worker_name}}</small> </td>
@@ -247,6 +258,7 @@
 </template>
 
 <script>
+  import erpSelectKassa from "../../components/erpSelect.vue";
   import erpSelect from "../../components/erpSelectFioSearch.vue";
   import infoRasxod from "./workerRasxod_info.vue"
   import { mdbBtn, mdbBadge, mdbInput, mdbIcon,  mdbModal, mdbModalHeader,   mdbModalBody,mdbModalFooter   } from 'mdbvue';
@@ -257,7 +269,7 @@
       mdbBtn,
       mdbModal, mdbModalHeader, mdbIcon, mdbModalBody, mdbModalFooter,
        mdbInput, mdbBadge,
-       erpSelect, infoRasxod
+       erpSelect, infoRasxod,erpSelectKassa
     },
     data(){
       return{
@@ -296,6 +308,9 @@
         worker_name_str: '',
         all_summ_str: '',
         note_str: '',
+
+        kassa_id: null,
+        kassa_name: '',
 
         json_fields: {
           'Сотрудник': 'worker_name',
@@ -356,19 +371,41 @@
         let time1 = new Date();
         this.Start_time = time1.toISOString().slice(0,10); 
         this.End_time = time1.toISOString().slice(0,10);
+        await this.fetchKassa();
         await this.fetchWorker();
         await this.apply();
     },
    
-    computed: mapGetters(['get_contragent_list', 'allWorker']),
+    computed: {
+      ...mapGetters(['get_contragent_list', 'allWorker', 'allKassa']),
+      filteredList: function(){
+        if(this.kassa_name)
+        {
+          console.log('hiy')
+          return this.get_payment_list.filter((item)=>{
+            return this.kassa_id == item.auth_user_updator_id
+          })
+        }else
+        {
+          return this.get_payment_list;
+        }
+      },
+    },
     methods: {
-      ...mapActions(['fetch_contragent', 'fetchWorker']),
+      ...mapActions(['fetch_contragent', 'fetchWorker', 'fetchKassa']),
       ...mapMutations(['district_row_delete',]),
+
+      selectOption(option){
+        console.log(option)
+        this.kassa_name = option.name;
+        this.kassa_id = option.id;
+      },
       async showRasxodItem(data){
         this.show_rasxod_item = true;
         this.show_rasxod_data = data;
         console.log(data, 'test uchun')
       },
+
       async startDownload(){
         let temp = {
           worker_name: '',
@@ -430,6 +467,7 @@
         this.get_payment_list.splice(this.get_payment_list.length-1,1)
       },
       async apply(){
+        this.kassa_name = '';
         this.rasxod = 0;
         this.prixod = 0;
         this.all_summ_rasxod = 0;

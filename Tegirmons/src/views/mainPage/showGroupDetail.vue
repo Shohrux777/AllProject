@@ -251,12 +251,13 @@
         :m_text="$t('Failed_to_add')" @to_hide_modal="modal_status= false"/>
 
       <Toast ref="message"></Toast>
+      <Alert ref="alert"></Alert> 
     </div>
  </div>
 </template>
 
 <script>
-import checkgroup from '../sell/checkgroup'
+import checkgroup from '../sell/checkgroup.vue'
 import changeProduct from './changeComponent.vue'
 import erpSelectFio from "../../components/erpSelectFioSearchRow.vue";
 import erpSelect from "../../components/erpSelectRow.vue";
@@ -304,9 +305,9 @@ export default {
   async mounted(){
     // await this.fetchClient();
   },
-  computed: mapGetters([ 'allClient', 'all_product_t']),
+  computed: mapGetters([ 'allClient', 'all_product_t', 'user_kassa_list']),
   methods: {
-    ...mapActions(['fetchClient', 'fetch_product_t']),
+    ...mapActions(['fetchClient', 'fetch_product_t', 'fetchKassa_userId']),
     ...mapMutations(['getAllCheck', 'zaxiragaUtkazishList']),
     async fetch_group_data(){
       try{
@@ -366,6 +367,7 @@ export default {
           invoice_note: 0,
           kassir: '',
           date: '',
+          kassa_id: -1,
         }
         if(data[i].invoice.note == null || data[i].invoice.note == ''){
           info.invoice_note = 0;
@@ -373,6 +375,9 @@ export default {
         else{
           info.invoice_note = parseFloat(data[i].invoice.note)
         }
+        if(data[i].invoice.kassa_id){
+          info.kassa_id = data[i].invoice.kassa_id;
+        } 
         info.date = data[i].invoice.updated_date_time;
         info.group_note = data[i].note;
         info.group_detail_id = data[i].id;
@@ -503,9 +508,8 @@ export default {
     async GetChangeProduct(option){
       console.log('option test nima kelayabdi ekan')
       console.log(option)
+      
       this.change_unit_qty = 0;
-      this.change_pro = false;
-      this.invoice_list[option.index].changeProduct = option.data;
       let summ_all = 0;
       let item_list_change = [];
       let skidkaItem = 0;
@@ -530,6 +534,31 @@ export default {
         }
         summ_all += parseFloat(option.data[i].summ)
       }
+
+      // agar pulli amalyot bajarilsa kassa biriktirilgan yoki yuqligini tekshiradi ==>
+      if(summ_all>0){
+        await this.fetchKassa_userId(localStorage.user_id);
+        if(this.user_kassa_list.length){
+          localStorage.kassa_id = this.user_kassa_list[0].id;
+          localStorage.kassa_num = this.user_kassa_list[0].num_1;
+          this.invoice_list[option.index].kassa_id = this.user_kassa_list[0].id;
+        }
+        else{
+          this.$refs.alert.error('Bu foydalanuvchi kassaga biriktirilmagan, unda savdo qilish huquqi yuq !');
+          localStorage.kassa_id = 0;
+          localStorage.kassa_num = 0;
+          item_list_change = [];
+          this.change_pro = false;
+          // this.invoice_list[option.index].changeProduct = [];
+          this.loading = false;
+          return;
+        }
+      }
+      this.invoice_list[option.index].changeProduct = option.data;
+      // agar pulli amalyot bajarilsa kassa biriktirilgan yoki yuqligini tekshiradi <==
+      this.change_pro = false;
+
+
       const requestOptions = {
         method : "POST",
         headers: { "Content-Type" : "application/json" },
@@ -542,7 +571,8 @@ export default {
           "note": this.change_unit_qty,
           "tegirmonAuthid": localStorage.AuthId,
           "user_name": localStorage.user_name,
-          "image_str_url": skidkaItem
+          "image_str_url": skidkaItem,
+          "kassa_id": localStorage.kassa_id
         })
       };
       try{
@@ -656,6 +686,8 @@ export default {
       }
     },
     async sendAll(){
+      console.log('this.invoice_list')
+      console.log(this.invoice_list)
       for(let i=0; i<this.invoice_list.length; i++){
         let ostatka_measure = this.invoice_list[i].qty - (this.invoice_list[i].check_qty + this.invoice_list[i].zaxira_qty)
         if(ostatka_measure >= 1){
@@ -663,12 +695,69 @@ export default {
           this.modal_status = true;
           return;
         }
+        if(this.invoice_list[i].kassa_id == -1 && this.invoice_list[i].summ > 0){
+          await this.fetchKassa_userId(localStorage.user_id);
+          if(this.user_kassa_list.length){
+            localStorage.kassa_id = this.user_kassa_list[0].id;
+            localStorage.kassa_num = this.user_kassa_list[0].num_1;
+            this.invoice_list[i].kassa_id = this.user_kassa_list[0].id;
+          }
+          else{
+            this.$refs.alert.error('Bu foydalanuvchi kassaga biriktirilmagan, unda savdo qilish huquqi yuq !');
+            localStorage.kassa_id = 0;
+            localStorage.kassa_num = 0;
+            return;
+          }
+          await this.fetchUpdateInvoice(this.invoice_list[i], i);
+        }
       }
+      // return;
       this.getAllCheck(this.invoice_list)
       await this.groupUpdateMeasure();
       this.checkShow = true;
       console.clear();
     },
+    async fetchUpdateInvoice(Inv_data, index){
+      console.log('Inv_data');
+      console.log(Inv_data);
+      const requestOptions = {
+        method : "POST",
+        headers: { "Content-Type" : "application/json" },
+        body: JSON.stringify({
+          "qty_real": Inv_data.qty,
+          "tegirmonProductid": Inv_data.product_id,
+          "id": Inv_data.invoice_id,
+          "summ": Inv_data.summ,
+          "note": Inv_data.invoice_note,
+          "tegirmonAuthid": localStorage.AuthId,
+          "user_name": localStorage.user_name,
+          "image_str_url": Inv_data.skidka,
+          "kassa_id": localStorage.kassa_id
+        })
+      };
+      try{
+        this.loading = true;
+        const response = await fetch(this.$store.state.hostname + "/TegirmonInvoice/addChangeBugdoyProductsWithoutRegistartion", requestOptions);
+        this.loading = false;
+        if(response.status == 201 || response.status == 200)
+        { 
+          const dataInvoice = await response.json()
+          this.invoice_list[index].invoice_id = dataInvoice.id;
+        }
+        else{
+          const data = await response.text();
+          this.modal_info = data;
+          this.modal_status = true;
+          // return false;
+        }
+      }
+      catch{
+        this.loading = false;
+        this.modal_info = this.$i18n.t('network_ne_connect');
+        this.modal_status = true;
+      }
+    },
+    
     async groupUpdateMeasure(){
       const requestOptions = {
         method : "POST",

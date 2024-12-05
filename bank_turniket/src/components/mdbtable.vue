@@ -30,7 +30,9 @@
                         <MDBBadge v-if="row[column] == 1" badge="success" pill class="d-inline">Почасовая</MDBBadge>
                         <MDBBadge v-if="row[column] == 2" badge="warning" pill class="d-inline">Дневная</MDBBadge>
                     </span>
-
+                    <span v-else-if="column == 'value'">
+                        {{row[column].toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                    </span>
                     <span v-else>{{ row[column]}}</span>
                 </td>
             </tr>

@@ -12,21 +12,38 @@
       </div>
       
       <div class="d-flex">
-        <div class="">
-          <h5 class="m-0 px-2 mr-4 d-flex align-items-center text-danger" @click="funcCloseCash" 
-            style="padding: 7px 0px; font-size: 12px; font-weight: bold; border-bottom: 1px solid red; cursor:pointer;">
+        <mdb-btn @click="$router.push('/savdo_all_kassa_info')" v-if="kassa_setting_show" color="indigo py-1 px-3" style="font-size:9px;">
+          <mdb-icon style="font-size:9px;" icon="calendar" class="m-0 p-0 mr-1" />
+          Sotuv kassa
+        </mdb-btn>
+        <mdb-btn @click="show_kassa_setting()" v-if="kassa_setting_show" color="secondary py-1 px-3" style="font-size:9px;">
+          <mdb-icon style="font-size:9px;" icon="wrench" class="m-0 p-0 mr-1" />
+          Kassaga xodimlarni ulash
+        </mdb-btn>
+        <mdb-btn @click="show_send_savdo_kassa()"  color="info py-1 px-3" style="font-size:9px;">
+          <mdb-icon style="font-size:9px;" icon="share-square" class="m-0 p-0 mr-1" />
+          Asosiy kassaga pul utkazish
+        </mdb-btn>
+        <div class="" v-if="kassa_info_show">
+          <mdb-btn @click="funcKassaInfo"  color="danger py-1 px-3 mr-2" style="font-size:9px;">
+            <mdb-icon style="font-size:9px;" icon="calendar" class="m-0 p-0 mr-1" />
             {{$t('closeCash')}}
-          </h5>
+          </mdb-btn>
         </div>
+        
         <div style="position:relative;" class="userLog">
-          <h5 class="m-0 px-0 d-flex align-items-center text-warning" style="padding: 7px 0px; font-size: 12px; font-weight: bold;">
+          <h5 class="m-0 px-2 d-flex align-items-center text-primary" 
+            style="padding: 10px 0px 0 0; font-size: 11px; font-weight: bold; cursor:pointer;">
             {{kassir}}
           </h5> 
-          <div style="position:absolute; top:28px; left:15px; cursor:pointer;" class="border w-100 logout "  >
+          <div style="position:absolute; top:28px; left:15px; cursor:pointer; font-size: 12px;" class="border w-100 logout "  >
             <p @click="logout" class="p-0 m-0 py-1 ml-2">{{$t('logout')}}</p>
           </div>
         </div>
-        
+        <div class="kassa_num_user" :style="{background: colors[kassa_num] || '#ff5733'}">
+          <small v-if="kassa_num == 0"> {{kassir[0]}}</small>
+          <small v-else> {{kassa_num}}</small>
+        </div>
       </div>
     </div>
     <div class="allPage w-100" >
@@ -104,7 +121,6 @@
                 v-on:keyup.13 = "EnterArrowItem"
                 v-on:keyup.38 = "ArrowUp1"
                 v-on:keyup.40 = "ArrowDown1"
-                
               >
             </div>
 
@@ -211,11 +227,11 @@
                 <img src="../../assets/uzum.png" style="width:38%;" alt="">
               </div>
             </div>
-            <div class="text-center linkMain" style="padding: 9.2px 0; margin-top: 2px;" @click="pulOlibQolishChiqarNarsa">
-              <span class="m-0 p-0 " >{{$t('pul_olish')}}</span>
+            <div class="text-center linkMain" style="padding: 9.2px 0; margin-top: 2px;">
+              <span class="m-0 p-0 " >...</span>
             </div>
-            <div class="text-center linkMain" style="padding: 9.2px 0; margin-top: 2px;" @click="rasxodClick">
-              <span class="m-0 p-0 " >{{$t('rasxod')}}</span>
+            <div class="text-center linkMain" style="padding: 9.2px 0; margin-top: 2px;">
+              <span class="m-0 p-0">...</span>
             </div>
             <!-- <div class="text-center mt-1  linkMainDang" style="padding: 9.2px 0;" @click="clearSavat">
               <span class="m-0 p-0 " >{{$t('clear_cash')}}</span>
@@ -229,11 +245,20 @@
             <mdb-btn color="mdb-color" style="font-size:11px; padding: 12px 0;" @click="humoPay" class="m-0  mt-1 w-100" > {{'humo'}}</mdb-btn>
             <mdb-btn color="indigo" style="font-size:11px; padding: 12px 0;" @click="onlinePay" class="m-0  mt-1 w-100" > {{'Перечисления'}}</mdb-btn>
             <mdb-btn color="warning" style="font-size:11px; padding: 12px 0;" @click="clickPay" class="m-0  mt-1 w-100"> {{$t('dollor')}}</mdb-btn>
-            <mdb-btn style="font-size:11px; padding: 12px 0;" color="deep-orange" @click="returnMoney"  class="m-0  mt-1 w-100"> {{$t('return')}}</mdb-btn>
+            <mdb-btn style="font-size:11px; padding: 12px 0;" color="deep-orange" @click="plastikPay"  class="m-0  mt-1 w-100"> Пластик</mdb-btn>
+          </div>
+        </div>
+        <div class="d-flex" v-on:click.capture="focusBarcode">
+          <div class="w-100">
+            <div class="text-center linkMainPrixod" style="padding: 9.2px 0; margin-top: 2px;" @click="pulOlibQolishChiqarNarsa">
+              <span class="m-0 p-0 " >{{$t('pul_olish')}}</span>
+            </div>
+            <div class="text-center linkMainRasxod" style="padding: 9.2px 0; margin-top: 2px;" @click="rasxodClick">
+              <span class="m-0 p-0">{{$t('rasxod')}}</span>
+            </div>
           </div>
         </div>
       </div>
-
     </div>
 
     <div class="addProductQtyAccept" v-show="showAccept" v-on:click.self="closeChoosenProduct">
@@ -309,14 +334,14 @@
 
     
   </div>
-  <modal-train  :show="rasxod_show" headerbackColor="danger"  titlecolor="black" :title="$t('rasxod')" 
+  <modal-train  :show="rasxod_show" headerbackColor="#fc4640"  titlecolor="black" :title="$t('rasxod')" 
     @close="rasxod_show = false" width="60%">
       <template v-slot:body>
         <rasxod @close="rasxod_show = false" ref="rasxodWorkerSum">
         </rasxod>
       </template>
   </modal-train>
-  <modal-train  :show="pul_olib_qolish" headerbackColor="success"  titlecolor="black" :title="$t('pul_olish')" 
+  <modal-train  :show="pul_olib_qolish" headerbackColor="#33d95f"  titlecolor="black" :title="$t('pul_olish')" 
     @close="pul_olib_qolish = false" width="60%">
       <template v-slot:body>
         <chiqarPulOlish @close="pul_olib_qolish = false" ref="prixodWorkerSum">
@@ -325,15 +350,31 @@
   </modal-train>
   <pay v-show="payshow"  @close="closePay" 
     :summaString="AllSummString[get_page_savat]" 
-    :summa="get_all_summa[get_page_savat]" @print="printChek()"/>
+    :summa_default="get_all_summa[get_page_savat]" @print="printChek()"/>
 
-    <close-cash v-show="closeCash"  @close="closeKassa" />
+    <kassa_info v-show="closeCash" ref="kassa_info_ref"  @close="closeKassa" />
+
     <checkshow v-if="checkshow" @close="checkShow"/>
 
+    <modal-train  :show="send_kassa_status" headerbackColor="info"  titlecolor="black" title="Savdo kassaga pul o'tkazish" 
+      @close="send_kassa_status = false" width="30%">
+        <template v-slot:body>
+          <send-main-kassa @close="closeSendKassa" ref="savdo_kassa_send">
+          </send-main-kassa>
+        </template>
+    </modal-train>
+    <modal-train  :show="kassa_setting_status" headerbackColor="info"  titlecolor="black" title="Kassaga xodimlarni ulash" 
+      @close="kassa_setting_status = false" width="70%">
+        <template v-slot:body>
+          <kassa_add_user_setting @close="kassa_setting_status = false" ref="kassa_add_user_setting" />
+        </template>
+    </modal-train>
    <massage_box :hide="modal_status" :detail_info="modal_info"
       :m_text="$t('Failed_to_delete')" @to_hide_modal = "modal_status= false"/>
 
     <Toast ref="message"></Toast>
+    <Alert ref="alert"></Alert> 
+
 </div>
     
   
@@ -341,6 +382,7 @@
 
 
 <script>
+import sendMainKassa from './sendMainKassa.vue';
 import check from './check'
 import rasxod from './rasxod'
 import chiqarPulOlish from './chiqarPulOlish'
@@ -351,21 +393,31 @@ import {
   mdbBtn,mdbInput
 } from "mdbvue";
 import Pay from './pay.vue';
-import CloseCash from './closeCash.vue';
+import kassa_info from './kassa_info.vue';
+import kassa_add_user_setting from './kassa_add_user_setting.vue';
 export default {
   components: {
     mdbIcon,
     mdbBtn,mdbInput,
     check,checkshow,
     Pay,
-    CloseCash, rasxod,
-    chiqarPulOlish
+    kassa_info, rasxod,
+    chiqarPulOlish,
+    sendMainKassa,
+    kassa_add_user_setting
   },
   data() {
     return {
+      kassa_setting_status: false,
+      kassa_num: localStorage.kassa_num,
+      colors: ['#ff5733', '#33ff83', '#ac33ff', '#339fff', '#ff3393', '#ffe933', '#9033ff'],
       kassir: localStorage.user_name,
       closeCash: false,
       checkshow: false,
+      kassa_setting_show: true,
+
+      send_kassa_status: false,
+      kassa_info_show: false,
 
       modal_status: false,
       modal_info: '',
@@ -385,20 +437,11 @@ export default {
       enoughtDrag: false,
       UnitSumString: '0',
 
-      
-
-
       check_show: false,
       searchDrag: '',
       showAccept: false,
       dataAccept: {
-
       },
-    
-
-
-
-     
 
       timestamp: "",
       totalName: '',
@@ -426,10 +469,12 @@ export default {
       this.totalName = a;
     }
   },
-  async mounted() {
-    var number = 123456789.23
-    var num = new Intl.NumberFormat().format(number)
-    console.log(num)
+  async mounted(){
+    await this.fetchUserAccess(localStorage.user_id);
+
+    // var number = 123456789.23
+    // var num = new Intl.NumberFormat().format(number)
+    // console.log(num)
     var mtime = new Date().getMonth();
     var ytime = new Date().getFullYear();
     if(mtime == 0){
@@ -463,11 +508,58 @@ export default {
     await this.fetchOstatikProduct();
   },
   computed:{
-    ...mapGetters(['allOrderList','get_skidka_summ', 'get_all_summa', 'get_m_categoryIdProduct', 'get_zakaz_product_all_list','get_page_savat', 'get_product_qty','AllSummString']),
-  }, 
+    ...mapGetters(['allOrderList','get_skidka_summ', 'get_all_summa', 
+      'get_m_categoryIdProduct', 'get_zakaz_product_all_list','get_page_savat', 
+      'get_product_qty','AllSummString', 'user_kassa_list']),
+  },
   methods: {
-    ...mapActions([ 'fetchProduct', 'fetchCategoryAllProduct', 'fetchCategoryIdProduct', 'fetchProductSearchByName']),
+    ...mapActions([ 'fetchProduct', 'fetchCategoryAllProduct', 'fetchCategoryIdProduct', 
+    'fetchProductSearchByName', 'fetchKassa_userId']),
     ...mapMutations(['sklad_delete_row', 'add_product_order', 'minus_product', 'plus_product', 'del_product', 'clear_order', 'input_change', 'changeSumma', 'update_zakaz_product_all_list', 'select_savat_page', 'add_savat_page', 'del_savat_page']),
+    async fetchUserAccess(id){
+      try{
+          const res = await fetch(this.$store.state.hostname + '/TegirmonUserAccess/getTegirmonUserAccessUserId?user_id=' + id);
+          const data = await res.json();
+          console.log('this is by id')
+          if(res.status == 200 || res.status == 201){
+            this.kassa_setting_show = data.status_4;
+            this.kassa_info_show = data.status_3;
+            
+          }
+      }
+      catch(error){
+        console.log(error)
+      }
+    },
+
+    async closeSendKassa(){
+      this.send_kassa_status = false;
+      this.$refs.message.success('Added_successfully')
+      // await this.apply();
+    },
+    // kassaga xodimlarni ulashni ochish bulimi.
+    async show_kassa_setting(){
+      this.$refs.kassa_add_user_setting.refresh();
+      this.kassa_setting_status = true;
+    },
+
+    async show_send_savdo_kassa(){
+        await this.fetchKassa_userId(localStorage.user_id);
+        if(this.user_kassa_list.length){
+          localStorage.kassa_id = this.user_kassa_list[0].id;
+          localStorage.kassa_num = this.user_kassa_list[0].num_1;
+        }
+        else{
+          this.$refs.alert.error('Bu foydalanuvchi kassaga biriktirilmagan, unda savdo qilish huquqi yuq !');
+          localStorage.kassa_id = 0;
+          localStorage.kassa_num = 0;
+          return;
+        }
+      this.$refs.savdo_kassa_send.refresh(this.user_kassa_list[0]);
+      this.send_kassa_status = true;
+    },
+    
+    
     async fetchOstatikProduct(){
       try{
         const response = await fetch(this.$store.state.hostname + "/TegirmonOstatka/getPagination?page=0&size=100");
@@ -954,6 +1046,7 @@ export default {
         this.payshow = true;
         this.$root.$refs.payed.changingEnter(3);
       },
+      
       // 4 chi raqam dolg uchun qolgan
       async onlinePay(){
         this.payshow = true;
@@ -962,6 +1055,10 @@ export default {
       async clickPay(){
         this.payshow = true;
         this.$root.$refs.payed.changingEnter(6);
+      },
+      async plastikPay(){
+        this.payshow = true;
+        this.$root.$refs.payed.changingEnter(4);
       },
 
       async paymePay(){
@@ -980,9 +1077,20 @@ export default {
         this.payshow = true;
         this.$root.$refs.payed.changingEnter(10);
       },
-      funcCloseCash(){
+      async funcKassaInfo(){
         this.closeCash = true;
-        this.$root.$refs.closeCashs.getAllSumm();
+        await this.fetchKassa_userId(localStorage.user_id);
+        if(this.user_kassa_list.length){
+          localStorage.kassa_id = this.user_kassa_list[0].id;
+          localStorage.kassa_num = this.user_kassa_list[0].num_1;
+        }
+        else{
+          this.$refs.alert.error('Bu foydalanuvchi kassaga biriktirilmagan, unda savdo qilish huquqi yuq !');
+          localStorage.kassa_id = 0;
+          localStorage.kassa_num = 0;
+          return;
+        }
+        this.$refs.kassa_info_ref.getAllSumm(this.user_kassa_list[0]);
       },
     // <-- To'lov turlarini tanlash  end-->
 
@@ -1377,5 +1485,38 @@ export default {
   .linkMainDang:hover{
     background: #ff5852;
     color:white;
+  }
+
+  .linkMainRasxod{
+    border-bottom: 1px solid rgb(74, 87, 95);
+    border-top: 1px solid rgb(74, 87, 95);
+    cursor:pointer;
+    font-size: 14.5px;
+    height: 70px;
+    background: #ea605b; 
+    color:white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:hover{
+      color:white;
+      background: #fc4640;  
+    }
+  }
+  .linkMainPrixod{
+    border-bottom: 1px solid rgb(74, 87, 95);
+    border-top: 1px solid rgb(74, 87, 95);
+    cursor:pointer;
+    height: 70px;
+    font-size: 14.5px;
+    background: #61e176; 
+    color:white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:hover{
+      color:white;
+      background: #33d95f;  
+    }
   }
 </style>

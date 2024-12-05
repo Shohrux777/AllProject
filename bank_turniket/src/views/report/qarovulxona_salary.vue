@@ -71,8 +71,14 @@
           </div>
           <div class="all_summa px-2" style="margin-top:-12px;">
             <small class="fw-bold mr-2">Общий сумма:</small>
-            <small style="margin-left:10px;">{{all_summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small>
+            <small style="margin-left:10px;" class="mr-5">{{all_summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small>
+
+            <small class="px-5"></small>
+
+            <small class="fw-bold">Рабочы дни:</small>
+            <small style="margin-left:10px;">{{working_day_count}}</small>
           </div>
+          
           <div class="mt-3">
             <MDBTable class="align-middle mb-0 bg-white">
                 <thead class="bg-light">
@@ -89,12 +95,42 @@
                           <span @click="sortedArray('userid')"><MDBIcon icon="angle-down"  class="px-1 up_down_icon" style="position:absolute; font-size: 11px; bottom:-4px; cursor:pointer;"/></span>
                         </span>
                       </th>
-                      <th width="150">{{$t('time_work')}}</th>
-                      <th>{{$t('day')}}</th>
-                      <th>День</th>
-                      <th>Расходь</th>
-                      <th>{{$t('type_salary')}}</th>
-                      <th>{{$t('salary')}}</th>
+                      <th width="150">{{$t('time_work')}}
+                        <span style="position:relative;">
+                          <span @click="sortedArrayAsc('worked_hours_itm')"><MDBIcon icon="angle-up"  class="px-1 up_down_icon"  style="position:absolute; font-size: 11px; top:-2px; cursor:pointer;"/></span>
+                          <span @click="sortedArray('worked_hours_itm')"><MDBIcon icon="angle-down"  class="px-1 up_down_icon" style="position:absolute; font-size: 11px; bottom:-4px; cursor:pointer;"/></span>
+                        </span>
+                      </th>
+                      <th>{{$t('day')}}
+                        <span style="position:relative;">
+                          <span @click="sortedArrayAsc('day')"><MDBIcon icon="angle-up"  class="px-1 up_down_icon"  style="position:absolute; font-size: 11px; top:-2px; cursor:pointer;"/></span>
+                          <span @click="sortedArray('day')"><MDBIcon icon="angle-down"  class="px-1 up_down_icon" style="position:absolute; font-size: 11px; bottom:-4px; cursor:pointer;"/></span>
+                        </span>
+                      </th>
+                      <th>День
+                        <span style="position:relative;">
+                          <span @click="sortedArrayAsc('day_count')"><MDBIcon icon="angle-up"  class="px-1 up_down_icon"  style="position:absolute; font-size: 11px; top:-2px; cursor:pointer;"/></span>
+                          <span @click="sortedArray('day_count')"><MDBIcon icon="angle-down"  class="px-1 up_down_icon" style="position:absolute; font-size: 11px; bottom:-4px; cursor:pointer;"/></span>
+                        </span>
+                      </th>
+                      <th>Расходь
+                        <span style="position:relative;">
+                          <span @click="sortedArrayAsc('rasxod')"><MDBIcon icon="angle-up"  class="px-1 up_down_icon"  style="position:absolute; font-size: 11px; top:-2px; cursor:pointer;"/></span>
+                          <span @click="sortedArray('rasxod')"><MDBIcon icon="angle-down"  class="px-1 up_down_icon" style="position:absolute; font-size: 11px; bottom:-4px; cursor:pointer;"/></span>
+                        </span>
+                      </th>
+                      <th>{{$t('type_salary')}}
+                        <span style="position:relative;">
+                          <span @click="sortedArrayAsc('oylik_nomi')"><MDBIcon icon="angle-up"  class="px-1 up_down_icon"  style="position:absolute; font-size: 11px; top:-2px; cursor:pointer;"/></span>
+                          <span @click="sortedArray('oylik_nomi')"><MDBIcon icon="angle-down"  class="px-1 up_down_icon" style="position:absolute; font-size: 11px; bottom:-4px; cursor:pointer;"/></span>
+                        </span>
+                      </th>
+                      <th>{{$t('salary')}}
+                        <span style="position:relative;">
+                          <span @click="sortedArrayAsc('ishlagan_puli')"><MDBIcon icon="angle-up"  class="px-1 up_down_icon"  style="position:absolute; font-size: 11px; top:-2px; cursor:pointer;"/></span>
+                          <span @click="sortedArray('ishlagan_puli')"><MDBIcon icon="angle-down"  class="px-1 up_down_icon" style="position:absolute; font-size: 11px; bottom:-4px; cursor:pointer;"/></span>
+                        </span>
+                      </th>
                       <th width="110">{{$t('Action')}}</th>
                   </tr>
                 </thead>
@@ -119,10 +155,10 @@
                     <td class="text-info" style="cursor:pointer" @click="func_show_user_add_status(row)">{{ row.day_count }}</td>
                     <td class="text-danger" style="cursor:pointer" @click="func_show_user_rasxod_status(row)">{{ row.rasxod.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</td>
                     <td>{{row.oylik_nomi}}</td>
-                    <td :class="{'text-success': row.ishlagan_puli != 0}" v-if="row.without_gr_id == 2">
+                    <td v-if="row.without_gr_id == 2" :class="{'text-success': row.ishlagan_puli != 0, 'text-danger': row.ishlagan_puli<0}" >
                       {{row.ishlagan_puli.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
                     </td>
-                    <td :class="{'text-success': row.ishlagan_puli != 0}" v-else>
+                    <td v-else :class="{'text-success': row.ishlagan_puli != 0, 'text-danger': row.ishlagan_puli<0}" >
                       {{row.ishlagan_puli.toFixed(0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
                     </td>
                     <!-- <td>{{row.ishlagan_puli}}</td> -->
@@ -283,6 +319,9 @@
                     style="margin-left: 20px !important;">
                     <span class="ml-4">-1</span>
                   </div>
+                  <div style="width:100px;">
+                    <input type="number" class="mx-4 border rounded form-control" style="height:33px;" v-model="day_num">
+                  </div>
                 </div>
               </div>
               <div class="col-12 mb-3">
@@ -303,7 +342,7 @@
           v-model="show_add_rasxod"
       > 
           <MDBModalHeader style="background: #475a65;" class="text-white px-3 py-2">
-              <MDBModalTitle id="exampleModalLabel"> {{$t('day_add')}} </MDBModalTitle>
+              <MDBModalTitle id="exampleModalLabel"> {{$t('rasxod_zarplata')}} </MDBModalTitle>
           </MDBModalHeader>
           <MDBModalBody>
             <div class="px-3 row">
@@ -316,6 +355,14 @@
                 class="form-control  mt-2 text-right pr-2" style="border:1px solid #BDBDBD; outline:none;font-size:13px; height:30px;" >
                 <small style="position:absolute; background:white; padding: 0px 3px; z-index: 55; top:-2px; left:21px; font-size:11.5px; " class="testing">
                   Расходь сумма
+                </small> 
+              </div>
+              <div class="col-12 mb-3" style="position:relative;">
+                <!-- <MDBInput v-model="rasxod_summa" type="number" size="sm" label="Расходь сумма" /> -->
+                <input type="text" v-model="zaplata_summaString"  @keyup="funcCashZaplata($event.target.value)"  
+                class="form-control  mt-2 text-right pr-2" style="border:1px solid #BDBDBD; outline:none;font-size:13px; height:30px;" >
+                <small style="position:absolute; background:white; padding: 0px 3px; z-index: 55; top:-2px; left:21px; font-size:11.5px; " class="testing">
+                  Зарплата сумма
                 </small> 
               </div>
               <div class="col-12 mb-3">
@@ -406,6 +453,7 @@
                         <th width="100">User ID
                         </th>
                         <th width="150">Расходь</th>
+                        <th>Статус</th>
                         <th>{{$t('note')}}</th>
                         <th>{{$t('date')}}</th>
                     </tr>
@@ -427,7 +475,8 @@
                       <td v-else class="text-danger">---</td> -->
                       
                       <td>{{row.count}}</td>
-
+                      <td v-if="row.num_1 == 0" class="text "><MDBBadge badge="danger" pill>Расходь сумма</MDBBadge></td>
+                      <td v-else class="text "><MDBBadge badge="success" pill>Зарплата сумма</MDBBadge></td>
                       <td>
                         {{row.note}}
                       </td>
@@ -514,6 +563,9 @@ export default {
 
       rasxod_summa : null,
       rasxod_summaString: '',
+      zaplata_summa : null,
+      zaplata_summaString: '',
+      zaplata_status: 0,
       reportList: [],
       main_reportList: [],
       user_add_del_list: [],
@@ -531,6 +583,8 @@ export default {
         'Зарплата' : 'ishlagan_puli'
       },
       list_of_in_out: [],
+      working_day_count: 0,
+
     }
   },
   computed: {
@@ -598,21 +652,43 @@ export default {
     },
   },
   async mounted(){
-      await this.fetch_Department();
-      let time1 = new Date();
-      this.Start_time = time1.toISOString().slice(0,10); 
-      this.End_time = time1.toISOString().slice(0,10);
-      this.day_time = time1.toISOString().slice(0,10);
-      let start = this.Start_time;
-      let end = this.End_time;
-      await this.submit();
-      console.log(start)
-      console.log(end)
+    let time1 = new Date();
+    this.Start_time = time1.toISOString().slice(0,10); 
+    this.End_time = time1.toISOString().slice(0,10);
+    this.day_time = time1.toISOString().slice(0,10);
+    // await this.fetchFindSundayInMonth();
+    await this.fetch_Department();
+
+    let start = this.Start_time;
+    let end = this.End_time;
+    await this.submit();
+    console.log(start)
+    console.log(end)
   },
   methods:{
     ...mapActions([ 'fetch_Door', 'fetch_Department', 'fetch_user_add_note_list', 'fetch_user_rasxod_list']),
+    async fetchFindSundayInMonth(){
+      const daysInMonth = (year, month) => new Date(year, month, 0).getDate();
+      var d = new Date(this.Start_time);
+      var getTot = daysInMonth(d.getFullYear(), d.getMonth()+1); // Bunda 11 chi oy bulsa 11 deb yozilishi kerak ekan
+      
+      var sun = new Array();
+      for(var i=1;i<=getTot;i++){    //looping through days in month
+          var newDate = new Date(d.getFullYear(),d.getMonth(),i)
+          // console.log(newDate)
+          if(newDate.getDay()==0){   //if Sunday
+              sun.push(i);
+          }
+      }
+      this.working_day_count = parseInt(getTot) - parseInt(sun.length);
+      console.log('sun');
+      console.log(sun);
+      console.log(this.working_day_count);
+    },
     funcCash(n){
-        this.rasxod_summa = 0;
+        this.zaplata_summa = null;
+        this.zaplata_summaString = '';
+        this.zaplata_status = 0;
         // this.rasxod_summaString = ''; 
         // n = n[n.length-1];
       var tols = ''
@@ -634,6 +710,34 @@ export default {
         this.rasxod_summa = parseFloat(temp);
        }
        console.log(this.rasxod_summa)
+
+      
+      
+    },
+    funcCashZaplata(n){
+        this.rasxod_summa = null;
+        this.rasxod_summaString = '';
+        this.zaplata_status = 1;
+        // n = n[n.length-1];
+      var tols = ''
+      for(let i=0; i<n.length; i++){
+        if(n[i] != ' '){
+          tols += n[i];
+        }
+       }
+
+       this.zaplata_summaString = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+       var temp = ''
+       for(let i=0; i<this.zaplata_summaString.length; i++){
+        if(this.zaplata_summaString[i] != ' '){
+          temp += this.zaplata_summaString[i];
+        }
+       }
+       console.log(temp)
+       if(temp != ''){
+        this.zaplata_summa = parseFloat(temp);
+       }
+       console.log(this.zaplata_summa)
 
       
       
@@ -665,12 +769,14 @@ export default {
       let time1 = new Date();
       this.day_time = time1.toISOString().slice(0,10);
       this.rasxod_summa = null;
+      this.zaplata_summa = null;
       this.day_info = '';
       console.log(user_id);
       this.user_id = user_id;
       this.user_name = user_name;
       this.item_index = index;
       this.rasxod_summaString = '';
+      this.zaplata_summaString = '';
     },
     async submit_day_info(){
       if(this.day_num == null || this.day_num == 0)return;
@@ -695,7 +801,7 @@ export default {
                 if(data.userid == this.reportList[i].userid){
                   this.reportList[i].day_count += data.count;
                   this.reportList[i].day_list.push(data);
-                  this.reportList[i].ishlagan_puli = parseFloat(this.reportList[i].ishlagan_puli) + (parseFloat(this.reportList[i].oylik_haqqi) * parseFloat(data.count)); 
+                  this.reportList[i].ishlagan_puli = parseFloat(this.reportList[i].ishlagan_puli) + ((parseFloat(this.reportList[i].oylik_haqqi) / parseFloat(this.working_day_count)).toFixed() * parseFloat(data.count)); 
                   break;  
                 }
               }
@@ -708,7 +814,14 @@ export default {
       console.log('day_submit')
     },
     async submit_rasxod_info(){
-      if(this.rasxod_summa == null || this.rasxod_summa == 0)return;
+      if(!this.rasxod_summa && !this.zaplata_summa)return;
+      let rasxod_zaplata_sum = 0;
+      if(this.zaplata_status == 0){
+        rasxod_zaplata_sum = this.rasxod_summa;
+      }
+      else if(this.zaplata_status == 1){
+        rasxod_zaplata_sum = this.zaplata_summa;
+      }
       try{
         const requestOptions = {
           method: "POST",
@@ -717,7 +830,8 @@ export default {
             "user_name" : this.user_name,
             "userid" : this.user_id,
             "reg_date" : this.day_time,
-            "count": this.rasxod_summa,
+            "count": rasxod_zaplata_sum,
+            "num_1": this.zaplata_status,
             "note": this.day_info
             })
           };
@@ -850,6 +964,7 @@ export default {
       }
     },
     async submit(){
+      await this.fetchFindSundayInMonth();
       this.all_summa = 0;
       this.dept_name = '';
       this.dept_id = null;
@@ -902,7 +1017,8 @@ export default {
             a.oylik_haqqi = data.items_list[i].skudOylik.value;
           }
           if(data.items_list[i].without_gr_id == 2 && data.items_list[i].oylik_haqqi != 0){
-            a.ishlagan_puli = a.oylik_haqqi * a.day;
+            a.ishlagan_puli = ((parseFloat(a.oylik_haqqi)/parseFloat(this.working_day_count)).toFixed() * a.day);
+            // a.ishlagan_puli = a.ishlagan_puli.toFixed();
           }
           a.worked_hours_itm = this.timeConvert(data.items_list[i].worked_hours_itm)
           this.reportList.push(a);
@@ -922,7 +1038,7 @@ export default {
           if(this.reportList[i].userid == this.user_add_del_list[j].userid){
             this.reportList[i].day_count += this.user_add_del_list[j].count;
             this.reportList[i].day_list.push(this.user_add_del_list[j]);
-            this.reportList[i].ishlagan_puli = parseFloat(this.reportList[i].ishlagan_puli) + (parseFloat(this.reportList[i].oylik_haqqi) * parseFloat(this.user_add_del_list[j].count));            
+            this.reportList[i].ishlagan_puli = parseFloat(this.reportList[i].ishlagan_puli) + ((parseFloat(this.reportList[i].oylik_haqqi) / parseFloat(this.working_day_count)).toFixed() * parseFloat(this.user_add_del_list[j].count));            
             this.user_add_del_list.splice(j,1);
             j--;
           }

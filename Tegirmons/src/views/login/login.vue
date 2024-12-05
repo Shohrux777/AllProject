@@ -97,6 +97,10 @@ export default {
     localStorage.numPage = 1
     localStorage.pageNum = 1
     localStorage.Items_count = 10
+    localStorage.kassa_id = 0;
+    localStorage.kassa_num = 0;
+    localStorage.hisob_Name = '';
+    localStorage.hisob_Id = 0;
     if(this.allUser.rows.length == 0){
       localStorage.Login = '4';
       localStorage.AuthId = 1;
@@ -108,23 +112,27 @@ export default {
     }
 
     let time1 = new Date();
-    localStorage.start = time1.toISOString().slice(0,10); 
+    localStorage.start = time1.toISOString().slice(0,10);
     localStorage.end = time1.toISOString().slice(0,10);
-    localStorage.setItem('begin_date', time1.toISOString().slice(0,10))
-    localStorage.setItem('end_date', time1.toISOString().slice(0,10))
-    localStorage.setItem('menu_item', 0)
-
+    localStorage.setItem('begin_date', time1.toISOString().slice(0,10));
+    localStorage.setItem('end_date', time1.toISOString().slice(0,10));
+    localStorage.setItem('menu_item', 0);
+    await this.fetchHisob();
+    if(this.allHisob.rows.length>0){
+      localStorage.hisob_Name = this.allHisob.rows[0].name;
+      localStorage.hisob_Id = this.allHisob.rows[0].id;
+    }
     await this.nbuKurs();
     // console.log(localStorage.AuthId)
   },
-  computed: mapGetters(['allUser']),
+  computed: mapGetters(['allUser', 'user_kassa_list', 'allHisob']),
   // watch: {
   //   search_data: function(){
   //     this.search_click();
   //   }
   // },
   methods: {
-    ...mapActions(['fetchUser']),
+    ...mapActions(['fetchUser', 'fetchKassa_userId', 'fetchKassa_info', 'fetchHisob']),
     handleHashing (data) {
       this.pass = data
       this.md = md5(data)
@@ -152,6 +160,14 @@ export default {
           localStorage.user_name = data.user.fio;
           localStorage.user_id = data.user.id;
           localStorage.CompId = 1;
+          await this.fetchKassa_userId(localStorage.user_id);
+          console.log('this.user_kassa_list')
+          console.log(this.user_kassa_list)
+          if(this.user_kassa_list.length){
+            localStorage.kassa_id = this.user_kassa_list[0].id;
+            localStorage.kassa_num = this.user_kassa_list[0].num_1;
+            await this.fetchKassa_info(localStorage.kassa_id);
+          }
           this.$router.push('/getProduct')
         }
         else{

@@ -197,29 +197,13 @@
 
           </div> -->
           <div class="col-3 mt-0">
-            <mdb-input
-              class="m-0 p-0 "
-              v-model="measure"
-              size="md"
-              outline
-              group
-              type="text"
-              validate
-              error="wrong"
-              success="right"
-            />
+            <input type="text" v-model="measureString"  @keyup="funcMeasure($event.target.value)"   
+              class="form-control border mt-0" :disabled="measure_status" style="border:none; outline:none;  height:38px;" >
             <small
-              style="position: absolute; top: -7px; left: 20px; font-size: 11px"
+              style="position: absolute; top: -8px; left: 20px; font-size: 11px"
               class="bg-white px-2 py-0"
               >{{ $t("measure") }}</small
             >
-            <!-- <small
-              class="invalid-text pt-4"
-              style="margin-left: 5px"
-              v-if="$v.summ.$dirty && !$v.summ.required"
-            >
-              {{ $t("name_invalid_text") }}
-            </small> -->
           </div>
           
           <div class="col-3">
@@ -246,6 +230,23 @@
             >
               {{ $t("name_invalid_text") }}
             </small> -->
+          </div>
+          <div class="col-4 mt-2">
+            <input type="text" v-model="uzs_summaString"  @keyup="funcUzsSumma($event.target.value)"   
+              class="form-control border mt-0" style="border:none; outline:none;  height:38px;" >
+            <small
+              style="position: absolute; top: -8px; left: 20px; font-size: 11px"
+              class="bg-white px-2 py-0"
+              >UZS</small
+            >
+          </div>
+          <div class="col-4 mt-2">
+            <erpSelectHisob
+              :options="allHisob.rows"
+              @select="selectOptionHisob"
+              :selected="hisob_name"
+              :label="$t('hisob')"
+            />
           </div>
           <div class="col-12">
             <div class="photo w-100 d-flex justify-content-center rounded" v-if="image_url_str">
@@ -373,7 +374,7 @@ import { mdbInput, mdbBtn, mdbIcon,
   mdbTbl,
   mdbTblHead,
   mdbTblBody,
-   mdbBtnGroup,
+  mdbBtnGroup,
   mdbDropdown,
   mdbDropdownItem,
   mdbDropdownMenu,
@@ -392,6 +393,8 @@ import infoDavernis from './infoDavernis.vue'
 import webcam from '../webcam/webcam_Add.vue'
 import infoInvoiceGet from './infoInvoiceGet.vue'
 import infoClient from '../client/clientInfo.vue'
+import erpSelectHisob from "../../components/erpSelect.vue";
+
 
 
 
@@ -438,6 +441,13 @@ export default {
       today_date: '',
 
       measure: null,
+      measureString: '',
+      uzs_summa: null,
+      uzs_summaString: '',
+      measure_status: false,
+      hisob_name: '',
+      hisob_id: 0,
+
       comenList: [],
       OstatkaList: [],
 
@@ -454,6 +464,8 @@ export default {
       real_time_ostatk: 0,
       allList: [],
       check_number: 1,
+
+
 
       show_check: false,
     };
@@ -480,7 +492,8 @@ export default {
     infoInvoiceGet,
     infoClient,
     checkzaxira,
-    InputSearchYear
+    InputSearchYear,
+    erpSelectHisob
   },
   validations: {
     user_name: {
@@ -498,19 +511,25 @@ export default {
         console.log('AuthId topilmadi');
         this.$router.push('/');
       }
-      
+
       await this.fetchClient();
       await this.fetch_product_t();
+      await this.fetchHisob();
+      console.log('allHisob', this.allHisob)
       await this.fetchGetZaxiraList();
-      let today = new Date().toISOString()
-      this.today_date = today.slice(0,10)
-
+      let today = new Date().toISOString();
+      this.today_date = today.slice(0,10);
       // console.log(this.allClient)
     },
-   computed: mapGetters(['all_district_t', 'all_client_controler', 'allClient', 'all_contragent_t', 'allCompany', 'all_product_t', 'user_to_zaxira']),
+   computed: mapGetters(['all_district_t', 'all_client_controler', 'allClient','allHisob', 'all_contragent_t', 'allCompany', 'all_product_t', 'user_to_zaxira']),
   methods: {
-    ...mapActions(['fetch_district_t', 'fetch_client_controler', 'fetchClient', 'fetch_contragent_t', 'fetchCompany', 'fetch_product_t']),
+    ...mapActions(['fetch_district_t', 'fetch_client_controler', 'fetchClient', 'fetch_contragent_t', 'fetchHisob', 'fetchCompany', 'fetch_product_t']),
     ...mapMutations(['clearZaxiraList', 'get_ostatka_check_for_get', 'get_invoice_for_invoice']),
+    selectOptionHisob(option){
+      console.log('hisob_name', option)
+      this.hisob_name = option.name;
+      this.hisob_id = option.id;
+    },
     async close_clientAdd(data){
       // console.log('new client data');
       // console.log(data);
@@ -782,9 +801,15 @@ export default {
 
     
     selectOptionPro(option){
-      // console.log(option)
+      console.log(option)
       this.product_name = option.name;
       this.product_id = option.id;
+      if(option.auth_user_creator_id == 1){
+        this.measure_status = true;
+      }
+      else{
+        this.measure_status = false;
+      }
     },
     selectOption(option) {
       // console.log(option)
@@ -851,6 +876,14 @@ export default {
     },
     
     async save(){
+      if(!this.uzs_summa){
+        this.uzs_summa = 0;
+        this.uzs_summaString = '0'
+      }
+      if(this.measure_status){
+        this.measure = this.uzs_summa;
+        this.measureString = this.measure.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')
+      }
       // console.log('this.OstatkaList')
       var real_time_ostatka = parseFloat(this.measure);
       for(let i=0; i<this.OstatkaList.length; i++){
@@ -894,6 +927,9 @@ export default {
             "tegirmonAuthid": localStorage.AuthId,
             "check_number": this.check_number,
             "user_name": this.client_name,
+            "hisob_name": this.hisob_name,
+            "hisob_id": this.hisob_id,
+            "poluchit_summa": this.uzs_summa,
             "credit_sum": real_time_ostatka,
           })
         };
@@ -911,6 +947,7 @@ export default {
             await this.fetchOstatka(this.user_id);
             await this.selectInvoiceItem(data);
             this.measure = 0;
+            this.measureString = '';
             this.user_name = '';
             this.user_id = null;
             this.product_name = '';
@@ -918,6 +955,10 @@ export default {
             this.note = '';
             this.image_url_str = '';
             this.real_time_ostatk = 0;
+            this.uzs_summa = null;
+            this.uzs_summaString = '';
+            this.hisob_name = '';
+            this.hisob_id = 0;
             this.$refs.message.success('Added_successfully')
             // console.log('fire' )
           }
@@ -939,7 +980,7 @@ export default {
         const response = await fetch(this.$store.state.hostname + "/TegirmonClientOstatkas/sendMessageToTegirmonClient?message_str=" + message +"&client_id=" + client_id);
         const data = await response.json();
         // console.log('weqeqw')
-        // console.log(data)
+        console.log(data)
         // this.loading = false;
         if(response.status == 201 || response.status == 200)
         {
@@ -1107,6 +1148,43 @@ export default {
       catch(error){
           console.log(error)
       }
+    },
+    funcMeasure(n){
+      var tols = ''
+      for(let i=0; i<n.length; i++){
+        if(n[i] != ' '){
+          tols += n[i];
+        }
+       }
+       this.measureString = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+       var temp = ''
+       for(let i=0; i<this.measureString.length; i++){
+        if(this.measureString[i] != ' '){
+          temp += this.measureString[i];
+        }
+       }
+      this.measure = parseFloat(temp);
+    },
+
+    funcUzsSumma(n){
+      var tols = ''
+      for(let i=0; i<n.length; i++){
+        if(n[i] != ' '){
+          tols += n[i];
+        }
+       }
+       if(tols[tols.length-1] != '0' && tols[tols.length-1] != '1' && tols[tols.length-1] != '2' && tols[tols.length-1] != '3' && tols[tols.length-1] != '4' && 
+        tols[tols.length-1] != '5' && tols[tols.length-1] != '6' && tols[tols.length-1] != '7' && tols[tols.length-1] != '8' && tols[tols.length-1] != '9'){
+        tols = tols.slice(0,tols.length-1)
+       }
+       this.uzs_summaString = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+       var temp = ''
+       for(let i=0; i<this.uzs_summaString.length; i++){
+        if(this.uzs_summaString[i] != ' '){
+          temp += this.uzs_summaString[i];
+        }
+       }
+      this.uzs_summa = parseFloat(temp);
     },
 
   },

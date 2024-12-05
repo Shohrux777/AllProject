@@ -210,6 +210,12 @@ export default {
 
         },
 
+        change_all_summa_skidka(state, data){
+            state.skidka_summ[state.page_savat] = parseFloat(data.skidka);
+            state.product_summ[state.page_savat] = parseFloat(data.summa);
+            state.AllSummString[state.page_savat] = state.product_summ[state.page_savat].toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+        }
+
     },
     getters: {
         allOrderList(state) {

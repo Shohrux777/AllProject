@@ -17,16 +17,19 @@
           <mdb-navbar-nav>
             <router-link v-for="(item,i) in option" :key="i" 
             v-show="item.status"
-            :class="{'activeItem': item.active}" :to="item.url"  
+            :class="{'activeItem': item.active}" :to="item.url"
             >
               <mdb-nav-item @click="selectActive(i)"
                class="px-2 navbarItems" >{{item.name}}</mdb-nav-item>
             </router-link>
-            
           </mdb-navbar-nav>
           <div>
             <small
                class="px-2 navbarItems" style="font-size: 11.5px;" >{{kassir}}</small>
+            </div>
+            <div class="kassa_num_user" :style="{background: colors[kassa_num] || '#ff5733'}">
+              <small v-if="kassa_num == 0"> {{kassir[0]}}</small>
+              <small v-else> {{kassa_num}}</small>
             </div>
       </mdb-navbar-toggler>
     </mdb-navbar>
@@ -50,6 +53,8 @@
     data() {
       return {
         kassir: localStorage.user_name,
+        kassa_num: localStorage.kassa_num,
+        colors: ['#ff5733', '#33ff83', '#ac33ff', '#339fff', '#ff3393', '#ffe933', '#9033ff'],
         option:[
           {name: 'Получить продукт', url: '/getProduct', active: false, status: true},
           {name: 'Захира', url: '/zaxiraniAlmashtirish', active: false,  status: true},
@@ -57,6 +62,8 @@
           {name: 'Тароз список', url: '/today_groups', active: false,  status: true},
           {name: 'Катта тарози', url: '/tarozi_list', active: false,  status: true},
           {name: 'Продажа', url: '/sell', active: false,  status: true},
+          {name: 'Асосий касса', url: '/main_kassa', active: false,  status: true},
+          {name: 'Счета', url: '/hisoblar', active: false,  status: true},
           {name: 'Остатка', url: '/changeProduct', active: false,  status: true},
           {name: 'Выйти', url: '/', active: false,  status: true},
         ],
@@ -105,7 +112,9 @@
               this.option[3].status = data.taroz_list
               this.option[4].status = data.big_tarozi
               this.option[5].status = data.sell
-              this.option[6].status = data.ostatka
+              this.option[6].status = data.status_2
+              this.option[7].status = data.status_5
+              this.option[8].status = data.ostatka
           }
       }
       catch(error){
@@ -136,6 +145,16 @@
     border-bottom: 1px solid orange;
     background:rgba(70, 90, 128, 0.6);
     border-radius: 3px;
+  }
+  .kassa_num_user{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:white;
+    font-size: 18px;
   }
 </style>
 

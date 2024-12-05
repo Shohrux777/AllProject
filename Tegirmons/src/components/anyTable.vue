@@ -229,7 +229,8 @@ export default {
           console.log('data123')
           console.log(data)
           this.$emit('showItem', data.id)
-        }
+        },
+        
     },
 }
 

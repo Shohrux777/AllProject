@@ -78,6 +78,7 @@
   "note": "Примечание",
   "user_add_remove_day_list": "Пользователь добавляет и удаляет рабочий день",
   "userAddRemoveDay": "Добавляет рабочий день",
-  "userRasxod": "Расходь"
+  "userRasxod": "Расходь",
+  "rasxod_zarplata": "Добавляет расходь и зарплата"
 	
 }

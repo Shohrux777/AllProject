@@ -128,16 +128,17 @@
           <div v-else class="col-3 mt-4 main_hover_info"  v-for="(item,i) in OstatkaList" :key="i" 
             style="position:relative;">
             <div v-if="item.real_qty>=1" class=" card pt-2 pr-3" style="position:relative;" @click="getProductId(item.product.id,item.real_qty, item.product.name, item)">
-              <div  class=" text-right">
+              <div  class="text-right">
                 <h6 class="pro_name_color text-left ml-3">{{item.client.fio}}</h6>
                 <div class="d-flex justify-content-between align-items-center">
                   <h6 class="pro_name_color text-left ml-3 mt-2">{{item.product.name}}</h6>
-                  <h4 class="mt-2 ">{{item.real_qty.toFixed(1)}} <small>кг</small></h4>
+                  <h4 class="mt-2" v-if="item.real_qty">{{item.real_qty.toFixed(1).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} <small>кг</small></h4>
+                  <h4 class="mt-2" v-else>{{item.real_qty.toFixed(1)}} <small>кг</small></h4>
                 </div>
               </div>
             </div>
             
-            <div class="hover_info shadow" >
+            <div class="hover_info shadow">
               <div class="addDavernis d-flex justify-content-center border-bottom pb-2 mb-2">
                 <mdb-btn
                   class="mr-1 px-3 py-2 text-white"
@@ -229,11 +230,11 @@
                   <h6 class="pro_name_color text-left ml-3">{{product_name_buy}}</h6>
                   <div class="mx-2" style="position: relative;">
                     <small style="position:absolute; top:-15px; right:5px; font-size: 12px;" class="bg-white px-2 py-0">сум</small>
-                    <mdb-input class="m-0 p-0" v-model="summ_buy" size="md" @input="changeMoney()" @click="enterMoney"  @blur="blurMoney"   outline  group type="text" validate error="wrong" success="right"/>
+                    <input class="m-0 p-0 px-3 form-control" v-model="summa_buy_string" size="md" @keyup="changeMoney($event.target.value)" @click="enterMoney"  @blur="blurMoney"   outline  group type="text" validate error="wrong" success="right"/>
                     <!-- <h4 class="mt-2">{{summ_buy.toFixed()}} <small>сум</small></h4> -->
                   </div>
                 </div>
-                <div class="clickItem  mx-2">
+                <div class="clickItem mx-2">
                   <div class="mt-4">
                     <div style="position: relative;">
                       <mdb-input class="m-0 p-0" v-model="product_buy" size="md" @input="changeSumma()" @blur="blurchangeSumma" @click="enterchangeSumma" outline  group type="text" validate error="wrong" success="right"/>
@@ -338,7 +339,8 @@
                 <td>
                   <small v-if="row.status_inv_type_name == 'INVOICE_BUGDOY_ZAXIRADAN_NARSALARGA_ALMASHTRISH'"><mdb-icon class="mr-2 text-danger" fas icon="caret-up"></mdb-icon></small> 
                   <small v-if="row.status_inv_type_name == 'INVOICE_BUGDOY_NARSALARGA_ALMASHTRISH_UCHUN_ZAXIRAGA_OLIB_QOLISH'"> <mdb-icon fas class="mr-2 text-success" icon="caret-down"></mdb-icon></small> 
-                  <small>{{row.qty_real.toFixed(1)}}</small> 
+                  <small v-if="row.qty_real">{{row.qty_real.toFixed(1).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small> 
+                  <small v-else>{{row.qty_real.toFixed(1)}}</small> 
                   <span v-if="row.status_inv_type_name == 'INVOICE_BUGDOY_ZAXIRADAN_NARSALARGA_ALMASHTRISH'">
                     <small v-if="row.summ != 0 "><mdb-icon icon="exchange-alt" class="ml-2" /> <mdb-icon class="ml-2" icon="dollar-sign" /></small>
                   </span>
@@ -352,7 +354,8 @@
                   <small class="ml-2">{{row.updated_date_time.slice(11,16)}}</small> 
                 </td>
  
-                <td> <span class="text-success">{{row.credit_sum.toFixed(1)}}</span> </td>  
+                <td v-if="row.credit_sum"> <span class="text-success" >{{row.credit_sum.toFixed(1).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>  
+                <td  v-else> <span class="text-success">{{row.credit_sum.toFixed(1)}}</span> </td>  
               </tr>
             </tbody>
           </table>
@@ -416,6 +419,7 @@
     </div>
     <massage_box :hide="modal_status" :detail_info="modal_info"
     :m_text="$t('Failed_to_add')" @to_hide_modal="modal_status= false"/>
+    <Alert ref="alert"></Alert> 
   </div>
 </template>
 
@@ -432,11 +436,11 @@ import infoInvoiceGet from './infoInvoiceGet.vue'
 import { mdbInput, mdbIcon,  mdbBtn, mdbModal, mdbModalHeader, mdbModalBody, mdbModalFooter,mdbBadge,mdbBtnGroup, mdbDropdown, mdbDropdownMenu, mdbDropdownItem, } from "mdbvue"
 import erpSelect from "../../components/erpSelectFioSearch.vue";
 import erpSelectAdd from "../../components/erpSelectAdd.vue";
-import { required } from 'vuelidate/lib/validators'
-import {mapActions,mapGetters, mapMutations} from 'vuex'
-import InputSearch from '../../components/inputSearch'
-import inputSearchYear from '../../components/inputSearchYear'
-import infoClient from '../client/clientInfo.vue'
+import { required } from 'vuelidate/lib/validators';
+import {mapActions,mapGetters, mapMutations} from 'vuex';
+import InputSearch from '../../components/inputSearch';
+import inputSearchYear from '../../components/inputSearchYear';
+import infoClient from '../client/clientInfo.vue';
 
 export default {
 data(){
@@ -498,6 +502,7 @@ data(){
       product_name_buy: '',
       product_buy: 0,
       summ_buy: 0,
+      summa_buy_string: '0',
       product_id_buy: null,
       product_price_buy: 0,
       product_real_qty_buy: 0,
@@ -548,10 +553,12 @@ data(){
     async mounted() {
       await this.fetchClient();
     },
-   computed: mapGetters(['all_district_t', 'all_client_controler', 'allClient', 'all_contragent_t', 'allCompany', 'all_product_t']),
+   computed: mapGetters(['all_district_t', 'all_client_controler', 'allClient', 
+    'all_contragent_t', 'allCompany', 'all_product_t', 'user_kassa_list']),
     
   methods: {
-    ...mapActions(['fetch_district_t', 'fetch_client_controler', 'fetchClient', 'fetch_contragent_t', 'fetchCompany', 'fetch_product_t']),
+    ...mapActions(['fetch_district_t', 'fetch_client_controler', 'fetchClient', 
+      'fetch_contragent_t', 'fetchCompany', 'fetch_product_t', 'fetchKassa_userId']),
     ...mapMutations(['zaxiraCheckList', 'get_ostatka_check', 'get_invoice_for_invoice','get_ostatka_check_for_get', 'check_invoice_zaxira']),
     show_client_info_func(){
       this.client_info_show = true;
@@ -886,6 +893,7 @@ data(){
       this.product_id = data.TegirmonProductid;
       this.product_buy = 0;
       this.summ_buy = 0;
+      this.summa_buy_string = '0';
       try{
         this.loading = true;
         const response = await fetch(this.$store.state.hostname + "/TegirmonProductToProductPersentage/getPaginationByProductId?page=0&size=100&product_id=" + id);
@@ -945,10 +953,27 @@ data(){
       if(this.product_buy == null || this.product_buy == ''){
         this.product_real_qty = test_buy_qty - 0;
         this.summ_buy = this.product_price_buy * 0;
+        this.summa_buy_string = this.summ_buy.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')
       }
       else{
         this.product_real_qty = test_buy_qty - parseFloat(this.product_buy);
         this.summ_buy = (this.product_price_buy * this.product_buy).toFixed();
+        if(this.summ_buy.toString().length <3){
+          console.log('hali 1000 ga yetib bormadi')
+        }
+        else if(this.summ_buy.toString().length == 3){
+          this.summ_buy = 1000
+        }
+        else{
+          if(this.summ_buy.toString().slice(this.summ_buy.toString().length-3, this.summ_buy.toString().length) != '000'){
+            // console.log('elseda chiqayabdi')
+            // console.log(this.summ_buy.toString())
+            // console.log(parseFloat((parseFloat(this.summ_buy.toString().slice(0, this.summ_buy.toString().length-3)) + 1).toString() + '000'))
+            this.summ_buy = parseFloat((parseFloat(this.summ_buy.toString().slice(0, this.summ_buy.toString().length-3)) + 1).toString() + '000')
+          }
+          
+        }
+        this.summa_buy_string = this.summ_buy.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')
       }
       this.changeRealQty(0);
     },
@@ -967,8 +992,22 @@ data(){
         this.changeProduct[i].real_qty = 0;
       }
     },
-    changeMoney(){
-      if(this.summ_buy == '' || this.summ_buy == null){
+    changeMoney(n){
+      var tols = ''
+      for(let i=0; i<n.length; i++){
+        if(n[i] != ' '){
+          tols += n[i];
+        }
+       }
+       this.summa_buy_string = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+       var temp = ''
+       for(let i=0; i<this.summa_buy_string.length; i++){
+        if(this.summa_buy_string[i] != ' '){
+          temp += this.summa_buy_string[i];
+        }
+       }
+      this.summ_buy = parseFloat(temp);
+      if(this.summa_buy_string == '' || this.summa_buy_string == '0'){
         this.product_buy = 0;
       }
       else{
@@ -984,13 +1023,16 @@ data(){
       this.changeRealQty(0);
     },
     enterMoney(){
-      if(this.summ_buy == 0 || this.summ_buy == '0'){
+      if(this.summa_buy_string == '0'){
         this.summ_buy = null;
+        this.summa_buy_string = '';
+
       }
     },
     blurMoney(){
-      if(this.summ_buy == '' || this.summ_buy == null){
+      if(this.summa_buy_string == '' || this.summa_buy_string == null){
         this.summ_buy = 0;
+        this.summa_buy_string = '0';
       }
     },
     enterchangeRealQty(i){
@@ -1044,10 +1086,29 @@ data(){
 
     async saveChanging(){
       this.loading = true;
+
+      // agar pulli amalyot bajarilsa kassa biriktirilgan yoki yuqligini tekshiradi ==>
+      if(this.summ_buy>0){
+        await this.fetchKassa_userId(localStorage.user_id);
+        if(this.user_kassa_list.length){
+          localStorage.kassa_id = this.user_kassa_list[0].id;
+          localStorage.kassa_num = this.user_kassa_list[0].num_1;
+        }
+        else{
+          this.$refs.alert.error('Bu foydalanuvchi kassaga biriktirilmagan, unda savdo qilish huquqi yuq !');
+          localStorage.kassa_id = 0;
+          localStorage.kassa_num = 0;
+          this.loading = false;
+          return;
+        }
+      }
+      // agar pulli amalyot bajarilsa kassa biriktirilgan yoki yuqligini tekshiradi <==
+      
       let sendList = []
       let sendQty = 0;
       this.TgString = '';
       this.check_number = 1;
+      
       if(this.allList.length>0){
         if(this.allList[0].check_number != undefined){
           if(parseInt(this.allList[0].check_number) == 0)
@@ -1070,6 +1131,7 @@ data(){
             real_sum: this.changeProduct[i].persantage,
             inv_accepted_status: true,
             auth_user_creator_id: localStorage.AuthId,
+            auth_user_updator_id: localStorage.kassa_id,
           }
           this.TgString +=  ' %0A ' + this.changeProduct[i].product_name + ' = ' + this.changeProduct[i].real_qty + ' ' + this.changeProduct[i].measure + ' 🔄 ' + (parseFloat(this.changeProduct[i].real_qty)/parseFloat(this.changeProduct[i].persantage)).toFixed(2) + ' кг ' + this.product_name
           sendList.push(sendTemp)
@@ -1081,6 +1143,8 @@ data(){
         sendQty+=parseFloat(this.product_buy);
         this.TgStringSumma += ' %0A %0A Sotildi:' + ' %0A ' + this.product_name + '  ' + this.product_buy + ' кг ' + ' 💵 ' + parseFloat(this.product_buy)* this.summ_buy + ' сум'
       }
+
+      
       if(this.$v.$invalid)
       {
         this.$v.$touch();
@@ -1110,6 +1174,7 @@ data(){
             "dolg_summ": this.product_buy,
             "auth_user_updator_id": parseInt(this.ostatka_qty_real),
             "check_number": this.check_number,
+            "kassa_id": localStorage.kassa_id,
             "id" : 0,
           })
         };

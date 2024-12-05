@@ -38,11 +38,11 @@
       </div> 
       <div class="col-3  mt-4 px-3">
         <div class=" card pt-2 pr-3" style="position:relative;">
-          <div class="product_name_price text-right">
+          <div class="product_name_price text-right mb-2">
             <h6 class="pro_name_color text-left ml-3">{{product_name_buy}}</h6>
             <div class="mx-2" style="position: relative;">
               <small style="position:absolute; top:-15px; right:5px; font-size: 12px;" class="bg-white px-2 py-0">сум</small>
-              <mdb-input class="m-0 p-0" v-model="summ_buy" size="md" @input="changeMoney()" @click="enterMoney"  @blur="blurMoney"   outline  group type="text" validate error="wrong" success="right"/>
+              <input class="m-0 p-0 px-3 form-control" v-model="summa_buy_string" size="md" @keyup="changeMoney($event.target.value)" @click="enterMoney"  @blur="blurMoney"   outline  group type="text" validate error="wrong" success="right"/>
               <!-- <h4 class="mt-2">{{summ_buy.toFixed()}} <small>сум</small></h4> -->
             </div>
           </div>
@@ -82,6 +82,7 @@ export default {
       product_name_buy: '',
       product_buy: 0,
       summ_buy: 0,
+      summa_buy_string: '0',
       product_id_buy: null,
       product_price_buy: 0,
       product_real_qty_buy: 0,
@@ -188,6 +189,7 @@ export default {
     async getProductId(id, qty){
       this.product_buy = 0;
       this.summ_buy = 0;
+      this.summa_buy_string = '0';
       this.product_name_buy = this.product_name;
       this.product_id_buy = id;
       this.product_price_buy = this.product_price;
@@ -266,10 +268,27 @@ export default {
       if(this.product_buy == null || this.product_buy == ''){
         this.product_real_qty = test_buy_qty - 0;
         this.summ_buy = this.product_price_buy * 0;
+        this.summa_buy_string = this.summ_buy.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')
       }
       else{
         this.product_real_qty = test_buy_qty - parseFloat(this.product_buy);
         this.summ_buy = (this.product_price_buy * this.product_buy).toFixed(0);
+        if(this.summ_buy.toString().length <3){
+          console.log('hali 1000 ga yetib bormadi')
+        }
+        else if(this.summ_buy.toString().length == 3){
+          this.summ_buy = 1000
+        }
+        else{
+          if(this.summ_buy.toString().slice(this.summ_buy.toString().length-3, this.summ_buy.toString().length) != '000'){
+            // console.log('elseda chiqayabdi')
+            // console.log(this.summ_buy.toString())
+            // console.log(parseFloat((parseFloat(this.summ_buy.toString().slice(0, this.summ_buy.toString().length-3)) + 1).toString() + '000'))
+            this.summ_buy = parseFloat((parseFloat(this.summ_buy.toString().slice(0, this.summ_buy.toString().length-3)) + 1).toString() + '000')
+          }
+          
+        }
+        this.summa_buy_string = this.summ_buy.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')
       }
       this.changeRealQty(0);
     },
@@ -283,8 +302,23 @@ export default {
         this.product_buy = null;
       }
     },
-    changeMoney(){
-      if(this.summ_buy== '' || this.summ_buy== null){
+    changeMoney(n){
+      console.log(n)
+      var tols = ''
+      for(let i=0; i<n.length; i++){
+        if(n[i] != ' '){
+          tols += n[i];
+        }
+       }
+       this.summa_buy_string = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+       var temp = ''
+       for(let i=0; i<this.summa_buy_string.length; i++){
+        if(this.summa_buy_string[i] != ' '){
+          temp += this.summa_buy_string[i];
+        }
+       }
+      this.summ_buy = parseFloat(temp);
+      if(this.summa_buy_string == '' || this.summa_buy_string == '0'){
         this.product_buy = 0;
       }
       else{
@@ -303,13 +337,15 @@ export default {
 
     },
     enterMoney(){
-      if(this.summ_buy == 0 || this.summ_buy == '0'){
+      if(this.summa_buy_string == '0'){
         this.summ_buy = null;
+        this.summa_buy_string = '';
       }
     },
     blurMoney(){
-      if(this.summ_buy == '' || this.summ_buy == null){
+      if(this.summa_buy_string == '' || this.summa_buy_string == null){
         this.summ_buy = 0;
+        this.summa_buy_string = '0';
       }
     },
     blurchangeRealQty(i){

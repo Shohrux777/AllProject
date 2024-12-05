@@ -3,7 +3,7 @@
     <div class="p-4">
       <div class="acceptBoxPayed px-3 py-2 text-center">
         <h2 class="font-weight-bold">
-          {{summaString}}
+          {{summ_str}}
         </h2>
         <input type="text" v-model="enterSumma" v-on:keyup.13 = "payed" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" @keyup="funcCurrency($event.target.value)" ref="enterSumma"  class="form-control form-control-md border mt-2" style="border:none; outline:none;font-weight:bold;" >
         <div class="text-right pt-2">
@@ -12,13 +12,14 @@
         <div class="d-flex w-100 mt-2">
           <div class="skidka" style="width:25%">
             <div style="position:relative;">
-              <input type="text" v-model="persantage_discount" disabled class="form-control  border mt-2 text-right" style="border:none; outline:none;font-weight:bold; height:30px;" >
+              <input type="text" v-model="persantage_discountString" @keyup="funcPersantege($event.target.value)" v-on:click.capture="getNolSkidka" @blur="funcSkidkaBlue"
+                class="form-control  border mt-2 text-right" style="border:none; outline:none;font-weight:bold; height:30px;" >
               <small style="position:absolute; font-size: 11.5px; top:-16px; left:3px;">
                 {{$t('skidka')}}
               </small>
             </div>
             <div style="position:relative;">
-              <input type="text" v-model="summaString" disabled class="form-control  border mt-3 text-right" style="border:none; outline:none;font-weight:bold; height:30px;" >
+              <input type="text" v-model="summ_str" disabled class="form-control  border mt-3 text-right" style="border:none; outline:none;font-weight:bold; height:30px;" >
               <small style="position:absolute; font-size: 11.5px; top:-16px; left:3px;">
                 {{$t('Total')}}
               </small> 
@@ -52,14 +53,14 @@
                   class="form-control  border mt-3 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;">
                   <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold; " class="testing">
                     {{'Uzcard'}}
-                  </small> 
+                  </small>
                 </div>
                 <div style="position:relative;">
                   <input type="text" v-model="humoInString" v-on:keyup.13 = "payed" @keyup="funcHumo($event.target.value)" v-on:click.capture="humoNol" @blur="funcAllBlue"  ref="humoIn" 
                   class="form-control  border mt-3 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
                   <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold; " class="testing">
                     {{'Humo'}}
-                  </small> 
+                  </small>
                 </div>
                 <div style="position:relative;">
                   <input type="text" v-model="onlineInString" v-on:keyup.13 = "payed" @keyup="funcOnline($event.target.value)" v-on:click.capture="onlineNol" @blur="funcAllBlue" ref="onlineIn"  
@@ -109,8 +110,8 @@
                   <input type="text" v-model="clickInString" v-on:keyup.13 = "payed" @keyup="funcClick($event.target.value)" v-on:click.capture="clickNol" @blur="funcAllBlue"  ref="clickIn" 
                   class="form-control  border mt-3 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
                   <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold;" class="testing">
-                    {{$t('dolg_summ')}}
-                  </small> 
+                    Пластикка ўтказма
+                  </small>
                 </div>
               </div>
             </div>
@@ -156,6 +157,7 @@
       :m_text="$t('Failed_to_delete')" @to_hide_modal = "modal_status= false"/>
 
     <Toast ref="message"></Toast>
+    <Alert ref="alert"></Alert>
   </div>
 </template>
 
@@ -174,9 +176,14 @@ export default {
     return {
       modal_status: false,
       modal_info: '',
+      summ_str : '0',
+      summa: 0,
 
 
       persantage_discount: 0,
+      persantage_discountString: '0',
+      persantage_discount_default: 0,
+      persantage_discount_diff: 0,
       enterSumma: null,
       zdachi:0,
       zdachiString:'0',
@@ -232,7 +239,7 @@ export default {
       type: String,
       default: '0'
     },
-    summa:{
+    summa_default:{
       type: Number,
       default: 0
     }
@@ -244,12 +251,14 @@ export default {
     console.log(this.summa)
   },
   computed:{
-    ...mapGetters(['allOrderList',, 'get_skidka_summ', 'get_all_summa', 'get_m_categoryIdProduct', 'get_zakaz_product_all_list','get_page_savat', 'get_product_qty', 'AllSummString']),
-
+    ...mapGetters(['allOrderList', 'get_skidka_summ', 'get_all_summa', 
+    'get_m_categoryIdProduct', 'get_zakaz_product_all_list','get_page_savat', 
+    'get_product_qty', 'AllSummString','user_kassa_list']),
   }, 
   methods: {
-    ...mapActions([  'fetchCategoryIdProduct', 'fetchProductSearchByName']),
-    ...mapMutations([ 'clear_order', 'input_change', 'changeSumma', 'update_zakaz_product_all_list', 'select_savat_page', 'add_savat_page', 'del_savat_page', 'updateCheckId']),
+    ...mapActions([  'fetchCategoryIdProduct', 'fetchProductSearchByName', 'fetchKassa_userId']),
+    ...mapMutations([ 'clear_order', 'input_change', 'changeSumma', 'update_zakaz_product_all_list', 'select_savat_page', 'add_savat_page', 'del_savat_page', 
+      'updateCheckId', 'change_all_summa_skidka']),
     clw_cl(){
       this.naqd_returnInString = '0';
       this.naqd_returnIn = 0;
@@ -264,9 +273,9 @@ export default {
       this.$refs.enterSumma.focus();
       this.enterSumma = '';
     })
-
+      this.summ_str = this.summaString;
       this.zdachi = '0';
-      console.log(this.summa)
+      this.summa = this.summa_default;
       this.cashIn = 0;
       this.uzcardIn = 0;
       this.humoIn = 0;
@@ -297,11 +306,13 @@ export default {
       this.defaultOrtiqchaSum = 0;
 
       this.dol_convert_Sum = 0;
-      this.defaultSum = this.summa;
+      this.defaultSum = this.summa_default;
       this.zdachiString = '0';
       this.zdachi = 0;
-      this.persantage_discount = this.get_skidka_summ[this.get_page_savat]
-
+      this.persantage_discount = this.get_skidka_summ[this.get_page_savat];
+      this.persantage_discountString = this.get_skidka_summ[this.get_page_savat].toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      this.persantage_discount_default = parseFloat(this.get_skidka_summ[this.get_page_savat]);
+      this.persantage_discount_diff = 0;
       this.dollor_kurs = localStorage.dollor_kurs;
       this.dollor_kurs_str = localStorage.dollor_kurs.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
 
@@ -355,6 +366,17 @@ export default {
     },
 
     async payed(){
+      await this.fetchKassa_userId(localStorage.user_id);
+      if(this.user_kassa_list.length){
+        localStorage.kassa_id = this.user_kassa_list[0].id;
+        localStorage.kassa_num = this.user_kassa_list[0].num_1;
+      }
+      else{
+        this.$refs.alert.error('Bu foydalanuvchi kassaga biriktirilmagan, unda savdo qilish huquqi yuq !');
+        localStorage.kassa_id = 0;
+        localStorage.kassa_num = 0;
+        return;
+      }
       console.log(this.get_zakaz_product_all_list[this.get_page_savat]) 
       try{
         var orderList = this.get_zakaz_product_all_list[this.get_page_savat].map(item => {
@@ -380,7 +402,7 @@ export default {
           "dolg": parseFloat(this.clickIn),
           "online": parseFloat(this.onlineIn),
           "humo": parseFloat(this.humoIn),
-          "profit_summ": parseFloat(this.get_skidka_summ[this.get_page_savat]),
+          "profit_summ": parseFloat(this.persantage_discount),
           "real_sum": parseFloat(this.dollorIn) - parseFloat(this.dollor_returnIn), // berilgan dollor qaytarilgandan ayirilgani
           "uz_card": parseFloat(this.paymeIn), // paymen orqali tulov
           "perchisleniya": parseFloat(this.clickedIn), // click orqali tulov
@@ -389,6 +411,7 @@ export default {
           "salary": parseFloat(this.dollor_returnIn), // qaytarilgan dollor
           "srogi_otganlar_uchun_rasxod": parseFloat(this.naqd_returnIn), // qaytarilgan naqd
           "image_url": this.dollor_kurs.toString(),
+          "auth_user_updator_id": localStorage.kassa_id,
           "payments": orderList,
           // "uz_card": 0,     for skidka uchun ishlataman
         })
@@ -412,7 +435,7 @@ export default {
           return true;
         }
         else{
-          this.modal_info = this.$i18n.t('network_ne_connect');;
+          this.modal_info = this.$i18n.t('network_ne_connect');
           this.modal_status = true;
           return false;
         }
@@ -824,13 +847,129 @@ export default {
 
 
     // tanlaganda ishlaydigan funksiya
-    getNol(){
-      this.discount = parseFloat(this.clickIn) + parseFloat(this.uzcardIn) + parseFloat(this.humoIn) + parseFloat(this.onlineIn) + parseFloat(this.dol_convert_Sum) + 
+    getNolSkidka(){
+      this.discount = parseFloat(this.cashIn) + parseFloat(this.clickIn) + parseFloat(this.uzcardIn) + parseFloat(this.humoIn) + parseFloat(this.onlineIn) + parseFloat(this.dol_convert_Sum) + 
       parseFloat(this.paymeIn) + parseFloat(this.clickedIn) + parseFloat(this.paynetIn) + parseFloat(this.uzumIn); 
-      this.discountSum = parseFloat(this.summa) - parseFloat(this.discount);
+      this.discountSum = parseFloat(this.summa_default) - parseFloat(this.discount);
 
       if(this.cashIn == this.summa || this.uzcardIn == this.summa || this.humoIn == this.summa || this.clickIn == this.summa || this.onlineIn == this.summa || 
       this.dol_convert_Sum == this.summa || this.paymeIn == this.summa || this.clickedIn == this.summa || this.paynetIn == this.summa || this.uzumIn == this.summa 
+      ){
+        this.persantage_discount = this.summa_default + this.persantage_discount_default;   
+        this.persantage_discountString = this.persantage_discount.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+        this.persantage_discount_diff = parseFloat(this.persantage_discount) - parseFloat(this.persantage_discount_default);
+        this.summ_str = '0';
+        this.summa = 0;
+        this.cashIn = 0;
+        this.cashInString = '0';
+        this.uzcardIn = 0;
+        this.uzcardInString = '0';
+        this.humoIn = 0;
+        this.humoInString = '0';
+        this.clickIn = 0;
+        this.clickInString = '0';
+        this.onlineIn = 0;
+        this.onlineInString = '0';
+        this.dollorIn = 0;
+        this.paymeIn = 0;
+        this.clickedIn = 0;
+        this.paynetIn = 0;
+        this.uzumIn = 0;
+        this.dol_convert_Sum = 0;
+
+        this.dollorInString = '0';
+        this.paymeInString = '0';
+        this.clickedInString = '0';
+        this.paynetInString = '0';
+        this.uzumInString = '0';
+      }
+      else if(this.discountSum > 0){
+        this.persantage_discount = parseFloat(this.discountSum.toFixed(2)) + parseFloat(this.persantage_discount_default);
+        this.persantage_discountString = this.persantage_discount.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+        this.persantage_discount_diff = parseFloat(this.persantage_discount) - parseFloat(this.persantage_discount_default);
+        this.summa = parseFloat(this.summa_default) - parseFloat(this.persantage_discount_diff)
+        this.summ_str = this.summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      }
+
+      this.defaultSum = this.cashIn + this.uzcardIn + this.humoIn + this.clickIn + this.onlineIn + 
+      this.dol_convert_Sum + this.paymeIn + this.clickedIn + this.paynetIn + this.uzumIn;
+      this.clw_cl();
+      if(this.persantage_discount_diff != 0){
+        this.change_all_summa_skidka({skidka: this.persantage_discount, summa: parseFloat(this.summa)})
+      }
+    },
+
+    funcSkidkaBlue(){
+      if(this.persantage_discountString == '' || this.persantage_discountString == null){
+        this.persantage_discountString = '0',
+        this.persantage_discount = 0;
+        this.persantage_discount_diff = parseFloat(this.persantage_discount) - parseFloat(this.persantage_discount_default);
+        this.summa = parseFloat(this.summa_default) + parseFloat(this.persantage_discount_default);
+        this.summ_str = this.summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      }
+
+      if(this.persantage_discount_diff != 0){
+        this.change_all_summa_skidka({skidka: this.persantage_discount, summa: parseFloat(this.summa)})
+      }
+    },
+
+    funcPersantege(n){
+      this.discount = parseFloat(this.clickIn) + parseFloat(this.cashIn) + parseFloat(this.uzcardIn) + parseFloat(this.humoIn) + parseFloat(this.onlineIn) + 
+      parseFloat(this.dol_convert_Sum) + parseFloat(this.paymeIn) + parseFloat(this.clickedIn) + parseFloat(this.paynetIn) + parseFloat(this.uzumIn) + parseFloat(this.persantage_discount);
+      this.discountSum = parseFloat(this.summa_default) - parseFloat(this.discount) + parseFloat(this.persantage_discount_default);
+      this.discountSum = parseFloat(this.discountSum.toFixed(2))
+      if(this.discountSum == 0){
+
+        this.persantage_discount = 0;
+        this.persantage_discountString = '';
+
+        n = n[n.length-1];
+
+      }
+
+      var tols = ''
+      for(let i=0; i<n.length; i++){
+        if(n[i] != ' '){
+          tols += n[i];
+        }
+       }
+
+       this.persantage_discountString = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+       var temp = ''
+       for(let i=0; i<this.persantage_discountString.length; i++){
+        if(this.persantage_discountString[i] != ' '){
+          temp += this.persantage_discountString[i];
+        }
+       }
+       if(temp == '' || temp == null){
+        this.persantage_discount = 0;
+       }
+       else{
+        this.persantage_discount = parseFloat(temp);
+       }
+      this.summa = parseFloat(this.summa_default) + parseFloat(this.persantage_discount_default) - parseFloat(this.persantage_discount);
+      this.summ_str = this.summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      this.persantage_discount_diff = parseFloat(this.persantage_discount) - parseFloat(this.persantage_discount_default);
+      this.defaultSum = this.cashIn + this.uzcardIn + this.humoIn + this.clickIn + this.onlineIn + 
+      this.paymeIn + this.clickedIn + this.paynetIn + this.uzumIn + this.dol_convert_Sum;
+      this.clw_cl();
+
+      if(this.persantage_discount_diff != 0){
+        this.change_all_summa_skidka({skidka: this.persantage_discount, summa: parseFloat(this.summa)})
+      }
+    },
+
+
+
+    
+
+    getNol(){
+      this.discount = parseFloat(this.clickIn) + parseFloat(this.uzcardIn) + parseFloat(this.humoIn) + parseFloat(this.onlineIn) + parseFloat(this.dol_convert_Sum) + 
+      parseFloat(this.paymeIn) + parseFloat(this.clickedIn) + parseFloat(this.paynetIn) + parseFloat(this.uzumIn)
+      this.discountSum = parseFloat(this.summa) - parseFloat(this.discount)
+
+      if(this.cashIn == this.summa || this.uzcardIn == this.summa || this.humoIn == this.summa || this.clickIn == this.summa || this.onlineIn == this.summa || 
+      this.dol_convert_Sum == this.summa || this.paymeIn == this.summa || this.clickedIn == this.summa || this.paynetIn == this.summa || this.uzumIn == this.summa
       ){
         this.cashIn = this.summa;
         this.cashInString = this.cashIn.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
@@ -854,6 +993,8 @@ export default {
         this.clickedInString = '0';
         this.paynetInString = '0';
         this.uzumInString = '0';
+
+        
       console.log('this.cashIn')
       console.log(this.cashIn)
       console.log(this.dol_convert_Sum)

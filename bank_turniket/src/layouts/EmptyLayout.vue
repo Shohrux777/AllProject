@@ -1,5 +1,7 @@
 <template>
-  
+    <div class="emptyRouter">
+        <router-view/>
+    </div>
 </template>
 
 <script>

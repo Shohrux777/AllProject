@@ -81,7 +81,34 @@ const routes = [{
         component: () =>
             import ('../views/measurment/measurment_Add.vue')
     },
-    
+    {
+        path: '/kassa',
+        name: 'kassa',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/kassa/kassa.vue')
+    },
+    {
+        path: '/kassa_Add/:id',
+        name: 'kassa_Add',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/kassa/kassa_Add.vue')
+    },
+    {
+        path: '/hisob',
+        name: 'hisob',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/hisob/hisob.vue')
+    },
+    {
+        path: '/hisob_Add/:id',
+        name: 'hisob_Add',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/hisob/hisob_Add.vue')
+    },
     {
         path: '/user',
         name: 'user',
@@ -245,11 +272,46 @@ const routes = [{
             import ('../views/mainPage/zaxiraniAlmashtirish.vue')
     },
     {
+        path: '/main_kassa',
+        name: 'main_kassa',
+        meta: { layout: 'navbar' },
+        component: () =>
+            import ('../views/main_kassa/main_kassa.vue')
+    },
+    {
+        path: '/hisoblar',
+        name: 'hisoblar',
+        meta: { layout: 'navbar' },
+        component: () =>
+            import ('../views/main_kassa/hisoblar.vue')
+    },
+    {
+        path: '/savdo_all_kassa_info',
+        name: 'savdo_all_kassa_info',
+        meta: { layout: 'navbar' },
+        component: () =>
+            import ('../views/main_kassa/savdo_all_kassa_info.vue')
+    },
+    {
+        path: '/main_kassa_report',
+        name: 'main_kassa_report',
+        meta: { layout: 'navbar' },
+        component: () =>
+            import ('../views/main_kassa/main_kassa_report.vue')
+    },
+    {
         path: '/sell',
         name: 'sell',
         meta: { layout: 'empty' },
         component: () =>
             import ('../views/sell/sell.vue')
+    },
+    {
+        path: '/cash',
+        name: 'cash',
+        meta: { layout: 'empty' },
+        component: () =>
+            import ('../views/sell/closeCash.vue')
     },
     {
         path: '/setting',
@@ -315,6 +377,7 @@ const routes = [{
         component: () =>
             import ('../views/report/worker_rasxod.vue')
     },
+
     {
         path: '/getProduct_report',
         name: 'getProduct_report',

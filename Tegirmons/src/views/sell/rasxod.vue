@@ -43,12 +43,12 @@
             @click="getBemorId(i,item)" :class="{'activeUser' : active_bemor == i }">
             <div>
               <div class="d-flex">
-                <div class=" user_photo">
+                <div class="user_photo">
                   <img src="../../assets/client.png" style="height: 45px; overflow: none;" class="img-fluid" alt="">
                 </div>
                 <div class="px-3">
                   <p class="m-0 p-0 font-weight-bold" style="font-size: 12px;">{{item.fio}}</p>
-                  <p class="m-0 mt-1 rang" style="font-size:10px;">Год: <span v-if="item.addiotionala_information" class="px-2">
+                  <p class="m-0 mt-1 rangRasxod" style="font-size:10px;">Год: <span v-if="item.addiotionala_information" class="px-2">
                     {{ item.addiotionala_information.slice(8,10) + '-' + item.addiotionala_information.slice(5,7) + '-' + item.addiotionala_information.slice(0,4)}}</span> 
                     Тел: <span class="px-2">{{item.phone_number}}</span></p>
                 </div>
@@ -163,6 +163,7 @@
     <massage_box :hide="modal_status" :detail_info="modal_info"
       :m_text="$t('Failed_to_add')" @to_hide_modal="modal_status= false"/>
       <Toast ref="message"></Toast>
+      <Alert ref="alert"></Alert> 
   </div>
 </template>
 
@@ -213,14 +214,14 @@ export default {
       required
     },
   },
-  computed: mapGetters(['allWorker']),
+  computed: mapGetters(['allWorker', 'user_kassa_list', 'user_kassa_info']),
   async mounted(){
     await this.fetchWorker();
     this.client_list = this.allWorker;
     await this.nbuKurs();
   },
   methods: {
-    ...mapActions(['fetchWorker', ]),
+    ...mapActions(['fetchWorker', 'fetchKassa_userId', 'fetchKassa_info' ]),
     clw_rw(){
       this.rasxod = '0';
       this.rasxod_qty = 0;
@@ -243,6 +244,27 @@ export default {
           return false;
         }
       console.log('dadas')
+      await this.fetchKassa_userId(localStorage.user_id);
+        if(this.user_kassa_list.length){
+          localStorage.kassa_id = this.user_kassa_list[0].id;
+          localStorage.kassa_num = this.user_kassa_list[0].num_1;
+        }
+        else{
+          this.$refs.alert.error('Bu foydalanuvchi kassaga biriktirilmagan, unda savdo qilish huquqi yuq !');
+          localStorage.kassa_id = 0;
+          localStorage.kassa_num = 0;
+          return;
+        }
+      await this.fetchKassa_info(localStorage.kassa_id);
+      if(this.dollor>this.user_kassa_info.dollor){
+        this.$refs.alert.error('Kassada Dollor yetarli emas !');
+        return;
+
+      }
+      else if(this.rasxod_qty>this.user_kassa_info.cash){
+        this.$refs.alert.error('Kassada Naqd pul yetarli emas !');
+        return;
+      }
       const requestOptions = {
         method : "POST",
         headers: { "Content-Type" : "application/json" },
@@ -264,6 +286,7 @@ export default {
           "reserve": this.rasxod,
           "image_url": '0',
           "status_rasxod": 0,
+          "auth_user_updator_id": localStorage.kassa_id
           // "uz_card": 0,     for skidka uchun ishlataman
         })
       };
@@ -439,6 +462,10 @@ export default {
           tols += n[i];
         }
        }
+       if(tols[tols.length-1] != '0' && tols[tols.length-1] != '1' && tols[tols.length-1] != '2' && tols[tols.length-1] != '3' && tols[tols.length-1] != '4' && 
+        tols[tols.length-1] != '5' && tols[tols.length-1] != '6' && tols[tols.length-1] != '7' && tols[tols.length-1] != '8' && tols[tols.length-1] != '9'){
+        tols = tols.slice(0,tols.length-1)
+       }
        this.rasxod = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
        var temp = ''
        for(let i=0; i<this.rasxod.length; i++){
@@ -460,6 +487,10 @@ export default {
           tols += n[i];
         }
        }
+       if(tols[tols.length-1] != '0' && tols[tols.length-1] != '1' && tols[tols.length-1] != '2' && tols[tols.length-1] != '3' && tols[tols.length-1] != '4' && 
+        tols[tols.length-1] != '5' && tols[tols.length-1] != '6' && tols[tols.length-1] != '7' && tols[tols.length-1] != '8' && tols[tols.length-1] != '9'){
+        tols = tols.slice(0,tols.length-1)
+       }
        this.dollor_string = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
        var temp = ''
        for(let i=0; i<this.dollor_string.length; i++){
@@ -480,6 +511,10 @@ export default {
         if(n[i] != ' '){
           tols += n[i];
         }
+       }
+       if(tols[tols.length-1] != '0' && tols[tols.length-1] != '1' && tols[tols.length-1] != '2' && tols[tols.length-1] != '3' && tols[tols.length-1] != '4' && 
+        tols[tols.length-1] != '5' && tols[tols.length-1] != '6' && tols[tols.length-1] != '7' && tols[tols.length-1] != '8' && tols[tols.length-1] != '9'){
+        tols = tols.slice(0,tols.length-1)
        }
        this.dollor_kurs = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
        var temp = ''
@@ -553,16 +588,21 @@ export default {
      justify-content: space-between;
      // background-color: #fff;
      transition: all 0.5s ease-in-out;
-     .rang{
-       color: rgb(66, 167, 255);
+     .rangRasxod{
+       color: #ea605b;
        font-weight: bold;
      }
      &:hover{
        cursor: pointer;
        box-shadow: 2px 2px 5px rgb(224, 224, 224);
-       background-color: rgb(215, 242, 255);
+       background-color: #f68680;
        transform: translate(6px, 0px);
        transition: all 0.1s ease-in-out;
+       color:white;
+       .rangRasxod{
+          color: white;
+          font-weight: bold;
+        }
      }
    }
  
@@ -570,8 +610,13 @@ export default {
 .activeUser{
  cursor: pointer;
  box-shadow: 2px 2px 5px rgb(224, 224, 224);
- background-color: rgb(179, 230, 255);
+ background-color: #f76e67;
  transform: translate(6px, 0px);
  transition: all 0.1s ease-in-out;
+ color:white;
+ .rangRasxod{
+  color: white !important;
+  font-weight: bold;
+}
 }
 </style>

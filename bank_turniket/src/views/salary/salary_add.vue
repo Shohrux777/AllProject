@@ -10,16 +10,17 @@
       <!-- <MDBIcon icon="exclamation-circle" class="trailing"></MDBIcon> -->
     </MDBInput>
 
-    <MDBInput
+    <!-- <MDBInput
       type="number"
       id="form1"
       class="form-icon-trailing mt-3"
       :label="$t('salary')"
       v-model="money"
     >
-      <!-- <MDBIcon icon="exclamation-circle" class="trailing"></MDBIcon> -->
-    </MDBInput>
-
+    </MDBInput> -->
+    <input type="text" v-model="money_str"  @keyup="funcCash($event.target.value)" :placeholder="$t('salary')"  
+    class="form-control  mt-2 text-right pr-2" style="border:1px solid #BDBDBD; outline:none;font-size:13px; height:30px;" >
+    
     <div class="d-flex my-3">
       <MDBRadio label="Почасовая" value="1" v-model="radio2" inline name="inlineRadioOptions" />
       <MDBRadio label="Дневная" class="ml-5" value="2" v-model="radio2" inline name="inlineRadioOptions" />
@@ -64,6 +65,7 @@ export default {
         name: '',
         id: 0,
         money: null,
+        money_str: '',
         subdept_name: '',
         subdept_id: null,
         work_type: 0,
@@ -74,6 +76,7 @@ export default {
       this.id = this.select_data.id;
       this.name = this.select_data.name;
       this.money = this.select_data.value;
+      this.money_str = this.money.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
       this.radio2 = this.select_data.reserved_value;
     },
     props:{
@@ -84,7 +87,26 @@ export default {
       },
     methods:{
       ...mapActions(['fetch_Salary']),
+      funcCash(n){
+        var tols = ''
+        for(let i=0; i<n.length; i++){
+          if(n[i] != ' '){
+            tols += n[i];
+          }
+        }
 
+        this.money_str = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+        var temp = ''
+        for(let i=0; i<this.money_str.length; i++){
+          if(this.money_str[i] != ' '){
+            temp += this.money_str[i];
+          }
+        }
+        console.log(temp)
+        if(temp != ''){
+          this.money = parseFloat(temp);
+        }
+      },
       sub_debt_select(option){
         console.log(option)
         this.subdept_name = option.name;

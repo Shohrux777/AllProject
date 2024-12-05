@@ -22,7 +22,8 @@ import sell from '../store/modules/sell'
 import bigTarozi from '../store/modules/bigTarozi'
 import worker from '../store/modules/worker'
 import usedProduct from '../store/modules/usedProduct'
-
+import kassa from '../store/modules/kassa'
+import hisob from '../store/modules/hisob'
 
 Vue.use(Vuex)
 
@@ -103,6 +104,8 @@ export default new Vuex.Store({
         check,
         bigTarozi,
         worker,
-        usedProduct
+        usedProduct,
+        kassa,
+        hisob
     }
 })

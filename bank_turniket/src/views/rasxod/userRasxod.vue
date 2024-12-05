@@ -32,6 +32,7 @@
                 </div>
             </div>
         </div>
+        
 
         <div class="mainpage ">
           <div class="main_table">
@@ -52,10 +53,21 @@
                   style="margin-top: -30px !important; "
                 />
               </div>
-              <div style="width: 40%;" class="px-2">
+              <div style="width: 20%;" class="px-2">
                 <MDBBtn style="font-size: 9px;" @click="submit" color="primary">OK</MDBBtn>
                 <MDBBtn style="font-size: 9px;" @click="refresh" color="info">Refresh</MDBBtn>
               </div>
+              <div>
+                <select class="form-select" v-model="select_status" style="height:33px;" @change="select_status_item" aria-label="Default select example">
+                  <option selected value="3">Все</option>
+                  <option value="0">Расходь сумма</option>
+                  <option value="1">Зарплата сумма</option>
+                </select>
+              </div>
+            </div>
+            <div class="all_summa px-2" style="margin-top: 10px;">
+              <small class="fw-bold mr-2">Общий сумма:</small>
+              <small style="margin-left:10px;" class="mr-5">{{all_summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small>
             </div>
             <div class="mt-3">
               <MDBTable class="align-middle mb-0 bg-white">
@@ -74,7 +86,8 @@
                             <span @click="sortedArray('userid')"><MDBIcon icon="angle-down"  class="px-1 up_down_icon" style="position:absolute; font-size: 11px; bottom:-4px; cursor:pointer;"/></span>
                           </span>
                         </th>
-                        <th>Расходь сумма</th>
+                        <th>Сумма</th>
+                        <th>Статус</th>
                         <th>{{$t('note')}}</th>
                         <th>{{$t('date')}}</th>
                         <th  width="100">{{$t('action')}}</th>
@@ -94,8 +107,10 @@
                       <td style="width:60px;">
                         {{ row.userid }}
                       </td>
-                      <td v-if="row.count == 1" class="text-success fw-bold">{{row.count}}</td>
+                      <td v-if="row.count" class="text-success fw-bold">{{row.count.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</td>
                       <td v-else class="text-danger fw-bold">{{row.count}}</td>
+                      <td v-if="row.num_1 == 0" class="text "><MDBBadge badge="danger" pill>Расходь сумма</MDBBadge></td>
+                      <td v-else class="text "><MDBBadge badge="success" pill>Зарплата сумма</MDBBadge></td>
                       <td class="text ">{{row.note}}</td>
                       <td class="text">{{row.reg_date.slice(0,10)}}</td>
                       <td class="text ">
@@ -189,6 +204,7 @@ export default {
         user_name: '',
         user_id: 0,
         id: 0,
+        all_summa: 0,
 
         loading: false,
         door_name: '',
@@ -204,21 +220,32 @@ export default {
           'Сутствующих': 'come',
           'Дни пришел' : 'working_days_count',
           "Дни не пришел": "not_come"
-        }
+        },
+
+        select_status: 3,
       }
     },
     computed: {
       ...mapGetters(['get_door_list']),
       filteredList: function(){
+        let items = this.reportList;
+        this.all_summa = 0;
+
         if(this.search)
         {
-          return this.reportList.filter((item)=>{
+          items = items.filter((item)=>{
             return this.search.toLowerCase().split(' ').every(v => item.user_name.toLowerCase().includes(v))
           })
-        }else
-        {
-          return this.reportList;
         }
+        if(this.select_status != 3){
+          items = items.filter( item => {
+            return item.num_1 == this.select_status;
+          })
+        }
+        this.all_summa = items.reduce((accumulator ,item) => {
+          return accumulator += parseFloat(item.count);
+        }, 0)
+        return items;
       }
     },
     async mounted(){
@@ -305,6 +332,7 @@ export default {
         
       },
       async submit(){
+        this.all_summa = 0;
         let start = this.Start_time + 'T00:00:35.000Z' ;
         let end = this.End_time + 'T00:00:00.000Z';
         console.log(start)
@@ -320,6 +348,11 @@ export default {
           console.log('data') 
           console.log(data) 
           this.reportList = data.items_list;
+          this.all_summa = data.items_list.reduce((accc ,item) => {
+            return accc += parseFloat(item.count);
+          }, 0)
+          console.log('this.all_summa')
+          console.log(this.all_summa)
         }
         catch(error){
           this.loading = false;

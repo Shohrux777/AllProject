@@ -9,6 +9,7 @@ import store from './store'
 import i18n from './i18n'
 import Vuelidate from 'vuelidate'
 import Toast from "./components/alert.vue";
+import Alert from "./components/toast.vue";
 import massage_box from "./components/massage_box.vue";
 import loader from './components/loader.vue'
 import block from './components/block.vue'
@@ -26,6 +27,7 @@ Vue.component('apexchart', VueApexCharts)
 Vue.config.productionTip = false
 Vue.use(Vuelidate)
 Vue.component('Toast', Toast)
+Vue.component('Alert', Alert)
 Vue.component('massage_box', massage_box)
 Vue.component('modal-train', modal)
 Vue.component('modal-new', modal_new)

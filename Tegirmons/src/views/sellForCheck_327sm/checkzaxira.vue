@@ -125,7 +125,7 @@ export default {
   },
   async mounted(){
     window.print();
-    await this.writeCash();
+    // await this.writeCash();
     this.$emit('close');
     // this.clear_order();
   },
@@ -143,6 +143,7 @@ export default {
         body: JSON.stringify({
           "tegirmonAuthid": localStorage.AuthId,
           "for_buy_tovar_rasxod" : this.zaxira_summa,
+          "auth_user_updator_id": localStorage.kassa_id,
           // "uz_card": 0,     for skidka uchun ishlataman
         })
       };

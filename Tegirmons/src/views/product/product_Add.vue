@@ -93,6 +93,17 @@
             </div>
           </mdb-col>
         </mdb-row>
+        <mdb-row class="mt-4">
+          <mdb-col col="3">
+            <p class="p-0 m-0 mt-2" style="font-size: 14px;">UZS статус</p>
+          </mdb-col>
+          <mdb-col col="5" style="position: relative;">
+              <div class="custom-control custom-switch  pl-5">
+                <input v-model="uzs_status" type="checkbox" class="custom-control-input " id="customSwitch2" checked>
+                <label class="custom-control-label status-style" for="customSwitch2"></label>
+            </div>
+          </mdb-col>
+        </mdb-row>
 
 
 
@@ -177,6 +188,7 @@ export default {
       code: '',
       status: false,
       color: '#ffffff',
+      uzs_status: false,
     //address: '',
 
     }
@@ -221,6 +233,12 @@ export default {
         this.code = data.code,
         this.status = data.inv_accepted_status;
         this.color = data.shitrix_code;
+        if(data.auth_user_creator_id == 0){
+          this.uzs_status = false;
+        }
+        else{
+          this.uzs_status = true;
+        }
         // this.address = data.adddress,
         this.PicShow = false;
       }
@@ -280,8 +298,11 @@ export default {
             this.$refs.message.warning('please_fill')
             return false;
           }
-        
         else{ 
+          let uzs_num = 0;
+          if(this.uzs_status == true){
+            uzs_num = 1;
+          }
           this.alert_danger = false;
           const requestOptions = {
               method : "POST",
@@ -294,6 +315,7 @@ export default {
                 "code": this.code,
                 "inv_accepted_status": this.status,
                 "shitrix_code": this.color,
+                "auth_user_creator_id": uzs_num,
                 // "adddress": this.address,
                 // "image_url": this.image_url,
                 "id" : this.id,

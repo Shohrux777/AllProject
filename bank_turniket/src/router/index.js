@@ -171,6 +171,12 @@ const routes = [
     component: () => import( '../views/report/come_in_out.vue')
   },
   {
+    path: '/come_in_out_report',
+    name: 'come_in_out_report',
+    meta: { layout: 'empty' },
+    component: () => import( '../views/report/come_in_out.vue')
+  },
+  {
     path: '/userAddRemoveDay',
     name: 'userAddDay',
     meta: { layout: 'main' },

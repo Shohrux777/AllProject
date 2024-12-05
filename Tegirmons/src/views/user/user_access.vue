@@ -93,6 +93,38 @@
                 <label  style="cursor:pointer;" class="custom-control-label " for="number11"></label>
             </div>
         </div>
+        <div 
+            class="access_item d-flex justify-content-between py-2 border-bottom">
+            <span>Асосий касса</span>
+            <div class="custom-control custom-switch">
+                <input v-model="access_item.main_kassa" type="checkbox" class="custom-control-input " id="number12" checked>
+                <label  style="cursor:pointer;" class="custom-control-label " for="number12"></label>
+            </div>
+        </div>
+        <div 
+            class="access_item d-flex justify-content-between py-2 border-bottom">
+            <span>Сотув касса</span>
+            <div class="custom-control custom-switch">
+                <input v-model="access_item.sotuv_kassa" type="checkbox" class="custom-control-input " id="number13" checked>
+                <label  style="cursor:pointer;" class="custom-control-label " for="number13"></label>
+            </div>
+        </div>
+        <div 
+            class="access_item d-flex justify-content-between py-2 border-bottom">
+            <span>Кассага ходимларни ўлаш</span>
+            <div class="custom-control custom-switch">
+                <input v-model="access_item.kassa_setting" type="checkbox" class="custom-control-input " id="number14" checked>
+                <label  style="cursor:pointer;" class="custom-control-label " for="number14"></label>
+            </div>
+        </div>
+        <div 
+            class="access_item d-flex justify-content-between py-2 border-bottom">
+            <span>Счета</span>
+            <div class="custom-control custom-switch">
+                <input v-model="access_item.hisoblar" type="checkbox" class="custom-control-input " id="number15" checked>
+                <label  style="cursor:pointer;" class="custom-control-label " for="number15"></label>
+            </div>
+        </div>
         <div class="d-flex justify-content-end mt-4">
             <mdb-btn color="success" style="font-size: 10.5px"
             @click="saveAccess"
@@ -127,6 +159,10 @@ export default {
                 sell: false,
                 ostatka: false,
                 used_product_report: false,
+                main_kassa: false,
+                sotuv_kassa: false,
+                kassa_setting: false,
+                hisoblar: false,
             },
             id: 0,
         }
@@ -155,6 +191,10 @@ export default {
                 this.access_item.sell = data.sell;
                 this.access_item.ostatka = data.ostatka;
                 this.access_item.used_product_report = data.status_1;
+                this.access_item.main_kassa = data.status_2;
+                this.access_item.sotuv_kassa = data.status_3;
+                this.access_item.kassa_setting = data.status_4;
+                this.access_item.hisoblar = data.status_5;
 
                 this.id = data.id;
             }
@@ -191,7 +231,11 @@ export default {
                     "big_tarozi": this.access_item.big_tarozi,
                     "sell": this.access_item.sell,
                     "ostatka": this.access_item.ostatka,
-                    "status_1": this.access_item.used_product_report,
+                    "status_1": this.access_item.used_product_report, // xodimlarga prixod rasxod otchoti
+                    "status_2": this.access_item.main_kassa,
+                    "status_3": this.access_item.sotuv_kassa,
+                    "status_4": this.access_item.kassa_setting,
+                    "status_5": this.access_item.hisoblar,
                     "tegirmonUserid": this.user_id,
                     "id" : this.id,
                 })

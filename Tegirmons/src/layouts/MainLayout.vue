@@ -125,9 +125,9 @@
             { title: "client", icon: 'user-shield', url: '/client', view: false, color: '#c4cbcb', down_list:[] },
             // { title: "client_controler", icon: 'users', url: '/client_controler', view: false, color: '#c4cbcb', down_list:[] },
             { title: "user", icon: 'user-tie', url: '/user', view: false, color: '#c4cbcb', down_list:[] },
+            { title: "kassa", icon: 'cash-register', url: '/kassa', view: false, color: '#c4cbcb', down_list:[] },
+            { title: "hisob", icon: 'wallet', url: '/hisob', view: false, color: '#c4cbcb', down_list:[] },
             { title: "report", icon: 'calendar-plus', url: '', view: false, color: '#c4cbcb', down_list:[
-              //  { title: "rasxod", url: '/rasxod', dview: false, color: '#c4cbcb', down_list:[] },
-              //  { title: "pul_olish", url: '/chiqarilPulOlish', dview: false, color: '#c4cbcb', down_list:[] },
                { title: "usedProductList", url: '/usedProductList', dview: false, color: '#c4cbcb', down_list:[] },
                { title: "getProduct", url: '/getProduct_report', dview: false, color: '#c4cbcb', down_list:[] },
 

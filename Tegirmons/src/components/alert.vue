@@ -107,7 +107,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .alerList{
   max-width: 500px;
   z-index: 1000000;

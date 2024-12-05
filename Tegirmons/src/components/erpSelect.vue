@@ -3,7 +3,7 @@
     <div class=" mb-2" @click="select_input" :class="[{'vaeble': change,  'varible': change_color},{'input_div': size=='md', 'input_div_sm': size == 'sm'}]" >
         <input  group  type="text" class="px-2" :value="selected" @keyup="hideInput1" />
         <label for="text" v-if="selected == ''" :class="{'selectLabel': size == 'sm'}">
-         {{$t('select_item')}}
+         {{$t('select_item') +  ' ' + label}}
         </label>
 
         <div class="icon_caret">
