@@ -209,7 +209,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row,rowIndex) in filteredList" :key="rowIndex" style="cursor:pointer;"
+              <tr v-for="(row,rowIndex) in filteredList" :key="rowIndex" 
+                :class="{'text_success': row.status_rasxod == 1, 'text_danger': row.status_rasxod == 0}"
+                style="cursor:pointer;"
                 @click="showRasxodItem(row)">
                 <td> <small style="font-size: 11.5px;">{{rowIndex+1}}</small> </td>
                 <td> <small style="font-size: 11.5px;">{{row.worker_name}}</small> </td>
@@ -753,5 +755,11 @@
 .input_style{
   font-size: 13.5px !important;
   color: rgb(0, 0, 85) !important;
+}
+.text_success{
+  background: #e6faeb;
+}
+.text_danger{
+  background: #ffebeb;
 }
 </style>

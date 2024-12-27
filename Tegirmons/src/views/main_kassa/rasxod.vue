@@ -247,6 +247,10 @@ export default {
       this.showPhoto = false;
     },
     async saveRasxod(){
+      if(!this.dollor && !this.rasxod_qty){
+        this.$refs.alert.error('Summa kiritilmadi!');
+        return;
+      }
        if(this.$v.$invalid )
         {
           this.$v.$touch();

@@ -164,6 +164,8 @@
     <massage_box :hide="modal_status" :detail_info="modal_info"
       :m_text="$t('Failed_to_add')" @to_hide_modal="modal_status= false"/>
       <Toast ref="message"></Toast>
+      <Alert ref="alert"></Alert>
+
   </div>
 </template>
 
@@ -237,6 +239,10 @@ export default {
       this.showPhoto = false;
     },
     async saveRasxod(){
+      if(!this.dollor && !this.rasxod_qty){
+        this.$refs.alert.error('Summa kiritilmadi!');
+        return;
+      }
        if(this.$v.$invalid )
         {
           this.$v.$touch();

@@ -2,6 +2,18 @@
   <div>
     <div style="margin-top:10px;" class=" pt-3">
       <div class="row">
+        
+        <div class="col-12 px-4 mb-2 mt-2">
+          <div style="position:relative;">
+            <erpSelect
+              :options="allKassa.rows"
+              @select="selectOption"
+              :selected="kassa_name"
+              :label="$t('kassa')"
+            />
+            <small style="position:absolute; top:-16px; left:3px; font-size: 11.5px;" class="font-weight-bold">{{$t('kassa')}}</small>
+          </div>
+        </div>
         <div class="col-12 px-4 mb-2 mt-2">
           <div style="position:relative;">
             <input type="text" v-model="next_day_cash_string"  v-on:keyup.13 = "payed" @keyup="funcCash($event.target.value)" v-on:click.capture="naqd_Nol" @blur="funcAllBlue" ref="cashIn"  
@@ -38,51 +50,68 @@
         <div class="col-12 border-top mt-1 py-2 text-right px-4">
           
           <mdb-btn color="danger" style="font-size:10px; padding: 6px 0;"  @click="close" class="m-0 px-3 ml-1 mb-0" > {{$t('cancel')}}</mdb-btn>
-          <mdb-btn   @click="photoRasxod()" color="info"  style="font-size:10px; padding: 6px 0;" class="m-0 px-3 ml-2 mb-0"
+          
+          <mdb-btn   @click="photoRasxod()" color="info"  style="font-size: 10px; padding: 6px 0;" class="m-0 px-3 ml-2 mb-0"
             > <mdb-icon fas class="mr-1"  icon="camera"></mdb-icon>  {{$t('photo')}}
           </mdb-btn>
-          <mdb-btn color="primary" style="font-size:10px; padding: 6px 0;" v-if="photo_url" @click="submitSavdoKassa" class="m-0 px-3 ml-1 mb-0" > {{$t('apply')}}</mdb-btn>
+
+          <mdb-btn color="primary" style="font-size:10px; padding: 6px 0;" v-if="photo_url"  @click="submitSavdoKassa" class="m-0 px-3 ml-1 mb-0" > {{$t('apply')}}</mdb-btn>
         </div>
       </div>
       </div>
-    <webcam  v-if="showPhoto" @getPhotosub="takePhoto"/>
+    <webcam  v-if="showPhoto" @getPhotosub="takePhoto"/>  
     <Alert ref="alert"></Alert> 
 
   </div>
 </template>
 
 <script>
-import {mdbInput, mdbBtn, mdbIcon } from 'mdbvue'
+import erpSelect from "../../components/erpSelect.vue";
 import webcam from '../webcam/webcam_Add.vue'
-import {mapActions, mapGetters} from 'vuex'
-
+import {mdbInput, mdbBtn, mdbIcon } from 'mdbvue'
+import {mapActions,mapGetters} from 'vuex'
 export default {
   components: {
-    mdbInput, mdbBtn,mdbIcon, webcam
+    mdbInput, mdbBtn,mdbIcon,
+    webcam, erpSelect
   }, 
 data(){
     return{
-        showPhoto:false,
-        photo_url: '',
-        hostname: this.$store.state.server_ip,
+      showPhoto:false,
+      photo_url: '',
+      hostname: this.$store.state.server_ip,
 
-        next_day_cash_string: '0',
-        next_day_cash: 0,
-        next_day_dollor_string: '0',
-        next_day_dollor: 0,
-        next_day_id: 0,
-        note: ''
+      next_day_cash_string: '0',
+      next_day_cash: 0,
+      next_day_dollor_string: '0',
+      next_day_dollor: 0,
+      next_day_id: 0,
+      note: 'Savdo kassaga utkazildi.',
+      kassa_name: '',
+      kassa_id: null,
+      kassa_user_name: '',
+      kassa_user_id: 0,
+      kassa_info: '',
     }
 },
-computed: mapGetters(['user_kassa_info']),
-
-methods:{
-    ...mapActions(['fetchKassa_info' ]),
-    async refresh(kassa_data){
-      this.note = kassa_data.name + "dan o'tkazildi";
-      this.clw_cl();
+props:{
+    cash_kassa:{
+      type: Number,
+      default: 0,
     },
-
+    dollor_kassa:{
+      type: Number,
+      default: 0,
+    }
+  },
+computed: mapGetters(['allKassa','user_kassa_list', 'user_kassa_info']),
+methods:{
+  ...mapActions(['fetchKassa', 'fetchKassa_userId', 'fetchKassa_info']),
+    async refresh(kassa_data){
+      console.log(kassa_data)
+      this.clw_cl();
+      this.kassa_info = kassa_data.name + 'dan '
+    },
     takePhoto(img){
       // console.log(img)
       this.photo_url = img;
@@ -91,22 +120,57 @@ methods:{
     photoRasxod(){
       this.showPhoto = true;
     },
-
+    
     close(){
         this.$emit('close')
     },
-    clw_cl(){
+    selectOption(option){
+      console.log(option)
+      this.kassa_name = option.name;
+      this.kassa_id = option.id;
+      this.kassa_user_name = option.text_1;
+      this.kassa_user_id = option.tegirmonUserid;
+      this.note = this.kassa_info + ' ' + option.name + 'ga utkazma ( ' + option.text_1 + 'GA )'
+    },
+    async clw_cl(){
+      this.kassa_info= '';
+      this.kassa_name = '';
+      this.kassa_id = null;
+      this.kassa_user_name = '';
+      this.kassa_user_id = 0;
+      await this.fetchKassa();
       this.next_day_cash = 0;
       this.next_day_dollor = 0;
       this.next_day_cash_string = '0';
       this.next_day_dollor_string = '0';
-      this.photo_url = '';
+      this.note = '';
     },
     async submitSavdoKassa(){
-      if(this.next_day_cash == 0 && this.next_day_dollor == 0){
-        this.$refs.alert.error('Summa kiritilmadi!');
-        return; 
+      if(!this.kassa_user_name){
+        this.$refs.alert.error('Bu kassaga xodim biriktirilmagan!');
+        return;
       }
+      if(this.next_day_cash == 0 && this.next_day_dollor == 0){
+        this.$refs.alert.error('Summa kiritilmagan !');
+        return;
+      }
+      else if(this.kassa_id == null || this.kassa_id == 0 || this.kassa_id == ''){
+        this.$refs.alert.error('Savdo kassasi tanlanmagan !');
+        return;
+      }
+
+      await this.fetchKassa_userId(localStorage.user_id);
+        if(this.user_kassa_list.length){
+          localStorage.kassa_id = this.user_kassa_list[0].id;
+          localStorage.kassa_num = this.user_kassa_list[0].num_1;
+        }
+        else{
+          this.$refs.alert.error('Bu foydalanuvchi kassaga biriktirilmagan, unda savdo qilish huquqi yuq !');
+          localStorage.kassa_id = 0;
+          localStorage.kassa_num = 0;
+          return;
+        }
+
       await this.fetchKassa_info(localStorage.kassa_id);
       if(this.next_day_dollor>this.user_kassa_info.dollor){
         this.$refs.alert.error('Kassada Dollor yetarli emas !');
@@ -117,50 +181,131 @@ methods:{
         this.$refs.alert.error('Kassada Naqd pul yetarli emas !');
         return;
       }
+
       const requestOptions = {
         method : "POST",
         headers: { "Content-Type" : "application/json" },
         body: JSON.stringify({
-          "worker_name": localStorage.user_name,
+          "worker_name": this.kassa_user_name,
+          "reserve_val_l": this.kassa_user_id, // tanlagan kassitni auth idsini yozish kerak hozi userId ketayabdi tugirlash kk
+          "passport_number": '',
+          "phone_number": this.photo_url,
           "auth_user_creator_id": localStorage.AuthId,
           "dollor": this.next_day_dollor,
           "dollor_string": this.next_day_dollor_string,
           "all_summ": 0,
-          "all_summ_string": '0',
+          "all_summ_string": '',
           "kurs": 0,
-          "note": this.note + ' ( ' + localStorage.user_name + ' )',
+          "note": this.note,
           "addiotionala_information": localStorage.user_name,
-          "rasxod" : 0,
-          "prixod": this.next_day_cash,
-          "reserve": '0',
-          "image_url": this.next_day_cash_string,
-          "status_rasxod": 1,
-          "main_kassa_status": true,
+          "rasxod" : this.next_day_cash,
+          "prixod": 0,
+          "reserve": this.next_day_cash_string,
+          "image_url": '0',
+          "status_rasxod": 0,
           "auth_user_updator_id": localStorage.kassa_id,
+          "bot_id": this.kassa_id
+          // "uz_card": 0,     for skidka uchun ishlataman
         })
       };
+      console.log('requestOptions.body')
+      console.log(requestOptions.body)
       try{
         this.loading = true;
-        const response = await fetch(this.$store.state.hostname + "/TegirmonMainKassaRasxod", requestOptions);
+        const response = await fetch(this.$store.state.hostname + "/TegirmonUserRasxod", requestOptions);
         // const data = await response.json();
         console.log(response)
         if(response.status == 201 || response.status == 200)
         {
           this.clw_cl();
           this.$emit('close');
-
+          this.loading = false;
           return true;
         }
         else{
-          console.log('else error')
+          this.modal_info = this.$i18n.t('network_ne_connect');
+          this.modal_status = true;
+          this.loading = false;
           return false;
         }
       }
       catch{
-        console.log('catch error')
+        this.loading = false;
+        this.modal_info = this.$i18n.t('network_ne_connect');
+        this.modal_status = true;
         return false;
       }
+      
     },
+    // async submitSavdoKassa(){
+
+    //   console.log(this.next_day_cash)
+    //   console.log(this.next_day_dollor)
+    //   if(this.next_day_cash == 0 && this.next_day_dollor == 0){
+    //     this.$refs.alert.error('Summa kiritilmagan !');
+    //     return;
+    //   }
+
+    //   else if(this.kassa_id == null || this.kassa_id == 0 || this.kassa_id == ''){
+    //     this.$refs.alert.error('Savdo kassasi tanlanmagan !');
+    //     return;
+    //   }
+
+    //   if(this.next_day_dollor>this.dollor_kassa){
+    //     this.$refs.alert.error('Kassada Dollor yetarli emas !');
+    //     return;
+    //   }
+    //   else if(this.next_day_cash>this.cash_kassa){
+    //     this.$refs.alert.error('Kassada Naqd pul yetarli emas !');
+    //     return;
+    //   }
+    //   console.log('dadas')
+    //   const requestOptions = {
+    //     method : "POST",
+    //     headers: { "Content-Type" : "application/json" },
+    //     body: JSON.stringify({
+    //       "worker_name": localStorage.user_name,
+    //       "auth_user_creator_id": localStorage.AuthId,
+    //       "dollor": this.next_day_dollor,
+    //       "dollor_string": this.next_day_dollor_string,
+    //       "all_summ": 0,
+    //       "all_summ_string": '0',
+    //       "kurs": 0,
+    //       "note": this.note,
+    //       "addiotionala_information": localStorage.user_name,
+    //       "rasxod" : this.next_day_cash,
+    //       "prixod": 0,
+    //       "reserve": this.next_day_cash_string,
+    //       "image_url": '0',
+    //       "status_rasxod": 0,
+    //       "main_kassa_status": true,
+    //       "auth_user_updator_id": this.kassa_id,
+    //       // bu yerga kassaid ni quyish
+    //       // "uz_card": 0,     for skidka uchun ishlataman
+    //     })
+    //   };
+    //   try{
+    //     this.loading = true;
+    //     const response = await fetch(this.$store.state.hostname + "/TegirmonMainKassaRasxod", requestOptions);
+    //     // const data = await response.json();
+    //     console.log(response)
+    //     if(response.status == 201 || response.status == 200)
+    //     {
+    //       this.clw_cl();
+    //       this.$emit('close');
+
+    //       return true;
+    //     }
+    //     else{
+    //       console.log('else error')
+    //       return false;
+    //     }
+    //   }
+    //   catch{
+    //     console.log('catch error')
+    //     return false;
+    //   }
+    // },
     funcCash(n){
       var tols = ''
       for(let i=0; i<n.length; i++){

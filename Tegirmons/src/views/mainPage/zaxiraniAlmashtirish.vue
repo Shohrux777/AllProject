@@ -132,8 +132,8 @@
                 <h6 class="pro_name_color text-left ml-3">{{item.client.fio}}</h6>
                 <div class="d-flex justify-content-between align-items-center">
                   <h6 class="pro_name_color text-left ml-3 mt-2">{{item.product.name}}</h6>
-                  <h4 class="mt-2" v-if="item.real_qty">{{item.real_qty.toFixed(1).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} <small>кг</small></h4>
-                  <h4 class="mt-2" v-else>{{item.real_qty.toFixed(1)}} <small>кг</small></h4>
+                  <h4 class="mt-2" v-if="item.real_qty">{{item.real_qty.toFixed(1).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} <small>{{item.product.unitMeasurment.name}}</small></h4>
+                  <h4 class="mt-2" v-else>{{item.real_qty.toFixed(1)}} <small>{{item.product.unitMeasurment.name}}</small></h4>
                 </div>
               </div>
             </div>
@@ -849,6 +849,8 @@ data(){
         this.loading = true;
         const response = await fetch(this.$store.state.hostname + "/TegirmonClientOstatkas/getPaginationGetByClientClientIdList?page=0&size=100&client_id=" + id);
         const data = await response.json();
+        console.log('ostatka data')
+        console.log(data)
         this.loading_table = false;
         this.loading = false;
         if(response.status == 201 || response.status == 200)

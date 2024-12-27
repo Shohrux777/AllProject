@@ -240,6 +240,16 @@
               >UZS</small
             >
           </div>
+          <div class="col-4 mt-2" v-show="false">
+            <input type="text" v-model="dollor_summaString"  @keyup="funcDollorSumma($event.target.value)"   
+              class="form-control border mt-0" style="border:none; outline:none;  height:38px;" >
+            <small
+              style="position: absolute; top: -8px; left: 20px; font-size: 11px"
+              class="bg-white px-2 py-0"
+              >Dollor</small
+            >
+          </div>
+          
           <div class="col-4 mt-2">
             <erpSelectHisob
               :options="allHisob.rows"
@@ -366,6 +376,7 @@
     <massage_box :hide="modal_status" :detail_info="modal_info"
       :m_text="$t('Failed_to_add')" @to_hide_modal="modal_status= false"/>
     <Toast ref="message"></Toast>
+    <Alert ref="alert"></Alert> 
   </div>
 </template>
 
@@ -444,6 +455,8 @@ export default {
       measureString: '',
       uzs_summa: null,
       uzs_summaString: '',
+      dollor_summa: null,
+      dollor_summaString: '',
       measure_status: false,
       hisob_name: '',
       hisob_id: 0,
@@ -521,9 +534,11 @@ export default {
       this.today_date = today.slice(0,10);
       // console.log(this.allClient)
     },
-   computed: mapGetters(['all_district_t', 'all_client_controler', 'allClient','allHisob', 'all_contragent_t', 'allCompany', 'all_product_t', 'user_to_zaxira']),
+   computed: mapGetters(['all_district_t', 'all_client_controler', 'allClient','allHisob',
+      'user_kassa_list', 'all_contragent_t', 'allCompany', 'all_product_t', 'user_to_zaxira']),
   methods: {
-    ...mapActions(['fetch_district_t', 'fetch_client_controler', 'fetchClient', 'fetch_contragent_t', 'fetchHisob', 'fetchCompany', 'fetch_product_t']),
+    ...mapActions(['fetch_district_t', 'fetch_client_controler', 'fetchClient', 'fetch_contragent_t', 
+      'fetchHisob', 'fetchKassa_userId', 'fetchCompany', 'fetch_product_t']),
     ...mapMutations(['clearZaxiraList', 'get_ostatka_check_for_get', 'get_invoice_for_invoice']),
     selectOptionHisob(option){
       console.log('hisob_name', option)
@@ -880,6 +895,23 @@ export default {
         this.uzs_summa = 0;
         this.uzs_summaString = '0'
       }
+      else{
+        await this.fetchKassa_userId(localStorage.user_id);
+        if(this.user_kassa_list.length){
+          localStorage.kassa_id = this.user_kassa_list[0].id;
+          localStorage.kassa_num = this.user_kassa_list[0].num_1;
+        }
+        else{
+          this.$refs.alert.error('Bu foydalanuvchi kassaga biriktirilmagan, unda savdo qilish huquqi yuq !');
+          localStorage.kassa_id = 0;
+          localStorage.kassa_num = 0;
+          return;
+        }
+      }
+      if(!this.dollor_summa){
+        this.dollor_summa = 0;
+        this.dollor_summaString = '0';
+      }
       if(this.measure_status){
         this.measure = this.uzs_summa;
         this.measureString = this.measure.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')
@@ -913,11 +945,18 @@ export default {
         this.$refs.message.warning('please_fill')
         return false;
       }
+      let note_str = '';
+      if(this.uzs_summa>0){
+        note_str = this.note + '( Клиент: ' + this.user_name + ' )';
+      }
+      else{
+        note_str = this.note;
+      }
       const requestOptions = {
           method : "POST",
           headers: { "Content-Type" : "application/json" },
           body: JSON.stringify({
-            "note" : this.note,
+            "note" : note_str,
             "tegirmonClientid" : this.user_id,
             "summ" : this.summ,
             "tegirmonProductid" : this.product_id,
@@ -930,6 +969,9 @@ export default {
             "hisob_name": this.hisob_name,
             "hisob_id": this.hisob_id,
             "poluchit_summa": this.uzs_summa,
+            "poluchit_summa_str": this.uzs_summaString,
+            "auth_user_name": localStorage.user_name,
+            "kassa_id": localStorage.kassa_id,
             "credit_sum": real_time_ostatka,
           })
         };
@@ -957,6 +999,8 @@ export default {
             this.real_time_ostatk = 0;
             this.uzs_summa = null;
             this.uzs_summaString = '';
+            this.dollor_summa = null;
+            this.dollor_summaString = '';
             this.hisob_name = '';
             this.hisob_id = 0;
             this.$refs.message.success('Added_successfully')
@@ -1186,7 +1230,27 @@ export default {
        }
       this.uzs_summa = parseFloat(temp);
     },
-
+    
+    funcDollorSumma(n){
+      var tols = ''
+      for(let i=0; i<n.length; i++){
+        if(n[i] != ' '){
+          tols += n[i];
+        }
+       }
+       if(tols[tols.length-1] != '0' && tols[tols.length-1] != '1' && tols[tols.length-1] != '2' && tols[tols.length-1] != '3' && tols[tols.length-1] != '4' && 
+        tols[tols.length-1] != '5' && tols[tols.length-1] != '6' && tols[tols.length-1] != '7' && tols[tols.length-1] != '8' && tols[tols.length-1] != '9'){
+        tols = tols.slice(0,tols.length-1)
+       }
+       this.dollor_summaString = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+       var temp = ''
+       for(let i=0; i<this.dollor_summaString.length; i++){
+        if(this.dollor_summaString[i] != ' '){
+          temp += this.dollor_summaString[i];
+        }
+       }
+      this.dollor_summa = parseFloat(temp);
+    },
   },
 };
 </script>

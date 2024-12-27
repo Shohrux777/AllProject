@@ -173,7 +173,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row,rowIndex) in get_payment_list" :key="rowIndex" style="cursor:pointer;"
+              <tr v-for="(row,rowIndex) in get_payment_list" :key="rowIndex" 
+                :class="{'text_success': row.status_rasxod == 1, 'text_danger': row.status_rasxod == 0}"
+                style="cursor:pointer;"
                 @click="showRasxodItem(row)">
                 <td> <small style="font-size: 11.5px;">{{rowIndex+1}}</small> </td>
                 <td> <small style="font-size: 11.5px;">{{row.worker_name}}</small> </td>
@@ -1046,5 +1048,12 @@
   background: -webkit-linear-gradient(90deg, hsla(0, 100%, 67%, 1) 0%, hsla(0, 100%, 89%, 1) 100%);
   
  // filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#FF5858", endColorstr="#FFC8C8", GradientType=1 );
+}
+
+.text_success{
+  background: #e6faeb;
+}
+.text_danger{
+  background: #ffebeb;
 }
 </style>

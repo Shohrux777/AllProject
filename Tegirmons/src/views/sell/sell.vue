@@ -24,6 +24,10 @@
           <mdb-icon style="font-size:9px;" icon="share-square" class="m-0 p-0 mr-1" />
           Asosiy kassaga pul utkazish
         </mdb-btn>
+        <mdb-btn @click="show_from_kassa_to_kassa()"  class="bg_kassa_to_kassa py-1 px-3" style="font-size:9px;">
+          <mdb-icon style="font-size:9px;" icon="share-square" class="m-0 p-0 mr-1" />
+          Boshqa kassaga pul utkazish
+        </mdb-btn>
         <div class="" v-if="kassa_info_show">
           <mdb-btn @click="funcKassaInfo"  color="danger py-1 px-3 mr-2" style="font-size:9px;">
             <mdb-icon style="font-size:9px;" icon="calendar" class="m-0 p-0 mr-1" />
@@ -369,6 +373,12 @@
           <kassa_add_user_setting @close="kassa_setting_status = false" ref="kassa_add_user_setting" />
         </template>
     </modal-train>
+    <modal-train  :show="from_kassa_to_kassa_sts" headerbackColor="#3b678b"  titlecolor="white" title="Boshqa kassaga pul utkazish" 
+      @close="from_kassa_to_kassa_sts = false" width="30%">
+        <template v-slot:body>
+          <fromKassaToKassa @close="from_kassa_to_kassa_sts = false" ref="fromKassaToKassa_ref" />
+        </template>
+    </modal-train>
    <massage_box :hide="modal_status" :detail_info="modal_info"
       :m_text="$t('Failed_to_delete')" @to_hide_modal = "modal_status= false"/>
 
@@ -382,6 +392,7 @@
 
 
 <script>
+import fromKassaToKassa from './fromKassaToKassa.vue'
 import sendMainKassa from './sendMainKassa.vue';
 import check from './check'
 import rasxod from './rasxod'
@@ -401,10 +412,12 @@ export default {
     mdbBtn,mdbInput,
     check,checkshow,
     Pay,
-    kassa_info, rasxod,
+    kassa_info, 
+    rasxod,
     chiqarPulOlish,
     sendMainKassa,
-    kassa_add_user_setting
+    kassa_add_user_setting,
+    fromKassaToKassa
   },
   data() {
     return {
@@ -415,6 +428,7 @@ export default {
       closeCash: false,
       checkshow: false,
       kassa_setting_show: true,
+      from_kassa_to_kassa_sts: false,
 
       send_kassa_status: false,
       kassa_info_show: false,
@@ -557,6 +571,22 @@ export default {
         }
       this.$refs.savdo_kassa_send.refresh(this.user_kassa_list[0]);
       this.send_kassa_status = true;
+    },
+
+    async show_from_kassa_to_kassa(){
+      await this.fetchKassa_userId(localStorage.user_id);
+        if(this.user_kassa_list.length){
+          localStorage.kassa_id = this.user_kassa_list[0].id;
+          localStorage.kassa_num = this.user_kassa_list[0].num_1;
+        }
+        else{
+          this.$refs.alert.error('Bu foydalanuvchi kassaga biriktirilmagan, unda savdo qilish huquqi yuq !');
+          localStorage.kassa_id = 0;
+          localStorage.kassa_num = 0;
+          return;
+        }
+        this.$refs.fromKassaToKassa_ref.refresh(this.user_kassa_list[0]);
+      this.from_kassa_to_kassa_sts = true;
     },
     
     
@@ -1518,5 +1548,8 @@ export default {
       color:white;
       background: #33d95f;  
     }
+  }
+  .bg_kassa_to_kassa{
+    background: #3b678b !important; 
   }
 </style>

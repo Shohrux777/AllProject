@@ -254,7 +254,7 @@ export default {
     ...mapGetters(['allOrderList', 'get_skidka_summ', 'get_all_summa', 
     'get_m_categoryIdProduct', 'get_zakaz_product_all_list','get_page_savat', 
     'get_product_qty', 'AllSummString','user_kassa_list']),
-  }, 
+  },
   methods: {
     ...mapActions([  'fetchCategoryIdProduct', 'fetchProductSearchByName', 'fetchKassa_userId']),
     ...mapMutations([ 'clear_order', 'input_change', 'changeSumma', 'update_zakaz_product_all_list', 'select_savat_page', 'add_savat_page', 'del_savat_page', 
