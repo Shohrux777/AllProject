@@ -80,7 +80,7 @@
               <tr style="border-bottom: 0.5px solid #CED4DA;" v-for="(data,i) in item.changeProduct" :key="i">
                 <td  class="paymentCheckPrint" style="font-weight:bold; font-size: 12px;">{{data.product_name}}</td>
                 <td  class="paymentCheckPrint" style="font-weight:bold; text-align: center; font-size: 12px;">{{data.qty}}  {{data.measure}}</td>
-                <td  class="paymentCheckPrint" style="font-weight:bold; text-align: right; font-size: 12px;">{{data.all_qty.toFixed(2)}} кг</td>
+                <td  class="paymentCheckPrint" style="font-weight:bold; text-align: right; font-size: 12px;">{{data.all_qty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} {{data.main_product_measure}}</td>
               </tr>
             </tbody>
           </table>

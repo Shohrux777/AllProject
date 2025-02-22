@@ -135,7 +135,10 @@
             <td> <span >{{rowIndex+1}}</span> </td>
             <td> <span >{{row.product.name}}</span> </td>
             <td> <span >{{row.qty}} </span> <span v-if="row.product.print_name">{{row.product.print_name}}</span></td>
-            <td> <span >{{(row.qty / row.real_sum).toFixed(1)}} кг</span> </td>
+            <td> 
+              <span v-if="row.all_sum>0">{{row.all_sum_str}} UZS</span> 
+              <span v-else>{{(row.qty / row.real_sum).toFixed(1)}} кг</span> 
+            </td>
             <td><span>{{row.sum}} сум</span></td>
             <td> <span >{{row.updated_date_time.slice(8,10) + '-' + row.updated_date_time.slice(5,7) + '-' + row.updated_date_time.slice(0,4)}}</span> <span class="ml-2">{{row.updated_date_time.slice(11,16)}}</span> </td>
             <!-- <td> <span >{{row.lessons_cout}}</span> </td> -->  

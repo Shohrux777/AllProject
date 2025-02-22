@@ -1546,10 +1546,10 @@ export default {
     justify-content: center;
     &:hover{
       color:white;
-      background: #33d95f;  
+      background: #33d95f;
     }
   }
   .bg_kassa_to_kassa{
-    background: #3b678b !important; 
+    background: #3b678b !important;
   }
 </style>

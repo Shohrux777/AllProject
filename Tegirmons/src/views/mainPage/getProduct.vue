@@ -231,38 +231,75 @@
               {{ $t("name_invalid_text") }}
             </small> -->
           </div>
-          <div class="col-4 mt-2">
-            <input type="text" v-model="uzs_summaString"  @keyup="funcUzsSumma($event.target.value)"   
+          <div class="col-2">
+            
+            <input type="text" v-model="product_priceString"  @keyup="funcProductSumma($event.target.value)"   
               class="form-control border mt-0" style="border:none; outline:none;  height:38px;" >
+            <small
+              style="position: absolute; top: -8px; left: 20px; font-size: 11px"
+              class="bg-white px-2 py-0"
+              >{{ $t("product_price") }}</small
+            >
+          </div>
+          <div class="col-3 mt-2">
+            <input type="text" v-model="uzs_summaString" v-on:click.capture="clickUzs" @keyup="funcUzsSumma($event.target.value)"   
+              class="form-control border mt-0" style="border:none; outline:none;  height:33px;" >
             <small
               style="position: absolute; top: -8px; left: 20px; font-size: 11px"
               class="bg-white px-2 py-0"
               >UZS</small
             >
           </div>
-          <div class="col-4 mt-2" v-show="false">
-            <input type="text" v-model="dollor_summaString"  @keyup="funcDollorSumma($event.target.value)"   
-              class="form-control border mt-0" style="border:none; outline:none;  height:38px;" >
+          <div class="col-3 mt-2" >
+            <input type="text" v-model="dollor_summaString" :disabled="measure_status" v-on:click.capture="clickDollor"  @keyup="funcDollorSumma($event.target.value)"   
+              class="form-control border mt-0" style="border:none; outline:none;  height:33px;" >
             <small
               style="position: absolute; top: -8px; left: 20px; font-size: 11px"
               class="bg-white px-2 py-0"
-              >Dollor</small
+              >Доллор</small
+            >
+          </div>
+
+          <div class="col-3 mt-2" >
+            <input type="text"  v-model="kurs_summaString" :disabled="measure_status"  @keyup="funcKursSumma($event.target.value)"   
+              class="form-control border mt-0" style="border:none; outline:none;  height:33px;" >
+            <small
+              style="position: absolute; top: -8px; left: 20px; font-size: 11px"
+              class="bg-white px-2 py-0"
+              >Курс</small
             >
           </div>
           
-          <div class="col-4 mt-2">
+          <div class="col-3 mt-2">
             <erpSelectHisob
               :options="allHisob.rows"
               @select="selectOptionHisob"
               :selected="hisob_name"
               :label="$t('hisob')"
+              size="sm"
             />
+          </div>
+          <div class="col-3">
+            <p style="font-size: 14.5px; font-style: italic;" class="pb-0 mb-0 font-weight-bold">Общие сумма : 
+              <small style="font-size: 14.5px; font-style: italic;">{{all_summaString}}</small>
+            </p>
+          </div>
+          <div class="col-3" v-if="!measure_status">
+            <p v-if="diff_summa>0" style="font-size: 14.5px; font-style: italic;" class="pb-0 mb-0 font-weight-bold text-danger"> Не хватить : 
+              <small style="font-size: 14.5px; font-style: italic;">{{diff_summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small>
+            </p>
+            <p v-else-if="diff_summa==0" style="font-size: 14.5px; font-style: italic;" class="pb-0 mb-0 font-weight-bold text-info"> 
+            </p>
+            <p v-else style="font-size: 14.5px; font-style: italic;" class="pb-0 mb-0 font-weight-bold text-success"> Больше денег : 
+              <small style="font-size: 14.5px; font-style: italic;">{{diff_summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small>
+            </p>
           </div>
           <div class="col-12">
             <div class="photo w-100 d-flex justify-content-center rounded" v-if="image_url_str">
               <img :src="hostname + image_url_str" width="120" alt="" class="shadow border rounded">
             </div>
           </div>
+          
         </div>
         
           <webcam  v-show="showPhoto" @getPhotosub="takePhoto"/>
@@ -451,12 +488,26 @@ export default {
       note: '',
       today_date: '',
 
-      measure: null,
+      measure: 0,
       measureString: '',
-      uzs_summa: null,
+
+      uzs_summa: 0,
       uzs_summaString: '',
-      dollor_summa: null,
+      
+      dollor_summa: 0,
       dollor_summaString: '',
+      
+      all_summa: 0,
+      all_summaString: '0',
+      
+      product_price: 0,
+      product_priceString: '',
+      
+      kurs_summa: 0,
+      kurs_summaString: '',
+
+      diff_summa: 0,
+
       measure_status: false,
       hisob_name: '',
       hisob_id: 0,
@@ -532,6 +583,12 @@ export default {
       await this.fetchGetZaxiraList();
       let today = new Date().toISOString();
       this.today_date = today.slice(0,10);
+      await this.nbuKurs();
+      if(localStorage.dollor_kurs){
+        this.kurs_summa = parseFloat(localStorage.dollor_kurs);
+        this.kurs_summaString =  this.kurs_summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')
+      }
+      
       // console.log(this.allClient)
     },
    computed: mapGetters(['all_district_t', 'all_client_controler', 'allClient','allHisob',
@@ -540,6 +597,21 @@ export default {
     ...mapActions(['fetch_district_t', 'fetch_client_controler', 'fetchClient', 'fetch_contragent_t', 
       'fetchHisob', 'fetchKassa_userId', 'fetchCompany', 'fetch_product_t']),
     ...mapMutations(['clearZaxiraList', 'get_ostatka_check_for_get', 'get_invoice_for_invoice']),
+    async nbuKurs(){
+      try{
+        const response = await fetch("https://cbu.uz/uz/arkhiv-kursov-valyut/json/");
+        const data = await response.json();
+        console.log('json valyuta')
+        console.log(data)
+        if(data.length>0){
+          localStorage.dollor_kurs = parseInt(data[0].Rate);
+        }
+      }
+      catch(error){
+        localStorage.dollor_kurs = 0;
+        console.log(error);
+      }
+    },
     selectOptionHisob(option){
       console.log('hisob_name', option)
       this.hisob_name = option.name;
@@ -819,8 +891,16 @@ export default {
       console.log(option)
       this.product_name = option.name;
       this.product_id = option.id;
+      this.product_price = option.price;
+      this.product_priceString = option.price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
       if(option.auth_user_creator_id == 1){
         this.measure_status = true;
+        this.measure = 0;
+        this.measureString = '';
+        this.dollor_summa = 0;
+        this.dollor_summaString = '';
+        this.all_summa = 0;
+        this.all_summaString = 0;
       }
       else{
         this.measure_status = false;
@@ -895,7 +975,11 @@ export default {
         this.uzs_summa = 0;
         this.uzs_summaString = '0'
       }
-      else{
+      if(!this.dollor_summa){
+        this.dollor_summa = 0;
+        this.dollor_summaString = '0';
+      }
+      if(this.dollor_summa != 0 || this.uzs_summa != 0){
         await this.fetchKassa_userId(localStorage.user_id);
         if(this.user_kassa_list.length){
           localStorage.kassa_id = this.user_kassa_list[0].id;
@@ -908,13 +992,15 @@ export default {
           return;
         }
       }
-      if(!this.dollor_summa){
-        this.dollor_summa = 0;
-        this.dollor_summaString = '0';
-      }
       if(this.measure_status){
         this.measure = this.uzs_summa;
         this.measureString = this.measure.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')
+        this.all_summa = this.measure;
+        this.all_summaString = this.measureString;
+      }
+      if(!this.measure_status && (this.dollor_summa!=0 || this.uzs_summa!=0) && (this.diff_summa < -1 || this.diff_summa > 1) ){
+        this.$refs.alert.error('Olinayotgan pul summasi xato yana bir tekshirib kuring !');
+        return;
       }
       // console.log('this.OstatkaList')
       var real_time_ostatka = parseFloat(this.measure);
@@ -970,6 +1056,15 @@ export default {
             "hisob_id": this.hisob_id,
             "poluchit_summa": this.uzs_summa,
             "poluchit_summa_str": this.uzs_summaString,
+
+            "pol_dollor_summa": this.dollor_summa,
+            "pol_dollor_sum_str": this.dollor_summaString,
+            "pol_kurs_sum": this.kurs_summa,
+            "pol_kurs_sum_str": this.kurs_summaString,
+            "pol_all_sum": this.all_summa,
+            "pol_all_sum_str": this.all_summaString,
+            "pol_product_price": this.product_price,
+            
             "auth_user_name": localStorage.user_name,
             "kassa_id": localStorage.kassa_id,
             "credit_sum": real_time_ostatka,
@@ -1001,6 +1096,9 @@ export default {
             this.uzs_summaString = '';
             this.dollor_summa = null;
             this.dollor_summaString = '';
+            this.diff_summa = 0;
+            this.all_summa = 0;
+            this.all_summaString = '';
             this.hisob_name = '';
             this.hisob_id = 0;
             this.$refs.message.success('Added_successfully')
@@ -1200,6 +1298,10 @@ export default {
           tols += n[i];
         }
        }
+       if(tols[tols.length-1] != '0' && tols[tols.length-1] != '1' && tols[tols.length-1] != '2' && tols[tols.length-1] != '3' && tols[tols.length-1] != '4' && 
+        tols[tols.length-1] != '5' && tols[tols.length-1] != '6' && tols[tols.length-1] != '7' && tols[tols.length-1] != '8' && tols[tols.length-1] != '9'){
+        tols = tols.slice(0,tols.length-1)
+       }
        this.measureString = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
        var temp = ''
        for(let i=0; i<this.measureString.length; i++){
@@ -1208,6 +1310,9 @@ export default {
         }
        }
       this.measure = parseFloat(temp);
+      this.all_summa = this.measure * this.product_price;
+      this.all_summaString = this.all_summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      this.diff_summa = this.all_summa - (this.uzs_summa + this.dollor_summa*this.kurs_summa);
     },
 
     funcUzsSumma(n){
@@ -1229,6 +1334,27 @@ export default {
         }
        }
       this.uzs_summa = parseFloat(temp);
+      if(!this.uzs_summa){
+        this.uzs_summa = 0;
+      }
+      this.all_summa = this.measure * this.product_price;
+      this.all_summaString = this.all_summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      this.diff_summa = this.all_summa - (this.uzs_summa + this.dollor_summa*this.kurs_summa);
+    },
+
+    clickUzs(){
+      console.log('hiy')
+      if(!this.dollor_summa){
+        this.dollor_summa = 0;
+        this.dollor_summaString = '';
+      }
+      
+      this.uzs_summa = (parseFloat(this.all_summa) - parseFloat(this.kurs_summa * this.dollor_summa));
+      this.uzs_summaString = this.uzs_summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+
+      this.all_summa = this.measure * this.product_price;
+      this.all_summaString = this.all_summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      this.diff_summa = this.all_summa - (this.uzs_summa + this.dollor_summa*this.kurs_summa);
     },
     
     funcDollorSumma(n){
@@ -1250,6 +1376,72 @@ export default {
         }
        }
       this.dollor_summa = parseFloat(temp);
+
+      if(!this.dollor_summa){
+        this.dollor_summa = 0;
+      }
+      this.all_summa = this.measure * this.product_price;
+      this.all_summaString = this.all_summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      this.diff_summa = this.all_summa - (this.uzs_summa + this.dollor_summa*this.kurs_summa);
+    },
+    clickDollor(){
+      console.log('hiy')
+      if(!this.uzs_summa){
+        this.uzs_summa = 0;
+        this.uzs_summaString = '';
+      }
+        this.dollor_summa = (parseFloat(this.all_summa - this.uzs_summa)/parseFloat(this.kurs_summa)).toFixed();
+        this.dollor_summaString = this.dollor_summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      
+      this.all_summa = this.measure * this.product_price;
+      this.all_summaString = this.all_summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      this.diff_summa = this.all_summa - (this.uzs_summa + this.dollor_summa*this.kurs_summa);
+    },
+    funcProductSumma(n){
+      var tols = ''
+      for(let i=0; i<n.length; i++){
+        if(n[i] != ' '){
+          tols += n[i];
+        }
+       }
+       if(tols[tols.length-1] != '0' && tols[tols.length-1] != '1' && tols[tols.length-1] != '2' && tols[tols.length-1] != '3' && tols[tols.length-1] != '4' && 
+        tols[tols.length-1] != '5' && tols[tols.length-1] != '6' && tols[tols.length-1] != '7' && tols[tols.length-1] != '8' && tols[tols.length-1] != '9'){
+        tols = tols.slice(0,tols.length-1)
+       }
+       this.product_priceString = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+       var temp = ''
+       for(let i=0; i<this.product_priceString.length; i++){
+        if(this.product_priceString[i] != ' '){
+          temp += this.product_priceString[i];
+        }
+       }
+      this.product_price = parseFloat(temp);
+      this.all_summa = this.measure * this.product_price;
+      this.all_summaString = this.all_summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      this.diff_summa = this.all_summa - (this.uzs_summa + this.dollor_summa*this.kurs_summa);
+    },
+    funcKursSumma(n){
+      var tols = ''
+      for(let i=0; i<n.length; i++){
+        if(n[i] != ' '){
+          tols += n[i];
+        }
+       }
+       if(tols[tols.length-1] != '0' && tols[tols.length-1] != '1' && tols[tols.length-1] != '2' && tols[tols.length-1] != '3' && tols[tols.length-1] != '4' && 
+        tols[tols.length-1] != '5' && tols[tols.length-1] != '6' && tols[tols.length-1] != '7' && tols[tols.length-1] != '8' && tols[tols.length-1] != '9'){
+        tols = tols.slice(0,tols.length-1)
+       }
+       this.kurs_summaString = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+       var temp = ''
+       for(let i=0; i<this.kurs_summaString.length; i++){
+        if(this.kurs_summaString[i] != ' '){
+          temp += this.kurs_summaString[i];
+        }
+       }
+      this.kurs_summa = parseFloat(temp);
+
+      this.diff_summa = this.all_summa - (this.uzs_summa + this.dollor_summa*this.kurs_summa);
+
     },
   },
 };

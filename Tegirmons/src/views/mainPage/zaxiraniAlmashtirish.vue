@@ -184,7 +184,7 @@
           </div>
         </div>
 
-        <div class="container-fluid">
+        <div class="container-fluid" v-if="!product_status">
           <div class="row px-0 pb-3 main_change_page mt-3" v-if="showObyom" :class="{'bg_danger': product_real_qty_fix<-1}">
             <div class="px-2 w-100 main_change_header shadow">
               <div class="row w-100 " >
@@ -198,12 +198,14 @@
                 </div>
                 <div class="col-4 mt-3">
                   <mdb-input class="m-0 p-0 bg-white rounded"  v-model="note" size="md" :rows="rowsNum"  outline  group type="textarea" validate error="wrong" success="right"/>
-                      <small style="position:absolute; top:-17px; left:10px; font-size: 11px;" class="font-weight-bold px-2 py-0">{{$t('note')}}</small>
+                    <small style="position:absolute; top:-17px; left:10px; font-size: 11px;" class="font-weight-bold px-2 py-0">{{$t('note')}}</small>
                 </div>
               </div>
             </div>
             
-            <div class="col-sm-4 col-md-3 col-lg-2 col-4 mt-4  px-3" v-for="(item,index) in changeProduct" :key="index">
+
+            
+            <div  class="col-sm-4 col-md-3 col-lg-2 col-4 mt-4  px-3" v-for="(item,index) in changeProduct" :key="index">
               <div class="card pt-2 pr-3" style="position:relative;" :class="{'bg_red_color': item.auth_user_updator_id == 1}">
                 <div class="product_name_price text-right ">
                   <div class="d-flex justify-content-between">
@@ -223,7 +225,8 @@
                   </div>
                 </div>
               </div>
-            </div> 
+            </div>
+
             <div class="col-2  mt-4 px-3">
               <div class=" card pt-2 pr-3" style="position:relative;">
                 <div class="product_name_price text-right">
@@ -240,10 +243,100 @@
                       <mdb-input class="m-0 p-0" v-model="product_buy" size="md" @input="changeSumma()" @blur="blurchangeSumma" @click="enterchangeSumma" outline  group type="text" validate error="wrong" success="right"/>
                       <small style="position:absolute; top:-7px; left:10px; font-size: 11px;" class="bg-white px-2 py-0">{{$t('kg_ves')}}</small>
                     </div>
-                    <div style="position: relative;">
-                      <mdb-input class="m-0 p-0" v-model="product_price_buy" size="md" @input="changeSumma()"  outline  group type="text" validate error="wrong" success="right"/>
+                    <div style="position: relative;" class="pb-2 mt-1">
+                      <input class="m-0 p-0 px-3 form-control" v-model="product_price_buy_string" size="md" @keyup="changeSummaPrice1($event.target.value)"  @click="enterMoneyPrice1"  @blur="blurMoneyPrice1"  outline  group type="text" validate error="wrong" success="right"/>
                       <small style="position:absolute; top:-7px; left:10px; font-size: 11px;" class="bg-white px-2 py-0">{{$t('price')}}</small>
+                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container-fluid" v-else>
+          <div class="row px-0 pb-3 main_change_page mt-3" v-if="showObyom" :class="{'bg_danger': product_real_qty_fix<-1}">
+            <div class="px-2 w-100 main_change_header shadow">
+              <div class="row w-100 " >
+                <div class="col-4 mt-3">
+                  <mdb-input class="m-0 p-0 bg-white rounded" disabled v-model="product_name" size="md"   outline  group type="text" validate error="wrong" success="right"/>
+                      <small style="position:absolute; top:-17px; left:10px; font-size: 11px;" class="font-weight-bold px-2 py-0">{{$t('product')}}</small>
+                </div>
+                <div class="col-4 mt-3">
+                  <mdb-input class="m-0 p-0 bg-white rounded" disabled v-model="product_real_qty_fix" size="md"   outline  group type="text" validate error="wrong" success="right"/>
+                      <small style="position:absolute; top:-17px; left:10px; font-size: 11px;" class="font-weight-bold px-2 py-0">{{$t('kg_ves')}}</small>
+                </div>
+                <div class="col-4 mt-3">
+                  <mdb-input class="m-0 p-0 bg-white rounded"  v-model="note" size="md" :rows="rowsNum"  outline  group type="textarea" validate error="wrong" success="right"/>
+                      <small style="position:absolute; top:-17px; left:10px; font-size: 11px;" class="font-weight-bold px-2 py-0">{{$t('note')}}</small>
+                </div>
+              </div>
+            </div>
+
+            <div  class="col-sm-4 col-md-3 col-lg-2 col-4 mt-4  px-3" v-for="(item,index) in changeProduct" :key="index">
+              <div class="card pt-2 pr-3" style="position:relative;" :class="{'bg_red_color': item.auth_user_updator_id == 1}">
+                <div class="product_name_price text-right ">
+                  <div class="d-flex justify-content-between">
+                    <div style="height:35px; overflow: hidden; ">
+                      <h6 class="pro_name_color text-left ml-3" style="font-size: 13.5px;">{{item.product_name}}</h6>
                     </div>
+                    <h6 class="pro_name_color text-left ml-3" style="font-size: 13.5px;">{{item._real.toFixed(1)}}</h6>
+                  </div>
+                  <h4 class="mb-0 pb-0" style="font-size: 16px;">{{(parseFloat(product_real_qty_fix)/parseFloat(item.product_price)).toFixed(1)}} <small>{{item.measure}}</small></h4>
+                </div>
+                <div class="clickItem border-top mt-0 mx-2">
+                  <div class="mt-3">
+                    <div style="position: relative;">
+                      <small style="position:absolute; top:-15px; right:5px; font-size: 12px;" class="bg-white px-2 py-0">сум</small>
+                      <input class="m-0 p-0 px-3 form-control" v-model="item.all_sum_str" size="md" @keyup="changeMoneySTR($event.target.value,index)" @click="enterMoneySTR(index)"  @blur="blurMoneySTR(index)"   outline  group type="text" validate error="wrong" success="right"/>
+                      <!-- <h4 class="mt-2">{{summ_buy.toFixed()}} <small>сум</small></h4> -->
+                    </div>
+                  </div>
+                  <div class="mt-2">
+                    <div style="position: relative;">
+                      <mdb-input class="m-0 p-0" v-model="item.real_qty" size="md" @input="changeRealQtySTR(index)" @blur="blurchangeRealQty(index)" @click="enterchangeRealQty(index)" outline  group type="text" validate error="wrong" success="right"/>
+                      <small style="position:absolute; top:-7px; left:10px; font-size: 11px;" class="bg-white px-2 py-0">{{$t('kg_ves')}}</small>
+                    </div>
+                  </div>
+                  <div class="mt-2 pb-2">
+                    <div style="position: relative;">
+                      <!-- <input class="m-0 p-0" v-model="item.product_priceString" size="md" @keyup="changeProductPriceSTR($event.target.value,index)" @blur="blurchangeProductPrice(index)" @click="enterchangeProductPrice(index)" outline  group type="text" validate error="wrong" success="right"/> -->
+                      <small style="position:absolute; top:-7px; left:10px; font-size: 11px;" class="bg-white px-2 py-0">{{$t('price')}}</small>
+                    
+                      <!-- <small style="position:absolute; top:-15px; right:5px; font-size: 12px;" class="bg-white px-2 py-0">сум</small> -->
+                      <input class="m-0 p-0 px-3 form-control" size="md"
+                        v-model="item.product_priceString" 
+                        @keyup="changeProductPriceSTR($event.target.value,index)"
+                        @blur="blurchangeProductPrice(index)" 
+                        @click="enterchangeProductPrice(index)"
+                        outline  group type="text" validate error="wrong" success="right"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+            <div class="col-2  mt-4 px-3">
+              <div class=" card pt-2 pr-3" style="position:relative;">
+                <div class="product_name_price text-right">
+                  <h6 class="pro_name_color text-left ml-3">{{product_name_buy}}</h6>
+                  <div class="mx-2" style="position: relative;">
+                    <small style="position:absolute; top:-15px; right:5px; font-size: 12px;" class="bg-white px-2 py-0">сум</small>
+                    <input class="m-0 p-0 px-3 form-control" v-model="summa_buy_string" size="md" @keyup="changeMoney($event.target.value)" @click="enterMoney"  @blur="blurMoney"   outline  group type="text" validate error="wrong" success="right"/>
+                    <!-- <h4 class="mt-2">{{summ_buy.toFixed()}} <small>сум</small></h4> -->
+                  </div>
+                </div>
+                <div class="clickItem mx-2">
+                  <div class="mt-4">
+                    <div style="position: relative;">
+                      <mdb-input class="m-0 p-0" v-model="product_buy" size="md" @input="changeSumma()" @blur="blurchangeSumma" @click="enterchangeSumma" outline  group type="text" validate error="wrong" success="right"/>
+                      <small style="position:absolute; top:-7px; left:10px; font-size: 11px;" class="bg-white px-2 py-0">{{$t('kg_ves')}}</small>
+                    </div>
+                    <div style="position: relative;" class="pb-2 mt-1">
+                      <input class="m-0 p-0 px-3 form-control" v-model="product_price_buy_string" size="md" @keyup="changeSummaPrice1($event.target.value)"  @click="enterMoneyPrice1"  @blur="blurMoneyPrice1"  outline  group type="text" validate error="wrong" success="right"/>
+                      <small style="position:absolute; top:-7px; left:10px; font-size: 11px;" class="bg-white px-2 py-0">{{$t('price')}}</small>
+                     </div>
                   </div>
                 </div>
               </div>
@@ -476,7 +569,6 @@ data(){
       show_davernis_info: false,
       davernis_info: {},
 
-
       davernost_name: '',
       davernost_phone: '',
       davernost_password: '',
@@ -505,6 +597,7 @@ data(){
       summa_buy_string: '0',
       product_id_buy: null,
       product_price_buy: 0,
+      product_price_buy_string: '',
       product_real_qty_buy: 0,
 
       select_invoice_id: null,
@@ -530,6 +623,8 @@ data(){
       TgStringSumma: '',
       ostatka_qty_real: 0,
       check_number: 0,
+      product_status: false,
+      main_product_measure: '',
     }
   },
   components: {
@@ -641,7 +736,6 @@ data(){
       await this.fetchOstatkaCheck(option.tegirmonClientid);
       await this.check_invoice_zaxira(option);
       this.show_check_zaxira_invoice = true;
-
     },
     async selectInvoiceItemCkeck(data){
       let select_invoice_id = data.id;
@@ -652,9 +746,9 @@ data(){
         this.loading = false;
         if(response.status == 201 || response.status == 200)
         {
-          this.get_invoice_for_invoice(data)
+          this.get_invoice_for_invoice(data);
           this.show_check_get = true;
-          this.$refs.message.success('Added_successfully')
+          this.$refs.message.success('Added_successfully');
           return true;
         }
         else{
@@ -887,12 +981,22 @@ data(){
 
 
     async getProductId(id, qty, name,data){
+      console.log('data')
+      console.log(data)
+      if(data.product.auth_user_creator_id == 1){
+        this.product_status = true;
+      }
+      else{
+        this.product_status = false;
+      }
       this.ostatka_qty_real = qty;
       this.product_name_buy = name,
       this.product_id_buy = id,
       this.product_price_buy = data.product.price;
+      this.product_price_buy_string = data.product.price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
       this.main_client_id = data.TegirmonClientid;
       this.product_id = data.TegirmonProductid;
+      this.main_product_measure = data.product.unitMeasurment.name
       this.product_buy = 0;
       this.summ_buy = 0;
       this.summa_buy_string = '0';
@@ -900,6 +1004,8 @@ data(){
         this.loading = true;
         const response = await fetch(this.$store.state.hostname + "/TegirmonProductToProductPersentage/getPaginationByProductId?page=0&size=100&product_id=" + id);
         const data = await response.json();
+        console.log('data productlar')
+        console.log(data)
         this.loading = false;
         if(response.status == 201 || response.status == 200)
         {
@@ -913,8 +1019,12 @@ data(){
                 qty: (data.items_list[0].item_list[i].persantage*qty).toFixed(1),
                 persantage: data.items_list[0].item_list[i].persantage,
                 measure: data.items_list[0].item_list[i].sub_product.unitMeasurment.name,
+                product_price: data.items_list[0].item_list[i].sub_product.price,
+                product_priceString: data.items_list[0].item_list[i].sub_product.price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 '),
                 _real:data.items_list[0].item_list[i].ostatkaList[0].real_qty,
                 real_qty:0,
+                all_sum_str: '0',
+                all_sum: 0,
                 auth_user_updator_id: data.items_list[0].item_list[i].auth_user_updator_id,
               }
               this.changeProduct.push(temp)
@@ -948,6 +1058,39 @@ data(){
         this.loading = false;
         this.modal_info = this.$i18n.t('network_ne_connect');
         this.modal_status = true;
+      }
+    },
+    async changeSummaPrice1(n){
+      var tols = ''
+      for(let i=0; i<n.length; i++){
+        if(n[i] != ' '){
+          tols += n[i];
+        }
+       }
+       if(tols[tols.length-1] != '0' && tols[tols.length-1] != '1' && tols[tols.length-1] != '2' && tols[tols.length-1] != '3' && tols[tols.length-1] != '4' && 
+        tols[tols.length-1] != '5' && tols[tols.length-1] != '6' && tols[tols.length-1] != '7' && tols[tols.length-1] != '8' && tols[tols.length-1] != '9'){
+        tols = tols.slice(0,tols.length-1)
+       }
+       this.product_price_buy_string = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+       var temp = ''
+       for(let i=0; i<this.product_price_buy_string.length; i++){
+        if(this.product_price_buy_string[i] != ' '){
+          temp += this.product_price_buy_string[i];
+        }
+       }
+       this.product_price_buy = parseFloat(temp);
+       await this.changeSumma();
+    },
+    enterMoneyPrice1(){
+      if(this.product_price_buy_string == '0'){
+        this.product_price_buy = 0;
+        this.product_price_buy_string = '';
+      }
+    },
+    blurMoneyPrice1(){
+      if(this.product_price_buy_string == '' || this.product_price_buy_string == null){
+        this.product_price_buy = 0;
+        this.product_price_buy_string = '0';
       }
     },
     changeSumma(){
@@ -994,6 +1137,104 @@ data(){
         this.changeProduct[i].real_qty = 0;
       }
     },
+
+    enterchangeProductPrice(i){
+      if(this.changeProduct[i].product_price == 1){
+        this.changeProduct[i].product_price = 1;
+        this.changeProduct[i].product_priceString = '';
+      }
+    },
+    blurchangeProductPrice(i){
+      if(this.changeProduct[i].product_priceString == '' || this.changeProduct[i].product_priceString == null || this.changeProduct[i].product_priceString == '0'){
+        this.changeProduct[i].product_price = 1;
+        this.changeProduct[i].product_priceString = '1';
+      }
+    },
+    changeProductPriceSTR(n, index){
+      console.log(n)
+      console.log(index)
+      console.log('index')
+      var tols = ''
+      for(let i=0; i<n.length; i++){
+        if(n[i] != ' '){
+          tols += n[i];
+        }
+       }
+       if(tols[tols.length-1] != '0' && tols[tols.length-1] != '1' && tols[tols.length-1] != '2' && tols[tols.length-1] != '3' && tols[tols.length-1] != '4' && 
+        tols[tols.length-1] != '5' && tols[tols.length-1] != '6' && tols[tols.length-1] != '7' && tols[tols.length-1] != '8' && tols[tols.length-1] != '9'){
+        tols = tols.slice(0,tols.length-1)
+       }
+       this.changeProduct[index].product_priceString = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+       var temp = ''
+       for(let i=0; i<this.changeProduct[index].product_priceString.length; i++){
+        if(this.changeProduct[index].product_priceString[i] != ' '){
+          temp += this.changeProduct[index].product_priceString[i];
+        }
+       }
+       this.changeProduct[index].product_price = parseFloat(temp);
+       if(this.changeProduct[index].product_priceString == '' || this.changeProduct[index].product_priceString == '0' || this.changeProduct[index].product_priceString == null){
+        this.changeProduct[index].product_price = 1;
+       }
+        this.changeRealQtySTR(index);
+    },
+
+    changeMoneySTR(n, index){
+      var tols = ''
+      for(let i=0; i<n.length; i++){
+        if(n[i] != ' '){
+          tols += n[i];
+        }
+       }
+       if(tols[tols.length-1] != '0' && tols[tols.length-1] != '1' && tols[tols.length-1] != '2' && tols[tols.length-1] != '3' && tols[tols.length-1] != '4' && 
+        tols[tols.length-1] != '5' && tols[tols.length-1] != '6' && tols[tols.length-1] != '7' && tols[tols.length-1] != '8' && tols[tols.length-1] != '9'){
+        tols = tols.slice(0,tols.length-1)
+       }
+       this.changeProduct[index].all_sum_str = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+       var temp = ''
+       for(let i=0; i<this.changeProduct[index].all_sum_str.length; i++){
+        if(this.changeProduct[index].all_sum_str[i] != ' '){
+          temp += this.changeProduct[index].all_sum_str[i];
+        }
+       }
+      this.changeProduct[index].all_sum = parseFloat(temp);
+      if(temp == '' || temp == null){
+        this.changeProduct[index].all_sum = 0;
+      }
+      this.changeProduct[index].real_qty = (this.changeProduct[index].all_sum / this.changeProduct[index].product_price).toFixed(2);
+      this.changeRealQtySTRSum(index);
+    },
+    changeRealQtySTRSum(index){
+      console.log(this.changeProduct[index])
+      let test_qty = this.product_real_qty;
+
+      for(let i=0; i<this.changeProduct.length; i++){
+        if(this.changeProduct[i].real_qty != ''){
+          test_qty = parseFloat(test_qty) - parseFloat(this.changeProduct[i].all_sum)
+        }
+      }
+      this.product_qty = test_qty;
+      this.product_real_qty_fix = this.product_qty.toFixed(1);
+      
+      this.fetchChangeSubPro(this.product_qty)
+    },
+
+    enterMoneySTR(i){
+      if(this.changeProduct[i].all_sum_str == '0'){
+        this.changeProduct[i].all_sum = 0;
+        this.changeProduct[i].all_sum_str = '';
+      }
+    },
+    blurMoneySTR(i){
+      if(this.changeProduct[i].all_sum_str == '' || this.changeProduct[i].all_sum_str == null){
+        this.changeProduct[i].all_sum = 0;
+        this.changeProduct[i].all_sum_str = '0';
+      }
+    },
+
+
+
+
+
     changeMoney(n){
       var tols = ''
       for(let i=0; i<n.length; i++){
@@ -1037,10 +1278,39 @@ data(){
         this.summa_buy_string = '0';
       }
     },
+    
     enterchangeRealQty(i){
       if(this.changeProduct[i].real_qty == 0){
         this.changeProduct[i].real_qty = null;
       }
+    },
+    changeRealQtySTR(index){
+      console.log(this.changeProduct[index])
+      let test_qty = this.product_real_qty;
+
+      for(let i=0; i<this.changeProduct.length; i++){
+        if(this.changeProduct[i].real_qty != ''){
+          test_qty = parseFloat(test_qty) - (parseFloat(this.changeProduct[i].real_qty) * parseFloat(this.changeProduct[i].product_price))
+        }
+        else{
+          test_qty = parseFloat(test_qty) - (0 * parseFloat(this.changeProduct[i].product_price))
+        }
+      }
+      this.product_qty = test_qty;
+      this.product_real_qty_fix = this.product_qty.toFixed(1);
+
+      // productlar yozilgan soniga qarab summasini hisoblaydi
+      if(this.changeProduct[index].real_qty == '' || this.changeProduct[index].real_qty == null){
+        this.changeProduct[index].all_sum = (this.changeProduct[index].product_price * 0)
+        this.changeProduct[index].all_sum_str = this.changeProduct[index].all_sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      }
+      else{
+        this.changeProduct[index].all_sum = (this.changeProduct[index].product_price * parseFloat(this.changeProduct[index].real_qty)).toFixed(0)
+        this.changeProduct[index].all_sum_str = this.changeProduct[index].all_sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      }
+      // productlar yozilgan soniga qarab summasini hisoblaydi
+      
+      this.fetchChangeSubPro(this.product_qty)
     },
     changeRealQty(index){
       console.log(this.changeProduct[index])
@@ -1066,6 +1336,10 @@ data(){
         let temp = {
           product_name: this.changeProduct[i].product_name,
           product_id: this.changeProduct[i].product_id,
+          product_price: this.changeProduct[i].product_price,
+          product_priceString: this.changeProduct[i].product_priceString,
+          all_sum: this.changeProduct[i].all_sum,
+          all_sum_str: this.changeProduct[i].all_sum_str,
           qty: (this.changeProduct[i].persantage*qty).toFixed(1),
           persantage: this.changeProduct[i].persantage,
           measure: this.changeProduct[i].measure,
@@ -1082,7 +1356,7 @@ data(){
         tempArray.push(temp)
       }
       this.changeProduct = tempArray;
-      this.zaxiraCheckList({list: this.changeProduct, product_name: this.product_name, buy_qty: this.product_buy, buy_sum: this.summ_buy, client_name: this.olib_ketuvchi, client: this.client_info, client_key: this.parol_tg, invoice_id: 0})
+      this.zaxiraCheckList({list: this.changeProduct, product_name: this.product_name, buy_qty: this.product_buy, buy_sum: this.summ_buy, client_name: this.olib_ketuvchi, client: this.client_info, client_key: this.parol_tg, invoice_id: 0, measure_name: this.main_product_measure})
     },
     
 
@@ -1131,6 +1405,10 @@ data(){
             real_qty: this.changeProduct[i].real_qty,
             tegirmonProductid: this.changeProduct[i].product_id,
             real_sum: this.changeProduct[i].persantage,
+            all_sum: this.changeProduct[i].all_sum,
+            all_sum_str: this.changeProduct[i].all_sum_str,
+            product_price: this.changeProduct[i].product_price,
+            product_priceString: this.changeProduct[i].product_priceString,
             inv_accepted_status: true,
             auth_user_creator_id: localStorage.AuthId,
             auth_user_updator_id: localStorage.kassa_id,
@@ -1187,7 +1465,7 @@ data(){
           this.loading = false;
           if(response.status == 201 || response.status == 200)
           {
-            await this.zaxiraCheckList({list: this.changeProduct, product_name: this.product_name, buy_qty: this.product_buy, buy_sum: this.summ_buy, client_name: this.olib_ketuvchi, client: this.client_info, client_key: this.parol_tg, invoice_id: data.check_number})
+            await this.zaxiraCheckList({list: this.changeProduct, product_name: this.product_name, buy_qty: this.product_buy, buy_sum: this.summ_buy, client_name: this.olib_ketuvchi, client: this.client_info, client_key: this.parol_tg, invoice_id: data.check_number, measure_name: this.main_product_measure})
             this.fetchSendTgMessage(this.olib_ketuvchi, this.product_name, this.main_client_id, this.useQty )
             await this.fetchOstatka(this.user_id)
             this.show_check = true;

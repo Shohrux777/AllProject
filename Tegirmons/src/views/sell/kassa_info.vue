@@ -370,7 +370,7 @@
   
           <div class="mainSellSumms container-fluid">
             <div class="row">
-              <div class="col-6 px-1">
+              <div class="col-4 px-1">
                 <div class="summ_item_ p-2 d-flex justify-content-between">
                   <small style="font-size: 13px;">
                     Наличные
@@ -380,7 +380,17 @@
                   </small>
                 </div>
               </div>
-              <div class="col-6 px-1">
+              <div class="col-4 px-1">
+                <div class="summ_item_ p-2 d-flex justify-content-between">
+                  <small style="font-size: 13px;">
+                    Доллор
+                  </small>
+                  <small class="summ_title">
+                    {{poluchit_productdan_olingan_dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                  </small>
+                </div>
+              </div>
+              <div class="col-4 px-1">
                 <div class="summ_item_ p-2 d-flex justify-content-between">
                   <small style="font-size: 13px;">
                     Счета
@@ -521,6 +531,7 @@
 
         poluchit_productdan_hisobga: 0,
         poluchit_productdan_olingan_naqd: 0,
+        poluchit_productdan_olingan_dollor: 0,
   
       }
     },
@@ -560,6 +571,8 @@
         await this.getAllInvoiceChangeSumm(kassa_data.id);
 
         await this.getAllInvoicePoluchitSumma(kassa_data.id);
+        await this.getAllInvoicePoluchitDollor(kassa_data.id);
+        
         await this.getAllInvoicePoluchitHisobgaSumma(kassa_data.id);
 
         await this.main_kassaga_utkazish(kassa_data.id);
@@ -585,6 +598,8 @@
         await this.getAllInvoiceChangeSumm(this.kassa_id);
 
         await this.getAllInvoicePoluchitSumma(this.kassa_id);
+        await this.getAllInvoicePoluchitDollor(this.kassa_id);
+
         await this.getAllInvoicePoluchitHisobgaSumma(this.kassa_id);
 
         await this.main_kassaga_utkazish(this.kassa_id);
@@ -837,6 +852,27 @@
         }
       },
       // Poluchit productdan olib qolingan naqd pullar <==
+
+
+      // Poluchit productdan olib qolingan dollor  <==
+      async getAllInvoicePoluchitDollor(kassa_id){
+        this.poluchit_productdan_olingan_dollor = 0;
+        let b_data = this.Start_time + 'T00:00:35.000Z';
+        let e_data = this.End_time + 'T23:59:59.000Z';
+        // console.log(this.get_zakaz_product_all_list[this.get_page_savat]) 
+        try{
+          const res = await fetch(this.$store.state.hostname + '/TegirmonInvoice/getKassaCurrentPoluchitDollorKassaId?begin_date=' +  b_data + '&end_date=' + e_data + '&kassa_id=' + kassa_id);
+          const res_data = await res.json();
+          this.poluchit_productdan_olingan_dollor += res_data[0].summ;
+        }
+        catch{
+          console.log('12')
+          this.$refs.alert.error("Serverda uzilish bor. Qayta urinib ko'ring !");
+          return false;
+        }
+      },
+      // Poluchit productdan olib qolingan dollor  <==
+
 
       // Poluchit productdan hisobga utkazilgan pullar <==
       async getAllInvoicePoluchitHisobgaSumma(kassa_id){

@@ -89,13 +89,18 @@ export default {
       }
       console.log(data.list)
       console.log('data.list')
+      console.log(data.measure_name)
       for(let j=0; j<data.list.length; j++){
         if(data.list[j].real_qty>0){
           let changeItem = {
             product_name : data.list[j].product_name,
             qty : data.list[j].real_qty,
-            all_qty : parseFloat(data.list[j].real_qty)/data.list[j].persantage,
+            all_qty : (parseFloat(data.list[j].real_qty)/data.list[j].persantage).toFixed(2),
             measure: data.list[j].measure,
+            main_product_measure: data.measure_name,
+          }
+          if(parseFloat(data.list[j].all_sum)>0){
+            changeItem.all_qty = (parseFloat(data.list[j].all_sum)).toFixed(0)
           }
           zaxiraInvoicce.changeProduct.push(changeItem)
         }
@@ -149,6 +154,9 @@ export default {
             qty :data.item_list[j].real_qty,
             all_qty : parseFloat(data.item_list[j].real_qty)/data.item_list[j].real_sum,
             // measure:data.item_list[j].measure,
+          }
+          if(parseFloat(data.item_list[j].all_sum)>0){
+            changeItem.all_qty = parseFloat(data.item_list[j].all_sum);
           }
           zaxiraInvoicce.changeProduct.push(changeItem)
         }
