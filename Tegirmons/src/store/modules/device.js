@@ -1,33 +1,31 @@
 export default {
     state: {
-        m_device: {
+        device_list: {
             rows: [],
-            columns: ['name', 'ip', 'port', 'password'],
+            columns: [ 'id','device_name', 'mac_address', 'ip_address'],
             col: []
         },
-
     },
     actions: {
-        async fetchDevice(ctx) {
-            const res = await fetch(ctx.rootState.hostname + '/ArchiveDevices');
+        async fetch_Device(ctx) {
+            const res = await fetch(ctx.rootState.hostname + '/SkudDevices');
             const res_data = await res.json();
-            // console.log(ctx.rootState.hostname);
-            ctx.commit('updateDevice', res_data);
-        },
+            ctx.commit('Updatedevice_list', res_data);
+        }
     },
     mutations: {
-        updateDevice(state, data) {
-            state.m_device.rows = data;
+        Updatedevice_list(state, data) {
+            state.device_list.rows = data;
         },
         device_delete_row(state, index) {
-            state.m_device.rows.splice(parseInt(index), 1);
-        },
+            state.device_list.rows.splice(parseInt(index), 1);
+        }
 
     },
     getters: {
-        allDevice(state) {
-            return state.m_device;
-        }
+        get_device_list(state) {
+            return state.device_list;
+        },
 
     }
 }

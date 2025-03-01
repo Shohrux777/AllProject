@@ -24,6 +24,7 @@ import worker from '../store/modules/worker'
 import usedProduct from '../store/modules/usedProduct'
 import kassa from '../store/modules/kassa'
 import hisob from '../store/modules/hisob'
+import door from '../store/modules/door'
 
 Vue.use(Vuex)
 
@@ -106,6 +107,7 @@ export default new Vuex.Store({
         worker,
         usedProduct,
         kassa,
-        hisob
+        hisob,
+        door
     }
 })

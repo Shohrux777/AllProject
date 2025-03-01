@@ -148,7 +148,11 @@
               { title: "contragent", icon: 'bell', url: '/contragent', view: false, color: '#c4cbcb', down_list:[] },
               { title: "district", icon: 'crutch', url: '/district', view: false, color: '#c4cbcb', down_list:[] },
             ] },
-            
+            { title: "face_control", icon: 'users', url: '', view: false, color: '#c4cbcb', down_list:[
+              { title: "worker", url: '/face_user', dview: false, color: '#c4cbcb', down_list:[] },
+
+              { title: "door", url: '/door', view: false, color: '#c4cbcb', down_list:[] },
+            ] },
             { title: "logout", icon: 'sign-in-alt', url: '/', view: false, color: '#c4cbcb', down_list:[] },
         ],
       }

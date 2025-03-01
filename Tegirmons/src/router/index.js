@@ -26,6 +26,20 @@ const routes = [{
             import ('../views/company/company_Add.vue')
     },
     {
+        path: '/door',
+        name: 'door',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/device/device.vue')
+    },
+    {
+        path: '/door_add/:id',
+        name: 'door_add',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/device/device_add.vue')
+    },
+    {
         path: '/product',
         name: 'product',
         meta: { layout: 'main' },
