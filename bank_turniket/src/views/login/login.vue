@@ -35,7 +35,7 @@ export default {
             // localStorage.sidebar = true;
             // localStorage.Name = 'Firdavs'
             if(this.login == 'admin' && this.parol == 'admin'){
-                this.$router.push('/dashboard')
+                this.$router.push('/user')
                 this.invalid_status = false;
             }
             else if(this.login == 'musa07' && this.parol == 'musa07'){

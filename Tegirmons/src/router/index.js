@@ -40,6 +40,41 @@ const routes = [{
             import ('../views/device/device_add.vue')
     },
     {
+        path: '/doors',
+        name: 'doors',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/door/door.vue')
+    },
+    {
+        path: '/doors_add/:id',
+        name: 'doors_add',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/door/door_add.vue')
+    },
+    {
+        path: '/userFace',
+        name: 'userFace',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/user_face/userFace.vue')
+    },
+    {
+        path: '/userFace_add/:id',
+        name: 'userFace_add',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/user_face/userFace_Add.vue')
+    },
+    {
+        path: '/dashboard',
+        name: 'dashboard',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/face_control/checkinOut.vue')
+    },
+    {
         path: '/product',
         name: 'product',
         meta: { layout: 'main' },

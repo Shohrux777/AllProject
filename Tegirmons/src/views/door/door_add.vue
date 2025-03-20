@@ -2,13 +2,13 @@
   <div>
     <loader v-if="loading"/>
     <div class="border-bottom ">
-      <router-link to="/door">
+      <router-link to="/doors">
          <h5 class="m-0 ml-3 d-flex" style="padding: 16px 0px">
            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left mr-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2.5" stroke="#007BFF" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
               <polyline points="15 6 9 12 15 18" />
             </svg>
-            {{$t('Add_door')}}</h5>
+            {{$t('Add_doors')}}</h5>
       </router-link>
      
     </div>
@@ -19,24 +19,53 @@
             <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('name')}}</p>
           </mdb-col>
           <mdb-col col="5">
-            <mdb-input class="m-0 p-0" v-model="device_name" size="md"  outline  group type="text" validate error="wrong" success="right"/>
-            <small class="invalid-text pt-4" style="margin-left:5px; "  v-if="$v.device_name.$dirty && !$v.device_name.required" >
+            <mdb-input class="m-0 p-0" v-model="acc_name" size="md"  outline  group type="text" validate error="wrong" success="right"/>
+            <small class="invalid-text pt-4" style="margin-left:5px; "  v-if="$v.acc_name.$dirty && !$v.acc_name.required" >
               {{$t('name_invalid_text')}}
             </small>
-
           </mdb-col>
         </mdb-row> 
-         <mdb-row class="mt-4">
+        <mdb-row class="mt-4">
           <mdb-col col="3">
-            <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('mac_address')}}</p>
+            <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('inout')}}</p>
+          </mdb-col>
+          <mdb-col col="5">
+            <mdb-input class="m-0 p-0" placeholder="I or O"
+              v-model="inout" size="md" outline  group type="text" 
+              validate error="wrong" success="right"/>
+          </mdb-col>
+        </mdb-row>
+        <mdb-row class="mt-4">
+          <mdb-col col="3">
+            <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('dbname')}}</p>
           </mdb-col>
           <mdb-col col="5">
             <mdb-input class="m-0 p-0" placeholder="192.168.1.100"
-              v-model="ip_address" size="md" outline  group type="text" 
+              v-model="dbname" size="md" outline  group type="text" 
               validate error="wrong" success="right"/>
-            
           </mdb-col>
         </mdb-row> 
+
+        <mdb-row class="mt-4">
+          <mdb-col col="3">
+            <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('login')}}</p>
+          </mdb-col>
+          <mdb-col col="5">
+            <mdb-input class="m-0 p-0" placeholder="Login"
+              v-model="login" size="md" outline  group type="text" 
+              validate error="wrong" success="right"/>
+          </mdb-col>
+        </mdb-row>
+        <mdb-row class="mt-4">
+          <mdb-col col="3">
+            <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('password')}}</p>
+          </mdb-col>
+          <mdb-col col="5">
+            <mdb-input class="m-0 p-0" placeholder="Password"
+              v-model="password" size="md" outline  group type="text" 
+              validate error="wrong" success="right"/>
+          </mdb-col>
+        </mdb-row>
          
         
         <div class="blue-gradient">
@@ -76,15 +105,19 @@ export default {
       modal_status: false,
       loading: false,
       id: this.$route.params.id,
-      device_name: '',
-      ip_address: '',
+      acc_name: '',
+      inout: '',
+      dbname: '',
+      device: '',
+      login: '',
+      password:'',
     }
   },
   components: {
     mdbInput, mdbRow, mdbCol, mdbIcon, mdbBtn
   },
   validations: {
-      device_name: {
+      acc_name: {
         required
       }
     },
@@ -94,16 +127,22 @@ export default {
       {
         const res = await fetch(this.$store.state.hostname + '/SkudDevices/' + this.id);
         const data = await res.json();
-        this.device_name = data.device_name
-        this.ip_address = data.ip_address
-        this.id = data.id
+        this.id = data.id;
+        this.acc_name = data.acc_name;
+        this.dbname = data.dbname;
+        this.login = data.login;
+        this.password = data.password;
+        this.inout = data.inout;
       }
     },
   methods:{
     cls_wnd()
       {
-        this.device_name = '';
-        this.ip_address = '';
+        this.acc_name = '';
+        this.dbname = '';
+        this.login = '';
+        this.password = '';
+        this.inout = '';
         this.id = 0;
       },
     save_data :  async function(){
@@ -117,15 +156,18 @@ export default {
             method : "POST",
             headers: { "Content-Type" : "application/json" },
             body: JSON.stringify({
-              "device_name" : this.device_name,
-              "ip_address": this.ip_address,
-              "mac_address" : this.ip_address,
-              "id" : this.id,
+              "id": this.id,
+              "acc_name" : this.acc_name,
+              "inout" : this.inout,
+              "dbname" : this.dbname,
+              "device" : this.dbname,
+              "login" : this.login,
+              "password" : this.password,
             })
           };
           try{
             this.loading = true;
-            const response = await fetch(this.$store.state.hostname + "/SkudDevices", requestOptions);
+            const response = await fetch(this.$store.state.hostname + "/SkudDoors", requestOptions);
             const data = await response.text();
             this.loading = false;
             if(response.status == 201 || response.status == 200)
@@ -159,7 +201,7 @@ export default {
         if(await this.save_data())
         {
           if(this.id != 0){
-            this.$router.push('/door_add/0')
+            this.$router.push('/doors_add/0')
             this.cls_wnd();
           }
           else{

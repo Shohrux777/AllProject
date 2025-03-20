@@ -41,7 +41,7 @@ const routes = [
   {
     path: '/user',
     name: 'user',
-    meta: { layout: 'main' },
+    meta: { layout: 'empty' },
     component: () => import( '../views/user/user.vue')
   },
   {

@@ -1,0 +1,24 @@
+{
+  "submit": "Submit",
+  "user": "User",
+  "otdel": "Department",
+  "company": "Company",
+  "report": "Report",
+  "menu_setting": "Settings",
+  "logout": "Logout",
+  "devices": "Devices",
+  "dashboard": "Dashboard",
+  "report_user": "Report users",
+  "report_details": "Report details",
+  "report_devices": "Report devices",
+  "devices_info": "Devices info",
+  "device_door": "Device door",
+  "login_or_parol_invalid": "Login or password invalid",
+  "search_here": "Search here ...",
+  "name": "Name",
+  "checktype": "Status",
+  "date": "Date",
+  "time": "Time"
+
+
+}

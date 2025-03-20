@@ -2,7 +2,7 @@ export default {
     state: {
         user_list: {
             rows: [],
-            columns: [ 'userid','ism', 'gr', 'cardno', 'familiya', 'image_url' ],
+            columns: ['ism', 'cardno', 'image_url' ],
             col: []
         },
         nosalary_user: [],

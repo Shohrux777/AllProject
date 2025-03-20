@@ -17,7 +17,7 @@ export default {
         Updatedoor_list(state, data) {
             state.door_list.rows = data;
         },
-        district_row_delete(state, index) {
+        door_row_delete(state, index) {
             state.door_list.rows.splice(parseInt(index), 1);
         }
 

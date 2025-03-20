@@ -17,8 +17,8 @@ export default createStore({
     
     hostname: 'http://localhost:5003/api',
     hostname1: 'http://localhost:5003/',
-    // hostname: 'http://192.168.3.222:5003/api',
-    // hostname1: 'http://192.168.3.222:5003/',
+    // hostname: 'http://89.104.102.23:5003/api',
+    // hostname1: 'http://89.104.102.23:5003/',
 
 
     // hostname: 'http://192.168.100.222:5003/api',

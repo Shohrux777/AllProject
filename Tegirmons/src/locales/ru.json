@@ -314,5 +314,19 @@
     "Add_door": "Добавить дверь устройства",
     "device_name": "Устройства",
     "mac_address": "IP Адрес",
-    "ip_address": "IP Адрес"
+    "ip_address": "IP Адрес",
+    "doors": "Дверь устройства",
+    "Add_doors": "Добавить дверь устройства",
+    "devices_info": "Информация об устройствах",
+    "device_door": "Дверь устройства",
+    "login_or_parol_invalid": "Неверный логин или пароль",
+    "face_control": "Контроль лицом",
+    "userid": "Id",
+    "ism": "ФИО",
+    "acc_name": "Телефон",
+    "middle_name": "Дата рождения",
+    "familiya": "Номер паспорта",
+    "group_name": "Примечание"
+
+
 }

@@ -8,7 +8,7 @@
                         id="form1"
                         size="sm"
                         class="form-icon-trailing"
-                        :label="$t('FIO')"
+                        label="FIO"
                         v-model="fio"
                     >
                     </MDBInput>
@@ -28,12 +28,12 @@
                         id="form1"
                         size="sm"
                         class="form-icon-trailing mt-3"
-                        :label="$t('cardno')"
+                        label="Lavozimi"
                         v-model="card_number"
                     >
                         <MDBIcon icon="credit-card" class="trailing"></MDBIcon>
                     </MDBInput>
-                    <div class="mt-3">
+                    <div class="mt-3" v-show="false">
                       <MDBSwitch
                         :label="$t('dont_block_user')"
                         v-model="switch1"
@@ -41,7 +41,7 @@
                     </div>
                     
                 
-                    <erpSelect
+                    <erpSelect v-show="false"
                         :options = "get_deparment_list.rows" 
                         @select="sub_debt_select"
                         :selected="subdept_name"
@@ -114,8 +114,6 @@
       },
     computed: mapGetters(['get_deparment_list']),
     async mounted(){
-      await this.fetch_Department();
-
       if(Object.keys(this.select_data).length != 0){
         if(this.select_data.gr == 0){
             this.switch1 = false;
@@ -126,8 +124,6 @@
             this.id = this.select_data.userid;
             this.fio = this.select_data.ism;
             this.card_number = this.select_data.cardno;
-            this.subdept_name = this.select_data.familiya;
-            this.subdept_id = this.select_data.departid;
             this.res_badgenumber = this.select_data.res_badgenumber;
             this.without_gr_id = this.select_data.without_gr_id;
         }

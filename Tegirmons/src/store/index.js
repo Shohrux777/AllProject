@@ -25,6 +25,10 @@ import usedProduct from '../store/modules/usedProduct'
 import kassa from '../store/modules/kassa'
 import hisob from '../store/modules/hisob'
 import door from '../store/modules/door'
+import userFace from '../store/modules/userFace'
+import dashboard from '../store/modules/dashboard'
+
+
 
 Vue.use(Vuex)
 
@@ -108,6 +112,8 @@ export default new Vuex.Store({
         usedProduct,
         kassa,
         hisob,
-        door
+        door,
+        userFace,
+        dashboard
     }
 })
