@@ -326,7 +326,13 @@
     "acc_name": "Телефон",
     "middle_name": "Дата рождения",
     "familiya": "Номер паспорта",
-    "group_name": "Примечание"
+    "group_name": "Примечание",
+    "salary_report": "Отчет охранника",
+    "day": "Дни пришел",
+    "type_salary": "Тип зарплаты",
+    "time_work": "Раб. время",
+    "checktype": "Статус",
+    "time": "Время"
 
 
 }

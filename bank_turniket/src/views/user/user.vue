@@ -1,6 +1,6 @@
 <template>
     <div class="deparment_page">
-      <navbar :title = "$t('user')" @add="addDept" />
+      <navbar :title = "$t('user')" @add="addDept" @editFunc="editFunc" @deleteFunc="deleteFunc"/>
       
       <div class="mainpage">
         <div class="row">
@@ -16,33 +16,8 @@
                 >
                 </MDBInput>
             </div>
-            <div class="col-8">
-              <div class="w-100 d-flex justify-content-end">
-                <div style="width:200px">
-                    <MDBInput
-                      type="text"
-                      id="form1"
-                      size="sm"
-                      class="form-icon-trailing mt-1"
-                      label="sana.oy.yil"
-                      v-model="day"
-                  >
-                  </MDBInput>
-                </div>
-                <div style="width:150px" class="pr-4">
-                  <MDBInput
-                    type="text"
-                    id="form1"
-                    size="sm"
-                    class="form-icon-trailing mt-1 mr-2"
-                    label="12:00"
-                    v-model="hour"
-                >
-                </MDBInput>
-                </div>
-                
-                <MDBBtn style="font-size: 11px;" @click="submit_add" color="success">Saqlash</MDBBtn>
-              </div>
+            <div class="col-5">
+              
             </div>
             <div class="col-3 d-flex justify-content-end">
               <!-- <MDBBtn style="font-size: 9px;" @click="del_all_user" color="danger">Все удалит</MDBBtn> -->
@@ -57,73 +32,10 @@
             <!-- <p>{{ excelItems }}</p> -->
         </div>
             
-        <!-- <mdbtabled
+        <mdbtabled
         :options="get_user_list"
         @selectData="selectData"
-        ></mdbtabled> -->
-
-        <div class="mt-3">
-              <MDBTable class="align-middle mb-0 bg-white">
-                  <thead class="bg-light">
-                    <tr>
-                      <th>№</th>
-                        <th>FIO
-                          <span style="position:relative;">
-                              <span @click="sortedArrayAsc('user_name')"><MDBIcon icon="angle-up"  class="px-1 up_down_icon"  style="position:absolute; font-size: 11px; top:-2px; cursor:pointer;"/></span>
-                              <span @click="sortedArray('user_name')"><MDBIcon icon="angle-down"  class="px-1 up_down_icon" style="position:absolute; font-size: 11px; bottom:-4px; cursor:pointer;"/></span>
-                            </span>
-                        </th>
-                        <th>Lavozimi</th>
-                        <th>Rasm</th>
-                        <th  width="100" class="text-danger">Bajarilmagan</th>
-                        <th  width="100" class="text-primary">Bajarilmoqda</th>
-                        <th  width="100">{{$t('action')}}</th>
-
-                    </tr>
-                  </thead>
-                  <tbody>
-                  <tr v-for="(row, index) in get_user_list.rows" :key="index">
-                    <td>{{ index + 1 }}</td>
-                      <td style="cursor:pointer;">
-                      <div class="d-flex align-items-center">
-                          <div class="ms-3">
-                          <p class="fw-bold mb-1" v-if="row.ism != null">{{ row.ism }}</p>
-                          <!-- <p class="text-muted mb-0" v-if="row.familiya != null">{{ row.familiya }}</p> -->
-                          </div>
-                      </div>
-                      </td >
-                      <td style="cursor:pointer;" class="text ">{{row.cardno}}</td>
-                      <td style="cursor:pointer;">
-                        <img v-show="row.image_url"  width="50" height="50" :src="hostname1 + row.image_url" alt="">
-                      </td>
-                      <td>
-                        <MDBInput
-                            type="number"
-                            id="form1"
-                            size="sm"
-                            class="form-icon-trailing mt-3"
-                            v-model="row.gr"
-                        >
-                        </MDBInput>
-                      </td>
-                      <td>
-                        <MDBInput
-                            type="number"
-                            id="form1"
-                            size="sm"
-                            class="form-icon-trailing mt-3"
-                            v-model="row.without_gr_id"
-                        >
-                        </MDBInput>
-                      </td>
-                      <td class="text ">
-                        <MDBIcon @click="editFunc(row)" icon="pen" class="text-primary"  style="cursor:pointer; padding: 0 15px !important;"/>
-                        <MDBIcon  @click="deleteFunc(row)" icon="trash" class="text-danger"  style="cursor:pointer;"/>
-
-                      </td>
-                  </tr>
-                  </tbody>
-                </MDBTable>
+        ></mdbtabled>
       </div>
       <MDBModal
           id="exampleModal"
@@ -142,7 +54,6 @@
           
       </MDBModal>
     </div>
-    </div>
   </template>
   
   <script>
@@ -153,7 +64,7 @@
       MDBModal,
       MDBModalHeader,
       MDBModalTitle,
-      MDBModalBody,MDBInput, MDBTable
+      MDBModalBody,MDBInput
     } from 'mdb-vue-ui-kit';
     import { ref } from 'vue';
     import readXlsFile from 'read-excel-file';
@@ -180,7 +91,6 @@
           navbar,
           dept_add,
           mdbtabled,
-          MDBTable
       },
       data(){
           return{
@@ -189,17 +99,12 @@
               search: '',
               users_list: {},
               excelItems: jsonusers,
-              day: '',
-              hour: '',
-              hostname1: this.$store.state.hostname1,
           }
       },
       async mounted(){
           await this.fetch_user();
           console.log(this.get_user_list)
         //   this.users_list = this.get_user_list;
-        this.day = this.get_user_list.rows[0].familiya;
-        this.hour = this.get_user_list.rows[0].acc_name;
           console.log(this.excelItems)
       },
       computed: {
@@ -216,35 +121,6 @@
             })
             // console.log(this.excelItems)
           },
-          async submit_add(){
-            console.log(this.get_user_list.rows)
-            let url = '/SkudMyUserinfoes/updateUserInfo'
-            for(let i=0;i<this.get_user_list.rows.length; i++){
-              try{
-                const requestOptions = {
-                method: "POST",
-                headers: { "Content-Type" : "application/json" },
-                body: JSON.stringify({
-                  "userid": this.get_user_list.rows[i].userid,
-                  "badgenumber": this.get_user_list.rows[i].badgenumber,
-                  "ism" : this.get_user_list.rows[i].ism,
-                  "cardno" : this.get_user_list.rows[i].cardno,
-                  "without_gr_id": this.get_user_list.rows[i].without_gr_id,
-                  "gr": this.get_user_list.rows[i].gr,
-                  "image_url": this.get_user_list.rows[i].image_url,
-                  "familiya": this.day,
-                  "acc_name": this.hour,
-                  })
-                };
-                const response = await fetch(this.$store.state.hostname + url, requestOptions);
-                console.log(response)
-              }
-              catch(error){
-                console.log('error')
-                console.log(error)
-              }
-            }
-          },  
           async add_json_user(){
             
             for(let i=0; i<this.excelItems.length; i++){
@@ -289,10 +165,11 @@
               this.exampleModal = true;
           },
           selectData(data){
+            console.log('select_date')
+            console.log(data.userid)
             this.select_data = data
           },
-          async deleteFunc(data){
-            this.select_data = data;
+          async deleteFunc(){
             try{
                 console.log('deleteFunc')
                 const requestOptions = {
@@ -311,8 +188,7 @@
                 console.log(error)
             }
           },
-          async editFunc(data){
-            this.select_data = data;
+          async editFunc(){
             this.show_dept = true;
             this.exampleModal = true;
             console.log('editFunc')

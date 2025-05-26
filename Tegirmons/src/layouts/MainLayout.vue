@@ -150,8 +150,8 @@
             ] },
             { title: "face_control", icon: 'users', url: '', view: false, color: '#c4cbcb', down_list:[
               { title: "Dashboard", url: '/dashboard', dview: false, color: '#c4cbcb', down_list:[] },
+              { title: "salary_report", url: '/salary_report', dview: false, color: '#c4cbcb', down_list:[] },
               { title: "worker", url: '/userFace', dview: false, color: '#c4cbcb', down_list:[] },
-
               { title: "devices_info", url: '/door', view: false, color: '#c4cbcb', down_list:[] },
               { title: "device_door", url: '/doors', view: false, color: '#c4cbcb', down_list:[] },
             ] },

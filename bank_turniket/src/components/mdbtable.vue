@@ -35,9 +35,6 @@
                     </span>
                     <span v-else>{{ row[column]}}</span>
                 </td>
-                <td>
-                    
-                </td>
             </tr>
             </tbody>
         </MDBTable>

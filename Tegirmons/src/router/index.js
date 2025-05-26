@@ -75,6 +75,13 @@ const routes = [{
             import ('../views/face_control/checkinOut.vue')
     },
     {
+        path: '/salary_report',
+        name: 'salary_report',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/face_control/report.vue')
+    },
+    {
         path: '/product',
         name: 'product',
         meta: { layout: 'main' },

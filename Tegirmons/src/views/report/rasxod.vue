@@ -182,9 +182,6 @@
           this.modal_status = true;
         }
       }
-      
-      
-      
     },
   };
 </script>
