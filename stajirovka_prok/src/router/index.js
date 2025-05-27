@@ -51,10 +51,10 @@ const routes = [
     component: () => import( '../views/dashboard/checkinOut.vue')
   },
   {
-    path: '/smena',
-    name: 'smena',
+    path: '/topshiriqlar',
+    name: 'topshiriqlar',
     meta: { layout: 'main' },
-    component: () => import( '../views/grafik/smena.vue')
+    component: () => import( '../views/topshiriqlar/topshiriqlar.vue')
   },
   {
     path: '/ish_grafigi',

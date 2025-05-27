@@ -5,7 +5,7 @@
 	"company": "Kompaniya",
   "report" : "Hisobot",
   "menu_setting": "Sozlamalar",
-  "logout": "Chiqish",
+  "logout": "Tizimdan chiqish",
   "devices": "Qurilmalar",
   "dashboard": "Bosh sahifa",
   "report_user": "Xodimlar haqida hisobot",
@@ -18,6 +18,7 @@
   "name": "Nomi",
   "checktype": "Status",
   "date": "Kun",
-  "time": "Vaqt"
+  "time": "Vaqt",
+  "topshiriqlar": "Topshiriqlar"
 
 }

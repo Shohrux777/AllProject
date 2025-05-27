@@ -78,16 +78,13 @@
               <MDBNavbarNav class="mb-2 mb-lg-0 ">
                 <MDBNavbarItem class="d-sm-flex align-items-sm-center">
                   <img
-                    src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg"
+                    src="https://mdbootstrap.com/img/new/avatars/8.jpg"
                     class="rounded-circle"
                     height="22"
                     alt=""
                     loading="lazy"
                   />
-                  <span class="d-none d-sm-block ms-1 cl_white " style="font-size: 12px;">John Stathim</span>
-                </MDBNavbarItem>
-                <MDBNavbarItem to="#">
-                  <MDBIcon icon="plus-circle" class="cl_white"></MDBIcon>
+                  <span class="d-none d-sm-block ms-1 cl_white " style="font-size: 12px;">Kamolov Ravshan</span>
                 </MDBNavbarItem>
                 <MDBNavbarItem to="#">
                   <MDBIcon icon="comments " class="cl_white"></MDBIcon>
