@@ -31,7 +31,12 @@
 
               <div v-if="show_title" class="d-flex justify-content-between" style="width:85%; text-align:left">
 
-                <p  style="padding-left: 5px; font-size: 12px;" class="m-0 text-white">{{$t(link.title)}}</p>
+                <p  style="padding-left: 5px; font-size: 12px; position: relative;" class="m-0 text-white">{{$t(link.title)}}
+                  <span v-if="link.url == '/answers_list'" style="right:-28px; top:2px; background:#DCA333; color:black;" class="position-absolute  translate-middle badge rounded-pill">
+                    5
+                    <span class="visually-hidden">unread messages</span>
+                  </span>
+                </p>
 
                 <svg v-if="link.down_list.length!=0" :class="{'round':link.view}" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-right" 
                   style="margin-top: 3.5px; margin-right: 8px !important;" width="13" height="13" viewBox="0 0 24 24" stroke-width="2" stroke="#999" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -225,49 +230,13 @@
             { title: 'dashboard', icon: 'house-damage', url: '/dashboard', view: false, color: '#ddd', 
               down_list:[]
             },
+            { title: 'answers_list', icon: 'landmark', url: '/answers_list', view: false, color: '#ddd', down_list:[] },
 
+            { title: 'Топшириклар', icon: 'landmark', url: '/user_topshiriqlar', view: false, color: '#ddd', down_list:[] },
+            
             { title: 'user', icon: 'user', url: '/user', view: false, color: '#ddd', 
               down_list:[]
             },
-            { title: "otdel", icon: 'users', url: '', view: false, color: '#ddd', 
-              down_list:[
-              { title: "otdel", url: '/department', dview: false, color: '#ddd', down_list:[] },
-              { title: "otdel_connect", url: '/depart_connect_user', dview: false, color: '#ddd', down_list:[] },
-              ] },
-            { title: 'company', icon: 'landmark', url: '/company', view: false, color: '#ddd', down_list:[] },
-
-            { title: 'salary', icon: 'hand-holding-usd', url: '', view: false, color: '#ddd', down_list:[
-                { title: "salary", url: '/salary', dview: false, color: '#ddd', down_list:[] },
-                { title: "connect_user_salary", url: '/userconnect_salary', dview: false, color: '#ddd', down_list:[] },
-            ] },
-
-            { title: 'report', icon: 'clipboard', url: '', view: false, color: '#ddd', down_list:[
-              { title: "report_user", url: '/bytimeInOut', dview: false, color: '#ddd', down_list:[] },
-              { title: "report_user_one", url: '/bytimeInOutOne', dview: false, color: '#ddd', down_list:[] },
-              // { title: "report", url: '/byvaqtReport', dview: false, color: '#ddd', down_list:[] },
-              { title: "report_salary", url: '/salaryReportbytimeNow', dview: false, color: '#ddd', down_list:[] },
-              { title: "report_qarovul", url: '/qarovulxona_salary', dview: false, color: '#ddd', down_list:[] },
-              { title: "come_in_out", url: '/come_in_out', dview: false, color: '#ddd', down_list:[] },
-              { title: "ComeInReport", url: '/ComeInReport', dview: false, color: '#ddd', down_list:[] },
-              { title: "notComeInReport", url: '/notComeInReport', dview: false, color: '#ddd', down_list:[] },
-              { title: "blockedUsers", url: '/blockedUsers', dview: false, color: '#ddd', down_list:[] },
-            ]},
-            { title: 'note', icon: 'chart-line', url: '', view: false, color: '#ddd', down_list:[
-                { title: "userAddRemoveDay", url: '/userAddRemoveDay', dview: false, color: '#ddd', down_list:[] },
-                { title: "userRasxod", url: '/userRasxod', dview: false, color: '#ddd', down_list:[] },
-            ] },
-
-            { title: 'smena', icon: 'desktop', url: '', view: false, color: '#ddd', down_list:[
-                { title: "userconnect_grafik", url: '/userconnect_grafik', dview: false, color: '#ddd', down_list:[] },
-                { title: "smena", url: '/smena', dview: false, color: '#ddd', down_list:[] },
-                { title: "ish_grafigi", url: '/ish_grafigi', dview: false, color: '#ddd', down_list:[] },
-                { title: "result_gr", url: '/result_gr', dview: false, color: '#ddd', down_list:[] },
-            ] },
-            
-           { title: 'devices', icon: 'desktop', url: '', view: false, color: '#ddd', down_list:[
-                { title: "devices_info", url: '/device', dview: false, color: '#ddd', down_list:[] },
-                { title: "device_door", url: '/door', dview: false, color: '#ddd', down_list:[] },
-            ] },
 
             { title: 'menu_setting', icon: 'tools', url: '', view: false, color: '#ddd', down_list:[
                 { title: "company", url: '/', dview: false, color: '#ddd', down_list:[] },

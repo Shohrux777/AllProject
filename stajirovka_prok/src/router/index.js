@@ -57,6 +57,36 @@ const routes = [
     component: () => import( '../views/topshiriqlar/topshiriqlar.vue')
   },
   {
+    path: '/user_topshiriqlar',
+    name: 'user_topshiriqlar',
+    meta: { layout: 'main' },
+    component: () => import( '../views/topshiriqlar/user_topshiriqlar.vue')
+  },
+  {
+    path: '/bajarilgan',
+    name: 'bajarilgan',
+    meta: { layout: 'main' },
+    component: () => import( '../views/topshiriqlar/bajarilgan.vue')
+  },
+  {
+    path: '/answers_userID',
+    name: 'answers_userID',
+    meta: { layout: 'main' },
+    component: () => import( '../views/topshiriqlar/answers_userID.vue')
+  },
+  {
+    path: '/answers_user',
+    name: 'answers_user',
+    meta: { layout: 'main' },
+    component: () => import( '../views/topshiriqlar/answers_user.vue')
+  },
+  {
+    path: '/answers_list',
+    name: 'answers_list',
+    meta: { layout: 'main' },
+    component: () => import( '../views/topshiriqlar/answers_list.vue')
+  },
+  {
     path: '/ish_grafigi',
     name: 'ish_grafigi',
     meta: { layout: 'main' },

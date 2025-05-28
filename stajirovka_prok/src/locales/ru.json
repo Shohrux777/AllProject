@@ -7,7 +7,7 @@
   "menu_setting": "Настройки",
   "logout": "Выйти",
 	"devices": "Устройства",
-  "dashboard": "Панели управления",
+  "dashboard": "Бош сахифа",
   "report_user": "Сообщить о пользователях",
 	"report_details": "Подробности отчета",
   "report_salary": "Зарплата отчета",
@@ -80,5 +80,6 @@
   "userAddRemoveDay": "Добавляет рабочий день",
   "userRasxod": "Расходь",
   "rasxod_zarplata": "Добавляет расходь и зарплата",
-  "topshiriqlar": "Topshiriqlar"
+  "topshiriqlar": "Topshiriqlar",
+  "answers_list": "Берилган жавоблар"
 }

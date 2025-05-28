@@ -2,98 +2,7 @@
   <div class="deparment_page">
     <navbar :title = "$t('topshiriqlar')" @add="addDept" :added_status = "added_status"/>
     <div class="example">
-      <div class="example_cont">
-        <div class="w-100">
-          <div class="row">
-            <div class="col-6">
-              <div class="d-flex align-items-center">
-                <img
-                  src="@/assets/pic2.png"
-                  class="rounded"
-                  alt=""
-                  style="width: 120px; height: 120px"
-                  />
-                <div class="ms-3">
-                  <p class="fw-bold mb-0" style="font-size: 15px;">Yusupov Baxrom Uktamovich</p>
-                  <p class="text-muted mb-0" style="font-size: 12px;">
-                    <span style="font-weight:bold; margin-right:7px;">Manzil:</span>Samarqand viloyat Ishtixon tuman</p>
-                  <p class="text-muted mb-0" style="font-size: 12px;">
-                    <span style="font-weight:bold; margin-right:7px;">Lavozimi:</span>Prokror yordamchisi</p>
-                  <p class="text-muted mb-0" style="font-size: 12px;">
-                    <span style="font-weight:bold; margin-right:7px;">Tug'ilgan sanasi:</span>19.05.1989</p>
-                  <p class="text-muted mb-0" style="font-size: 12px;">
-                    <span style="font-weight:bold; margin-right:7px;">Pasport seriya:</span>AC 7361277</p>
-                  <p class="text-muted mb-0" style="font-size: 12px;">
-                    <span style="font-weight:bold; margin-right:7px;">JSHSHIR:</span>342523416525234</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-6">
-              <div>
-                <div class="user_answers d-flex align-items-center w-100">
-                  <div class="text-muted mx-2" style="width:14%; font-size: 15px;">
-                    Topshiriqlar
-                  </div>
-                  <div style="width:40%;">
-                    <div class=" range_component rounded">
-                      <div class="rounded bg-primary" style="width:100%; height:10px;"></div>
-                    </div>
-                  </div>
-                  <div  class="text-primary mx-2" style="font-size: 16px; font-weight:bold;">
-                    83
-                  </div>
-                </div>
-
-                <div class="user_answers d-flex align-items-center w-100">
-                  <div  class="text-muted mx-2" style="width:14%; font-size: 15px;">
-                    Bajarilgan
-                  </div>
-                  <div style="width:40%;" >
-                    <div class=" range_component rounded">
-                      <div class="rounded bg-success" style="width:40%; height:10px;" ></div>
-                    </div>
-                  </div>
-                  <div  class="text-success mx-2 " style="font-size: 16px; font-weight:bold;">
-                    26
-                  </div>
-                </div>
-                <div class="user_answers d-flex align-items-center w-100">
-                  <div  class="text-muted mx-2" style="width:14%; font-size: 15px;">
-                    Tasdiqlashda
-                  </div>
-                  <div style="width:40%;" >
-                    <div class=" range_component rounded">
-                      <div class="rounded bg-warning" style="width:20%; height:10px;" ></div>
-                    </div>
-                  </div>
-                  <div  class="text-warning mx-2 " style="font-size: 16px; font-weight:bold;">
-                    6
-                  </div>
-                </div>
-
-                <div class="user_answers d-flex align-items-center w-100">
-                  <div  class="text-muted mx-2" style="width:14%; font-size: 15px;">
-                    Bajarilmagan
-                  </div>
-                  <div style="width:40%;" >
-                    <div class=" range_component rounded">
-                      <div class="rounded bg-danger" style="width:60%; height:10px;" ></div>
-                    </div>
-                  </div>
-                  <div  class="text-danger mx-2 " style="font-size: 16px; font-weight:bold;">
-                    51
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-        </div>        
-      </div>
       <div class="example_topshiriqlar">
-        <div>
-            <p class="m-0 " style="font-style:italic; font-size: 15px; color:#757580;">Topshiriqlar</p>
-          </div>
         <div class="card mt-2 px-3 pt-2 pb-1" style="cursor:pointer">
           <div>
             <div class="d-flex justify-content-between">
@@ -137,7 +46,7 @@
             <div class="border bg-secondary" style="width: 6.25%;"></div>
             <div class="border bg-secondary" style="width: 6.25%;"></div>
           </div>
-          <div class="d-flex justify-content-end mt-2 mb-1" @click="$router.push('/answers_user')">
+          <div class="d-flex justify-content-end mt-2 mb-1" @click="$router.push('/answers_userID')">
             <div class="px-4 rounded alert-info" >
               <small style=" font-size: 12px; color:#67748A; font-weight:600;">Batafsil</small>
             </div>
@@ -173,7 +82,7 @@
             <div class="border bg-secondary" style="width: 6.25%;"></div>
             <div class="border bg-secondary" style="width: 6.25%;"></div>
           </div>
-          <div class="d-flex justify-content-end mt-2 mb-1"  @click="$router.push('/answers_user')">
+          <div class="d-flex justify-content-end mt-2 mb-1"  @click="$router.push('/answers_userID')">
             <div class="px-4 rounded alert-info" >
               <small style=" font-size: 12px; color:#67748A; font-weight:600;">Batafsil</small>
             </div>
