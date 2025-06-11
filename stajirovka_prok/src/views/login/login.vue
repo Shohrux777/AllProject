@@ -19,28 +19,55 @@
 
 <script>
 import { MDBBtn } from "mdb-vue-ui-kit";
+import axios from 'axios';
 export default {
     components: {
         MDBBtn
     },
     data(){
         return{
-            login: '',
-            parol: '',
+            login: 'admin@admin.com',
+            parol: 'password',
             invalid_status: false,
         }
     },
     methods:{
-        Check_login(){
+        async Check_login(){
             // localStorage.sidebar = true;
             // localStorage.Name = 'Firdavs'
-            if(this.login == 'admin' && this.parol == 'admin'){
-                this.$router.push('/dashboard')
-                this.invalid_status = false;
-            }
-            else if(this.login == 'musa07' && this.parol == 'musa07'){
-                this.$router.push('/come_in_out_report')
-                this.invalid_status = false;
+            // if(this.login == 'admin' && this.parol == 'admin'){
+            //     this.$router.push('/dashboard')
+            //     this.invalid_status = false;
+            // }
+            // else if(this.login == 'musa07' && this.parol == 'musa07'){
+            //     this.$router.push('/come_in_out_report')
+            //     this.invalid_status = false;
+            // }
+            if(this.login && this.parol){
+                try {
+                    const response = await axios.post(this.$store.state.hostname + '/api/admin/login', {
+                    email: this.login,
+                    password: this.parol
+                    });
+                    console.log(response)
+                    const token = response.data.token;
+
+                    // Tokenni localStorage ga saqlaymiz
+                    localStorage.setItem('auth_token', token);
+                    localStorage.setItem('role', JSON.stringify(response.data.user.role));
+
+                    // Kerak bo‘lsa user ma’lumotini ham saqlash
+                    localStorage.setItem('user', JSON.stringify(response.data.user));
+
+                    // alert('Muvaffaqiyatli login!');
+                    // Keyingi sahifaga o‘tkazish (agar router ishlatilsa)
+                    this.$router.push('/dashboard');
+                    this.invalid_status = false;
+                } catch (err) {
+                    this.error = 'Email yoki parol noto‘g‘ri';
+                    console.error(err);
+                    this.invalid_status = true;
+                }
             }
             else{
                 this.invalid_status = true;

@@ -1,33 +1,48 @@
+import axios from 'axios';
 export default {
+    
     state: {
         user_list: {
             rows: [],
-            columns: [ 'userid','ism', 'gr', 'cardno', 'familiya', 'image_url' ],
+            columns: [ 'full_name','name', 'phone', 'mobile_phone', 'description' ],
             col: []
         },
         nosalary_user: [],
     },
     actions: {
         async fetch_user(ctx) {
-            const res = await fetch(ctx.rootState.hostname + '/SkudMyUserinfoes');
-            const res_data = await res.json();
-            // console.log(ctx.rootState.hostname);
-            ctx.commit('Updateuser_list', res_data);
+            try{
+                const token = localStorage.getItem('auth_token');
+
+                console.log('Token:', token); // ← bu chiqsin, `Bearer`siz bo'lishi kerak
+
+                const response = await axios.get(
+                ctx.rootState.hostname + '/api/admin/users',
+                {
+                    headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: 'application/json',
+                    'ngrok-skip-browser-warning': '69420'
+                    }
+                }
+                );
+                console.log('Natija:', response.data);
+                ctx.commit('Updateuser_list', response.data);
+            }
+            catch (error) {
+            console.error('Xatolik:', error.response?.data || error.message);
+            alert("Xatolik yuz berdi!");
+            }
+            
+            console.log(ctx.rootState.hostname);
         },
-        async fetch_nosalary_user(ctx) {
-            const res = await fetch(ctx.rootState.hostname + '/SkudOyliks/getPaginationUsersByOylikkaBriktrilmagan?page=0&size=1000');
-            const res_data = await res.json();
-            // console.log(ctx.rootState.hostname);
-            ctx.commit('Update_nosalary_user', res_data); 
-        }
     },
     mutations: {
         Updateuser_list(state, data) {
+            console.log(data)
             state.user_list.rows = data;
         },
-        Update_nosalary_user(state, data) {
-            state.nosalary_user = data.items_list;
-        },
+        
         district_row_delete(state, index) {
             state.user_list.rows.splice(parseInt(index), 1);
         }
@@ -37,9 +52,5 @@ export default {
         get_user_list(state) {
             return state.user_list;
         },
-        get_nosalary_user(state) {
-            return state.nosalary_user;
-        },
-
     }
 }

@@ -56,7 +56,7 @@
 
           <div class="d-flex justify-content-end mt-3 mb-1 border-top pt-3 pb-2">
             <div class="px-3  py-1" style="background: #4795EF; border-radius: 5px;" >
-                <small style=" font-size: 13px; color:white;">Saqlash</small>
+                <small style="font-size: 13px; color:white;">Saqlash</small>
               </div>
           </div>
         </div>

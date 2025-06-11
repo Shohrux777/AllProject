@@ -8,18 +8,8 @@
                         id="form1"
                         size="sm"
                         class="form-icon-trailing"
-                        :label="$t('FIO')"
-                        v-model="fio"
-                    >
-                    </MDBInput>
-
-                    <MDBInput
-                        type="number"
-                        id="form1"
-                        size="sm"
-                        class="form-icon-trailing mt-3"
-                        :label="$t('id')"
-                        v-model="id"
+                        label="Familiya"
+                        v-model="user.full_name"
                     >
                     </MDBInput>
 
@@ -28,26 +18,56 @@
                         id="form1"
                         size="sm"
                         class="form-icon-trailing mt-3"
-                        :label="$t('cardno')"
-                        v-model="card_number"
+                        label="Ism"
+                        v-model="user.name"
                     >
-                        <MDBIcon icon="credit-card" class="trailing"></MDBIcon>
                     </MDBInput>
-                    <div class="mt-3">
-                      <MDBSwitch
-                        :label="$t('dont_block_user')"
-                        v-model="switch1"
-                      />
-                    </div>
-                    
-                
-                    <erpSelect
-                        :options = "get_deparment_list.rows" 
-                        @select="sub_debt_select"
-                        :selected="subdept_name"
-                        :label="$t('otdel')"
-                        class="mt-2"
-                    />
+
+                    <MDBInput
+                        type="text"
+                        id="form1"
+                        size="sm"
+                        class="form-icon-trailing mt-3"
+                        label="Telefon"
+                        v-model="user.phone"
+                    >
+                    </MDBInput>
+
+                    <MDBInput
+                        type="text"
+                        id="form1"
+                        size="sm"
+                        class="form-icon-trailing mt-3"
+                        label="Mobil telefon"
+                        v-model="user.mobile_phone"
+                    >
+                    </MDBInput>
+
+                    <MDBTextarea label="Tavsif" 
+                        class="mt-3"
+                        size="sm"
+                        rows="2" v-model="user.description" />
+
+                        <hr class="mt-4">
+                    <MDBInput
+                        type="text"
+                        id="form1"
+                        size="sm"
+                        class="form-icon-trailing mt-3"
+                        label="Email"
+                        v-model="user.email"
+                    >
+                    </MDBInput>
+                    <MDBInput
+                        type="password"
+                        id="form1"
+                        size="sm"
+                        class="form-icon-trailing mt-3"
+                        label="Password"
+                        v-model="user.password"
+                    >
+                    </MDBInput>
+                    <!-- :label="$t('Familiya')" -->
                 </form>
             </div>
             <div class="col-3">
@@ -76,9 +96,10 @@
   </template>
   
   <script>
-  import { MDBInput, MDBIcon, MDBModalFooter, MDBBtn, MDBSwitch } from "mdb-vue-ui-kit";
+  import { MDBInput, MDBIcon, MDBModalFooter, MDBBtn, MDBSwitch, MDBTextarea  } from "mdb-vue-ui-kit";
   import erpSelect from '@/components/erpSelectAdd.vue'
-  import {mapActions, mapGetters} from 'vuex'
+  import {mapActions} from 'vuex'
+  import axios from 'axios';
   
   export default {
     components: {
@@ -87,22 +108,22 @@
         MDBModalFooter,
         erpSelect,
         MDBBtn,
-        MDBSwitch 
+        MDBSwitch,
+        MDBTextarea
       },
       data(){
         return{
-          fio: '',
-          card_number: '',
-          id: 1,
-          subdept_name: ' ',
-          subdept_id: null,
-          show_picture: false,
-          base64: '',
-          img_str: '',
-          switch1: false,
-          gr: 0,
-          res_badgenumber: 0,
-          without_gr_id: 0,
+          user: {
+            name: '',
+            full_name: '',
+            email: '',
+            password: '',
+            status: 1,
+            phone: '',
+            mobile_phone: '',
+            description: '',
+            image_base64: '',
+          }
 
         }
       },
@@ -112,80 +133,93 @@
           default: {}
         },
       },
-    computed: mapGetters(['get_deparment_list']),
     async mounted(){
-      await this.fetch_Department();
-
       if(Object.keys(this.select_data).length != 0){
-        if(this.select_data.gr == 0){
-            this.switch1 = false;
-          }
-          else{
-            this.switch1 = true;
-          }
-            this.id = this.select_data.userid;
-            this.fio = this.select_data.ism;
-            this.card_number = this.select_data.cardno;
-            this.subdept_name = this.select_data.familiya;
-            this.subdept_id = this.select_data.departid;
-            this.res_badgenumber = this.select_data.res_badgenumber;
-            this.without_gr_id = this.select_data.without_gr_id;
+            this.user = {
+              name: this.select_data.name,
+              full_name: this.select_data.full_name,
+              email: this.select_data.email,
+              password: this.select_data.password,
+              status: this.select_data.status,
+              phone: this.select_data.phone,
+              mobile_phone: this.select_data.mobile_phone,
+              description: this.select_data.description,
+              image_base64: this.select_data.image_base64,
+            }
         }
       
     },
 
     methods:{
-      ...mapActions(['fetch_Department', 'fetch_user']),
+      ...mapActions([ 'fetch_user']),
 
-      sub_debt_select(option){
-        console.log(option)
-        this.subdept_name = option.name;
-        this.subdept_id = option.id;
-      },
       async submit_add(){
-        let url = '/SkudMyUserinfoes';
         if(Object.keys(this.select_data).length != 0){
-          url = '/SkudMyUserinfoes/updateUserInfo'
-        }
-        await this.fetch_imageFile();
-        if(this.switch1 == false){
-          this.gr = 0;
+          await this.fetch_user_update();
         }
         else{
-          this.gr = 1;
+          await this.fetch_user_new_add();
         }
-        try{
-          const requestOptions = {
-          method: "POST",
-          headers: { "Content-Type" : "application/json" },
-          body: JSON.stringify({
-            "userid": this.id,
-            "badgenumber": this.id,
-            "ism" : this.fio,
-            "cardno" : this.card_number,
-            "departid" : this.subdept_id,
-            "familiya": this.subdept_name,
-            "image_url": this.img_str,
-            // "res_badgenumber": this.res_badgenumber,
-            // "without_gr_id": this.without_gr_id,
-            "gr": this.gr
-            })
-          };
-          const response = await fetch(this.$store.state.hostname + url, requestOptions);
-          const data = await response.json();
-          console.log(data)
-          if(data.userid != 0){
+      },
+
+      async fetch_user_new_add(){
+        var img = document.getElementById('prewImage');
+        // console.log(img.src)
+        this.user.image_base64 = img.src;
+        try {
+          const token = localStorage.getItem('auth_token'); // login paytida saqlangan token
+          const response = await axios.post(
+            this.$store.state.hostname + '/api/admin/users',
+            this.user,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            }
+          );
+
+          console.log('Yaratildi:', response.data);
+          if(response.status == 200 || response.status == 201){
             this.$emit('close')
             await this.fetch_user();
           }
+          // this.img_str = response.data.image_base64;
+          alert("Foydalanuvchi qo‘shildi!");
+        } catch (error) {
+          console.error('Xatolik:', error.response?.data || error.message);
+          alert("Xatolik yuz berdi!");
         }
-        catch(error){
-          console.log('error')
-          console.log(error)
-        }
-
       },
 
+      async fetch_user_update (){
+        var img = document.getElementById('prewImage');
+          // console.log(img.src)
+          this.user.image_base64 = img.src;
+          try {
+            const token = localStorage.getItem('auth_token'); // login paytida saqlangan token
+            const response = await axios.put(
+              this.$store.state.hostname + '/api/admin/users/' + this.select_data.id,
+              this.user,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`
+                }
+              }
+            );
+
+            console.log('Yaratildi:', response.data);
+            if(response.status == 200 || response.status == 201){
+              this.$emit('close')
+              await this.fetch_user();
+            }
+            // this.img_str = response.data.image_base64;
+            alert("Foydalanuvchi qo‘shildi!");
+          } catch (error) {
+            console.error('Xatolik:', error.response?.data || error.message);
+            alert("Xatolik yuz berdi!");
+          }
+      },
+      
       previewFile(){
         console.log('dsd')
         const preview = document.getElementById('prewImage');
@@ -198,44 +232,6 @@
           reader.readAsDataURL(file);
           this.show_picture = true;
         }
-      },
-
-      async fetch_imageFile(){
-        var img = document.getElementById('prewImage');
-        // console.log(img.src)
-        this.base64 = img.src;
-        console.log('this.base64')
-        console.log(this.base64)
-        try{
-          const requestOptions = {
-            method : "POST",
-            headers: { "Content-Type" : "application/json" },
-            body: JSON.stringify({
-              "image_base_64" : this.base64,
-            })
-          };
-
-          const response = await fetch(this.$store.state.hostname + "/TegirmonClient/getSaveBase64ImageToFolderAndGetImageUrl", requestOptions);
-          const data = await response.json();
-          
-          if(response.status == 201 || response.status == 200)
-          {
-            console.log("data")
-            console.log(data)
-            this.img_str = data.image_url_str
-            // this.$refs.message.success('Added_successfully')
-            return true;
-          }
-          else{
-            console.log('error else')
-            // this.loading = false;
-            // this.modal_info = this.$i18n.t('network_ne_connect'); 
-            // this.modal_status = true;
-          }
-          }
-          catch(error){
-            console.log(error)
-          }
       }
     }
   }

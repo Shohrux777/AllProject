@@ -437,7 +437,7 @@
     width: 20%;
     display: flex;
     align-items: center;
-    justify-content: end;
+    justify-content: flex-end;
     
   }
   .dashboard_card_item_right small{
