@@ -2,22 +2,21 @@ import axios from 'axios';
 export default {
     
     state: {
-        user_list: {
+        task_list: {
             rows: [],
-            columns: [ 'full_name','name', 'phone', 'mobile_phone', 'description' ],
+            columns: ['name','count', 'note',],
             col: []
         },
-        nosalary_user: [],
     },
     actions: {
-        async fetch_user(ctx) {
+        async fetch_task(ctx) {
             try{
                 const token = localStorage.getItem('auth_token');
 
                 console.log('Token:', token); // ← bu chiqsin, `Bearer`siz bo'lishi kerak
 
                 const response = await axios.get(
-                ctx.rootState.hostname + '/api/admin/users',
+                ctx.rootState.hostname + '/api/tasks',
                 {
                     headers: {
                     Authorization: `Bearer ${token}`,
@@ -27,30 +26,30 @@ export default {
                 }
                 );
                 console.log('Natija:', response.data);
-                ctx.commit('Updateuser_list', response.data);
+                ctx.commit('Updatetask_list', response.data);
             }
             catch (error) {
             console.error('Xatolik:', error.response?.data || error.message);
             alert("Xatolik yuz berdi!");
             }
             
-            console.log(ctx.rootState.hostname);
+            // console.log(ctx.rootState.hostname);
         },
     },
     mutations: {
-        Updateuser_list(state, data) {
+        Updatetask_list(state, data) {
             console.log(data)
-            state.user_list.rows = data;
+            state.task_list.rows = data;
         },
         
-        user_row_delete(state, index) {
-            state.user_list.rows.splice(parseInt(index), 1);
+        task_row_delete(state, index) {
+            state.task_list.rows.splice(parseInt(index), 1);
         }
 
     },
     getters: {
-        get_user_list(state) {
-            return state.user_list;
+        get_task_list(state) {
+            return state.task_list;
         },
     }
 }

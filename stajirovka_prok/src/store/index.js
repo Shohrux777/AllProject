@@ -7,6 +7,7 @@ import smena from './moduls/smena'
 import door from './moduls/door'
 import device from './moduls/device'
 import salary from './moduls/salary'
+import task from './moduls/task'
 import add_rasxod_note from './moduls/add_rasxod_note'
 
 export default createStore({
@@ -14,8 +15,8 @@ export default createStore({
     // hostname: 'http://192.168.11.2:5003/api',
     // hostname1: 'http://192.168.11.2:5003/',
     
-    hostname: 'https://f5ae-195-158-8-30.ngrok-free.app',
-    hostname1: 'https://f5ae-195-158-8-30.ngrok-free.app/',
+    hostname: 'https://e4b6-195-158-8-30.ngrok-free.app',
+    hostname1: 'https://e4b6-195-158-8-30.ngrok-free.app/',
     // hostname: 'http://192.168.3.222:5003/api',
     // hostname1: 'http://192.168.3.222:5003/',
 
@@ -32,6 +33,7 @@ export default createStore({
   modules: {
     department,
     user,
+    task,
     dashboard,
     company,
     door,

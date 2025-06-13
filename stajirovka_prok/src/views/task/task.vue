@@ -102,7 +102,7 @@
 
             try {
               const response = await axios.delete(
-                this.$store.state.hostname  + `/api/admin/users/${this.select_data.id}`,
+                this.$store.state.hostname  + `/api/tasks/${this.select_data.id}`,
                 {
                   headers: {
                     Authorization: `Bearer ${token}`,
@@ -111,7 +111,7 @@
                 }
               );
               if (response.status === 200) {
-                console.log('Foydalanuvchi o‘chirildi');
+                console.log('Topshiriq o‘chirildi');
                 this.fetch_task(); // Yana yangilab olish
               }
             } catch (error) {

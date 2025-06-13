@@ -162,9 +162,8 @@
       };
     },
     async mounted() {
-
-      // this.show_title = localStorage.sidebar;
-      console.log('this.show_title')
+      console.log(this.role)
+      console.log(localStorage.getItem('role'))
       let time1 = new Date();
       console.log(time1)
       this.Start_time = time1.toISOString().slice(0,10);
@@ -199,6 +198,7 @@
         reportList: [],
         show_title: true,
         indexMain: -1,
+        role: localStorage.getItem('role'),
         langList: [
           {
             name: 'Русский',
@@ -237,10 +237,12 @@
             { title: 'user', icon: 'user', url: '/user', view: false, color: '#ddd', 
               down_list:[]
             },
-
-            { title: 'menu_setting', icon: 'tools', url: '', view: false, color: '#ddd', down_list:[
-                { title: "company", url: '/', dview: false, color: '#ddd', down_list:[] },
-            ] },
+            { title: 'task', icon: 'landmark', url: '/task', view: false, color: '#ddd', 
+              down_list:[]
+            },
+            // { title: 'menu_setting', icon: 'tools', url: '', view: false, color: '#ddd', down_list:[
+            //     { title: "company", url: '/', dview: false, color: '#ddd', down_list:[] },
+            // ] },
             { title: "logout", icon: 'sign-out-alt', url: '/', view: false, color: '#ddd', down_list:[] },
 
 

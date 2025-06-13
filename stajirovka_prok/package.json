@@ -17,6 +17,7 @@
     "vue-json-excel": "^0.3.0",
     "vue-json-excel3": "0.0.6",
     "vue-router": "^4.0.3",
+    "vue3-editor": "^0.1.1",
     "vuex": "^4.0.0"
   },
   "devDependencies": {

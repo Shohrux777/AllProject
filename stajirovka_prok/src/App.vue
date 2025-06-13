@@ -63,4 +63,32 @@ nav {
     }
   }
 }
+
+.ql-toolbar.ql-snow {
+    font-size: 12px !important; /* default ~14px */
+    padding: 5px !important;
+  }
+
+  .ql-toolbar .ql-formats button,
+  .ql-toolbar .ql-formats .ql-picker {
+    height: 15px !important;
+    line-height: 13px !important;
+    min-width: 13px !important;
+  }
+
+  .ql-toolbar .ql-picker-label {
+    padding: 0px 0px 15px 15px !important;
+    font-size: 13px !important;
+  }
+  .ql-toolbar svg {
+    width: 15px !important;
+    height: 15px !important;
+  }
+  .ql-editor::before {
+    font-size: 12px !important;
+    color: #999;
+  }
+  .ql-editor {
+    font-size: 12px !important;
+  }
 </style>

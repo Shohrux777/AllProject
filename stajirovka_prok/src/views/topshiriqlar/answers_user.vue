@@ -12,7 +12,8 @@
       </div>
       <div class="example_topshiriqlar">
         <div>
-            <p class="m-0 " style="font-style:italic; font-size: 15px; color:#757580;">Tasdiqlashda</p>
+            <p class="m-0" 
+              style="font-style: italic; font-size:15px; color:#757580;">Tasdiqlashda</p>
           </div>
         <div class="card mt-2 px-3 pt-2 pb-1" style="cursor:pointer">
           <div>
@@ -70,7 +71,7 @@
                   <div class="file-actions">
                     <i class="fa-regular fa-eye"></i>
                     <i class="far fa-circle-down"></i>
-                  </div>
+                  </div >
                 </div>
               </div>
             </div>

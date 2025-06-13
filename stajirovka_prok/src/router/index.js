@@ -69,6 +69,18 @@ const routes = [
     component: () => import( '../views/topshiriqlar/bajarilgan.vue')
   },
   {
+    path: '/task',
+    name: 'task',
+    meta: { layout: 'main' },
+    component: () => import( '../views/task/task.vue')
+  },
+  {
+    path: '/task_add',
+    name: 'task_add',
+    meta: { layout: 'main' },
+    component: () => import( '../views/task/task_add.vue')
+  },
+  {
     path: '/answers_userID',
     name: 'answers_userID',
     meta: { layout: 'main' },

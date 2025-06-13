@@ -51,9 +51,11 @@ export default {
                     });
                     console.log(response)
                     const token = response.data.token;
+                    const role = response.data.role;
 
                     // Tokenni localStorage ga saqlaymiz
                     localStorage.setItem('auth_token', token);
+                    localStorage.setItem('role', role);
                     localStorage.setItem('role', JSON.stringify(response.data.user.role));
 
                     // Kerak bo‘lsa user ma’lumotini ham saqlash
