@@ -27,6 +27,7 @@ import hisob from '../store/modules/hisob'
 import door from '../store/modules/door'
 import userFace from '../store/modules/userFace'
 import dashboard from '../store/modules/dashboard'
+import salary from '../store/modules/salary'
 
 
 
@@ -114,6 +115,7 @@ export default new Vuex.Store({
         hisob,
         door,
         userFace,
-        dashboard
+        dashboard,
+        salary
     }
 })

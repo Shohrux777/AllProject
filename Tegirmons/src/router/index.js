@@ -40,6 +40,27 @@ const routes = [{
             import ('../views/device/device_add.vue')
     },
     {
+        path: '/salary',
+        name: 'salary',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/skud_salary/salary.vue')
+    },
+    {
+        path: '/salary_add/:id',
+        name: 'salary_add',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/skud_salary/salary_add.vue')
+    },
+    {
+        path: '/connect_salary_user',
+        name: 'connect_salary_user',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/skud_salary/connect_salary_user.vue')
+    },
+    {
         path: '/doors',
         name: 'doors',
         meta: { layout: 'main' },

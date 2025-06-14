@@ -89,16 +89,9 @@
                     alt=""
                     loading="lazy"
                   />
-                  <span class="d-none d-sm-block ms-1 cl_white " style="font-size: 12px;">Kamolov Ravshan</span>
+                  <span class="d-none d-sm-block ms-1 cl_white " style="font-size: 12px;">{{ user_name }}</span>
                 </MDBNavbarItem>
-                <MDBNavbarItem to="#">
-                  <MDBIcon icon="comments " class="cl_white"></MDBIcon>
-                  <MDBBadge pill notification badge="danger">6</MDBBadge>
-                </MDBNavbarItem>
-                <MDBNavbarItem to="#">
-                  <MDBIcon icon="bell" class="cl_white"></MDBIcon>
-                  <MDBBadge pill notification badge="danger">12</MDBBadge>
-                </MDBNavbarItem>
+                
                 <MDBNavbarItem >
                   <MDBDropdown class="nav-item "   v-model="dropdown5">
                     <MDBDropdownToggle tag="a" class="nav-link" @click="dropdown5 = !dropdown5">
@@ -199,6 +192,7 @@
         show_title: true,
         indexMain: -1,
         role: localStorage.getItem('role'),
+        user_name: localStorage.getItem('user_name'),
         langList: [
           {
             name: 'Русский',

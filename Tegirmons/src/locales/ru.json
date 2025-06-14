@@ -332,7 +332,11 @@
     "type_salary": "Тип зарплаты",
     "time_work": "Раб. время",
     "checktype": "Статус",
-    "time": "Время"
+    "time": "Время",
+    "salary": "Зарплата",
+    "Add_salary": "Добавить зарплата",
+    "salary_type": "Тип зарплата",
+    "connect_user_salary": "Зарплата подк. польз."
 
 
 }

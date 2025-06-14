@@ -7,6 +7,10 @@ export default {
             columns: ['name','count', 'note',],
             col: []
         },
+        user_answer_list: [],
+        user_answer_accept_list: [],
+        user_answer_pending_list: [],
+        user_answer_incorrect_list: [],
     },
     actions: {
         async fetch_task(ctx) {
@@ -35,11 +39,41 @@ export default {
             
             // console.log(ctx.rootState.hostname);
         },
+        async fetch_user_task_answers(ctx, user_id) {
+            try{
+                const token = localStorage.getItem('auth_token');
+
+                console.log('Token:', token); // ← bu chiqsin, `Bearer`siz bo'lishi kerak
+
+                const response = await axios.get(
+                ctx.rootState.hostname + '/api/users/' + user_id + '/answers',
+                {
+                    headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: 'application/json',
+                    'ngrok-skip-browser-warning': '69420'
+                    }
+                }
+                );
+                console.log('Natija:', response.data);
+                ctx.commit('Update_userTaskAnswers', response.data);
+            }
+            catch (error) {
+            console.error('Xatolik:', error.response?.data || error.message);
+            alert("Xatolik yuz berdi!");
+            }
+            
+            // console.log(ctx.rootState.hostname);
+        },
     },
     mutations: {
         Updatetask_list(state, data) {
             console.log(data)
             state.task_list.rows = data;
+        },
+        Update_userTaskAnswers(state, data) {
+            console.log('usertask',data)
+            state.user_answer_list = data;
         },
         
         task_row_delete(state, index) {
@@ -50,6 +84,9 @@ export default {
     getters: {
         get_task_list(state) {
             return state.task_list;
+        },
+        get_user_answer_list(state) {
+            return state.user_answer_list;
         },
     }
 }

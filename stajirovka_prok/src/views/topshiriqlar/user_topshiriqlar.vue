@@ -17,13 +17,12 @@
           <div class="w-100" style="height: 6px;" >
             <TotalTask :totalTasks="row.count" :doneCount="2"  :pendingCount="3"/>
           </div>
-          <div class="d-flex justify-content-end mt-2 mb-1" @click="$router.push('/answers_userID')">
+          <div class="d-flex justify-content-end mt-2 mb-1" @click="$router.push('/answers_userID/' + row.id)">
             <div class="px-4 rounded alert-info" >
               <small style=" font-size: 12px; color:#67748A; font-weight:600;">Batafsil</small>
             </div>
           </div>
         </div>
-
       </div>
     </div>
     
@@ -65,45 +64,11 @@ import TotalTask from '@/components/totalTask.vue';
     async mounted(){
         await this.fetch_task();
         console.log(this.get_task_list)
-        console.log('this.get_task_list')
+        // console.log('this.get_task_list')
     },
     computed: mapGetters(['get_task_list']),
     methods:{
         ...mapActions(['fetch_task']),
-        addDept(){
-            console.log('dept')
-            this.show_dept = true;
-            this.exampleModal = true;
-        },
-        selectData(data){
-          console.log('select_date')
-          console.log(data.userid)
-          this.select_data = data
-        },
-        async deleteFunc(){
-            try{
-                console.log('deleteFunc')
-                const requestOptions = {
-                    method : "delete",
-                };
-                const response = await fetch(this.$store.state.hostname + "/SkudOyliks/" + this.select_data.id, requestOptions);
-                const data = await response.json();
-                console.log('data')
-                console.log(data)
-                console.log(response)
-                if(response.status == 200 || response.status == 201){
-                    await this.fetch_Salary();
-                }
-            }
-            catch(error){
-                console.log(error)
-            }
-          },
-          async editFunc(){
-            this.show_dept = true;
-            this.exampleModal = true;
-            console.log('editFunc')
-          }
     }
 
   };

@@ -81,7 +81,7 @@ const routes = [
     component: () => import( '../views/task/task_add.vue')
   },
   {
-    path: '/answers_userID',
+    path: '/answers_userID/:id',
     name: 'answers_userID',
     meta: { layout: 'main' },
     component: () => import( '../views/topshiriqlar/answers_userID.vue')

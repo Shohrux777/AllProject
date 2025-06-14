@@ -15,8 +15,8 @@ export default createStore({
     // hostname: 'http://192.168.11.2:5003/api',
     // hostname1: 'http://192.168.11.2:5003/',
     
-    hostname: 'https://e4b6-195-158-8-30.ngrok-free.app',
-    hostname1: 'https://e4b6-195-158-8-30.ngrok-free.app/',
+    hostname: 'https://cb9f-195-158-8-30.ngrok-free.app',
+    hostname1: 'https://cb9f-195-158-8-30.ngrok-free.app/',
     // hostname: 'http://192.168.3.222:5003/api',
     // hostname1: 'http://192.168.3.222:5003/',
 

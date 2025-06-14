@@ -2,45 +2,7 @@
 
   <div class="d_table mt-3">
     <loader v-if="loading"/>
-
       <div class="m-2">
-        <mdb-row>
-            <!-- <mdb-col class="col-12 col-sm-12 col-md-4 col-lg-2">
-              <multiselect  v-model="value" :options="options"
-            :searchable="false"
-            style="font-size: 13px; font-family: Ubuntu, sans-serif;"
-            :show-labels="false" placeholder="Entries"></multiselect>
-            </mdb-col> -->
-              <!-- <mdb-col class="col-12 col-sm-12 col-md-6 col-lg-4 mt-2">
-                <mdb-input label="Search" type="text" class="active-cyan-2 active-purple-2 mt-0 mb-3"/>
-              </mdb-col> -->
-
-            <!-- <mdb-col class="col-12 col-sm-12 col-md-8 col-lg-6">
-               <div class="d-inline float-right">
-
-                <div class="d-inline">
-                  <mdb-btn slot="reference" class="mr-1" outline="info" @click="clicked_filter"
-                    darkWaves tag="a" floating  icon="filter"  size="sm" >{{$t('Filter')}}</mdb-btn>
-
-
-                    <mdb-btn class="mr-1" outline="info" darkWaves tag="a" floating @click="showcheck_form=true"
-                    icon="table"  size="sm">{{$t('editCol_columns')}}</mdb-btn>
-
-                    <mdb-btn-group style="margin-top:-18px">
-                      <mdb-dropdown>
-                        <mdb-btn class="mr-1" outline="info" darkWaves tag="a" floating
-                        icon="file-export"  size="sm" slot="toggle">{{$t('Export')}}</mdb-btn>
-                        <mdb-dropdown-menu>
-                          <mdb-dropdown-item>{{$t('Export_to_Excel')}}</mdb-dropdown-item>
-                          <mdb-dropdown-item>{{$t('Export_to_PDF')}}</mdb-dropdown-item>
-                        </mdb-dropdown-menu>
-                      </mdb-dropdown>
-                    </mdb-btn-group>
-                </div>
-               </div>
-            </mdb-col> -->
-          </mdb-row>
-
       </div>
       <table  class="myTable">
                 <thead>

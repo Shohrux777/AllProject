@@ -52,14 +52,17 @@ export default {
                     console.log(response)
                     const token = response.data.token;
                     const role = response.data.role;
+                    const user_name = response.data.user.name;
+                    const user_id = response.data.user.id;
 
                     // Tokenni localStorage ga saqlaymiz
                     localStorage.setItem('auth_token', token);
                     localStorage.setItem('role', role);
-                    localStorage.setItem('role', JSON.stringify(response.data.user.role));
+                    localStorage.setItem('user_name', user_name);
+                    localStorage.setItem('user_id', user_id);
 
                     // Kerak bo‘lsa user ma’lumotini ham saqlash
-                    localStorage.setItem('user', JSON.stringify(response.data.user));
+                    localStorage.setItem('user', response.data.user);
 
                     // alert('Muvaffaqiyatli login!');
                     // Keyingi sahifaga o‘tkazish (agar router ishlatilsa)
