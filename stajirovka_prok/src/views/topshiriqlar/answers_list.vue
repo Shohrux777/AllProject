@@ -1,6 +1,6 @@
 <template>
   <div class="deparment_page">
-    <navbar :title = "$t('Berilgan javoblar')" @add="addDept" :added_status = "added_status"/>
+    <navbar title = "Берилган жавоблар" @add="addDept" :added_status = "added_status"/>
     <div class="w-100 d-flex">
       <div style="width:22%; cursor:pointer;" class="border-end">
         <div class="border-bottom pb-1">
@@ -164,7 +164,6 @@
         MDBBadge,
         MDBIcon,
         navbar,
-       
     },
     data(){
         return{
@@ -173,13 +172,13 @@
         }
     },
     async mounted(){
-        await this.fetch_Salary();
-        console.log(this.get_salary_list)
-        console.log('this.get_salary_list')
+        await this.fetch_status_answers(0);
+        console.log(this.get_answer_pending_list)
+        console.log('this.get_answer_pending_list')
     },
-    computed: mapGetters(['get_salary_list']),
+    computed: mapGetters(['get_answer_pending_list']),
     methods:{
-        ...mapActions(['fetch_Salary']),
+        ...mapActions(['fetch_status_answers']),
         addDept(){
             console.log('dept')
             this.show_dept = true;

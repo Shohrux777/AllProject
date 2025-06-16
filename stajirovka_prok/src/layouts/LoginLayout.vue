@@ -2,7 +2,13 @@
   <div class="emptyLayout">
     <div class="navbar_mdb container-fluid">
       <MDBNavbarBrand>
-        <MDBIcon icon="mdb" style="color:white;" iconStyle="fab" size="2x" />
+        <img
+            src="../assets/logo.png"
+            height="30"
+            width="30"
+            alt=""
+            loading="lazy"
+          />
       </MDBNavbarBrand>
       <div>
         <MDBNavbarNav>

@@ -8,15 +8,15 @@ import door from './moduls/door'
 import device from './moduls/device'
 import salary from './moduls/salary'
 import task from './moduls/task'
-import add_rasxod_note from './moduls/add_rasxod_note'
+import add_rasxod_note from './moduls/add_rasxod_note'    
 
 export default createStore({
   state: {
     // hostname: 'http://192.168.11.2:5003/api',
     // hostname1: 'http://192.168.11.2:5003/',
     
-    hostname: 'https://cb9f-195-158-8-30.ngrok-free.app',
-    hostname1: 'https://cb9f-195-158-8-30.ngrok-free.app/',
+    hostname: 'https://6f20-188-113-215-40.ngrok-free.app',
+    hostname1: 'https://6f20-188-113-215-40.ngrok-free.app/',
     // hostname: 'http://192.168.3.222:5003/api',
     // hostname1: 'http://192.168.3.222:5003/',
 

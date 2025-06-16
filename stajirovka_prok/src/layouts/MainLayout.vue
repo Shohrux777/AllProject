@@ -4,22 +4,31 @@
       <div class="border-right" :class="{'leftmenu': show_title, 'smallleftmenu': !show_title }">
         <div class="d-flex pb-1 mb-2" v-if="show_title">
           <div  
-            style="padding: 6.5px 20px;"
-            class="ml-3 w-100 shadow d-flex align-items-center justify-content-center">
+            style="padding: 6.5px 10px;"
+            class="ml-3 w-100 shadow d-flex align-items-center justify-content-start">
             <!-- <span style="font-size: 22px;" class="mb-1 text-white">Маркет</span> -->
             <img
-                src="https://mdbootstrap.com/img/logo/mdb-transaprent-noshadows.webp"
+                src="../assets/logo.png"
                 height="30"
+                width="30"
                 alt=""
                 loading="lazy"
               />
+
+              <span class="text-white ms-2" style="font-size: 15px;">Xodimlarni o'qitish</span>
           </div>
         </div>
-        <div class="smallIcon shadow" v-if="!show_title">
-
+        <div class="smallIcon shadow d-flex align-items-center justify-content-center" v-if="!show_title">
+            <img
+                src="../assets/logo.png"
+                height="30"
+                width="30"
+                alt=""
+                loading="lazy"
+              />
         </div>
         <div class="" v-for="(link,index) in links" :key="index" >
-          <div @click="update_down(index)">
+          <div @click="update_down(index)" v-if="link.role == role || link.role == ''">
             <router-link
             :to="link.url"
             :class="{'active_link': link.view}"
@@ -156,7 +165,6 @@
     },
     async mounted() {
       console.log(this.role)
-      console.log(localStorage.getItem('role'))
       let time1 = new Date();
       console.log(time1)
       this.Start_time = time1.toISOString().slice(0,10);
@@ -221,23 +229,23 @@
             // { title: 'test', icon: 'house-damage', url: '/test', view: false, color: '#ddd', 
             //   down_list:[]
             // },
-            { title: 'dashboard', icon: 'house-damage', url: '/dashboard', view: false, color: '#ddd', 
+            { title: 'dashboard', icon: 'house-damage', url: '/dashboard', view: false, color: '#ddd', role:'',
               down_list:[]
             },
-            { title: 'answers_list', icon: 'landmark', url: '/answers_list', view: false, color: '#ddd', down_list:[] },
+            { title: 'answers_list', icon: 'landmark', url: '/answers_list', view: false, color: '#ddd', down_list:[], role:'admin' },
 
-            { title: 'Топшириклар', icon: 'landmark', url: '/user_topshiriqlar', view: false, color: '#ddd', down_list:[] },
-            
-            { title: 'user', icon: 'user', url: '/user', view: false, color: '#ddd', 
+            { title: 'Топшириклар', icon: 'landmark', url: '/user_topshiriqlar', view: false, color: '#ddd',  down_list:[], role:'user' },
+          
+            { title: 'user', icon: 'user', url: '/user', view: false, color: '#ddd', role:'admin', 
               down_list:[]
             },
-            { title: 'task', icon: 'landmark', url: '/task', view: false, color: '#ddd', 
+            { title: 'task', icon: 'landmark', url: '/task', view: false, color: '#ddd', role:'admin', 
               down_list:[]
             },
             // { title: 'menu_setting', icon: 'tools', url: '', view: false, color: '#ddd', down_list:[
             //     { title: "company", url: '/', dview: false, color: '#ddd', down_list:[] },
             // ] },
-            { title: "logout", icon: 'sign-out-alt', url: '/', view: false, color: '#ddd', down_list:[] },
+            { title: "logout", icon: 'sign-out-alt', url: '/', view: false, color: '#ddd', down_list:[], role:'' },
 
 
             // ...............End for MArket..................

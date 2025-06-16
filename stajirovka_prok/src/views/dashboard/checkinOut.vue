@@ -11,7 +11,7 @@
                       <div class="icon_box bg-secondary card ">
                         <i class="fas fa-users text-white"></i>
                       </div>
-                      <small >Xodimlar</small>
+                      <small >Ходимлар</small>
                     </div>
                     <div class="dashboard_card_item_right">
                       <small class="text-secondary">25</small>
@@ -27,7 +27,7 @@
                       <div class="icon_box bg-primary card">
                         <i class="fas fa-list-check text-white"></i>
                       </div>
-                      <small >Topshiriqlar</small>
+                      <small >Топшириқлар</small>
                     </div>
                     <div class="dashboard_card_item_right">
                       <small class="text-primary">83</small>
@@ -43,7 +43,7 @@
                       <div class="icon_box bg-success card ">
                         <i class="fas fa-check text-white" ></i>
                       </div>
-                      <small >Qabul qilingan</small>
+                      <small >Қабул қилинган</small>
                     </div>
                     <div class="dashboard_card_item_right">
                       <small class="text-success">37</small>
@@ -59,7 +59,7 @@
                       <div class="icon_box bg-danger card ">
                         <i class="fas fa-xmark text-white"></i>
                       </div>
-                      <small >Rad etilgan</small>
+                      <small >Рад этилган</small>
                     </div>
                     <div class="dashboard_card_item_right">
                       <small class="text-danger">5</small>
@@ -80,7 +80,7 @@
                         <i class="fas fa-chart-pie text-white"></i>
                       </div>
                       <div class="w-100">
-                        <small >Umumiy ko'rsatgich</small>
+                        <small >Ходимлар умумий кўрсатгичи</small>
                         <div class=" range_component mx-3 mt-1">
                           <div style="width:72%; height:4px; background: #3DA152;"></div>
                         </div>
@@ -100,7 +100,7 @@
                       <div class="icon_box bg-warning card ">
                         <i class="fas fa-clock text-white"></i>
                       </div>
-                      <small >Tasdiqlashda</small>
+                      <small >Тасдиқлашда</small>
                     </div>
                     <div class="dashboard_card_item_right">
                       <small class="text-warning">18</small>
@@ -115,17 +115,17 @@
 
           <div class="dashboart_header card p-3 mt-3">
             <div>
-              <p class="m-0" style="font-style:italic; font-size: 15px; color:#757580;">Xodimlar statistikasi</p>
+              <p class="m-0" style="font-style:italic; font-size: 15px; color:#757580;">Ходимлар статистикаси</p>
             </div>
             <div>
               <table class="table align-middle mb-0 bg-white">
                 <thead class="bg-light">
                   <tr>
-                    <th width="550">FIO</th>
-                    <th>Lavozimi</th>
-                    <th >Status</th>
-                    <th width="300">Ko'rsatgichi</th>
-                    <th width="100">Actions</th>
+                    <th width="550">ФИО</th>
+                    <th>Лавозим</th>
+                    <th >Статус</th>
+                    <th width="300">Кўрсатгич</th>
+                    <th width="100">Кўриш</th>
                   </tr>
                 </thead>
                 <tbody>

@@ -51,7 +51,7 @@ export default {
                     });
                     console.log(response)
                     const token = response.data.token;
-                    const role = response.data.role;
+                    const role = response.data.user.role;
                     const user_name = response.data.user.name;
                     const user_id = response.data.user.id;
 
