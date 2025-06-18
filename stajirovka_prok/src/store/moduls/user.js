@@ -9,6 +9,7 @@ export default {
         },
         nosalary_user: [],
         user_all_foiz: 0,
+        user_data: {},
     },
     actions: {
         async fetch_user(ctx) {
@@ -37,6 +38,32 @@ export default {
             
             console.log(ctx.rootState.hostname);
         },
+        async fetch_user_id(ctx, id) {
+            try{
+                const token = localStorage.getItem('auth_token');
+
+                console.log('Token:', token); // ← bu chiqsin, `Bearer`siz bo'lishi kerak
+
+                const response = await axios.get(
+                ctx.rootState.hostname + '/api/admin/users/'+ id,
+                {
+                    headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: 'application/json',
+                    'ngrok-skip-browser-warning': '69420'
+                    }
+                }
+                );
+                console.log('Natija:', response.data);
+                ctx.commit('UpdateuserId_list', response.data);
+            }
+            catch (error) {
+            console.error('Xatolik:', error.response?.data || error.message);
+            alert("Xatolik yuz berdi!");
+            }
+            
+            console.log(ctx.rootState.hostname);
+        },
     },
     mutations: {
         Updateuser_list(state, data) {
@@ -50,6 +77,9 @@ export default {
             }
             state.user_all_foiz = state.user_all_foiz / state.user_list.rows.length;
         },
+        UpdateuserId_list(state,data){
+            state.user_data = data;
+        },
         
         user_row_delete(state, index) {
             state.user_list.rows.splice(parseInt(index), 1);
@@ -62,6 +92,9 @@ export default {
         },
         get_user_all_foiz(state){
             return state.user_all_foiz;
+        },
+        get_user_data(state){
+            return state.user_data;
         }
     }
 }

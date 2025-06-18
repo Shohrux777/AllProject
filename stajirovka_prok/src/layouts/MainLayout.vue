@@ -14,7 +14,6 @@
                 alt=""
                 loading="lazy"
               />
-
               <span class="text-white ms-2" style="font-size: 15px;">Xodimlarni o'qitish</span>
           </div>
         </div>
@@ -205,6 +204,11 @@
         user_name: localStorage.getItem('user_name'),
         langList: [
           {
+            name: 'Узбек',
+            lang: 'uz',
+            icon: 'uzbekistan'
+          },
+          {
             name: 'Русский',
             lang: 'ru',
             icon: 'russia'
@@ -214,16 +218,12 @@
             lang: 'en',
             icon: 'united-kingdom'
           },
-          {
-            name: 'Uzbek',
-            lang: 'uz',
-            icon: 'uzbekistan'
-          }
+          
         ],
         activLang: {
-          name: 'Русский',
-          lang: 'ru',
-          icon: 'russia'
+          name: 'Узбек',
+          lang: 'uz',
+          icon: 'uzbekistan'
         },
         links: [
 

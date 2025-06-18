@@ -66,9 +66,9 @@
       return {
         langList: [
           {
-            name: 'Русский',
-            lang: 'ru',
-            icon: 'russia'
+            name: 'Узбек',
+            lang: 'uz',
+            icon: 'uzbekistan'
           },
           {
             name: 'English',
@@ -76,15 +76,15 @@
             icon: 'united-kingdom'
           },
           {
-            name: 'Uzbek',
-            lang: 'uz',
-            icon: 'uzbekistan'
+            name: 'Русский',
+            lang: 'ru',
+            icon: 'russia'
           }
         ],
         activLang: {
-          name: 'Русский',
-          lang: 'ru',
-          icon: 'russia'
+          name: 'Узбек',
+            lang: 'uz',
+            icon: 'uzbekistan'
         }
       }
     },

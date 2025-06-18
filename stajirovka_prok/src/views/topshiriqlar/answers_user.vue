@@ -12,10 +12,10 @@
       </div>
       <div class="example_topshiriqlar">
         <div>
-            <p class="m-0" 
-              style="font-style: italic; font-size:15px; color:#757580;">Tasdiqlashda</p>
+            <p 
+              class="tasdiqlash m-0">Tasdiqlashda</p>
           </div>
-        <div class="card mt-2 px-3 pt-2 pb-1" style="cursor:pointer">
+        <div class="card mt-2 px-3 pt-2 pb-1" style="cursor : pointer;">
           <div>
             <div class="d-flex justify-content-between">
               <p class="m-0 " style="font-size: 14.5px; color:#293142;">ІІІ. Терговга қадар текширув, суриштирув ва дастлабки тергов соҳаларида:</p>
@@ -292,18 +292,24 @@
     },
     data(){
         return{
+          loading: false,
             show_dept: false,
             added_status:false,
+            task_user_Id: localStorage.getItem('task_user_Id')
         }
     },
     async mounted(){
-        await this.fetch_Salary();
-        console.log(this.get_salary_list)
-        console.log('this.get_salary_list')
+        console.log(this.task_user_Id)
+        console.log(localStorage.getItem('task_user_Id'))
+
+        await this.fetch_user_task_answers(this.task_user_Id);
+        console.log('this.get_user_answer_list')
+        console.log(this.get_user_answer_list)
+        // console.log('this.get_user_answer_list')
     },
-    computed: mapGetters(['get_salary_list']),
+    computed: mapGetters(['get_user_answer_list', 'get_user_answer_pending_list', 'get_user_answer_accept_list', 'get_user_answer_incorrect_list']),
     methods:{
-        ...mapActions(['fetch_Salary']),
+        ...mapActions(['fetch_user_task_answers']),
         addDept(){
             console.log('dept')
             this.show_dept = true;
@@ -416,4 +422,5 @@
     .file-actions i:hover {
       color: #000;
     }
+    .tasdiqlash{font-style: italic; font-size:15px; color:#757580;}
 </style>

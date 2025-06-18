@@ -51,7 +51,7 @@ const routes = [
     component: () => import( '../views/dashboard/checkinOut.vue')
   },
   {
-    path: '/topshiriqlar',
+    path: '/topshiriqlar/:id',
     name: 'topshiriqlar',
     meta: { layout: 'main' },
     component: () => import( '../views/topshiriqlar/topshiriqlar.vue')
@@ -87,7 +87,7 @@ const routes = [
     component: () => import( '../views/topshiriqlar/answers_userID.vue')
   },
   {
-    path: '/answers_user',
+    path: '/answers_user/:id',
     name: 'answers_user',
     meta: { layout: 'main' },
     component: () => import( '../views/topshiriqlar/answers_user.vue')

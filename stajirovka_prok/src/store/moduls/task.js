@@ -16,6 +16,7 @@ export default {
         answer_accept_list: [],
         answer_incorrect_list: [],
         answer_pending_list: [],
+        all_task_count: 0,
     },
     actions: {
         async fetch_task(ctx) {
@@ -39,7 +40,7 @@ export default {
             }
             catch (error) {
             console.error('Xatolik:', error.response?.data || error.message);
-            alert("Xatolik yuz berdi!");
+            // alert("Xatolik yuz berdi!");
             }
             
             // console.log(ctx.rootState.hostname);
@@ -66,7 +67,7 @@ export default {
             }
             catch (error) {
             console.error('Xatolik:', error.response?.data || error.message);
-            alert("Xatolik yuz berdi!");
+            // alert("Xatolik yuz berdi!");
             }
             
             // console.log(ctx.rootState.hostname);
@@ -102,7 +103,7 @@ export default {
             }
             catch (error) {
             console.error('Xatolik:', error.response?.data || error.message);
-            alert("Xatolik yuz berdi!");
+            // alert("Xatolik yuz berdi!");
             }
             
             // console.log(ctx.rootState.hostname);
@@ -111,23 +112,29 @@ export default {
     mutations: {
         Updatetask_list(state, data) {
             console.log(data)
+            state.all_task_count = 0;
             state.task_list.rows = data;
+            for(let i=0; i<state.task_list.rows.length; i++){
+                if(state.task_list.rows[i].count > 0){
+                    state.all_task_count += state.task_list.rows[i].count;
+                }
+            }
         },
         Update_userTaskAnswers(state, data) {
             console.log('usertask',data)
             state.user_answer_pending_list = [];
             state.user_answer_accept_list = [];
             state.user_answer_incorrect_list = [];
-            state.user_answer_list = data;
-            for(let i=0; i<data.length; i++){
-                if(data[i].status == 0){
-                    state.user_answer_pending_list.push(data[i]);
+            state.user_answer_list = data.answers;
+            for(let i=0; i<data.answers.length; i++){
+                if(data.answers[i].status == 0){
+                    state.user_answer_pending_list.push(data.answers[i]);
                 }
-                else if(data[i].status == 1){
-                    state.user_answer_accept_list.push(data[i]);
+                else if(data.answers[i].status == 1){
+                    state.user_answer_accept_list.push(data.answers[i]);
                 }
                 else{
-                    state.user_answer_incorrect_list.push(data[i]);
+                    state.user_answer_incorrect_list.push(data.answers[i]);
                 }
             }
         },
@@ -179,6 +186,19 @@ export default {
         },
         get_count_user_answer_incorrect_list(state){
             return state.user_answer_incorrect_list.length;
-        }
+        },
+        get_all_task_count(state){
+            return state.all_task_count
+        },
+
+        get_user_answer_pending_list(state){
+            return state.user_answer_pending_list;
+        },
+        get_user_answer_accept_list(state){
+            return state.user_answer_accept_list;
+        },
+        get_user_answer_incorrect_list(state){
+            return state.user_answer_incorrect_list;
+        },
     }
 }

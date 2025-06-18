@@ -16,7 +16,7 @@
                       <small >Ходимлар</small>
                     </div>
                     <div class="dashboard_card_item_right">
-                      <small class="text-secondary">{{get_user_list.length}}</small>
+                      <small v-if="get_user_list.rows.length" class="text-secondary">{{get_user_list.rows.length}}</small>
                     </div>
                   </div>
                 </div>
@@ -32,7 +32,7 @@
                       <small >Топшириқлар</small>
                     </div>
                     <div class="dashboard_card_item_right">
-                      <small class="text-primary">83</small>
+                      <small v-if="get_all_task_count" class="text-primary">{{get_all_task_count}}</small>
                     </div>
                   </div>
                 </div>
@@ -125,8 +125,8 @@
               <table class="table align-middle mb-0 bg-white">
                 <thead class="bg-light">
                   <tr>
-                    <th width="550">ФИО</th>
-                    <!-- <th>Лавозим</th> -->
+                    <th width="450">ФИО</th>
+                    <th>Телифон рақами</th>
                     <th >Статус</th>
                     <th width="300">Кўрсатгич</th>
                     <th v-if="role == 'admin'" width="100">Кўриш</th>
@@ -137,7 +137,7 @@
                     <td>
                       <div class="d-flex align-items-center">
                         <img
-                            src="@/assets/pic1.png"
+                            :src="hostname2 + user.image_base64"
                             alt=""
                             style="width: 45px; height: 45px"
                             class="rounded-circle"
@@ -148,7 +148,12 @@
                         </div>
                       </div>
                     </td>
-                    
+                    <td>
+                      <div class="ms-3">
+                          <p class=" mb-1">{{user.mobile_phone}}</p>
+                          <p class="text-muted mb-0">{{user.phone}}</p>
+                        </div>
+                    </td>
                     <td>
                       <span class="badge badge-success rounded-pill d-inline">Active</span>
                     </td>
@@ -167,8 +172,8 @@
                       </div>
                     </td>
                     <td v-if="role == 'admin'">
-                      <button type="button" @click="link_router" class="btn btn-link btn-sm btn-rounded">
-                        Ochish
+                      <button type="button" @click="link_router(user.id)" class="btn btn-link btn-sm btn-rounded">
+                        Очиш
                       </button>
                     </td>
                   </tr>
@@ -203,6 +208,7 @@
           loading: false,
           show_dept: false,
           added_status: false,
+          hostname2: this.$store.state.hostname2,
           accept_count: localStorage.getItem('accept_count'),
           ignore_count: localStorage.getItem('ignore_count'),
           pending_count: localStorage.getItem('pending_count'),
@@ -228,27 +234,29 @@
           this.pending_count = this.get_count_user_answer_pending_list;
         }
         await this.fetch_user();
+        await this.fetch_task();
         console.log(this.get_user_list)
         this.loading = false;
 
         
       },
-      computed: mapGetters(['get_dashboard_list','get_user_all_foiz','get_user_list','get_count_user_answer_pending_list', 'get_count_user_answer_accept_list', 'get_count_user_answer_incorrect_list']),
+      computed: mapGetters(['get_dashboard_list','get_user_all_foiz','get_user_list','get_count_user_answer_pending_list',
+       'get_count_user_answer_accept_list', 'get_count_user_answer_incorrect_list', 'get_all_task_count']),
       methods:{
-          ...mapActions(['fetch_status_answers', 'fetch_user_task_answers','fetch_user']),
+          ...mapActions(['fetch_status_answers', 'fetch_user_task_answers','fetch_user', 'fetch_task']),
           addDept(){
             console.log('dept')
             this.show_dept = true;
             this.exampleModal = true;
           },
-          link_router(){
-            this.$router.push({ name: 'topshiriqlar' });
+          link_router(user_id){
+            this.$router.push('/topshiriqlar/' + user_id);
           }
       }
     };
   </script>
   
-  <style>
+  <style scoped>
   .mainpage{
       height: calc(100vh - 85px);
       overflow-y: scroll;
