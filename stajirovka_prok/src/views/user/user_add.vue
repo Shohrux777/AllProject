@@ -8,8 +8,8 @@
                         id="form1"
                         size="sm"
                         class="form-icon-trailing"
-                        label="Familiya"
-                        v-model="user.full_name"
+                        label="Ф.И.Ш"
+                        v-model="name"
                     >
                     </MDBInput>
 
@@ -18,8 +18,19 @@
                         id="form1"
                         size="sm"
                         class="form-icon-trailing mt-3"
-                        label="Ism"
-                        v-model="user.name"
+                        label="Лавозим"
+                        v-model="full_name"
+                    >
+                    </MDBInput>
+
+                    
+                    <MDBInput
+                        type="text"
+                        id="form1"
+                        size="sm"
+                        class="form-icon-trailing mt-3"
+                        label="ЖШШИР"
+                        v-model="passport"
                     >
                     </MDBInput>
 
@@ -28,8 +39,8 @@
                         id="form1"
                         size="sm"
                         class="form-icon-trailing mt-3"
-                        label="Telefon"
-                        v-model="user.phone"
+                        label="IP"
+                        v-model="phone"
                     >
                     </MDBInput>
 
@@ -38,15 +49,17 @@
                         id="form1"
                         size="sm"
                         class="form-icon-trailing mt-3"
-                        label="Mobil telefon"
-                        v-model="user.mobile_phone"
+                        label="Телифон рақами"
+                        v-model="mobile_phone"
                     >
                     </MDBInput>
 
-                    <MDBTextarea label="Tavsif" 
+
+
+                    <!-- <MDBTextarea label="Tavsif" 
                         class="mt-3"
                         size="sm"
-                        rows="2" v-model="user.description" />
+                        rows="2" v-model="description" /> -->
 
                         <hr class="mt-4">
                     <MDBInput
@@ -55,7 +68,7 @@
                         size="sm"
                         class="form-icon-trailing mt-3"
                         label="Email"
-                        v-model="user.email"
+                        v-model="email"
                     >
                     </MDBInput>
                     <MDBInput
@@ -64,7 +77,7 @@
                         size="sm"
                         class="form-icon-trailing mt-3"
                         label="Password"
-                        v-model="user.password"
+                        v-model="password"
                     >
                     </MDBInput>
                     <!-- :label="$t('Familiya')" -->
@@ -72,17 +85,19 @@
             </div>
             <div class="col-3">
               <label for="inputGroupFile01" class="picure_down border">
-              <img src="" id="prewImage" v-show="show_picture"  style="width:100%; height:190px;"  alt="">
-                <svg v-show="!show_picture" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-cloud-upload" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#717171" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <img  id="prewImage" v-show="!show_picture"  style="width:100%; height:190px;"  alt="" />
+                <svg v-if="show_picture" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-cloud-upload" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#717171" fill="none" stroke-linecap="round" stroke-linejoin="round">
                   <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                  <path d="M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1" />
+                  <path d="M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1  a3.5 3.5 0 0 1 0 7h-1" />
                   <polyline points="9 15 12 12 15 15" />
                   <line x1="12" y1="12" x2="12" y2="21" />
                 </svg>
-                <small v-show="!show_picture" style="color:#717171;">Upload</small>
               </label>
               <input  type="file" hidden  id="inputGroupFile01" v-on:change="previewFile" aria-describedby="inputGroupFileAddon01">
-
+              <div class="d-flex justify-content-center">
+                <small  style="color:#717171;">Фото</small>
+              </div>
+              
             </div>
         </div>
         <div>
@@ -113,17 +128,20 @@
       },
       data(){
         return{
-          user: {
+          
             name: '',
             full_name: '',
             email: '',
             password: '',
+            passport: '',
             status: 1,
             phone: '',
             mobile_phone: '',
-            description: '',
+            description: 'Yaratildi',
             image_base64: '',
-          }
+            picture_user: '',
+            show_picture: false,
+          file: null,
 
         }
       },
@@ -135,17 +153,18 @@
       },
     async mounted(){
       if(Object.keys(this.select_data).length != 0){
-            this.user = {
-              name: this.select_data.name,
-              full_name: this.select_data.full_name,
-              email: this.select_data.email,
-              password: this.select_data.password,
-              status: this.select_data.status,
-              phone: this.select_data.phone,
-              mobile_phone: this.select_data.mobile_phone,
-              description: this.select_data.description,
-              image_base64: this.select_data.image_base64,
-            }
+            
+              this.name = this.select_data.name;
+              this.full_name = this.select_data.full_name;
+              this.email= this.select_data.email;
+              this.password= this.select_data.password;
+              this.status= this.select_data.status;
+              this.phone= this.select_data.phone;
+              this.mobile_phone= this.select_data.mobile_phone;
+              this.description= this.select_data.description;
+              this.image_base64= this.select_data.image_base64;
+              this.passport= this.select_data.passport;
+           
         }
       
     },
@@ -163,20 +182,26 @@
       },
 
       async fetch_user_new_add(){
-        var img = document.getElementById('prewImage');
-        // console.log(img.src)
-        this.user.image_base64 = img.src;
         try {
           const token = localStorage.getItem('auth_token'); // login paytida saqlangan token
-          const response = await axios.post(
-            this.$store.state.hostname + '/api/admin/users',
-            this.user,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`
-              }
+          console.log(this.name)
+          const formData = new FormData();
+          formData.append('name', this.name);
+          formData.append('full_name', this.full_name);
+          formData.append('email', this.email);
+          formData.append('password', this.password);
+          formData.append('phone', this.phone);
+          formData.append('mobile_phone', this.mobile_phone);
+          formData.append('description', this.description);
+          formData.append('passport', this.passport);
+          formData.append('image_base64', this.file); // Fayl (PDF yoki JPG)
+          console.log('formData', formData);
+          const response = await axios.post(this.$store.state.hostname + '/api/admin/users', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${token}` // Agar token kerak bo‘lsa
             }
-          );
+          })
 
           console.log('Yaratildi:', response.data);
           if(response.status == 200 || response.status == 201){
@@ -192,21 +217,24 @@
       },
 
       async fetch_user_update (){
-        var img = document.getElementById('prewImage');
-          // console.log(img.src)
-          this.user.image_base64 = img.src;
-          try {
-            const token = localStorage.getItem('auth_token'); // login paytida saqlangan token
-            const response = await axios.put(
-              this.$store.state.hostname + '/api/admin/users/' + this.select_data.id,
-              this.user,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`
-                }
-              }
-            );
-
+        try {
+          const token = localStorage.getItem('auth_token'); // login paytida saqlangan token
+          const formData = new FormData();
+          formData.append('name', this.name);
+          formData.append('full_name', this.full_name);
+          formData.append('email', this.email);
+          formData.append('password', this.password);
+          formData.append('phone', this.phone);
+          formData.append('mobile_phone', this.mobile_phone);
+          formData.append('description', this.description);
+          formData.append('passport', this.passport);
+          formData.append('image_base64', this.file); // Fayl (PDF yoki JPG)
+          const response = await axios.put(this.$store.state.hostname + '/api/admin/users/' + this.select_data.id, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${token}` // Agar token kerak bo‘lsa
+            }
+          })
             console.log('Yaratildi:', response.data);
             if(response.status == 200 || response.status == 201){
               this.$emit('close')
@@ -220,17 +248,19 @@
           }
       },
       
-      previewFile(){
+      previewFile(event){
+        this.show_picture = true;
         console.log('dsd')
+        this.file = event.target.files[0];
         const preview = document.getElementById('prewImage');
-        const file = document.querySelector('input[type=file]').files[0];
+        const files = document.querySelector('input[type=file]').files[0];
         const reader = new FileReader();
         reader.addEventListener("load", function () {
           preview.src = reader.result;
+          this.picture_user = reader.result;
         }, false);
-        if (file) {
-          reader.readAsDataURL(file);
-          this.show_picture = true;
+        if (files) {
+          reader.readAsDataURL(files);
         }
       }
     }

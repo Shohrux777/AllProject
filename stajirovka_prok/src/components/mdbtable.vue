@@ -5,7 +5,9 @@
             <thead class="table_header" >
                 <tr >
                     <th>№</th>
-                    <th class="px-3" style="font-weight: bold;" v-for="(column, i) in options.columns" :key="i">{{$t(column)}}
+                    <th class="px-3" style="font-weight: bold;" v-for="(column, i) in options.columns" :key="i">
+                        <span v-if="options.columns[1] == 'count'">Топшириқ номи</span>
+                        <span v-else>{{$t(column)}}</span>
                         <span style="position:relative;">
                             <span @click="sortedArrayAsc(column)"><MDBIcon icon="angle-up"  class="px-1 up_down_icon"  style="position:absolute; font-size: 11px; top:-2px; cursor:pointer;"/></span>
                             <span @click="sortedArray(column)"><MDBIcon icon="angle-down"  class="px-1 up_down_icon" style="position:absolute; font-size: 11px; bottom:-4px; cursor:pointer;"/></span>

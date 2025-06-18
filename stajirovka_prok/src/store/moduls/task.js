@@ -8,10 +8,13 @@ export default {
             col: []
         },
         user_answer_list: [],
-        user_answer_accept_list: [],
         user_answer_pending_list: [],
+        user_answer_accept_list: [],
         user_answer_incorrect_list: [],
 
+
+        answer_accept_list: [],
+        answer_incorrect_list: [],
         answer_pending_list: [],
     },
     actions: {
@@ -41,6 +44,7 @@ export default {
             
             // console.log(ctx.rootState.hostname);
         },
+        
         async fetch_user_task_answers(ctx, user_id) {
             try{
                 const token = localStorage.getItem('auth_token');
@@ -85,7 +89,16 @@ export default {
                 }
                 );
                 console.log('Natija:', response.data);
-                ctx.commit('Updatepending_task', response.data);
+                if(status == 0){
+                    ctx.commit('Updatepending_task', response.data);
+                }
+                else if(status == 1){
+                    ctx.commit('Updateanswer_task', response.data);
+
+                }
+                else{
+                    ctx.commit('Updateanswer_ignore_task', response.data);
+                }
             }
             catch (error) {
             console.error('Xatolik:', error.response?.data || error.message);
@@ -102,13 +115,40 @@ export default {
         },
         Update_userTaskAnswers(state, data) {
             console.log('usertask',data)
+            state.user_answer_pending_list = [];
+            state.user_answer_accept_list = [];
+            state.user_answer_incorrect_list = [];
             state.user_answer_list = data;
+            for(let i=0; i<data.length; i++){
+                if(data[i].status == 0){
+                    state.user_answer_pending_list.push(data[i]);
+                }
+                else if(data[i].status == 1){
+                    state.user_answer_accept_list.push(data[i]);
+                }
+                else{
+                    state.user_answer_incorrect_list.push(data[i]);
+                }
+            }
         },
+
         Updatepending_task(state, data) {
             console.log('pending_answer',data);
             state.answer_pending_list = data;
             localStorage.setItem('pending_count', data.length);
         },
+        Updateanswer_task(state, data) {
+            console.log('accept_answer',data);
+            state.answer_accept_list = data;
+            localStorage.setItem('accept_count', data.length);
+
+        },
+        Updateanswer_ignore_task(state, data) {
+            console.log('ignore_answer',data);
+            state.answer_incorrect_list = data;
+            localStorage.setItem('ignore_count', data.length);
+        },
+
         task_row_delete(state, index) {
             state.task_list.rows.splice(parseInt(index), 1);
         }
@@ -125,5 +165,20 @@ export default {
         get_answer_pending_list(state) {
             return state.answer_pending_list;
         },
+        get_answer_accept_list(state) {
+            return state.answer_accept_list;
+        },
+        get_answer_incorrect_list(state) {
+            return state.answer_incorrect_list;
+        },
+        get_count_user_answer_pending_list(state){
+            return state.user_answer_pending_list.length;
+        },
+        get_count_user_answer_accept_list(state){
+            return state.user_answer_accept_list.length;
+        },
+        get_count_user_answer_incorrect_list(state){
+            return state.user_answer_incorrect_list.length;
+        }
     }
 }

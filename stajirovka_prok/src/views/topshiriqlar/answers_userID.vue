@@ -11,16 +11,16 @@
           </div>
           <div class="d-flex" style="cursor:pointer;">
             <div style="border-bottom:1px solid blue;" class="px-1 py-1 pb-2 mx-1" >
-              <p class="m-0 " style="font-size: 13px; color:#293142;">Topshiriqlar<span class="badge rounded-pill" style="background:#F4AA79;">{{ task_info.count }}</span></p>
+              <p class="m-0 " style="font-size: 13px; color:#293142;">Топшириқлар<span class="badge rounded-pill" style="background:#F4AA79;">{{ task_info.count }}</span></p>
             </div>
             <div  class="px-1 py-1 pb-2 mx-1" @click="$router.push('/bajarilgan')">
-              <p class="m-0 " style="font-size: 13px; color:#293142;">Bajarilgan<span class="badge rounded-pill " style="background:#4EC264;">3</span></p>
+              <p class="m-0 " style="font-size: 13px; color:#293142;">Бажарилган<span class="badge rounded-pill " style="background:#4EC264;">3</span></p>
             </div>
             <div  class="px-1 py-1 pb-2 mx-1">
-              <p class="m-0 " style="font-size: 13px; color:#293142;">Tasdiqlash<span class="badge rounded-pill" style="background:#6968EC;">1</span></p>
+              <p class="m-0 " style="font-size: 13px; color:#293142;">Тасдиқлаш<span class="badge rounded-pill" style="background:#6968EC;">1</span></p>
             </div>
             <div  class="px-1 py-1 pb-2 mx-1">
-              <p class="m-0 " style="font-size: 13px; color:#293142;">Bajarilmoqda<span class="badge rounded-pill" style="background:#5082F2;">12</span></p>
+              <p class="m-0 " style="font-size: 13px; color:#293142;">Бажарилмоқда<span class="badge rounded-pill" style="background:#5082F2;">12</span></p>
             </div>
           </div>
           
@@ -41,8 +41,8 @@
           <hr class="m-0 mb-2">
           <div class="mt-0">
             <div class="">
-              <label for="summary" style="font-size: 12.5px;" class="ms-1 mb-0">Qisqacha mazmuni *</label>
-              <textarea id="summary" v-model="description" class="p-2" style="font-size: 12px;" placeholder="Qisqacha mazmuni"></textarea>
+              <label for="summary" style="font-size: 12.5px;" class="ms-1 mb-0">Қисқача мазмуни *</label>
+              <textarea id="summary" v-model="description" class="p-2" style="font-size: 12px;" placeholder="Қисқача мазмуни"></textarea>
 
               <div class="upload-container">
                 <label for="file-upload" style="font-size: 12px;">
@@ -51,7 +51,7 @@
                 </label>
                 <input type="file" id="file-upload"  accept=".pdf" @change="handleFileChange"/>
                 <span v-if="file" style="font-size: 12px;  color: #6b7280;" class="mb-2 ms-3">{{file.name}}</span>
-                <span v-else style="font-size: 12px;  color: #6b7280;" class="mb-2 ms-3">Iltimos, asoslovchi fayllarni biriktiring!</span>
+                <span v-else style="font-size: 12px;  color: #6b7280;" class="mb-2 ms-3">Илтимос, асословчи файлларни бириктиринг!</span>
               </div>
             </div>
           </div>
@@ -77,7 +77,7 @@
 
           <div class="d-flex justify-content-end mt-3 mb-1 border-top pt-3 pb-2">
               <div class="px-3  py-1" style="background: #4795EF; border-radius: 5px;" @click="submitAnswer">
-                <small style="font-size: 13px; color:white;" >Saqlash</small>
+                <small style="font-size: 13px; color:white;" >Сақлаш</small>
               </div>
           </div>
           

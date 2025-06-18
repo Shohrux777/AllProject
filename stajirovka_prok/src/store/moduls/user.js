@@ -4,10 +4,11 @@ export default {
     state: {
         user_list: {
             rows: [],
-            columns: [ 'full_name','name', 'phone', 'mobile_phone', 'description' ],
+            columns: [ 'name','full_name', 'passport', 'phone', 'mobile_phone' ],
             col: []
         },
         nosalary_user: [],
+        user_all_foiz: 0,
     },
     actions: {
         async fetch_user(ctx) {
@@ -40,7 +41,14 @@ export default {
     mutations: {
         Updateuser_list(state, data) {
             console.log(data)
+            state.user_all_foiz = 0;
             state.user_list.rows = data;
+            for(let i=0; i<state.user_list.rows.length; i++){
+                if(state.user_list.rows[i].foiz > 0){
+                    state.user_all_foiz += state.user_list.rows[i].foiz;
+                }
+            }
+            state.user_all_foiz = state.user_all_foiz / state.user_list.rows.length;
         },
         
         user_row_delete(state, index) {
@@ -52,5 +60,8 @@ export default {
         get_user_list(state) {
             return state.user_list;
         },
+        get_user_all_foiz(state){
+            return state.user_all_foiz;
+        }
     }
 }

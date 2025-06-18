@@ -42,7 +42,7 @@
 
                 <p  style="padding-left: 5px; font-size: 12px; position: relative;" class="m-0 text-white">{{$t(link.title)}}
                   <span v-if="link.url == '/answers_list'" style="right:-28px; top:2px; background:#DCA333; color:black;" class="position-absolute  translate-middle badge rounded-pill">
-                    5
+                    {{ count }}
                     <span class="visually-hidden">unread messages</span>
                   </span>
                 </p>
@@ -120,6 +120,7 @@
               </MDBNavbarNav>
             </div>
           </MDBNavbar>
+          <span class="creater_database">Самарқанд вил. Прократура</span>
         </div>
         <div class="main_router_page">
           <router-view></router-view>
@@ -195,6 +196,7 @@
       return {
         name: 'sidebar',
         Start_time: null,
+        count: localStorage.getItem('pending_count'),
         loading: false,
         reportList: [],
         show_title: true,
@@ -229,23 +231,23 @@
             // { title: 'test', icon: 'house-damage', url: '/test', view: false, color: '#ddd', 
             //   down_list:[]
             // },
-            { title: 'dashboard', icon: 'house-damage', url: '/dashboard', view: false, color: '#ddd', role:'',
+            { title: 'dashboard', icon: 'house-damage', url: '/dashboard', view: false, color: '#ddd', role:'', count: false,
               down_list:[]
             },
-            { title: 'answers_list', icon: 'landmark', url: '/answers_list', view: false, color: '#ddd', down_list:[], role:'admin' },
+            { title: 'answers_list', icon: 'landmark', url: '/answers_list', view: false, color: '#ddd', count: true, down_list:[], role:'admin' },
 
-            { title: 'Топшириклар', icon: 'landmark', url: '/user_topshiriqlar', view: false, color: '#ddd',  down_list:[], role:'user' },
+            { title: 'Топшириклар', icon: 'landmark', url: '/user_topshiriqlar', view: false, color: '#ddd',  down_list:[], role:'user', count: false, },
           
-            { title: 'user', icon: 'user', url: '/user', view: false, color: '#ddd', role:'admin', 
+            { title: 'user', icon: 'user', url: '/user', view: false, color: '#ddd', role:'admin', count: false,
               down_list:[]
             },
-            { title: 'task', icon: 'landmark', url: '/task', view: false, color: '#ddd', role:'admin', 
+            { title: 'task', icon: 'landmark', url: '/task', view: false, color: '#ddd', role:'admin', count: false,
               down_list:[]
             },
             // { title: 'menu_setting', icon: 'tools', url: '', view: false, color: '#ddd', down_list:[
             //     { title: "company", url: '/', dview: false, color: '#ddd', down_list:[] },
             // ] },
-            { title: "logout", icon: 'sign-out-alt', url: '/', view: false, color: '#ddd', down_list:[], role:'' },
+            { title: "logout", icon: 'sign-out-alt', url: '/', view: false, color: '#ddd', down_list:[], role:'', count: false, },
 
 
             // ...............End for MArket..................
@@ -515,5 +517,12 @@
 }
 .main_router_page{
   height: calc(100vh - 46px);
+}
+.creater_database{
+  position: fixed;
+  bottom: 4px;
+  left: 4px;
+  font-size: 11px;
+  color:#f0efef;
 }
 </style>

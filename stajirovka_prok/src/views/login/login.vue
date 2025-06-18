@@ -19,6 +19,8 @@
 
 <script>
 import { MDBBtn } from "mdb-vue-ui-kit";
+import {mapActions} from 'vuex'
+
 import axios from 'axios';
 export default {
     components: {
@@ -32,6 +34,7 @@ export default {
         }
     },
     methods:{
+        ...mapActions(['fetch_status_answers']),
         async Check_login(){
             // localStorage.sidebar = true;
             // localStorage.Name = 'Firdavs'
@@ -63,7 +66,9 @@ export default {
 
                     // Kerak bo‘lsa user ma’lumotini ham saqlash
                     localStorage.setItem('user', response.data.user);
-
+                    if(role == 'admin'){
+                        await this.fetch_status_answers(0);
+                    }
                     // alert('Muvaffaqiyatli login!');
                     // Keyingi sahifaga o‘tkazish (agar router ishlatilsa)
                     this.$router.push('/dashboard');

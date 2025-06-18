@@ -8,19 +8,19 @@
                     <div class="px-2 btn_hover" @click="$emit('add')"> 
                         <small class="text-white" style="font-size: 12px;">
                             <MDBIcon icon="plus" />
-                            Add
+                            Қўшиш
                         </small>
                     </div>
                     <div class="px-2 btn_hover" @click="$emit('editFunc')"> 
                         <small class="text-white" style="font-size: 12px;">
                             <MDBIcon icon="edit" />
-                            Edit
+                            Ўзгартириш
                         </small> 
                     </div>
                     <div class="px-2 btn_hover" @click="$emit('deleteFunc')"> 
                         <small class="text-white" style="font-size: 12px;">
                             <MDBIcon  icon="trash" />
-                            Delete
+                            Ўчириш
                         </small> 
                     </div>
                 </div>

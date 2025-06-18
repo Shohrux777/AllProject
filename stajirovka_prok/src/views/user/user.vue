@@ -10,7 +10,7 @@
                     id="form1"
                     size="sm"
                     class="form-icon-trailing mt-0 mb-2"
-                    :label="$t('search_client')"
+                    label="Ходимларни излаш"
                     v-model="search"
                     @input="searchUser()"
                 >

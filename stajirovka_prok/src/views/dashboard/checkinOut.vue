@@ -1,20 +1,22 @@
 <template>
-    <div class="deparment_page">
+    <div class="deparment_page" style="position:relative;">
       <navbar :title = "$t('dashboard')" @add="addDept" :added_status = "added_status"/>
-      <div class="mainpage ">
+
+      <loader v-if="loading"/>
+      <div v-else class="mainpage ">
           <div class="dashboart_header ">
             <div class="row">
-              <div class="col-3 " style="cursor:pointer;">
+              <div class="col-3 " style="cursor:pointer;" v-if="role == 'admin'">
                 <div class="card">
                   <div class="dashboard_card_item  p-3 d-flex">
                     <div class="dashboard_card_item_left">
-                      <div class="icon_box bg-secondary card ">
+                      <div class="icon_box bg-secondary card">
                         <i class="fas fa-users text-white"></i>
                       </div>
                       <small >Ходимлар</small>
                     </div>
                     <div class="dashboard_card_item_right">
-                      <small class="text-secondary">25</small>
+                      <small class="text-secondary">{{get_user_list.length}}</small>
                     </div>
                   </div>
                 </div>
@@ -46,7 +48,7 @@
                       <small >Қабул қилинган</small>
                     </div>
                     <div class="dashboard_card_item_right">
-                      <small class="text-success">37</small>
+                      <small class="text-success">{{accept_count}}</small>
                     </div>
                   </div>
                 </div>
@@ -62,17 +64,12 @@
                       <small >Рад этилган</small>
                     </div>
                     <div class="dashboard_card_item_right">
-                      <small class="text-danger">5</small>
+                      <small class="text-danger">{{ignore_count}}</small>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <div class="dashboart_header mt-3">
-            <div class="row">
-              <div class="col-6 " style="cursor:pointer;">
+              <div class="col-6 mt-3 " v-if="role == 'admin'" style="cursor:pointer;">
                 <div class="card">
                   <div class="dashboard_card_item  p-3 d-flex">
                     <div class="dashboard_card_item_left">
@@ -82,18 +79,19 @@
                       <div class="w-100">
                         <small >Ходимлар умумий кўрсатгичи</small>
                         <div class=" range_component mx-3 mt-1">
-                          <div style="width:72%; height:4px; background: #3DA152;"></div>
+                          <div :class="{'foiz_0': get_user_all_foiz == 0 || get_user_all_foiz == null, 'foiz_56': get_user_all_foiz < 56 && get_user_all_foiz > 0, 'foiz_71': get_user_all_foiz < 71 && get_user_all_foiz > 56,  'foiz_95': get_user_all_foiz < 95 && get_user_all_foiz >71, 'foiz_100': get_user_all_foiz>=95}" 
+                          style=" height:4px;" :style="{ width: (get_user_all_foiz ? get_user_all_foiz : 0) + '%' }"></div>
                         </div>
                       </div>
                     </div>
                     <div class="dashboard_card_item_right">
-                      <small class="text-info">72%</small>
+                      <small class="text-info">{{get_user_all_foiz}}%</small>
                     </div>
                   </div>
                 </div>
               </div>
               
-              <div class="col-6 " style="cursor:pointer;">
+              <div class=""  :class="{'col-6 mt-3': role == 'admin', 'col-3': role == 'user'}" style="cursor:pointer;">
                 <div class="card">
                   <div class="dashboard_card_item  p-3 d-flex">
                     <div class="dashboard_card_item_left">
@@ -103,11 +101,17 @@
                       <small >Тасдиқлашда</small>
                     </div>
                     <div class="dashboard_card_item_right">
-                      <small class="text-warning">18</small>
+                      <small class="text-warning">{{pending_count}}</small>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div class="dashboart_header mt-3">
+            <div class="row">
+              
               
              
             </div>
@@ -122,14 +126,14 @@
                 <thead class="bg-light">
                   <tr>
                     <th width="550">ФИО</th>
-                    <th>Лавозим</th>
+                    <!-- <th>Лавозим</th> -->
                     <th >Статус</th>
                     <th width="300">Кўрсатгич</th>
-                    <th width="100">Кўриш</th>
+                    <th v-if="role == 'admin'" width="100">Кўриш</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
+                  <tr v-for="(user,i) in get_user_list.rows" :key="i">
                     <td>
                       <div class="d-flex align-items-center">
                         <img
@@ -139,15 +143,12 @@
                             class="rounded-circle"
                             />
                         <div class="ms-3">
-                          <p class="fw-bold mb-1">Rahimov Dilmurod Ravshanovich</p>
-                          <p class="text-muted mb-0">john.doe@gmail.com</p>
+                          <p class="fw-bold mb-1">{{user.name}}</p>
+                          <p class="text-muted mb-0">{{user.full_name}}</p>
                         </div>
                       </div>
                     </td>
-                    <td>
-                      <p class="fw-normal mb-1">Prokror</p>
-                      <p class="text-muted mb-0">IT department</p>
-                    </td>
+                    
                     <td>
                       <span class="badge badge-success rounded-pill d-inline">Active</span>
                     </td>
@@ -155,195 +156,18 @@
                       <div class="w-100 d-flex align-items-center">
                         <div class="range_item_table">
                           <div class=" range_component ">
-                            <div style="width:75%; height:4px; background: #3DA152;"></div>
+                            <div :class="{'foiz_0': user.foiz == 0 || user.foiz == null, 'foiz_56': user.foiz < 56 && user.foiz > 0, 'foiz_71': user.foiz < 71 && user.foiz > 56,  'foiz_95': user.foiz < 95 && user.foiz >71, 'foiz_100': user.foiz>=95}" 
+                              style=" height:4px;" :style="{ width: (user.foiz ? user.foiz : 0) + '%' }"></div>
                           </div>
                         </div>
                         <div class="range_item_procent">
-                          <small class="mx-2" style="font-weight:bold;">75%</small>
+                          <small v-if="user.foiz>0" class="mx-2" style="font-weight:bold;">{{user.foiz}}%</small>
+                          <small v-else class="mx-2" style="font-weight:bold;">0 %</small>
                         </div>
                       </div>
                     </td>
-                    <td>
+                    <td v-if="role == 'admin'">
                       <button type="button" @click="link_router" class="btn btn-link btn-sm btn-rounded">
-                        Ochish
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <img
-                            src="@/assets/pic2.png"
-                            class="rounded-circle"
-                            alt=""
-                            style="width: 45px; height: 45px"
-                            />
-                        <div class="ms-3">
-                          <p class="fw-bold mb-1">Yusupov Baxrom Uktamovich</p>
-                          <p class="text-muted mb-0">Payariq tuman</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <p class="fw-normal mb-1">Consultant</p>
-                      <p class="text-muted mb-0">Finance</p>
-                    </td>
-                    <td>
-                      <span class="badge badge-primary rounded-pill d-inline"
-                            >Onboarding</span
-                        >
-                    </td>
-                    <td>
-                      <div class="w-100 d-flex align-items-center">
-                        <div class="range_item_table">
-                          <div class=" range_component ">
-                            <div style="width:23%; height:4px; background: red;"></div>
-                          </div>
-                        </div>
-                        <div class="range_item_procent">
-                          <small class="mx-2" style="font-weight:bold;">23%</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <button
-                              type="button"
-                              class="btn btn-link btn-rounded btn-sm fw-bold"
-                              data-mdb-ripple-color="dark"
-                              @click="link_router"
-                              >
-                        Ochish
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <img
-                            src="https://cdn1.img.sputniknews.uz/img/07e7/0b/07/40747524_348:142:876:670_1920x0_80_0_0_01c3c794650c050cba2312626a52c04c.jpg"
-                            class="rounded-circle"
-                            alt=""
-                            style="width: 45px; height: 45px"
-                            />
-                        <div class="ms-3">
-                          <p class="fw-bold mb-1">Xamidov Uktam Tursunovich</p>
-                          <p class="text-muted mb-0">Ishtixon tuman</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <p class="fw-normal mb-1">Prokror</p>
-                      <p class="text-muted mb-0">Mutaxassis</p>
-                    </td>
-                    <td>
-                      <span class="badge badge-warning rounded-pill d-inline">Awaiting</span>
-                    </td>
-                    <td>
-                      <div class="w-100 d-flex align-items-center">
-                        <div class="range_item_table">
-                          <div class=" range_component ">
-                            <div style="width:46%; height:4px; background: #1F282D;"></div>
-                          </div>
-                        </div>
-                        <div class="range_item_procent">
-                          <small class="mx-2" style="font-weight:bold;">46%</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <button
-                              type="button"
-                              class="btn btn-link btn-rounded btn-sm fw-bold"
-                              data-mdb-ripple-color="dark"
-                              @click="link_router"
-                              >
-                        Ochish
-                      </button>
-                    </td>
-                  </tr>
-                                    <tr>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <img
-                            src="@/assets/pic1.png"
-                            alt=""
-                            style="width: 45px; height: 45px"
-                            class="rounded-circle"
-                            />
-                        <div class="ms-3">
-                          <p class="fw-bold mb-1">Rahimov Dilmurod Ravshanovich</p>
-                          <p class="text-muted mb-0">john.doe@gmail.com</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <p class="fw-normal mb-1">Prokror</p>
-                      <p class="text-muted mb-0">IT department</p>
-                    </td>
-                    <td>
-                      <span class="badge badge-success rounded-pill d-inline">Active</span>
-                    </td>
-                    <td>
-                      <div class="w-100 d-flex align-items-center">
-                        <div class="range_item_table">
-                          <div class=" range_component ">
-                            <div style="width:82%; height:4px; background: #3DA152;"></div>
-                          </div>
-                        </div>
-                        <div class="range_item_procent">
-                          <small class="mx-2" style="font-weight:bold;">82%</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <button type="button" class="btn btn-link btn-sm btn-rounded" @click="link_router">
-                        Ochish
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <img
-                            src="@/assets/pic2.png"
-                            class="rounded-circle"
-                            alt=""
-                            style="width: 45px; height: 45px"
-                            />
-                        <div class="ms-3">
-                          <p class="fw-bold mb-1">Yusupov Baxrom Uktamovich</p>
-                          <p class="text-muted mb-0">Payariq tuman</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <p class="fw-normal mb-1">Consultant</p>
-                      <p class="text-muted mb-0">Finance</p>
-                    </td>
-                    <td>
-                      <span class="badge badge-primary rounded-pill d-inline"
-                            >Onboarding</span
-                        >
-                    </td>
-                    <td>
-                      <div class="w-100 d-flex align-items-center">
-                        <div class="range_item_table">
-                          <div class=" range_component ">
-                            <div style="width:28%; height:4px; background: red;"></div>
-                          </div>
-                        </div>
-                        <div class="range_item_procent">
-                          <small class="mx-2" style="font-weight:bold;">28%</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <button
-                              type="button"
-                              class="btn btn-link btn-rounded btn-sm fw-bold"
-                              data-mdb-ripple-color="dark"
-                              @click="link_router"
-                              >
                         Ochish
                       </button>
                     </td>
@@ -360,6 +184,7 @@
   
   <script>
     import { ref } from 'vue';
+    import Loader from '@/components/loader.vue';
     import navbar from '@/components/navbar.vue';
     import {mapActions, mapGetters} from 'vuex';
     export default {
@@ -370,17 +195,47 @@
         };
       },
       components: {
-          navbar
+          navbar,
+          Loader
       },
       data(){
         return{
+          loading: false,
           show_dept: false,
           added_status: false,
+          accept_count: localStorage.getItem('accept_count'),
+          ignore_count: localStorage.getItem('ignore_count'),
+          pending_count: localStorage.getItem('pending_count'),
+          role: localStorage.getItem('role'),
+          user_id: localStorage.getItem('user_id'),
+
         }
       },
-      computed: mapGetters(['get_dashboard_list']),
+      async mounted(){
+        this.loading = true;
+        if(this.role == 'admin'){
+          await this.fetch_status_answers(0);
+          await this.fetch_status_answers(1);
+          await this.fetch_status_answers(2);
+          this.accept_count = localStorage.getItem('accept_count');
+          this.ignore_count = localStorage.getItem('ignore_count');
+          this.pending_count = localStorage.getItem('pending_count');
+        }
+        else{
+          await this.fetch_user_task_answers(this.user_id);
+          this.accept_count = this.get_count_user_answer_incorrect_list;
+          this.ignore_count = this.get_count_user_answer_accept_list;
+          this.pending_count = this.get_count_user_answer_pending_list;
+        }
+        await this.fetch_user();
+        console.log(this.get_user_list)
+        this.loading = false;
+
+        
+      },
+      computed: mapGetters(['get_dashboard_list','get_user_all_foiz','get_user_list','get_count_user_answer_pending_list', 'get_count_user_answer_accept_list', 'get_count_user_answer_incorrect_list']),
       methods:{
-          ...mapActions(['fetch_dashboard_list']),
+          ...mapActions(['fetch_status_answers', 'fetch_user_task_answers','fetch_user']),
           addDept(){
             console.log('dept')
             this.show_dept = true;
@@ -431,7 +286,7 @@
   .dashboard_card_item_left small{
     color: rgb(93, 93, 94);
     margin: 0 13px;
-    font-size: 19px;
+    font-size: 16px;
   }
   .dashboard_card_item_right{
     width: 20%;
@@ -458,4 +313,21 @@
   tr{
     cursor:pointer;
   }
+  .foiz_0{
+    background: yellow;
+  }
+  .foiz_56{
+    background: rgb(255, 42, 42);
+  }
+  .foiz_71{
+    background: rgb(254, 121, 121);
+  }
+  .foiz_95{
+    background: rgb(255, 225, 30);
+  }
+  .foiz_100{
+    background: rgb(32, 164, 14);
+  }
+  
+  
   </style>
