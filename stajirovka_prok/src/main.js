@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
+// import alert from './components/alert.vue'
 import store from './store'
 import 'mdb-vue-ui-kit/css/mdb.min.css';
 import i18n from './i18n'

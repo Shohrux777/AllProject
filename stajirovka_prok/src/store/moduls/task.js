@@ -16,6 +16,7 @@ export default {
         answer_accept_list: [],
         answer_incorrect_list: [],
         answer_pending_list: [],
+        answer_user_task_status: [],
         all_task_count: 0,
     },
     actions: {
@@ -73,6 +74,34 @@ export default {
             // console.log(ctx.rootState.hostname);
         },
 
+        async fetch_user_task_answers_status(ctx, config) {
+            try{
+                const token = localStorage.getItem('auth_token');
+
+                console.log('Token:', token); // ← bu chiqsin, `Bearer`siz bo'lishi kerak
+                console.log('config:', config); // ← bu chiqsin, `Bearer`siz bo'lishi kerak
+
+                const response = await axios.post(
+                ctx.rootState.hostname + '/api/calculate-results/',
+                config,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: 'application/json',
+                    }
+                }
+                );
+                console.log('Natija:', response.data);
+                ctx.commit('Update_userTaskAnswersStatus', response.data);
+            }
+            catch (error) {
+            console.error('Xatolik:', error.response?.data || error.message);
+            // alert("Xatolik yuz berdi!");
+            }
+            // console.log(ctx.rootState.hostname);
+        },
+
+
         async fetch_status_answers(ctx, status) {
             try{
                 const token = localStorage.getItem('auth_token');
@@ -121,7 +150,7 @@ export default {
             }
         },
         Update_userTaskAnswers(state, data) {
-            console.log('usertask',data)
+            console.log('usertask answer',data)
             state.user_answer_pending_list = [];
             state.user_answer_accept_list = [];
             state.user_answer_incorrect_list = [];
@@ -158,6 +187,11 @@ export default {
 
         task_row_delete(state, index) {
             state.task_list.rows.splice(parseInt(index), 1);
+        },
+        Update_userTaskAnswersStatus(state, data){
+            console.log('data status user task')
+            console.log(data)
+            state.answer_user_task_status = data;
         }
 
     },
@@ -187,6 +221,16 @@ export default {
         get_count_user_answer_incorrect_list(state){
             return state.user_answer_incorrect_list.length;
         },
+
+        get_user_answer_pending_list(state){
+            return state.user_answer_pending_list;
+        },
+        get_user_answer_accept_list(state){
+            return state.user_answer_accept_list;
+        },
+        get_user_answer_incorrect_list(state){
+            return state.user_answer_incorrect_list;
+        },
         get_all_task_count(state){
             return state.all_task_count
         },
@@ -199,6 +243,9 @@ export default {
         },
         get_user_answer_incorrect_list(state){
             return state.user_answer_incorrect_list;
+        },
+        get_answer_user_task_status(state){
+            return state.answer_user_task_status;
         },
     }
 }

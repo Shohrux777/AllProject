@@ -28,8 +28,8 @@ export default {
     },
     data(){
         return{
-            login: 'admin@admin.com',
-            parol: 'password',
+            login: '', //admin@admin.com
+            parol: '', //password
             invalid_status: false,
         }
     },
@@ -57,12 +57,16 @@ export default {
                     const role = response.data.user.role;
                     const user_name = response.data.user.name;
                     const user_id = response.data.user.id;
+                    const user_image = response.data.user.image_base64;
+
 
                     // Tokenni localStorage ga saqlaymiz
                     localStorage.setItem('auth_token', token);
                     localStorage.setItem('role', role);
                     localStorage.setItem('user_name', user_name);
                     localStorage.setItem('user_id', user_id);
+                    localStorage.setItem('user_image', user_image);
+
 
                     // Kerak bo‘lsa user ma’lumotini ham saqlash
                     localStorage.setItem('user', response.data.user);

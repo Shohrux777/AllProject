@@ -10,7 +10,7 @@
         <div class="border-bottom pb-1" :class="{'alert-primary': i==active_item}"
           v-for="item, i in get_answer_pending_list" :key="i" @click="Select_answer(item, i)">
           <div class="d-flex justify-content-between w-100 px-1 py-2">
-            <div style="width:83%; " class="px-2">
+            <div style="width:83%;" class="px-2">
               <p class="m-0 mb-2 task_name_pending" style="font-size: 13px; height:60px "><span style="font-weight:bold;"></span> {{item.task.name}}</p>
               <span class="m-0 border rounded" style="font-size: 12px; padding: 6px 10px;"><span style="font-weight:bold;">{{item.user.name}}</span> </span>
             </div>
@@ -116,6 +116,7 @@
         </div>
       </div>
     </div>
+    <alert ref="message"></alert>
     
   </div>
 </template>
@@ -130,7 +131,8 @@
   import { ref } from 'vue';
   import navbar from '@/components/navbar.vue'
   import {mapActions, mapGetters} from 'vuex'
-import Loader from '@/components/loader.vue';
+  import Loader from '@/components/loader.vue';
+  import alert from '@/components/alert.vue';
 
   import axios from 'axios'
   export default {
@@ -145,7 +147,8 @@ import Loader from '@/components/loader.vue';
         MDBBadge,
         MDBIcon,
         navbar,
-        Loader
+        Loader,
+        alert
         // VuePdfApp
     },
     data(){
@@ -236,10 +239,11 @@ import Loader from '@/components/loader.vue';
             }
             else{
               this.select_answer = null;
-
             }
             this.loading = false;
-            alert('Muvaffaqiyatli saqlandi')
+            // alert('Muvaffaqiyatli saqlandi')
+            this.$refs.message.success('Added_successfully');
+
           } catch (error) {
             this.loading = false;
             console.error('Xatolik ❌:', error.response?.data || error.message)

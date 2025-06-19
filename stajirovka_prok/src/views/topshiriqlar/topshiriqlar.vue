@@ -10,7 +10,7 @@
             <div class="col-6">
               <div class="d-flex align-items-center">
                 <img
-                  :src="hostname + get_user_data.image_base64"
+                  :src="hostname2 + get_user_data.image_base64"
                   class="rounded"
                   alt=""
                   style="width: 120px; height: 120px"
@@ -53,7 +53,7 @@
                   <div style="width:40%;" >
                     <div class=" range_component rounded">
                       <div class="rounded bg-success" 
-                      :style="{ width: (parseInt(get_count_user_answer_accept_list*100/get_all_task_count) ? parseInt(get_count_user_answer_accept_list*100/get_all_task_count)>0 : 0) + '%' }"
+                      :style="{ width: (parseInt(get_count_user_answer_accept_list*100/get_all_task_count) ? parseInt(get_count_user_answer_accept_list*100/get_all_task_count) : 0) + '%' }"
                       style=" height:10px;" ></div>
                     </div>
                   </div>
@@ -120,7 +120,7 @@
           <div class="w-100" style="height: 6px;" >
             <TotalTask :totalTasks="task.count" :doneCount="task.accept"  :pendingCount="task.pending"/>
           </div>
-          <div class="d-flex justify-content-end mt-2 mb-1" @click="$router.push('/answers_userID/' + task.id)">
+          <div class="d-flex justify-content-end mt-2 mb-1" @click="routeAnswers(task.id)">
             <div class="px-4 rounded alert-info" >
               <small style=" font-size: 12px; color:#67748A; font-weight:600;">Батафсил</small>
             </div>

@@ -9,12 +9,12 @@
             <!-- <span style="font-size: 22px;" class="mb-1 text-white">Маркет</span> -->
             <img
                 src="../assets/logo.png"
-                height="30"
-                width="30"
+                height="35"
+                width="35"
                 alt=""
                 loading="lazy"
               />
-              <span class="text-white ms-2" style="font-size: 15px;">Xodimlarni o'qitish</span>
+              <span class="text-white ms-2" style="font-size: 15px;">Ходимларни ўқитиш</span>
           </div>
         </div>
         <div class="smallIcon shadow d-flex align-items-center justify-content-center" v-if="!show_title">
@@ -90,8 +90,9 @@
             <div>
               <MDBNavbarNav class="mb-2 mb-lg-0 ">
                 <MDBNavbarItem class="d-sm-flex align-items-sm-center">
+                  
                   <img
-                    src="https://mdbootstrap.com/img/new/avatars/8.jpg"
+                    :src="hostname2 + user_image ? hostname2 + user_image : 'https://mdbootstrap.com/img/new/avatars/8.jpg'"
                     class="rounded-circle"
                     height="22"
                     alt=""
@@ -202,6 +203,8 @@
         indexMain: -1,
         role: localStorage.getItem('role'),
         user_name: localStorage.getItem('user_name'),
+        user_image: localStorage.getItem('user_image'),
+        hostname2: this.$store.state.hostname2,
         langList: [
           {
             name: 'Узбек',
@@ -522,7 +525,7 @@
   position: fixed;
   bottom: 4px;
   left: 4px;
-  font-size: 11px;
+  font-size: 12px;
   color:#f0efef;
 }
 </style>

@@ -91,7 +91,12 @@ export default {
             return state.user_list;
         },
         get_user_all_foiz(state){
-            return state.user_all_foiz;
+            if(state.user_all_foiz>0){
+                return state.user_all_foiz.toFixed(1);
+            }else{
+                 return 0;
+            }
+            
         },
         get_user_data(state){
             return state.user_data;

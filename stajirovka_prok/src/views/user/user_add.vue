@@ -85,8 +85,11 @@
             </div>
             <div class="col-3">
               <label for="inputGroupFile01" class="picure_down border">
-              <img  id="prewImage" v-show="!show_picture"  style="width:100%; height:190px;"  alt="" />
-                <svg v-if="show_picture" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-cloud-upload" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#717171" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <img :src="hostname2+image_base64" id="prewImage" v-show="show_picture"  style="width:100%; height:190px;"  alt="" />
+                <svg v-if="!show_picture" xmlns="http://www.w3.org/2000/svg" 
+                  class="icon icon-tabler icon-tabler-cloud-upload" width="44"
+                  style="cursor:pointer;" 
+                  height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#717171" fill="none" stroke-linecap="round" stroke-linejoin="round">
                   <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                   <path d="M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1  a3.5 3.5 0 0 1 0 7h-1" />
                   <polyline points="9 15 12 12 15 15" />
@@ -141,6 +144,7 @@
             image_base64: '',
             picture_user: '',
             show_picture: false,
+            hostname2: this.$store.state.hostname2,
           file: null,
 
         }
@@ -164,6 +168,7 @@
               this.description= this.select_data.description;
               this.image_base64= this.select_data.image_base64;
               this.passport= this.select_data.passport;
+              this.show_picture = true;
            
         }
       
