@@ -155,6 +155,8 @@
               { title: "devices_info", url: '/door', view: false, color: '#c4cbcb', down_list:[] },
               { title: "device_door", url: '/doors', view: false, color: '#c4cbcb', down_list:[] },
               { title: "salary", url: '/salary', view: false, color: '#c4cbcb', down_list:[] },
+              { title: "connect_salary_user", url: '/connect_salary_user', view: false, color: '#c4cbcb', down_list:[] },
+              { title: "user_calendar", url: '/user_calendar', view: false, color: '#c4cbcb', down_list:[] },
             ] },
             { title: "logout", icon: 'sign-in-alt', url: '/', view: false, color: '#c4cbcb', down_list:[] },
         ],

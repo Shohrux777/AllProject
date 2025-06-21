@@ -250,12 +250,13 @@ export default {
       const data = await res.json();
       console.log('data')
       console.log(data)
-      this.name = data.ism,
-      this.phone_number = data.acc_name,
-      this.passport_number = data.familiya,
-      this.photo_url = data.image_url,
-      this.born_date = data.middle_name;
-      this.address = data.cardno;
+      this.name = data.ism;
+      this.phone_number = data.phone_number;
+      this.passport_number = data.password;
+      this.born_date = data.born_date;
+      this.address = data.address;
+
+      this.photo_url = data.image_url;
       this.note = data.group_name;
 
       if(data.auth_user_updator_id == 0){
@@ -383,10 +384,10 @@ export default {
         headers: { "Content-Type" : "application/json" },
         body: JSON.stringify({
           "ism" : this.name,
-          "cardno" : this.address,
-          "familiya" : this.passport_number,
-          "acc_name": this.phone_number,
-          "middle_name": this.born_date,
+          "address" : this.address,
+          "password" : this.passport_number,
+          "phone_number": this.phone_number,
+          "born_date": this.born_date,
           "group_name" : this.note,
           "image_url": this.photo_url,
           "gr": this.auth_user_updator_id,

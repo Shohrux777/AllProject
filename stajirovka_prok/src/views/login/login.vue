@@ -48,6 +48,7 @@ export default {
             // }
             if(this.login && this.parol){
                 try {
+                    await axios.get('https://sud.musa777.uz/sanctum/csrf-cookie')
                     const response = await axios.post(this.$store.state.hostname + '/api/admin/login', {
                     email: this.login,
                     password: this.parol
