@@ -1,13 +1,7 @@
 <template>
-  <div>
-    <label>Xodimni tanlang:</label>
-    <select v-model="selectedUserId" @change="generateCalendar(selectedYear, selectedMonth)">
-      <option v-for="user in users" :value="user.id" :key="user.id">
-        {{ user.name }}
-      </option>
-    </select>
+  <div style="width: 350px;">
     <div class="calendar-controls">
-        <select v-model="selectedYear" @change="refreshCalendar">
+        <select v-model="selectedYear" @change="refreshCalendar" >
             <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
         </select>
 
@@ -18,17 +12,21 @@
         </select>
     </div>
 
-    <table border="1" class="calendar-table">
+    <table  class="calendar-table">
       <thead>
-        <tr>
+        <tr class="border-bottom">
           <th v-for="day in days" :key="day">{{day}}</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(week, index) in calendar" :key="index">
-          <td v-for="day in week" :key="day.date.toDateString()" :class="{ today: day.isToday }">
-            <div>{{ day.date.getDate() }}</div>
-            <small v-if="day.hours">{{ day.hours }}</small>
+        <tr v-for="(week, index) in calendar" :key="index" class="border-bottom">
+          <td v-for="day in week" :key="day.date.toDateString()" @click="chooseDayInfo(day)" 
+            :class="{'today': day.isToday, 
+                    'working': day.hours, 
+                    'other-month': day.isOtherMonth
+                    }">
+            <div class="calendar_date">{{ day.date.getDate() }}</div>
+            <small class="calendar_hours" v-if="day.hours">{{ day.hours }}</small>
           </td>
         </tr>
       </tbody>
@@ -36,6 +34,8 @@
   </div>
 </template>
 <script>
+import user from '../../store/modules/user';
+
 export default {
   data() {
     const now = new Date();
@@ -68,7 +68,8 @@ export default {
         { value: 10, name: 'Noyabr' },
         { value: 11, name: 'Dekabr' }
         ],
-        days: ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya']
+        days: ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya'],
+        user_id: 0,
     };
   },
   computed: {
@@ -79,6 +80,25 @@ export default {
         }
     },
   methods: {
+    async chooseDayInfo(day){
+      console.log(day);
+    },
+    async update_user_salary(user_id){
+      console.log(user_id)
+      this.user_id = user_id;
+      console.log(this.selectedYear + '-' + this.selectedMonth + '-01')
+      let monthDate = this.selectedYear + '-' + this.selectedMonth + '-01';
+      try{
+        const response = await fetch(this.$store.state.hostname + "/TegirmonUserIshlaganVaqt/getUserWorkedDays?page=0&size=200&userid=" + user_id + '&month=' + '2025-06-01');
+        const data = await response.json();
+        console.log('K_data',data)
+        this.workdays = data.items_list;
+        this.generateCalendar(this.selectedYear, this.selectedMonth);
+      }
+      catch(error){
+        console.log(error)
+      }
+    },
     async loadWorkDays() {
       const res = await fetch(`/api/worked-days?userid=${this.selectedUserId}&month=2025-06`);
       this.workdays = await res.json();
@@ -102,12 +122,13 @@ export default {
 
     while (date <= end || week.length > 0) {
         const isoDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-        const work = this.workdays.find(w => w.k_date === isoDate);
+        const work = this.workdays.find(w => w.K_date === isoDate);
 
         week.push({
         date: new Date(date),
         isToday: isoDate === todayStr,
-        hours: work ? work.work_time.slice(0, 5) : null
+        hours: work ? work.work_time.slice(0, 5) : null,
+        isOtherMonth: date.getMonth() !== month
         });
 
         if (week.length === 7) {
@@ -132,20 +153,54 @@ export default {
 </script>
 <style scoped>
 .calendar-table {
-  width: 100%;
+  /* width: 100%; */
   text-align: center;
 }
 td {
-  height: 70px;
   vertical-align: top;
 }
 td:hover{
-    background: blue;
+    background: rgb(33, 255, 100);
+    cursor: pointer;
 }
 tr:hover{
     background: white !important;
 }
 .today {
-  background-color: #d1f0d1;
+  background-color: #c7eefd;
+}
+.working{
+  background-color: #b8fdc1;
+}
+.calendar-table td {
+  width: 50px !important;
+  height: 50px !important;
+  vertical-align: top;
+  padding: 5px;
+  box-sizing: border-box;
+  position: relative;
+}
+.calendar-table thead tr th{
+  font-weight: 600 !important;
+}
+.other-month {
+  color: #aaa; /* ochroq ko‘rinish uchun */
+  background-color: #f9f9f9; /* yoki faqat rangni o‘zgartiring */
+}
+.calendar-controls{
+  width: 100%;
+  display: flex;
+  justify-content: start;
+  padding: 5px 0;
+}
+.calendar-controls select{
+  width: 120px;
+  height: 30px;
+  border: 1px solid rgb(204, 204, 204);
+  border-radius: 5px;
+  color: rgb(58, 57, 57);
+  font-size: 14px;
+  padding: 5px;
+  margin-left: 5px;
 }
 </style>

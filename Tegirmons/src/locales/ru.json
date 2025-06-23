@@ -336,7 +336,8 @@
     "salary": "Зарплата",
     "Add_salary": "Добавить зарплата",
     "salary_type": "Тип зарплата",
-    "connect_salary_user": "Зарплата подк. польз."
+    "connect_salary_user": "Зарплата подк. польз.",
+    "Dashboard": "Панель управления"
 
 
 }

@@ -61,11 +61,11 @@ const routes = [{
             import ('../views/skud_salary/connect_salary_user.vue')
     },
     {
-        path: '/user_calendar',
-        name: 'user_calendar',
-        meta: { layout: 'main' },
+        path: '/user_salary',
+        name: 'user_salary',
+        meta: { layout: 'navbar' },
         component: () =>
-            import ('../views/face_control/user_calendar.vue')
+            import ('../views/face_control/user_salary.vue')
     },
     {
         path: '/doors',
