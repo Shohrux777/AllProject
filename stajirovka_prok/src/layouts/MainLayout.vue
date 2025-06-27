@@ -169,7 +169,6 @@
       let time1 = new Date();
       console.log(time1)
       this.Start_time = time1.toISOString().slice(0,10);
-      await this.submit();
       setInterval(await this.fetchblockTime, 60000);
       // console.log(localStorage.sidebar)
       // this.name = localStorage.Name;
@@ -292,23 +291,7 @@
         this.activLang = lang;
         this.$i18n.locale = lang.lang;
       },
-      async submit(){
-        let start = this.Start_time + 'T00:00:35.000Z' ;
-        console.log(start)
-        console.log('submit')
-        try{
-          this.loading = true;
-          const response = await fetch(this.$store.state.hostname + "/SkudMyUserinfoes/getReportKemaganlarAllUsers?page=0&size=500&need_date=" + start);
-          const data = await response.json();
-          this.loading = false;
-          console.log(data)
-          this.reportList = data.items_list;
-        }
-        catch(error){
-          this.loading = false;
-          console.log(error)
-        }
-      },
+      
       async fetchblockTime(){
           let day = new Date();
           console.log('day.getDay()')

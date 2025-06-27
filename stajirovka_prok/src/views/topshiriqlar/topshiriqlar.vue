@@ -26,7 +26,14 @@
                   <p class="text-muted mb-0" style="font-size: 12px;">
                     <span style="font-weight:bold; margin-right:7px;">IP телифон:</span>{{get_user_data.phone}}</p>
                   <p class="text-muted mb-0" style="font-size: 12px;">
-                    <span style="font-weight:bold; margin-right:7px;">ЖШШИР:</span>{{get_user_data.passport}}</p>
+                    <span style="font-weight:bold; margin-right:7px;">ЖШШИР:</span>{{get_user_data.passport}}
+                  </p>
+                  <p class="mb-0" @click="forwardArxiv">
+                    <span style="margin-right:7px;" class="forward_to_arxiv">
+                      Ходимни архивга ўтказиш
+                      <i class="fas fa-share" ></i>
+                    </span>
+                  </p>
                 </div>
               </div>
             </div>
@@ -325,10 +332,10 @@
     
   } from 'mdb-vue-ui-kit';
   import { ref } from 'vue';
-    import Loader from '@/components/loader.vue';
-
+  import Loader from '@/components/loader.vue';
+  import axios from 'axios';
   import navbar from '@/components/navbar.vue'
-import TotalTask from '@/components/totalTask.vue';
+  import TotalTask from '@/components/totalTask.vue';
 
   import {mapActions, mapGetters} from 'vuex'
   export default {
@@ -374,6 +381,7 @@ import TotalTask from '@/components/totalTask.vue';
     async mounted(){
       this.loading = true;
         await this.fetch_user_id(this.user_id);
+        console.log(this.get_user_data);
         await this.fetch_task();
         await this.fetch_user_task_answers(this.user_id);
         this.task_list = [];
@@ -419,30 +427,71 @@ import TotalTask from '@/components/totalTask.vue';
           console.log(data.userid)
           this.select_data = data
         },
-        async deleteFunc(){
-            try{
-                console.log('deleteFunc')
-                const requestOptions = {
-                    method : "delete",
-                };
-                const response = await fetch(this.$store.state.hostname + "/SkudOyliks/" + this.select_data.id, requestOptions);
-                const data = await response.json();
-                console.log('data')
-                console.log(data)
-                console.log(response)
-                if(response.status == 200 || response.status == 201){
-                    await this.fetch_Salary();
-                }
+        async forwardArxiv(){
+          try {
+          let nol = "0";
+          const now = new Date()
+          const isoString = now.toISOString()
+          console.log('isoString',isoString)
+          const token = localStorage.getItem('auth_token'); // login paytida saqlangan token
+          const formData = new FormData();
+          formData.append('name', this.get_user_data.name);
+          formData.append('full_name', this.get_user_data.full_name);
+          formData.append('email', this.get_user_data.email);
+          formData.append('password', this.get_user_data.password);
+          formData.append('phone', this.get_user_data.phone);
+          formData.append('mobile_phone', this.get_user_data.mobile_phone);
+          formData.append('description', this.get_user_data.description);
+          formData.append('passport', this.get_user_data.passport);
+          formData.append('image_base64', this.get_user_data.image_base64); // Fayl (PDF yoki JPG)
+          formData.append('task_count', this.get_user_data.task_count);
+          formData.append('task_id', this.get_user_data.task_id);
+          formData.append('task_info', this.get_user_data.task_info);
+          formData.append('dead_line', this.get_user_data.dead_line);
+          formData.append('status', nol);
+          formData.append('date_end', isoString);
+
+          const response = await axios.put(this.$store.state.hostname + '/api/admin/users/' + this.get_user_data.id, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${token}` // Agar token kerak bo‘lsa
             }
-            catch(error){
-                console.log(error)
+          })
+            console.log('Yaratildi:', response.data);
+            if(response.status == 200 || response.status == 201){
+              this.$emit('close')
+              // await this.fetch_user();
             }
-          },
-          async editFunc(){
-            this.show_dept = true;
-            this.exampleModal = true;
-            console.log('editFunc')
+            // this.img_str = response.data.image_base64;
+            alert("Foydalanuvchi qo‘shildi!");
+          } catch (error) {
+            console.error('Xatolik:', error.response?.data || error.message);
+            alert("Xatolik yuz berdi!");
           }
+        },
+        
+        async arxivList(){
+          const token = localStorage.getItem('auth_token') // <<< bu yerga tokenni yozing
+
+          try {
+            const response = await axios.get(this.$store.state.hostname + '/api/by_year/', {
+              params: {
+                year: '2025'
+              },
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            })
+
+            this.data = response.data
+            console.log(response.data)
+            console.log(response)
+          } catch (err) {
+            this.error = err.response?.data?.message || err.message
+          } finally {
+            this.loading = false
+          }
+        }
     }
 
   };
@@ -465,5 +514,22 @@ import TotalTask from '@/components/totalTask.vue';
   height: 10px;
   background: #ebebeb;
   border-radius: 7px;
+}
+.forward_to_arxiv{
+  font-size: 11.5px;
+  padding: 4px 5px;
+  border-radius: 3px;
+  border: 1px solid #76a1ff;
+  cursor: pointer;
+}
+.forward_to_arxiv:hover{
+  background: #588dff;
+  color:white;
+}
+.forward_to_arxiv:hover i{
+  color:white;
+}
+.forward_to_arxiv i{
+  color: #588dff;
 }
 </style>

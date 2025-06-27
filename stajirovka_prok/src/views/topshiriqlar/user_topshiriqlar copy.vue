@@ -18,7 +18,7 @@
             <TotalTask :totalTasks="row.count" :doneCount="2"  :pendingCount="3"/>
           </div>
           <div class="d-flex justify-content-end mt-2 mb-1" @click="$router.push('/answers_userID/' + row.id)">
-            <div class="px-4 rounded alert-info" >
+            <div class="px-4 rounded alert-info">
               <small style=" font-size: 12px; color:#67748A; font-weight:600;">Batafsil</small>
             </div>
           </div>

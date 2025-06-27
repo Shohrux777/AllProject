@@ -337,7 +337,8 @@
     "Add_salary": "Добавить зарплата",
     "salary_type": "Тип зарплата",
     "connect_salary_user": "Зарплата подк. польз.",
-    "Dashboard": "Панель управления"
+    "Dashboard": "Панель управления",
+    "not_found_user": "Foydalanuvchi tanlanmagan !!!"
 
 
 }

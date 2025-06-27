@@ -46,11 +46,7 @@ export default {
         id: 2
       }], // API dan user list
       workdays: 
-        [
-            { "k_date": "2025-06-01", "work_time": "04:30:00" },
-            { "k_date": "2025-06-02", "work_time": "07:15:00" },
-            { "k_date": "2025-06-04", "work_time": "08:00:00" }
-        ], // API dan bir oyga qaytgan kunlik ishlaganlar
+        [], // API dan bir oyga qaytgan kunlik ishlaganlar
       calendar: [],
       selectedMonth: now.getMonth(), // 0-based
       selectedYear: now.getFullYear(), 
@@ -82,17 +78,23 @@ export default {
   methods: {
     async chooseDayInfo(day){
       console.log(day);
+      this.$emit('choose_day', day)
     },
     async update_user_salary(user_id){
       console.log(user_id)
       this.user_id = user_id;
-      console.log(this.selectedYear + '-' + this.selectedMonth + '-01')
-      let monthDate = this.selectedYear + '-' + this.selectedMonth + '-01';
+      const selectedDate = `${this.selectedYear}-${(this.selectedMonth + 1).toString().padStart(2, '0')}-01`;
+      console.log(selectedDate)
       try{
-        const response = await fetch(this.$store.state.hostname + "/TegirmonUserIshlaganVaqt/getUserWorkedDays?page=0&size=200&userid=" + user_id + '&month=' + '2025-06-01');
+        const response = await fetch(this.$store.state.hostname + "/TegirmonUserIshlaganVaqt/getUserWorkedDays?page=0&size=200&userid=" + user_id + '&month=' + selectedDate);
         const data = await response.json();
         console.log('K_data',data)
-        this.workdays = data.items_list;
+        if(response.status == 200 || response.status == 201){
+          this.workdays = data.items_list;
+        }
+        else{
+          this.workdays = [];
+        }
         this.generateCalendar(this.selectedYear, this.selectedMonth);
       }
       catch(error){
@@ -122,7 +124,10 @@ export default {
 
     while (date <= end || week.length > 0) {
         const isoDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-        const work = this.workdays.find(w => w.K_date === isoDate);
+        const work = null;
+        if(this.workdays.length>0){
+          work = this.workdays.find(w => w.K_date.slice(0, 10) === isoDate);
+        }
 
         week.push({
         date: new Date(date),
@@ -190,7 +195,7 @@ tr:hover{
 .calendar-controls{
   width: 100%;
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   padding: 5px 0;
 }
 .calendar-controls select{

@@ -199,6 +199,10 @@
           formData.append('mobile_phone', this.mobile_phone);
           formData.append('description', this.description);
           formData.append('passport', this.passport);
+          formData.append('task_count', this.select_data.task_count);
+          formData.append('task_id', this.select_data.task_id);
+          formData.append('task_info', this.select_data.task_info);
+          formData.append('dead_line', this.select_data.dead_line);
           formData.append('image_base64', this.file); // Fayl (PDF yoki JPG)
           console.log('formData', formData);
           const response = await axios.post(this.$store.state.hostname + '/api/admin/users', formData, {
