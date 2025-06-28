@@ -42,6 +42,21 @@
               </div>
             </div>
           </div>
+          <div class="px-2" v-if="task_id == 12 && task_date">
+            <div class="my-1">
+              <p class="m-0 p-0 text-danger" style="font-size: 13px;"> <i class="fas fa-calendar-day  text-primary" style="color:green"></i> 
+                Топшириқ бажариш муддати: <span style="font-weight: bold;">{{ task_date }}</span>
+              </p>
+            </div>
+            <div >
+              
+            </div>
+          </div>
+          <div class="px-2 pb-2" v-if="task_id == 8">
+              <div class="custom-control custom-switch d-flex align-items-center" v-for="(row,i) in sudlar" :key="i">
+                <p class="m-0 p-0" style="font-size: 13px;"> <i class="fas fa-square-check mx-2 text-succes" style="color:green"></i> {{row}}</p>
+              </div>
+            </div>
           <hr class="m-0 mb-2">
           <div class="mt-0">
             <div class="">
@@ -239,6 +254,7 @@ import Loader from '@/components/loader.vue';
             user_pending_answer: [],
             user_incorrect_answer: [],
             pdfUrl: null,
+            task_date: '',
             oylar:{
               "01": "Янв",
               "02": "Фев",
@@ -252,22 +268,34 @@ import Loader from '@/components/loader.vue';
               "10": "Окт",
               "11": "Ноя",
               "12": "Дек"
-            }
+            },
+            sudlar: []
             
         }
     },
     async mounted(){
       this.loading = true;
       await this.fetch_user_task();
+      
+      const user_id = localStorage.getItem('user_id');
+      await this.fetch_user_id(user_id);
       this.loading = false;
-      
-      
+
+      if(this.get_user_data.task_info && this.task_id == 8){
+          this.sudlar = this.get_user_data.task_info.split(' | ');
+          this.task_info.count = this.sudlar.length * 10;
+      }
+      if(this.get_user_data.dead_line && this.task_id == 12){
+        this.task_date = this.get_user_data.dead_line.slice(0,10)
+      }
       await this.fetch_user_all_answers()
-      console.log('get answer list',this.get_user_answer_list);
+      // console.log('get answer list',this.get_user_answer_list);
+      
+      
     },
-    computed: mapGetters(['get_salary_list', 'get_user_answer_list', 'get_answer_user_task_status']),
+    computed: mapGetters(['get_salary_list', 'get_user_answer_list', 'get_answer_user_task_status', 'get_user_data']),
     methods:{
-        ...mapActions([ 'fetch_user_task_answers_status']),
+        ...mapActions([ 'fetch_user_task_answers_status', 'fetch_user_id']),
         async func_accept(){
           this.type_status = 1;
           this.user_answer_list = this.user_accept_answer;
@@ -308,12 +336,12 @@ import Loader from '@/components/loader.vue';
                   }
                 }
               );
-              console.log('task', response);
+              // console.log('task', response);
               if(response.status == 200 || response.status == 201){
                 this.task_info = response.data;
               }
             } catch (error) {
-              console.error('Xatolik:', error.response?.data || error.message);
+              // console.error('Xatolik:', error.response?.data || error.message);
               alert("Xatolik yuz berdi!");
             }
         },
@@ -335,7 +363,7 @@ import Loader from '@/components/loader.vue';
 
         submitAnswer() {
           const user_id = localStorage.getItem('user_id'); // login paytida saqlangan token
-          console.log(user_id)
+          // console.log(user_id)
           const formData = new FormData();
           formData.append('user_id', user_id);
           formData.append('task_id', this.task_id);

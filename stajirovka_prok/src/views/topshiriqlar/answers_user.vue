@@ -41,6 +41,38 @@
               <div class="mt-3 need_sendFile" v-html="task_info.description">
               </div>
             </div>
+            <div class="px-2" v-if="task_id == 8">
+              <div class="custom-control custom-switch d-flex align-items-center" v-for="(row,i) in sudlar" :key="i">
+                <input v-model="row.value" type="checkbox" class="custom-control-input m-0" :id="i" checked>
+                <label  style="cursor:pointer; font-size: 13px;" class="custom-control-label m-0 ms-2" :for="i" >
+                  {{row.text}}
+                </label>
+              </div>
+              <p class="mb-0 text-start my-2 mb-2" @click="sudSave" >
+                    <span style="margin-right:7px;" class="sud_save">
+                      <!-- <i class="fas fa-share" ></i> -->
+                      Сақлаш
+                    </span>
+                  </p>
+            </div>
+
+            <div class="px-2" v-if="task_id == 12">
+              <div class="my-1">
+                <p class="m-0 p-0" style="font-size: 13px;"> <i class="fas fa-calendar-day  text-primary" style="color:green"></i> 
+                Топшириққа муддат яратиш
+              </p>
+              </div>
+              <div style="width: 150px;">
+                <MDBInput v-model="task_date" size="sm" type="date"  />
+              </div>
+              <p class="mb-0 text-start my-2 mb-2" @click="TaskDateSave">
+                    <span style="margin-right:7px;" class="sud_save">
+                      <!-- <i class="fas fa-share" ></i> -->
+                      Сақлаш
+                    </span>
+                  </p>
+            </div>
+            
           </div>
           <hr class="m-0 mb-2">
           
@@ -174,7 +206,7 @@
     MDBBtn,
     MDBBadge,
     MDBIcon,
-    
+    MDBInput 
   } from 'mdb-vue-ui-kit';
   import { ref } from 'vue';
   import axios from 'axios';
@@ -193,6 +225,7 @@ import Loader from '@/components/loader.vue';
       MDBBtn,
       MDBBadge,
       MDBIcon,
+      MDBInput ,
       navbar,
       alert,
       Loader
@@ -207,6 +240,7 @@ import Loader from '@/components/loader.vue';
             added_status:false,
             file: null,
             description: '',
+            task_date: null,
             task_id: this.$route.params.id,
             task_info: {},
             user: localStorage.getItem('user'),
@@ -230,22 +264,123 @@ import Loader from '@/components/loader.vue';
               "10": "Окт",
               "11": "Ноя",
               "12": "Дек"
-            }
+            },
+            sudlar: [
+              {
+                // <p class="m-0 p-0"> <i class="fas fa-square-check mx-2 text-succes" style="color:green"></i> </p>
+                text: 'Фуқаролик суди бўйича 10 тадан иш юклаш.',
+                value: false,
+              },
+              {
+                text: 'Жиноят суди бўйича 10 тадан иш юклаш.',
+                value: false,
+              },
+              {
+                text: 'Маъмурий суд бўйича 10 тадан иш юклаш.',
+                value: false,
+              },
+              {
+                text: 'Иқтисодий суд бўйича 10 тадан иш юклаш.',
+                value: false,
+              },
+              ],
+            
             
         }
     },
     async mounted(){
       this.loading = true;
-      await this.fetch_user_task();
-      this.loading = false;
       
+      await this.fetch_user_task();
+      const user_id = localStorage.getItem('task_user_Id');
+      await this.fetch_user_id(user_id);
+      this.loading = false;
+      if(this.get_user_data.task_info && this.task_id == 8){
+          const arrayBack = this.get_user_data.task_info.split(' | ');
+          this.task_info.count = arrayBack.length * 10;
+          // console.log("Qayta ajratilgan array:", arrayBack);
+          for(let i=0; i<this.sudlar.length; i++){
+              // console.log(this.sudlar[i].text)
+            for(let j=0; j<arrayBack.length; j++){
+              // console.log(arrayBack[j])
+              if(this.sudlar[i].text.slice(0,5) == arrayBack[j].slice(0,5)){
+                this.sudlar[i].value = true;
+              }
+            }
+          }
+      }
+
+
+      if(this.get_user_data.dead_line && this.task_id == 12){
+        this.task_date = this.get_user_data.dead_line.slice(0,10)
+      }
       
       await this.fetch_user_all_answers()
+      
       console.log('get answer list',this.get_user_answer_list);
     },
-    computed: mapGetters(['get_salary_list', 'get_user_answer_list', 'get_answer_user_task_status']),
+    computed: mapGetters(['get_salary_list', 'get_user_answer_list', 'get_answer_user_task_status', 'get_user_data']),
     methods:{
-        ...mapActions([ 'fetch_user_task_answers_status']),
+        ...mapActions([ 'fetch_user_task_answers_status', 'fetch_user_id']),
+        async sudSave(){
+          let text = '';
+          for(let i=0; i<this.sudlar.length; i++){
+            if(this.sudlar[i].value == true){
+              let subText = this.sudlar[i].text;
+              text += subText + ' | '; 
+            }
+          }
+          try {
+          const user_id = localStorage.getItem('task_user_Id');
+          const token = localStorage.getItem('auth_token'); // login paytida saqlangan token
+          const formData = new FormData();
+          formData.append('task_id', this.task_id);
+          formData.append('task_info', text);
+          formData.append('id', user_id);
+
+          const response = await axios.post(this.$store.state.hostname + '/api/by_user/', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${token}` // Agar token kerak bo‘lsa
+            }
+          })
+            console.log('Yaratildi:', response.data);
+            if(response.status == 200 || response.status == 201){
+            // alert("Ходимга судлар қушилди!");
+              this.$refs.message.success('Ходимга судлар қушилди!');
+            }
+          } catch (error) {
+            console.error('Xatolik:', error.response?.data || error.message);
+            alert("Xatolik yuz berdi!");
+          }
+
+        },
+        async TaskDateSave(){
+          try {
+          let dead_line = this.task_date + ' 00:01:00';
+          const user_id = localStorage.getItem('task_user_Id');
+          const token = localStorage.getItem('auth_token'); // login paytida saqlangan token
+          const formData = new FormData();
+          formData.append('dead_line', dead_line);
+          formData.append('id', user_id);
+
+          const response = await axios.post(this.$store.state.hostname + '/api/by_user/', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${token}` // Agar token kerak bo‘lsa
+            }
+          })
+            console.log('Yaratildi:', response.data);
+            if(response.status == 200 || response.status == 201){
+            // alert("Ходимга судлар қушилди!");
+              this.$refs.message.success('Ходимга топшириқ муддати қўшилди!');
+            }
+          } catch (error) {
+            console.error('Xatolik:', error.response?.data || error.message);
+            alert("Xatolik yuz berdi!");
+          }
+
+        },
         async func_accept(){
           this.type_status = 1;
           this.user_answer_list = this.user_accept_answer;
@@ -510,5 +645,25 @@ import Loader from '@/components/loader.vue';
       color:white;
       font-size: 20px;
       cursor:pointer;
+    }
+    .custom-control-label{
+      font-weight: 200 !important;
+    }
+    .sud_save{
+      font-size: 11.5px;
+      padding: 4px 10px;
+      border-radius: 3px;
+      border: 1px solid #52b65a;
+      cursor: pointer;
+    }
+    .sud_save:hover{
+      background: #52b65a;
+      color:white;
+    }
+    .sud_save:hover i{
+      color:white;
+    }
+    .sud_save i{
+      color: #52b65a;
     }
 </style>

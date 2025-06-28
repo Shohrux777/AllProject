@@ -69,7 +69,14 @@ export default {
         Updateuser_list(state, data) {
             console.log(data)
             state.user_all_foiz = 0;
-            state.user_list.rows = data;
+            if (Array.isArray(data)) {
+                // Faqat status == 1 bo‘lganlarni ajratib olish
+                const filtered = data.filter(user => user.status == "1");
+                state.user_list.rows = filtered;
+            } else {
+                state.user_list.rows = [];
+            }
+            
             for(let i=0; i<state.user_list.rows.length; i++){
                 if(state.user_list.rows[i].foiz > 0){
                     state.user_all_foiz += state.user_list.rows[i].foiz;

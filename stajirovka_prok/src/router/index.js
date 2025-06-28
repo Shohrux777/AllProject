@@ -69,6 +69,12 @@ const routes = [
     component: () => import( '../views/topshiriqlar/bajarilgan.vue')
   },
   {
+    path: '/arxiv',
+    name: 'arxiv',
+    meta: { layout: 'main' },
+    component: () => import( '../views/user/arxiv.vue')
+  },
+  {
     path: '/task',
     name: 'task',
     meta: { layout: 'main' },
@@ -230,12 +236,7 @@ const routes = [
     meta: { layout: 'main' },
     component: () => import( '../views/rasxod/userRasxod.vue')
   },
-  {
-    path: '/infopage',
-    name: 'infopage',
-    meta: { layout: 'empty' },
-    component: () => import( '../views/hok_page/info_page.vue')
-  },
+  
 ]
 
 const router = createRouter({

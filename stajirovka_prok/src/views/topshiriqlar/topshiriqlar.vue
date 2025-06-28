@@ -28,7 +28,7 @@
                   <p class="text-muted mb-0" style="font-size: 12px;">
                     <span style="font-weight:bold; margin-right:7px;">ЖШШИР:</span>{{get_user_data.passport}}
                   </p>
-                  <p class="mb-0" @click="forwardArxiv">
+                  <p class="mb-0" @click="forwardArxiv" v-if="get_user_data.foiz>=95">
                     <span style="margin-right:7px;" class="forward_to_arxiv">
                       Ходимни архивга ўтказиш
                       <i class="fas fa-share" ></i>
@@ -49,7 +49,7 @@
                     </div>
                   </div>
                   <div  class="text-primary mx-2" style="font-size: 16px; font-weight:bold;">
-                    {{get_all_task_count}}
+                    {{alltask_count}}
                   </div>
                 </div>
 
@@ -60,7 +60,7 @@
                   <div style="width:40%;" >
                     <div class=" range_component rounded">
                       <div class="rounded bg-success" 
-                      :style="{ width: (parseInt(get_count_user_answer_accept_list*100/get_all_task_count) ? parseInt(get_count_user_answer_accept_list*100/get_all_task_count) : 0) + '%' }"
+                      :style="{ width: (parseInt(get_count_user_answer_accept_list*100/alltask_count) ? parseInt(get_count_user_answer_accept_list*100/alltask_count) : 0) + '%' }"
                       style=" height:10px;" ></div>
                     </div>
                   </div>
@@ -75,7 +75,7 @@
                   <div style="width:40%;" >
                     <div class=" range_component rounded">
                       <div class="rounded bg-warning" style=" height:10px;"
-                      :style="{ width: (parseInt(get_count_user_answer_pending_list*100/get_all_task_count) ? parseInt(get_count_user_answer_pending_list*100/get_all_task_count) : 0) + '%' }" ></div>
+                      :style="{ width: (parseInt(get_count_user_answer_pending_list*100/alltask_count) ? parseInt(get_count_user_answer_pending_list*100/alltask_count) : 0) + '%' }" ></div>
                     </div>
                   </div>
                   <div  class="text-warning mx-2 " style="font-size: 16px; font-weight:bold;">
@@ -91,12 +91,12 @@
                     <div class=" range_component rounded">
                       <div class="rounded bg-danger" 
                       style="height:10px;"
-                      :style="{ width: (parseInt((get_all_task_count-get_count_user_answer_accept_list)*100/get_all_task_count) ? parseInt((get_all_task_count-get_count_user_answer_accept_list)*100/get_all_task_count) : 0) + '%' }"
+                      :style="{ width: (parseInt((alltask_count-get_count_user_answer_accept_list)*100/alltask_count) ? parseInt((alltask_count-get_count_user_answer_accept_list)*100/alltask_count) : 0) + '%' }"
                       ></div>
                     </div>
                   </div>
                   <div  class="text-danger mx-2 " style="font-size: 16px; font-weight:bold;">
-                    {{get_all_task_count-get_count_user_answer_accept_list}}
+                    {{alltask_count-get_count_user_answer_accept_list}}
                   </div>
                 </div>
               </div>
@@ -111,11 +111,14 @@
           </div>
            
 
-        <div class="card mt-2 px-3 pt-2 pb-1 w-100" style="cursor:pointer" v-for="(task,i) in task_list" :key="i">
-          <div>
+        <div class="card mt-2 px-3 pt-2 pb-1 w-100" style="cursor:pointer" v-for="(task,i) in task_list" :key="i" :class="{'blink-red': task.status }">
+          <div > 
             <div class="d-flex justify-content-between">
               <p class="m-0 " style="font-size: 15px; color:#293142;">{{task.name}}</p>
-              <small v-if="task.date" class="mx-2" style="font-style:italic; font-size: 11px; color:#67748A;">
+              <small v-if="task.status" class="mx-2 text-danger" style="font-style:italic; font-size: 12px; color:#67748A;">
+                Топшириқ бажариш муддати: {{ task_date }} 
+              </small>
+              <small v-else-if="task.date" class="mx-2" style="font-style:italic; font-size: 11px; color:#67748A;">
                 Охирги фаол: {{ task.date.slice(8,10) }}  {{ oylar[task.date.slice(5,7)] }}  {{ task.date.slice(0,4) }}
               </small>
             </div>
@@ -133,194 +136,8 @@
             </div>
           </div>
         </div>
-
-        <!-- <div class="card mt-2 px-3 pt-2 pb-1 w-100" style="cursor:pointer">
-          <div>
-            <div class="d-flex justify-content-between">
-              <p class="m-0 " style="font-size: 15px; color:#293142;">ІІІ. Терговга қадар текширув, суриштирув ва дастлабки тергов соҳаларида:</p>
-              <small class="mx-2" style="font-style:italic; font-size: 11px; color:#67748A;">Last activ: 22 Aprel 2025</small>
-            </div>
-            <div class="d-flex justify-content-between">
-              <small class="mx-2" style="font-style:italic; font-size: 12px; color:#67748A;">Topshiriq yuzasidan kamida o'n beshta ish yuklash va bitta elektiv o'quv kurs.</small>
-              <p class="m-0 text-success" style="font-size: 14px; font-weight:bold">2 / <span class="text-primary">16</span></p>
-            </div>
-          </div>
-          <div class="d-flex w-100 bg-secondary" style="height: 6px;">
-            <div class="border bg-success" style="width: 6.25%;"></div>
-            <div class="border bg-success" style="width: 6.25%;"></div>
-            <div class="border bg-warning" style="width: 6.25%;"></div>
-            <div class="border bg-warning" style="width: 6.25%;"></div>
-            <div class="border bg-warning" style="width: 6.25%;"></div>
-            <div class="border bg-secondary" style="width: 6.25%;"></div>
-            <div class="border bg-secondary" style="width: 6.25%;"></div>
-            <div class="border bg-secondary" style="width: 6.25%;"></div>
-            <div class="border bg-secondary" style="width: 6.25%;"></div>
-            <div class="border bg-secondary" style="width: 6.25%;"></div>
-            <div class="border bg-secondary" style="width: 6.25%;"></div>
-            <div class="border bg-secondary" style="width: 6.25%;"></div>
-            <div class="border bg-secondary" style="width: 6.25%;"></div>
-            <div class="border bg-secondary" style="width: 6.25%;"></div>
-            <div class="border bg-secondary" style="width: 6.25%;"></div>
-            <div class="border bg-secondary" style="width: 6.25%;"></div>
-          </div>
-          <div class="d-flex justify-content-end mt-2 mb-1"  @click="$router.push('/answers_user')">
-            <div class="px-4 rounded alert-info" >
-              <small style=" font-size: 12px; color:#67748A; font-weight:600;">Batafsil</small>
-            </div>
-          </div>
-        </div>
-
-        <div class="card mt-2 px-3 pt-2 pb-1 w-100" style="cursor:pointer">
-          <div>
-            <div class="d-flex justify-content-between">
-              <p class="m-0 " style="font-size: 15px; color:#293142;">IV. Ички ишлар органларида қонунлар ижроси устидан назорат соҳасида:</p>
-              <small class="mx-2" style="font-style:italic; font-size: 11px; color:#67748A;">Last activ: 22 Aprel 2025</small>
-            </div>
-            <div class="d-flex justify-content-between">
-              <small class="mx-2" style="font-style:italic; font-size: 12px; color:#67748A;">Topshiriq yuzasidan kamida beshta ish yuklash va bitta elektiv o'quv kurs.</small>
-              <p class="m-0 text-success" style="font-size: 14px; font-weight:bold">2 / <span class="text-primary">6</span></p>
-            </div>
-          </div>
-          <div class="d-flex w-100 bg-secondary" style="height: 6px;">
-            <div class="border bg-success" style="width: 16.666%;"></div>
-            <div class="border bg-success" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-
-          </div>
-          <div class="d-flex justify-content-end mt-2 mb-1">
-            <div class="px-4 rounded alert-info" >
-              <small style=" font-size: 12px; color:#67748A; font-weight:600;">Batafsil</small>
-            </div>
-          </div>
-        </div>
-
-        <div class="card mt-2 px-3 pt-2 pb-1 w-100" style="cursor:pointer">
-          <div>
-            <div class="d-flex justify-content-between">
-              <p class="m-0 " style="font-size: 15px; color:#293142;">V. Судларда ишлар кўрилишида прокурор ваколатини таъминлаш соҳасида:</p>
-              <small class="mx-2" style="font-style:italic; font-size: 11px; color:#67748A;">Last activ: 22 Aprel 2025</small>
-            </div>
-              <div class="d-flex justify-content-between">
-              <small class="mx-2" style="font-style:italic; font-size: 12px; color:#67748A;">Topshiriq yuzasidan kamida beshta ish yuklash va bitta elektiv o'quv kurs.</small>
-              <p class="m-0 text-success" style="font-size: 14px; font-weight:bold">2 / <span class="text-primary">6</span></p>
-            </div>
-          </div>
-          <div class="d-flex w-100 bg-secondary" style="height: 6px;">
-            <div class="border bg-success" style="width: 16.666%;"></div>
-            <div class="border bg-success" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-
-          </div>
-          <div class="d-flex justify-content-end mt-2 mb-1">
-            <div class="px-4 rounded alert-info" >
-              <small style=" font-size: 12px; color:#67748A; font-weight:600;">Batafsil</small>
-            </div>
-          </div>
-        </div>
-
-        <div class="card mt-2 px-3 pt-2 pb-1 w-100" style="cursor:pointer">
-          <div>
-            <div class="d-flex justify-content-between">
-              <p class="m-0 " style="font-size: 15px; color:#293142;">VI. Суд ҳужжатлари ва бошқа органлар ҳужжатларини ижро этишда, қамоққа олинганларни сақлашда ва жиноий жазоларнинг ижро этилишида қонунларга риоя этилиши устидан назорат соҳасида:</p>
-              <small class="mx-2" style="font-style:italic; font-size: 11px; color:#67748A;">Last activ: 22 Aprel 2025</small>
-            </div>
-              <div class="d-flex justify-content-between">
-              <small class="mx-2" style="font-style:italic; font-size: 12px; color:#67748A;">Topshiriq yuzasidan kamida beshta ish yuklash va bitta elektiv o'quv kurs.</small>
-              <p class="m-0 text-success" style="font-size: 14px; font-weight:bold">2 / <span class="text-primary">12</span></p>
-            </div>
-          </div>
-          <div class="d-flex w-100 bg-secondary" style="height: 6px;">
-            <div class="border bg-success" style="width: 16.666%;"></div>
-            <div class="border bg-success" style="width: 16.666%;"></div>
-            <div class="border bg-warning" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-
-          </div>
-          <div class="d-flex justify-content-end mt-2 mb-1">
-            <div class="px-4 rounded alert-info" >
-              <small style=" font-size: 12px; color:#67748A; font-weight:600;">Batafsil</small>
-            </div>
-          </div>
-        </div>
-
-        <div class="card mt-2 px-3 pt-2 pb-1 w-100" style="cursor:pointer">
-          <div>
-            <div class="d-flex justify-content-between">
-              <p class="m-0 " style="font-size: 15px; color:#293142;">VII. Жисмоний ва юридик шахсларнинг мурожаатларини кўриб чиқиш соҳасида:</p>
-              <small class="mx-2" style="font-style:italic; font-size: 11px; color:#67748A;">Last activ: 22 Aprel 2025</small>
-            </div>
-              <div class="d-flex justify-content-between">
-              <small class="mx-2" style="font-style:italic; font-size: 12px; color:#67748A;">Topshiriq yuzasidan kamida beshta ish yuklash va bitta elektiv o'quv kurs.</small>
-              <p class="m-0 text-success" style="font-size: 14px; font-weight:bold">1 / <span class="text-primary">10</span></p>
-            </div>
-          </div>
-          <div class="d-flex w-100 bg-secondary" style="height: 6px;">
-            <div class="border bg-success" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-
-          </div>
-          <div class="d-flex justify-content-end mt-2 mb-1">
-            <div class="px-4 rounded alert-info" >
-              <small style=" font-size: 12px; color:#67748A; font-weight:600;">Batafsil</small>
-            </div>
-          </div>
-        </div>
-
-        <div class="card mt-2 px-3 pt-2 pb-1 w-100" style="cursor:pointer">
-          <div>
-            <div class="d-flex justify-content-between">
-              <p class="m-0 " style="font-size: 15px; color:#293142;">VIII. Қонунчиликни тарғиб қилиш, жамиятда ҳуқуқий саводхонликни ошириш бўйича:</p>
-              <small class="mx-2" style="font-style:italic; font-size: 11px; color:#67748A;">Last activ: 22 Aprel 2025</small>
-            </div>
-              <div class="d-flex justify-content-between">
-              <small class="mx-2" style="font-style:italic; font-size: 12px; color:#67748A;">Topshiriq yuzasidan kamida beshta ish yuklash va bitta elektiv o'quv kurs.</small>
-              <p class="m-0 text-success" style="font-size: 14px; font-weight:bold">8 / <span class="text-primary">10</span></p>
-            </div>
-          </div>
-          <div class="d-flex w-100 bg-secondary" style="height: 5px;">
-            <div class="border bg-success" style="width: 16.666%;"></div>
-            <div class="border bg-success" style="width: 16.666%;"></div>
-            <div class="border bg-success" style="width: 16.666%;"></div>
-            <div class="border bg-success" style="width: 16.666%;"></div>
-            <div class="border bg-success" style="width: 16.666%;"></div>
-            <div class="border bg-success" style="width: 16.666%;"></div>
-            <div class="border bg-success" style="width: 16.666%;"></div>
-            <div class="border bg-success" style="width: 16.666%;"></div>
-            <div class="border bg-warning" style="width: 16.666%;"></div>
-            <div class="border bg-secondary" style="width: 16.666%;"></div>
-
-          </div>
-          <div class="d-flex justify-content-end mt-2 mb-1">
-            <div class="px-4 rounded alert-info" >
-              <small style=" font-size: 12px; color:#67748A; font-weight:600;">Batafsil</small>
-            </div>
-          </div>
-        </div> -->
       </div>
     </div>
-    
   </div>
 </template>
 
@@ -338,6 +155,7 @@
   import TotalTask from '@/components/totalTask.vue';
 
   import {mapActions, mapGetters} from 'vuex'
+// import task from '@/store/moduls/task';
   export default {
     setup() {
       const exampleModal = ref(false);
@@ -362,6 +180,9 @@
             user_id: this.$route.params.id,
             hostname2: this.$store.state.hostname2,
             task_list: [],
+            alltask_count: 0,
+            task_date: '',
+            isNearDeadline: false,
             oylar:{
               "01": "Янв",
               "02": "Фев",
@@ -382,6 +203,7 @@
       this.loading = true;
         await this.fetch_user_id(this.user_id);
         console.log(this.get_user_data);
+        
         await this.fetch_task();
         await this.fetch_user_task_answers(this.user_id);
         this.task_list = [];
@@ -395,6 +217,7 @@
             accept: 0,
             pending: 0,
             date: '',
+            status: false,
           }
           for(let j=0; j<this.get_user_answer_list.length; j++){
             if(this.get_task_list.rows[i].id == this.get_user_answer_list[j].task_id){
@@ -409,7 +232,31 @@
             }
           }
           this.task_list.push(task);
+
         }
+
+        this.alltask_count = this.get_all_task_count;
+        if(this.get_user_data.task_info){
+            const arrayBack = this.get_user_data.task_info.split(' | ');
+            this.task_list[4].count = arrayBack.length * 10;
+            this.alltask_count = (this.alltask_count - 20) + arrayBack.length * 10
+        }
+        if(this.get_user_data.dead_line){
+          if (!this.get_user_data.dead_line) return;
+          this.task_date = this.get_user_data.dead_line.slice(0,10);
+          const today = new Date();
+          const deadline = new Date(this.get_user_data.dead_line);
+          // Farqni millisekundlarda olib, kunlarga o‘tkazamiz
+          const diffTime = deadline - today;
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+          // 5 kun yoki kam qolganda true qiladi
+          this.isNearDeadline = diffDays <= 5 && diffDays >= 0;
+          this.task_list[this.task_list.length-1].status = this.isNearDeadline;
+
+        }
+        console.log('this.task_list', this.isNearDeadline)
+
       this.loading = false;
 
 
@@ -460,11 +307,11 @@
           })
             console.log('Yaratildi:', response.data);
             if(response.status == 200 || response.status == 201){
-              this.$emit('close')
+              // this.$emit('close')
               // await this.fetch_user();
             }
             // this.img_str = response.data.image_base64;
-            alert("Foydalanuvchi qo‘shildi!");
+            alert("Foydalanuvchi arxivga o'tkazildi!");
           } catch (error) {
             console.error('Xatolik:', error.response?.data || error.message);
             alert("Xatolik yuz berdi!");
@@ -532,5 +379,16 @@
 }
 .forward_to_arxiv i{
   color: #588dff;
+}
+.blink-red {
+  border: 2px solid red;
+  animation: blinkRed 1s infinite;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+@keyframes blinkRed {
+  0%, 100% { box-shadow: 0 0 10px rgb(253, 69, 69); }
+  50% { box-shadow: 0 0 0px rgb(255, 113, 113); }
 }
 </style>

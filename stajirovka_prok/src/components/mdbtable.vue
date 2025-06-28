@@ -115,6 +115,9 @@ th,td{
     padding: 5px !important;
     font-size: 12.5px;
 }
+td{
+    cursor: pointer;
+}
 .tr_hover:hover{
     background: #E3EBF7;
 }

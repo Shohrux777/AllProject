@@ -246,6 +246,9 @@
             { title: 'task', icon: 'landmark', url: '/task', view: false, color: '#ddd', role:'admin', count: false,
               down_list:[]
             },
+            { title: 'arxiv', icon: 'landmark', url: '/arxiv', view: false, color: '#ddd', role:'admin', count: false,
+              down_list:[]
+            },
             // { title: 'menu_setting', icon: 'tools', url: '', view: false, color: '#ddd', down_list:[
             //     { title: "company", url: '/', dview: false, color: '#ddd', down_list:[] },
             // ] },
