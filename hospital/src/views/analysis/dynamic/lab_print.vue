@@ -747,8 +747,6 @@
   
   <script>
   import html2canvas from "html2canvas"
-  // import jsPDF from "jspdf"
-  // import domtoimage from "dom-to-image";
   import { mdbBtn, mdbIcon} from 'mdbvue';
   import {mapActions, mapGetters} from 'vuex'
 import lab_without_table from './lab_without_table.vue';

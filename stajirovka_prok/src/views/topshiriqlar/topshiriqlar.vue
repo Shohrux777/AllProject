@@ -431,7 +431,7 @@
           try {
           let nol = "0";
           const now = new Date()
-          const isoString = now.toISOString()
+          const isoString = now.toISOString().slice(0, 19).replace('T', ' ')
           console.log('isoString',isoString)
           const token = localStorage.getItem('auth_token'); // login paytida saqlangan token
           const formData = new FormData();
@@ -449,9 +449,10 @@
           formData.append('task_info', this.get_user_data.task_info);
           formData.append('dead_line', this.get_user_data.dead_line);
           formData.append('status', nol);
+          formData.append('id', this.get_user_data.id);
           formData.append('date_end', isoString);
 
-          const response = await axios.put(this.$store.state.hostname + '/api/admin/users/' + this.get_user_data.id, formData, {
+          const response = await axios.post(this.$store.state.hostname + '/api/by_user/', formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               'Authorization': `Bearer ${token}` // Agar token kerak bo‘lsa
