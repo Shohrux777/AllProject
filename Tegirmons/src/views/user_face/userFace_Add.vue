@@ -252,7 +252,7 @@ export default {
       console.log(data)
       this.name = data.ism;
       this.phone_number = data.phone_number;
-      this.passport_number = data.password;
+      this.passport_number = data.passport;
       this.born_date = data.born_date;
       this.address = data.address;
 
@@ -311,7 +311,7 @@ export default {
       this.name = data.fio;
       this.id = data.id;
       this.phone_number = data.phone_number;
-      this.passport_number = data.passport_number;
+      this.passport_number = data.passport;
       this.address = data.adddress;
       this.note = data.note;
       this.client_id = data.id;
@@ -385,7 +385,7 @@ export default {
         body: JSON.stringify({
           "ism" : this.name,
           "address" : this.address,
-          "password" : this.passport_number,
+          "passport" : this.passport_number,
           "phone_number": this.phone_number,
           "born_date": this.born_date,
           "group_name" : this.note,

@@ -21,8 +21,9 @@
       <tbody>
         <tr v-for="(week, index) in calendar" :key="index" class="border-bottom">
           <td v-for="day in week" :key="day.date.toDateString()" @click="chooseDayInfo(day)" 
-            :class="{'today': day.isToday, 
-                    'working': day.hours, 
+            :class="{
+                    'today': day.isToday,
+                    'working': day.hours,
                     'other-month': day.isOtherMonth
                     }">
             <div class="calendar_date">{{ day.date.getDate() }}</div>

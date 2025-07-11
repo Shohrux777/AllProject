@@ -53,25 +53,43 @@
             <div class="w-100 p-2">
                 <div class="row">
                   <div class="col-5">
-                    <div class="card w-75  py-2" v-if="client_info.ism">
-                      <div class=" px-3" >
-                        <p class="m-0" style="font-size: 14.5px;">
-                          {{client_info.ism}}
-                        </p>
+                    <div class="card" v-if="client_info.ism">
+                      <div class="d-flex w-100">
+                        <div class="user_img">
+                          <img :src="hostname + client_info.image_url" alt="not found image">
+                        </div>
+                        <div class="user_info_selected pt-4 px-3">
+                          <h6 class="font-weight-bold" style="font-size: 14.5px;">{{client_info.ism}}</h6>
+                          <p class="m-0 pt-1"><span class=" pr-1">ID:</span>  {{client_info.userid}}</p>
+                          <p class="m-0"><span class=" pr-1">Номер паспорта:</span>  {{client_info.passport}}</p>
+                          <p class="m-0 "><span class=" pr-1">Дата рождения:</span>  {{client_info.born_date}}</p>
+                          <p class="m-0 "><span class=" pr-1">Тел:</span>  {{client_info.phone_number}}</p>
+                        </div>
                       </div>
-                      <div class="text-right px-2 mt-2"  style="font-style: italic;" v-if="user_oylik_info.length>0">
-                        <p class="m-0" style="font-size: 18px;">
-                          {{user_oylik_info[0].sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} сўм
-                        </p>
+                      <div class="ishlagan_puli d-flex align-items-center justify-content-between py-2 px-5 border-top">
+                          <h6 class="font-weight-bold m-0" style="font-size: 17px;">Ishlagan puli :</h6>
+                          <h6 v-if="user_oylik_info.length>0" class="font-weight-bold ml-3 m-0 text-primary" style="font-size: 25px;">{{ user_oylik_info[0].sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')  }} сўм</h6>
+                          <h6 v-else class="font-weight-bold ml-3 m-0 text-primary" style="font-size: 25px;">0 сўм</h6>
                       </div>
-                      <div v-else class="text-right px-2 mt-2"  style="font-style: italic;" >
-                        <p class="m-0" style="font-size: 18px;">
-                          0 сўм
-                        </p>
+                      <div class="ishlagan_puli d-flex align-items-center py-1 px-4 border-top">
+                          <!-- <mdb-btn color="success" class="py-2 px-3" style="font-size: 10px;">
+                            <i class="fas fa-download"></i>
+                            Приход
+                          </mdb-btn>
+                          <mdb-btn color="danger" class="py-2 px-3" style="font-size: 10px;">
+                            <i class="fas fa-share-square"></i>
+                            Расход
+                          </mdb-btn> -->
+                          <div class="main_kassa_btn bg_col_blue" @click="pul_olib_qolish = !pul_olib_qolish">
+                            <small>Получать деньги</small>
+                          </div>
+                          <div class="main_kassa_btn bg_col_red px-4" @click="rasxod_show = !rasxod_show">
+                            <small>Расходъ</small>
+                          </div>
                       </div>
                     </div>
                   </div>
-                  <camera/>
+                  <!-- <camera/> -->
                   <div class="col-7" v-if="usercheck_in_out.length>0">
                     <div class="card user_info_card p-2">
                       <div class="user_info_header border-bottom px-2">
@@ -182,50 +200,58 @@
             <thead>
               <tr class="header py-3 info_client_header">
                 <th  width="40" class="text-left">№</th>
-                <th width="40" >{{$t('id')}}</th>
+                <th width="40" >ID</th>
                 <th>{{$t('client_name')}}</th>
-                <th>{{$t('passport_number')}}</th>
-                <th>{{$t('product')}}</th>
-                <th>{{$t('measure')}}</th>
-                <th>{{$t('client_name')}}</th>
-                <th width="100">{{$t('photo')}}</th>
-                <th>{{$t('date')}}</th>
-                <th >{{$t('ostatka')}}</th>
+                <th>Vaqt</th>
+                <th>Summa</th>
+                <th>Cтатус</th>
+                <th>Kirish</th>
+                <th>Chiqish</th>
+                <th>{{$t('note')}}</th>
+               
                 <!-- <th width="80" class="text-center">{{$t('Action')}}</th> -->
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row,rowIndex) in allList" :key="rowIndex" @click="selectInvoiceItem(row)" :class="{'zero_item': row.qty_real == 0}">
+              <tr v-for="(row,rowIndex) in user_rasxod_prixod_list" :key="rowIndex" @click="selectInvoiceItem(row)" :class="{'zero_item': row.sum == 0}">
                 <td> <small >{{rowIndex+1}}</small> </td>
-                <td> <small >{{row.check_number}}</small> </td>
-                <td> <small >{{row.client.fio}}</small> </td>
-                <td> <small >{{row.client.passport_number}}</small> </td>
-                <td> <small >{{row.product.name}}</small></td>
-                <td>
-                  <small v-if="row.status_inv_type_name == 'INVOICE_BUGDOY_ZAXIRADAN_NARSALARGA_ALMASHTRISH'"><mdb-icon class="mr-2 text-danger" fas icon="caret-up"></mdb-icon></small> 
-                  <small v-if="row.status_inv_type_name == 'INVOICE_BUGDOY_NARSALARGA_ALMASHTRISH_UCHUN_ZAXIRAGA_OLIB_QOLISH'"> <mdb-icon fas class="mr-2 text-success" icon="caret-down"></mdb-icon></small> 
-                  <small v-if="row.qty_real">{{row.qty_real.toFixed(1).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small> 
-                  <small v-else>{{row.qty_real.toFixed(1)}}</small> 
-                  <span v-if="row.status_inv_type_name == 'INVOICE_BUGDOY_ZAXIRADAN_NARSALARGA_ALMASHTRISH'">
-                    <small v-if="row.summ != 0 "><mdb-icon icon="exchange-alt" class="ml-2" /> <mdb-icon class="ml-2" icon="dollar-sign" /></small>
-                  </span>
-                </td>
-                <td><small>{{row.user_name}}</small></td>
-                <td>
-                  <img v-show="row.qty_real != 0" :src="hostname + row.image_str_url" class="rounded" width="50" alt="">
+                <td> <small >{{row.userid}}</small> </td>
+                <td> <small >{{client_info.ism}}</small> </td>
+                <td> <small >{{row.work_time}}</small> </td>
+                <td v-if="row.sum"> <span class="text-success" >{{row.sum.toFixed(0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>  
+                <td  v-else> <span class="text-success">{{row.sum}}</span></td>
+                <td v-if="row.num == 1"> <span class="bg-success px-3 text-white rounded" style="padding: 1px 6px;">Приход</span> </td>  
+                <td  v-else> <span class="bg-danger px-3 text-white rounded" style="padding: 2px 10px;">Расход</span></td>
+                <td> 
+                  <small v-if="row.K_date">{{row.K_date.slice(8,10) + '-' + row.K_date.slice(5,7) + '-' + row.K_date.slice(0,4)}}</small> 
+                  <small v-if="row.K_date" class="ml-2">{{row.K_date.slice(11,16)}}</small> 
                 </td>
                 <td> 
-                  <small >{{row.updated_date_time.slice(8,10) + '-' + row.updated_date_time.slice(5,7) + '-' + row.updated_date_time.slice(0,4)}}</small> 
-                  <small class="ml-2">{{row.updated_date_time.slice(11,16)}}</small> 
+                  <small v-if="row.created_date">{{row.created_date.slice(8,10) + '-' + row.created_date.slice(5,7) + '-' + row.created_date.slice(0,4)}}</small> 
+                  <small v-if="row.created_date" class="ml-2">{{row.created_date.slice(11,16)}}</small> 
                 </td>
- 
-                <td v-if="row.credit_sum"> <span class="text-success" >{{row.credit_sum.toFixed(1).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>  
-                <td  v-else> <span class="text-success">{{row.credit_sum.toFixed(1)}}</span> </td>  
+                <td> <small >{{row.note}}</small> </td>
+
+                
               </tr>
             </tbody>
           </table>
         </div>
       </div>
+      <modal-train  :show="rasxod_show" headerbackColor="#fc4640"  titlecolor="black" :title="$t('rasxod')" 
+        @close="rasxod_show = false" width="35%">
+        <template v-slot:body>
+          <rasxod @close="closeRasxod" :client_info="client_info"  ref="rasxodWorkerSum">
+          </rasxod>
+        </template>
+      </modal-train>
+      <!-- <modal-train  :show="pul_olib_qolish" headerbackColor="#009587"  titlecolor="black" :title="$t('pul_olish')" 
+        @close="pul_olib_qolish = false" width="65%">
+          <template v-slot:body>
+            <chiqarPulOlish @close="closePulChiqish" ref="prixodWorkerSum">
+            </chiqarPulOlish>
+          </template>
+      </modal-train> -->
       
       <Toast ref="message"></Toast>
     </div>
@@ -246,6 +272,8 @@ import calendar from './calendar.vue';
 
 import inputSearchYear from '../../components/inputSearchYear';
 import Camera from './avtoCamera.vue';
+  import rasxod from './rasxod.vue'
+
 
 export default {
 data(){
@@ -255,6 +283,9 @@ data(){
       modal_status: false,  
       loading: false,
       loading_table: false,
+
+      rasxod_show: false,
+      pul_olib_qolish: false,
       
       allList: [],
 
@@ -292,6 +323,8 @@ data(){
       check_number: 0,
       product_status: false,
       main_product_measure: '',
+      user_rasxod_prixod_list: []
+
     }
   },
   components: {
@@ -303,7 +336,8 @@ data(){
     InputSearch,
     inputSearchYear,
     calendar,
-    Camera
+    Camera,
+    rasxod
   },
 //   validations: {
       
@@ -317,6 +351,30 @@ data(){
     ...mapActions(['fetch_user',]),
     ...mapMutations(['check_invoice_zaxira']),
 
+    async get_user_rasxod_prixod_list(){
+      try{
+        const response = await fetch(this.$store.state.hostname + "/TegirmonUserIshlaganPuli/getPaginationUserTulovList?page=0&size=1000&userid=" + this.user_id);
+        const data = await response.json();
+        console.log('rasxod_prixod',data.items_list)
+        if(response.status == 200 || response.status == 201){
+          this.user_rasxod_prixod_list = data.items_list;
+        }
+        else{
+          this.user_rasxod_prixod_list = [];
+        }
+      }
+      catch(error){
+        this.user_rasxod_prixod_list = [];
+        this.$refs.message.error("Foydalanuvchida ma'lumot topilmadi");
+        console.log(error)
+      }
+    },
+    async closeRasxod(){
+      this.rasxod_show = false;
+    },
+    async closePulChiqish(){
+      this.pul_olib_qolish = false;
+    },
     async handleChooseDay(data){
       this.choosen_day = data;
       if(!this.user_id){
@@ -421,6 +479,7 @@ data(){
         this.user_ishlagan_puli_list = [];
         await this.fetchuseroylik();
         this.$refs.user_salary_calendar.update_user_salary(option.userid);
+        await this.get_user_rasxod_prixod_list()
     },
 
     getPhoto(){
@@ -599,5 +658,64 @@ data(){
 
 .myTable tr {
   border-bottom: 1px solid rgb(240, 240, 240);
+}
+.user_img img{
+  width: 100%;
+  height: 150px;
+}
+.user_img{
+  padding: 5px;
+  cursor: pointer;
+}
+.user_info_selected p{
+  color: #595961;
+  font-size: 14px;
+}
+.main_kassa_btn{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 34px;
+  padding: 0 15px;
+  color:#3a4b52;
+  //background-image: radial-gradient( circle farthest-corner at 10% 20%,  rgba(0,152,155,1) 0.1%, rgba(0,94,120,1) 94.2% );
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 7px;
+  margin-top: 10px;
+  small{
+    font-size: 12px;
+  }
+}
+.bg_col_blue{
+  //border: 1.5px solid #009587;
+  background: #009587;   
+  color:white;
+
+  &:hover{
+    color:white;
+    background: #009587;  
+  }
+  
+}
+.bg_col_red{
+  //border: 1.5px solid #ff504a;
+  background: #ff504a; 
+  color:white;
+
+  &:hover{
+    color:white;
+    background: #ff504a;  
+  }
+}
+.bg_col_info{
+  //border: 1.5px solid #4aaeff;
+  background: #4ab1ff;
+  color:white;
+
+  &:hover{
+    color:white;
+    background: #4ab1ff;  
+  }
 }
 </style>

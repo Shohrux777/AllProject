@@ -48,7 +48,7 @@
                 Топшириқ бажариш муддати: <span style="font-weight: bold;">{{ task_date }}</span>
               </p>
             </div>
-            <div >
+            <div>
               
             </div>
           </div>

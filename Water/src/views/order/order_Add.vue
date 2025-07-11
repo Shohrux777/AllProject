@@ -102,7 +102,10 @@
                   <p class="text_content_border mb-2">{{$t('fio')}} <span>{{client_name}}</span></p>
                   <p v-for="(item,index) in client_phoneList" :key="index" class="text_content_border mb-2">{{$t('phoneNumber')}} <span>{{item.phone_number}}</span></p>
                   <div class="text-right">
-                    <span @click="EditFunc" style="font-size:13.5px; cursor:pointer;" class="text-primary">{{$t('edit')}}</span>
+                    <span @click="orders_info" style="font-size:13.5px; cursor:pointer;" class="text-primary">{{$t('client_info')}}      </span>
+
+                    <span @click="EditFunc" style="font-size:13.5px; cursor:pointer;" class="text-primary">  {{$t('edit')}}</span>
+                   
                   </div>
                 </div>
               </div>
@@ -118,7 +121,7 @@
               </div>
               <div class="col-2">
                 <div class="text-center">
-                  <h6 class="font-weight-bold">{{$t('ostatka_bootle')}}</h6>
+                  <h6 class="font-weight-bold">{{$t('ostatka_bootle')}} ({{all_water_count}})</h6>
                   <div class="d-flex justify-content-center w-100 align-items-center">
                     <h4 class="m-0 p-0 pt-1 text-danger font-weight-bold">{{ostatik_bootle}} - </h4>
                     <img  src="../../assets/bootle.jpg" alt="b" width="50" height="45">
@@ -140,7 +143,9 @@
                     <th>{{$t('fio')}}</th>
                     <th class="text-center">{{$t('water_count')}}</th>
                     <th>{{$t('address')}}</th>
-                    <th>{{$t('date')}}</th>
+                    <th>{{$t('created_date_time')}}</th>
+                    <th>{{$t('accepted_date')}}</th>
+                    <th>{{$t('car_order')}}</th>
                     <!-- <th width="60">{{$t('Action')}}</th> -->
                   </tr>
                 </thead>
@@ -150,7 +155,9 @@
                     <td class="font-weight-bold" style="font-size: 12px;">{{item.client_name_str}}</td>
                     <td class="text-center text-primary font-weight-bold" style="font-size: 12px;">{{item.water_count}} / {{item.reserverd_numeric_id_1}}</td>
                     <td>{{item.address.address}}</td>
-                    <td>{{item.order_date.slice(0,10)}}</td>
+                    <td>{{item.created_date_time.substr(0,10)}} ( {{item.created_date_time_str.substr(0,5)}} )</td>
+                    <td>{{item.accepted_status}}</td>
+                     <td>{{item.deleivered_user_auth_id}}</td>
                     <!-- <td class="m-0 p-0">
                       <mdb-btn class="mr-1 ml-0 mt-0 mt-1 btn-acp"  style="font-size: 8px; width:80px; padding: 5px;"  @click="showOrder(item)" 
                         size="sm">{{$t('accept')}}
@@ -293,6 +300,13 @@
             <addpupil @close="clientAdd_show = false" ref="clientRef" @update="updateClient" :client_id="edit_client_id"></addpupil>
           </template>
       </modal-train>
+
+       <modal-train  :show="orders_info_show" headerbackColor="white"  titlecolor="black" :title="$t('client_info')" 
+        @close="orders_info_show = false" width="80%">
+          <template v-slot:body>
+            <orders_info_ @close="orders_info_show = false" ref="clientAllInfo"  :client_id="edit_client_id" ></orders_info_>
+          </template>
+      </modal-train>
     </div>
     <mdb-modal :show="confirm" @close="confirm = false" size="sm" class="text-center" danger>
       <mdb-modal-header center :close="false">
@@ -339,12 +353,13 @@ import ErpSelectIcon from '../../components/erpSelectIcon.vue'
 import inputSearch from '../../components/inputSearch.vue'
 import inputSearchArray from '../../components/inputSearchArray.vue'
 import addpupil from '../client/client_ad.vue'
+import orders_info_ from '../client/client_orders_info.vue'
 import erpSelect from "../../components/erpSelectIndex";
 import colorSelect from "../../components/colorSelect";
 import InputSearchArrayAddress from '../../components/inputSearchArrayAddress.vue';
 
 export default {
-  naem: "companyAdd",
+ 
   
   data(){
     return{
@@ -360,7 +375,7 @@ export default {
       showInfo: true,
       name: 'w',
       clientAdd_show: false,
-
+      orders_info_show: false,
       client_name: '',
       client_phone: '',
       client_address: '',
@@ -388,6 +403,7 @@ export default {
       edit_client_id: null,
 
       ostatik_bootle: 0,
+      all_water_count : 0,
 
       client_last_order: [],
       color_list: [
@@ -425,7 +441,7 @@ export default {
   components: {
     mdbInput, mdbRow, mdbCol, mdbIcon, mdbBtn,
     InputIcon, inputSearchArray,InputSearchArrayAddress,
-    TextArea, ErpSelectIcon, inputSearch, addpupil, erpSelect, InputImg, colorSelect,
+    TextArea, ErpSelectIcon, inputSearch, addpupil, orders_info_, erpSelect, InputImg, colorSelect,
     mdbModal, mdbModalHeader, mdbModalBody, mdbModalFooter,mdbBadge,
     mdbBtnGroup, mdbDropdown, mdbDropdownMenu, mdbDropdownItem,
   },
@@ -512,8 +528,15 @@ export default {
       this.edit_client_id = this.main_client_id;
       this.clientAdd_show = true;
     },
+    orders_info(){
+      
+      this.$refs.clientAllInfo.updateMounted(this.main_client_id);
+      this.edit_client_id = this.main_client_id;
+      this.orders_info_show = true;
+    },
     add_client(){
       this.$refs.clientRef.updateMounted(0);
+      
       this.clientAdd_show = true;
       this.edit_client_id = 0;
     },
@@ -584,6 +607,7 @@ export default {
         console.log(data)
         if(data.items_list.length>0){
           this.ostatik_bootle = data.items_list[0].bottle_count
+          this.all_water_count =  data.items_list[0].bottle_count_real
         }
         else{
           this.ostatik_bootle = 0
@@ -593,19 +617,21 @@ export default {
         this.ostatik_bootle = 0
       }
     },
+    
     async fetchClientLastOrder(){
       try{
         // this.loadingSimple = true;
         const response = await fetch(this.$store.state.hostname + "/WaterOrders/getLastOrderTwoOrdersFullInfoByid?client_id=" + this.main_client_id);
         const data = await response.json();
-        console.log('fetch two order')
-        console.log(data)
+        console.log('fetch two order2')
+
+      
         // this.loadingSimple = false;
         if(data.length>0){
           console.log(data)
           let old_date_temp = new Date(data[0].order_date);
           this.last_order_date =  old_date_temp.toDateString();
-          this.client_last_order = data;
+          this.client_last_order = data;  
         }
         else{
           this.client_last_order = [];
