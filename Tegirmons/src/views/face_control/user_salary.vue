@@ -40,10 +40,15 @@
             </input-search-year>
           </div>
           <div class="col-3">
-            <input-search  @select="selectClientPhone" :label="$t('note')" :selected="phone_number"
-              url="/TegirmonClient/getPaginationByNote?page=0&size=100&note_str="
-              ref="search_client_phone" style="height:32px;" placeholder="1234">
-            </input-search>
+            <div class="d-flex justify-content-end">
+              <div style="width:150px">
+                <div class="main_kassa_btn m-0 bg_col_info1" @click="$router.push('/kunlik_hisobot')">
+                  <small>Ежедневный отчет</small>
+                </div>
+              </div>
+            </div>
+            
+            
           </div>
   
         </div>
@@ -202,26 +207,21 @@
                 <th  width="40" class="text-left">№</th>
                 <th width="40" >ID</th>
                 <th>{{$t('client_name')}}</th>
+                <th>Kirish</th>
+                <th>Chiqish</th>
                 <th>Vaqt</th>
                 <th>Summa</th>
                 <th>Cтатус</th>
-                <th>Kirish</th>
-                <th>Chiqish</th>
                 <th>{{$t('note')}}</th>
-               
                 <!-- <th width="80" class="text-center">{{$t('Action')}}</th> -->
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row,rowIndex) in user_rasxod_prixod_list" :key="rowIndex" @click="selectInvoiceItem(row)" :class="{'zero_item': row.sum == 0}">
+              <tr v-for="(row,rowIndex) in user_rasxod_prixod_list" :key="rowIndex" @click="selectInvoiceItem(row)" 
+              :class="{'zero_item': row.sum == 0}">
                 <td> <small >{{rowIndex+1}}</small> </td>
                 <td> <small >{{row.userid}}</small> </td>
                 <td> <small >{{client_info.ism}}</small> </td>
-                <td> <small >{{row.work_time}}</small> </td>
-                <td v-if="row.sum"> <span class="text-success" >{{row.sum.toFixed(0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>  
-                <td  v-else> <span class="text-success">{{row.sum}}</span></td>
-                <td v-if="row.num == 1"> <span class="bg-success px-3 text-white rounded" style="padding: 1px 6px;">Приход</span> </td>  
-                <td  v-else> <span class="bg-danger px-3 text-white rounded" style="padding: 2px 10px;">Расход</span></td>
                 <td> 
                   <small v-if="row.K_date">{{row.K_date.slice(8,10) + '-' + row.K_date.slice(5,7) + '-' + row.K_date.slice(0,4)}}</small> 
                   <small v-if="row.K_date" class="ml-2">{{row.K_date.slice(11,16)}}</small> 
@@ -230,6 +230,13 @@
                   <small v-if="row.created_date">{{row.created_date.slice(8,10) + '-' + row.created_date.slice(5,7) + '-' + row.created_date.slice(0,4)}}</small> 
                   <small v-if="row.created_date" class="ml-2">{{row.created_date.slice(11,16)}}</small> 
                 </td>
+                <td> <small >{{row.work_time}}</small> </td>
+                <td v-if="row.sum"> <span :class="{'text-success': row.num == 1, 'text-danger': row.num == 2, 'status_btn_cl': row.num == 3}" >{{row.sum.toFixed(0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>  
+                <td  v-else> <span class="text-success">{{row.sum}}</span></td>
+                <td v-if="row.num == 1"> <span class="bg-success px-3 text-white rounded" style="padding: 1px 6px;">Приход</span> </td>  
+                <td v-else-if="row.num == 3"> <span class="status_btn_bg px-3 text-white rounded" style="padding: 1px 6px;">Получыть </span> </td>  
+                <td  v-else> <span class="bg-danger px-3 text-white rounded" style="padding: 2px 10px;">Расход</span></td>
+                
                 <td> <small >{{row.note}}</small> </td>
 
                 
@@ -245,13 +252,13 @@
           </rasxod>
         </template>
       </modal-train>
-      <!-- <modal-train  :show="pul_olib_qolish" headerbackColor="#009587"  titlecolor="black" :title="$t('pul_olish')" 
-        @close="pul_olib_qolish = false" width="65%">
+      <modal-train  :show="pul_olib_qolish" headerbackColor="#009587"  titlecolor="black" :title="$t('pul_olish')" 
+        @close="pul_olib_qolish = false" width="35%">
           <template v-slot:body>
-            <chiqarPulOlish @close="closePulChiqish" ref="prixodWorkerSum">
+            <chiqarPulOlish @close="closePulChiqish" :client_info="client_info" ref="prixodWorkerSum">
             </chiqarPulOlish>
           </template>
-      </modal-train> -->
+      </modal-train>
       
       <Toast ref="message"></Toast>
     </div>
@@ -273,6 +280,8 @@ import calendar from './calendar.vue';
 import inputSearchYear from '../../components/inputSearchYear';
 import Camera from './avtoCamera.vue';
   import rasxod from './rasxod.vue'
+  import chiqarPulOlish from './chiqarPulOlish.vue'
+
 
 
 export default {
@@ -337,7 +346,8 @@ data(){
     inputSearchYear,
     calendar,
     Camera,
-    rasxod
+    rasxod,
+    chiqarPulOlish
   },
 //   validations: {
       
@@ -371,9 +381,15 @@ data(){
     },
     async closeRasxod(){
       this.rasxod_show = false;
+      await this.get_user_rasxod_prixod_list();
+      await this.fetchuseroylik()
+
     },
     async closePulChiqish(){
       this.pul_olib_qolish = false;
+      await this.get_user_rasxod_prixod_list();
+      await this.fetchuseroylik()
+
     },
     async handleChooseDay(data){
       this.choosen_day = data;
@@ -462,10 +478,6 @@ data(){
       console.log(option)
     },
 
-    async selectClientPhone(option){
-      console.log(option)
-
-    },
     async selectClientBorn(option){
       console.log(option)
 
@@ -698,6 +710,17 @@ data(){
   }
   
 }
+.bg_col_info1{
+  //border: 1.5px solid #009587;
+  background: #006b95;   
+  color:white;
+
+  &:hover{
+    color:white;
+    background: #006b95;  
+  }
+  
+}
 .bg_col_red{
   //border: 1.5px solid #ff504a;
   background: #ff504a; 
@@ -717,5 +740,11 @@ data(){
     color:white;
     background: #4ab1ff;  
   }
+}
+.status_btn_bg{
+  background: #369387 !important;
+}
+.status_btn_cl{
+  color: #369387 !important;
 }
 </style>

@@ -68,6 +68,13 @@ const routes = [{
             import ('../views/face_control/user_salary.vue')
     },
     {
+        path: '/kunlik_hisobot',
+        name: 'kunlik_hisobot',
+        meta: { layout: 'navbar' },
+        component: () =>
+            import ('../views/face_control/kunlik_hisobot.vue')
+    },
+    {
         path: '/doors',
         name: 'doors',
         meta: { layout: 'main' },

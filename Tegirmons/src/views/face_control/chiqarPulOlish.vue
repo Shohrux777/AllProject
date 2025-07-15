@@ -141,18 +141,12 @@
           </div>
           <div class="col-12">
             <!-- Default radio -->
-            <div class="form-check" @click="note = 'Avans berildi.'">
+            <div class="form-check" @click="note = 'Ish vaqti hisoblanmagan pul qushildi.'">
               <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"/>
-              <label style="font-size: 13px;" class="form-check-label" for="flexRadioDefault1"> Avans berildi. </label>
+              <label style="font-size: 13px;" class="form-check-label" for="flexRadioDefault1"> Ish vaqti hisoblanmagan pul qo'shildi. </label>
             </div>
           </div>
-          <div class="col-12">
-            <!-- Default radio -->
-            <div class="form-check" @click="note = 'Oylik berildi.'">
-              <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2"/>
-              <label style="font-size: 13px;" class="form-check-label" for="flexRadioDefault2"> Oylik berildi. </label>
-            </div>
-          </div>
+          
           <div class="col-12 mt-2 text-right border-top mx-3 pt-1 d-flex justify-content-between">
             <div class="photoUrlShow">
               <img :src="hostname + photo_url" v-if="photo_url" style="height: 110px;" class="img-fluid img-thumbnail img-responsive shadow" alt="">
@@ -273,7 +267,7 @@ export default {
           "salary_id": this.client_info.res_badgenumber,
           "work_time": "00:00:00",
           "sum": this.all_summ,
-          "num": 2,
+          "num": 3,
           "note": this.note,
           "image_url": this.photo_url,
         })
