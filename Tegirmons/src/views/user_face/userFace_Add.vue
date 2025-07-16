@@ -107,9 +107,42 @@
                   </label>
                   
               </div>
-
-
-
+          </mdb-col>
+        </mdb-row>
+        <mdb-row class="mt-3">
+          <mdb-col col="4">
+            <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('dept')}}</p>
+          </mdb-col>
+          <mdb-col col="8">
+            <div style="position:relative;">
+                  <erpSelect
+                    :options="get_dept_list.rows"
+                    @select="selectOptionDept"
+                    :selected="dept_name"
+                    searchKey="deptname"
+                    :label="$t('dept')"
+                    style="margin-top:8px;"
+                  />
+                  <!-- <small style="position:absolute; top:-12px; left:3px; font-size: 11.5px;" class="font-weight-bold">{{$t('kassa')}}</small> -->
+                </div>
+          </mdb-col>
+        </mdb-row>
+        <mdb-row class="mt-3">
+          <mdb-col col="4">
+            <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('smena')}}</p>
+          </mdb-col>
+          <mdb-col col="8">
+            <div style="position:relative;">
+                  <erpSelect
+                    :options="get_smena_list.rows"
+                    @select="selectOption"
+                    :selected="smena_name"
+                    searchKey="smena_nomi"
+                    :label="$t('smena')"
+                    style="margin-top:8px;"
+                  />
+                  <!-- <small style="position:absolute; top:-12px; left:3px; font-size: 11.5px;" class="font-weight-bold">{{$t('kassa')}}</small> -->
+                </div>
           </mdb-col>
         </mdb-row>
         <mdb-row class="mt-3">
@@ -181,13 +214,15 @@
 </template>
 
 <script>
+import erpSelect from "../../components/erpSelectDynamic.vue";
 import {mdbRow, mdbCol, mdbInput, mdbBtn, mdbIcon} from 'mdbvue'
 import { required } from 'vuelidate/lib/validators'
 import webcam from '../webcam/webcam_Add.vue'
 import {mapActions,mapGetters} from 'vuex'
 export default {
   components:{
-    mdbRow, mdbCol, mdbInput, mdbBtn, mdbIcon, webcam
+    mdbRow, mdbCol, mdbInput, mdbBtn, mdbIcon, webcam,
+    erpSelect
   },
   validations: {
       name: {required},
@@ -226,6 +261,11 @@ export default {
       oshibka: false,
       auth_user_updator_id: 0,
 
+      dept_name: '',
+      dept_id: 0,
+      smena_name: '',
+      smena_id: 0,
+
     }
   },
   // props:{
@@ -234,10 +274,10 @@ export default {
   //     default: null,
   //   }
   // },
-   computed: mapGetters(['all_district_t', 'all_client_controler', 'allWorker']),
+   computed: mapGetters(['all_district_t', 'all_client_controler', 'allWorker', 'get_dept_list', 'get_smena_list']),
   async mounted(){
-      // this.fetch_district_t();
-      // this.fetch_client_controler();
+      this.fetch_Dept();
+      this.fetch_Smena();
       // await this.fetch_user();
       this.client_list = this.allWorker;
       this.active_bemor = -1;
@@ -269,15 +309,20 @@ export default {
 
   },
   methods: {
-    ...mapActions([ 'fetch_user']),
+    ...mapActions([ 'fetch_user', 'fetch_Dept', 'fetch_Smena']),
     delImage(){
       this.base64 = ''
       this.PicShow = true
       this.image = ''
     },
     selectOption(option){
-      this.client_group_name = option.name;
-      this.client_group_id = option.id;
+      this.smena_name = option.smena_nomi;
+      this.smena_id = option.id;
+    },
+
+    selectOptionDept(option){
+      this.dept_name = option.deptname;
+      this.dept_id = option.deptid;
     },
 
     async previewFile(){
@@ -393,6 +438,10 @@ export default {
           "gr": this.auth_user_updator_id,
           "userid" : this.id,
           "badgenumber" : this.id,
+          "departid": this.dept_id,
+          "familiya": this.dept_name,
+          "group_id": this.smena_id,
+          "group_name": this.smena_name,
         })
       };
       try{

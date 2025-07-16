@@ -28,6 +28,8 @@ import door from '../store/modules/door'
 import userFace from '../store/modules/userFace'
 import dashboard from '../store/modules/dashboard'
 import salary from '../store/modules/salary'
+import smena from '../store/modules/smena'
+import depart from '../store/modules/depart'
 
 
 
@@ -116,6 +118,8 @@ export default new Vuex.Store({
         door,
         userFace,
         dashboard,
-        salary
+        salary,
+        smena,
+        depart
     }
 })

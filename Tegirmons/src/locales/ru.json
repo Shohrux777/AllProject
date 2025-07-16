@@ -325,8 +325,8 @@
     "ism": "ФИО",
     "acc_name": "Телефон",
     "middle_name": "Дата рождения",
-    "familiya": "Номер паспорта",
-    "group_name": "Примечание",
+    "familiya": "Отдель",
+    "group_name": "Смена",
     "salary_report": "Отчет охранника",
     "day": "Дни пришел",
     "type_salary": "Тип зарплаты",
@@ -338,7 +338,10 @@
     "salary_type": "Тип зарплата",
     "connect_salary_user": "Зарплата подк. польз.",
     "Dashboard": "Панель управления",
-    "not_found_user": "Foydalanuvchi tanlanmagan !!!"
-
-
+    "not_found_user": "Foydalanuvchi tanlanmagan !!!",
+    "smena": "Смена",
+    "Add_smena": "Добавить смена",
+    "dept": "Отдель",
+    "Add_dept": "Добавить отдель",
+    "passport": "Паспорт"
 }

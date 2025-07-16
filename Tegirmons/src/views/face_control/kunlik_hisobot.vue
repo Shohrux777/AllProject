@@ -6,13 +6,49 @@
           <div style="height: 40px;" class="d-flex justify-content-between border-bottom align-items-center  ">
             <div class="title w-75 row align-items-center">
                <div class="col-4">
-                <div style="position: relative; margin-top: 25px;">
-                  <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -10px; color: #757575;">
-                    
-                  </small>
-                  <mdb-input type="date" size="sm"  v-model="Start_time" outline/>
+                  <div style="position: relative; margin-top: 25px;">
+                    <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -10px; color: #757575;">
+                      
+                    </small>
+                    <mdb-input type="date" size="sm"  v-model="Start_time" outline/>
+                  </div>
                 </div>
-              </div>
+                <div class="col-4">
+                  <div style="position: relative; margin-top: 5px;">
+                    <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -10px; color: #757575;">
+                      
+                    </small>
+                    <div style="position:relative;">
+                      <erpSelect
+                        :options="get_smena_list.rows"
+                        @select="selectOption"
+                        :selected="smena_name"
+                        searchKey="smena_nomi"
+                        :label="$t('smena')"
+                        
+                      />
+                      <!-- <small style="position:absolute; top:-12px; left:3px; font-size: 11.5px;" class="font-weight-bold">{{$t('kassa')}}</small> -->
+                    </div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div style="position: relative; margin-top: 5px;">
+                    <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -10px; color: #757575;">
+                      
+                    </small>
+                    <div style="position:relative;">
+                      <erpSelect
+                        :options="get_dept_list.rows"
+                        @select="selectOptionDept"
+                        :selected="dept_name"
+                        searchKey="deptname"
+                        :label="$t('dept')"
+                        
+                      />
+                      <!-- <small style="position:absolute; top:-12px; left:3px; font-size: 11.5px;" class="font-weight-bold">{{$t('kassa')}}</small> -->
+                    </div>
+                  </div>
+                </div>
               <!-- <div class="col-4">
                 <div style="position: relative; margin-top: 25px;"> 
                   <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -10px; color: #757575;">
@@ -101,7 +137,7 @@
 </template>
 
 <script>
-
+  import erpSelect from "../../components/erpSelectDynamic.vue";
   import { mdbBtn, mdbInput, mdbIcon   } from 'mdbvue';
   import {mapActions, mapGetters, mapMutations} from 'vuex'
 import Circle_progress from './circle_progress.vue';
@@ -113,6 +149,7 @@ import Circle_progress from './circle_progress.vue';
       mdbIcon,
       mdbInput,
       Circle_progress,
+      erpSelect
     },
     data(){
       return{
@@ -126,9 +163,16 @@ import Circle_progress from './circle_progress.vue';
         xodim_soni: 0,
         xodim_kelgan: 0,
         xodim_kelmagan: 0,
+
+        dept_name: '',
+        dept_id: 0,
+        smena_name: '',
+        smena_id: 0,
       }
     },
     async mounted(){
+      this.fetch_Dept();
+      this.fetch_Smena();
       // await this.fetchUserAccess(localStorage.user_id);
       if(localStorage.getItem('end_date')){
         this.Start_time = localStorage.getItem('begin_date'); 
@@ -149,12 +193,12 @@ import Circle_progress from './circle_progress.vue';
    
     computed:  {
       ...mapGetters(['get_zaxira_change_invoice_list', 'get_saled_invoice_list', 'get_zaxira_invoice_list',
-     'get_change_invoice_list', 'get_product_all_item_one']),
+     'get_change_invoice_list', 'get_product_all_item_one', 'get_dept_list', 'get_smena_list']),
     },
     methods: {
       ...mapActions(['fetchZaxira_change_invoice_list', 'fetchSaled_invoice_list', 'fetchZaxira_invoice_list', 
       'fetchChange_invoice_list', 'fetchSaled_invoice_list_productId', 'fetchZaxira_invoice_list_productId',
-      'fetchChange_invoice_list_productId']),
+      'fetchChange_invoice_list_productId', 'fetch_Dept', 'fetch_Smena']),
       ...mapMutations(['district_row_delete',]),
 
 
@@ -175,14 +219,24 @@ import Circle_progress from './circle_progress.vue';
         }
       },
 
+      async selectOption(option){
+        this.smena_name = option.smena_nomi;
+        this.smena_id = option.id;
+        await this.apply();
+      },
 
+      async selectOptionDept(option){
+        this.dept_name = option.deptname;
+        this.dept_id = option.deptid;
+        await this.apply();
+      },
 
       
 
       
       async apply(){
         try{
-            const res = await fetch(this.$store.state.hostname + '/SkudMyCheckinouts/by-date?sana=' + this.Start_time);
+            const res = await fetch(this.$store.state.hostname + '/SkudMyCheckinouts/by-date?sana=' + this.Start_time + '&smena_id=' + this.smena_id + '&dept_id=' + this.dept_id);
             const data = await res.json();
             console.log('this is by id')
             if(res.status == 200 || res.status == 201){

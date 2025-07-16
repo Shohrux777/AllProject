@@ -89,6 +89,34 @@ const routes = [{
             import ('../views/door/door_add.vue')
     },
     {
+        path: '/smena',
+        name: 'smena',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/face_smena/smena.vue')
+    },
+    {
+        path: '/smena_add/:id',
+        name: 'smena_add',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/face_smena/smena_add.vue')
+    },
+    {
+        path: '/dept',
+        name: 'dept',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/face_dept/dept.vue')
+    },
+    {
+        path: '/dept_add/:id',
+        name: 'dept_add',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/face_dept/dept_add.vue')
+    },
+    {
         path: '/userFace',
         name: 'userFace',
         meta: { layout: 'main' },
