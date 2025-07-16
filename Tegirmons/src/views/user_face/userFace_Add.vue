@@ -298,6 +298,10 @@ export default {
 
       this.photo_url = data.image_url;
       this.note = data.group_name;
+      this.dept_id = data.departid;
+      this.dept_name = data.familiya;
+      this.smena_id = data.group_id;
+      this.smena_name = data.group_name;
 
       if(data.auth_user_updator_id == 0){
         this.oshibka = true;
