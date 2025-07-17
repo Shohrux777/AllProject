@@ -20,7 +20,9 @@ import modal_new from './components/modal_new.vue'
 import VueApexCharts from 'vue-apexcharts'
 import VueQRCodeComponent from 'vue-qrcode-component'
 import JsonExcel from "vue-json-excel";
- 
+import VueTheMask from 'vue-the-mask';
+
+Vue.use(VueTheMask)
 Vue.component("downloadExcel", JsonExcel);
 Vue.component('qr-code', VueQRCodeComponent)
 Vue.component('apexchart', VueApexCharts)

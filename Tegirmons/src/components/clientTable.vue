@@ -8,7 +8,7 @@
         <tr class="header ">
             <th width="60">№</th>
             <th style="font-size: 11px;" v-for="column in datasource.columns" :key="column" 
-            :class="{'user_table_size': column == 'fio'}"
+            :class="{'user_table_size': column == 'fio', 'user_table_size': column == 'ism', 'user_table_id_size': column == 'id', 'user_table_id_size': column == 'userid'}"
             >{{$t(column)}}</th>
             <th style="font-size: 11px;" v-if="buy_prixod">
               {{$t('accept')}}
@@ -24,9 +24,9 @@
                 <mdb-badge v-show="row[column] === true" style="padding: 2px 8px;" pill color="success">{{row[column]}}</mdb-badge>
                 <mdb-badge v-show="row[column] === false"  pill color="danger" style="padding: 2px 8px;" >{{row[column]}}</mdb-badge>
                 <div v-show="column == 'colorCode'" :style="{background: row[column]}" style="width: 65px; height:3px; border-radius:10px;" ></div>
-                <div v-if="column == 'image'" class="m-0 p-0" style="width: 65px; height:45px;"><img :src="server_ip + row[column]" alt="" style="min-width:60px; max-height:45px;" class="img-fluid"></div>
+                <div v-if="column == 'image' || column == 'image_url'" class="m-0 p-0" style="width: 50px; "><img :src="server_ip + row[column]" alt="" style="min-width:60px; max-height:45px;" class="img-fluid rounded"></div>
                 <span v-else-if="column == 'addiotionala_information' && row[column]">{{row[column].slice(8,10) + '-' + row[column].slice(5,7) + '-' + row[column].slice(0,4)}}</span>
-                <span v-show="row[column] !== true && row[column] !== false && column !== 'image' && column !== 'colorCode' && column !== 'addiotionala_information'">{{row[column]}}</span>
+                <span v-show="row[column] !== true && row[column] !== false && column !== 'image' && column !== 'image_url' && column !== 'colorCode' && column !== 'addiotionala_information'">{{row[column]}}</span>
             </td>
             <td v-if="buy_prixod">
               <mdb-btn class="mr-1 py-1 px-2" style="font-size: 7px;" color="success" v-if="!row['inv_accepted_status']"  @click="applybuy" :data-row="rowIndex"
@@ -363,6 +363,9 @@ color: #000;
 }
 .user_table_size{
   width: 320px !important;
+}
+.user_table_id_size{
+  width: 50px !important;
 }
 
 </style>

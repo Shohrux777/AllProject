@@ -120,7 +120,7 @@ export default {
 
 .circle-bg {
   fill: none;
-  stroke:  #ffcf75;
+  stroke:  #ffe5b4;
   stroke-width: 3.8;
 }
 

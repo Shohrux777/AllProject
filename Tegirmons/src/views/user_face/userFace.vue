@@ -151,7 +151,7 @@ export default {
       // /TegirmonClient/getPaginationSearchByFioOrPassportSerailNumberOrHomeOrMobilePhoneNumber?page=0&size=100&fio_or_serial_number=
       try{
         // this.loading = true;
-        const response = await fetch(this.$store.state.hostname + "/TegirmonWorker/getPaginationSearchByFioOrPassportSerailNumberOrHomeOrMobilePhoneNumber?page=0&size=100&fio_or_serial_number=" + search);
+        const response = await fetch(this.$store.state.hostname + "/SkudMyUserinfoes/getPaginationSearchByIsmOrPassportSerailNumberOrMobilePhoneNumberFaceUser?page=0&size=100&fio_or_serial_number=" + search);
         const data = await response.json();
         console.log('weqeqw')
         console.log(data)
@@ -194,7 +194,7 @@ export default {
       // /TegirmonClient/getPaginationSearchByFioOrPassportSerailNumberOrHomeOrMobilePhoneNumber?page=0&size=100&fio_or_serial_number=
       try{
         // this.loading = true;
-        const response = await fetch(this.$store.state.hostname + "/TegirmonWorker/getPaginationByNote?page=0&size=100&note_str=" + search);
+        const response = await fetch(this.$store.state.hostname + "/SkudMyUserinfoes/getPaginationSearchByIsmOrPassportSerailNumberOrMobilePhoneNumberFaceUser?page=0&size=100&fio_or_serial_number=" + search);
         const data = await response.json();
         console.log('weqeqw')
         console.log(data)
@@ -260,7 +260,7 @@ export default {
       // /TegirmonClient/getPaginationSearchByFioOrPassportSerailNumberOrHomeOrMobilePhoneNumber?page=0&size=100&fio_or_serial_number=
       try{
         // this.loading = true;
-        const response = await fetch(this.$store.state.hostname + "/TegirmonWorker/getPaginationByBornDate?page=0&size=100&born_date_str=" + search_birthday);
+        const response = await fetch(this.$store.state.hostname + "/SkudMyUserinfoes/getPaginationSearchByIsmOrPassportSerailNumberOrMobilePhoneNumberFaceUser?page=0&size=100&fio_or_serial_number=" + search_birthday);
         const data = await response.json();
         // this.loading = false;
         if(response.status == 201 || response.status == 200)

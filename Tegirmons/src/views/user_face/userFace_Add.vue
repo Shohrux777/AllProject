@@ -26,7 +26,7 @@
         </mdb-row>
         <mdb-row class="mt-3">
           <mdb-col col="4">
-            <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('ID')}}</p>
+            <p class="p-0 m-0 mt-2" style="font-size: 14px;">ID</p>
           </mdb-col> 
           <mdb-col col="8">
             <mdb-input class="m-0 p-0" v-model="id" size="md" outline  group type="text" validate error="wrong" success="right"/>
@@ -38,13 +38,8 @@
             <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('phone_number')}}</p>
           </mdb-col>
           <mdb-col col="8">
-            <mdb-input class="m-0 p-0" v-model="phone_number" @input="SearchClientNamePass($event)" size="md" outline  group type="text" validate error="wrong" success="right"/>
-            <!-- <small class="invalid-text pt-4" style="margin-left:5px; "  v-if="$v.phone_number.$dirty && !$v.phone_number.required" >
-              {{$t('name_invalid_text')}}
-            </small> -->
-            <!-- <small class="p-0" style="margin-left:5px; font-size: 12px; color: gray;"  v-else >
-              {{$t('write_company_name_to_chek')}}
-            </small> -->
+            <input type="text"  class="w-100 input_style" v-mask="'+998 (##) ###-##-##'" placeholder="+998 (__) ___-__-__" @input="SearchClientNamePass(phone_number)"
+            v-model="phone_number" />
           </mdb-col>
         </mdb-row>
         <mdb-row class="mt-3">
@@ -52,10 +47,18 @@
             <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('passport_number')}}</p>
           </mdb-col>
           <mdb-col col="8">
-            <mdb-input class="m-0 p-0" v-model="passport_number" @input="SearchClientNamePass($event)" size="md" outline  group type="text" validate error="wrong" success="right"/>
+            <input
+              id="passport"
+              v-mask="'AA#######'"
+              v-model="passport_number"
+              placeholder="AA1234567"
+              class="w-100 input_style"
+              @input="SearchClientNamePass(passport_number)"
+            />
+            <!-- <mdb-input class="m-0 p-0" v-model="passport_number" @input="SearchClientNamePass($event)" size="md" outline  group type="text" validate error="wrong" success="right"/>
             <small class="invalid-text pt-4" style="margin-left:5px; "  v-if="$v.passport_number.$dirty && !$v.passport_number.required" >
               {{$t('name_invalid_text')}}
-            </small>
+            </small> -->
           </mdb-col>
         </mdb-row>
         <mdb-row class="mt-3">
@@ -71,7 +74,7 @@
             <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('born_date')}}</p>
           </mdb-col>
           <mdb-col col="8">
-            <mdb-input class="m-0 p-0" v-model="born_date" size="md" outline  group type="date" validate error="wrong" success="right"/>
+            <mdb-input class="m-0 p-0" v-model="born_date" @input="SearchClientNamePass($event)" size="md" outline  group type="date" validate error="wrong" success="right"/>
           </mdb-col>
         </mdb-row>
         
@@ -199,8 +202,8 @@
                 <img src="../../assets/client.png" style="height: 45px; overflow: none; " class="img-fluid" alt="">
               </div>
               <div class="px-3">
-                <p class="m-0 p-0 font-weight-bold" style="font-size: 12px;">{{item.fio}}</p>
-                <p class="m-0 mt-1 rang" style="font-size:10px;">Год: <span class="px-2">{{item.addiotionala_information}}</span> 
+                <p class="m-0 p-0 font-weight-bold" style="font-size: 12px;">{{item.ism}}</p>
+                <p class="m-0 mt-1 rang" style="font-size:10px;">Год: <span class="px-2">{{item.born_date}}</span> 
                   Тел: <span class="px-2">{{item.phone_number}}</span></p>
               </div>
             </div>
@@ -227,7 +230,7 @@ export default {
   validations: {
       name: {required},
       // phone_number: {required},
-      passport_number: {required},
+      // passport_number: {required},
       // district_name : {required},
       // clientgroup_name : {required},
     },
@@ -298,11 +301,14 @@ export default {
 
       this.photo_url = data.image_url;
       this.note = data.group_name;
-      this.dept_id = data.departid;
-      this.dept_name = data.familiya;
-      this.smena_id = data.group_id;
-      this.smena_name = data.group_name;
-
+      if(data.departid){
+        this.dept_id = data.departid;
+        this.dept_name = data.familiya;
+      }
+      if(data.group_id){
+        this.smena_id = data.group_id;
+        this.smena_name = data.group_name;
+      }
       if(data.auth_user_updator_id == 0){
         this.oshibka = true;
       }
@@ -488,7 +494,7 @@ export default {
       // /TegirmonClient/getPaginationSearchByFioOrPassportSerailNumberOrHomeOrMobilePhoneNumber?page=0&size=100&fio_or_serial_number=
       try{
         // this.loading = true;
-        const response = await fetch(this.$store.state.hostname + "/TegirmonWorker/getPaginationSearchByFioOrPassportSerailNumberOrHomeOrMobilePhoneNumber?page=0&size=100&fio_or_serial_number=" + search);
+        const response = await fetch(this.$store.state.hostname + "/SkudMyUserinfoes/getPaginationSearchByIsmOrPassportSerailNumberOrMobilePhoneNumberFaceUser?page=0&size=100&fio_or_serial_number=" + search);
         const data = await response.json();
         console.log('weqeqw')
         console.log(data)
@@ -759,5 +765,17 @@ export default {
   background-color: rgb(179, 230, 255);
   transform: translate(6px, 0px);
   transition: all 0.1s ease-in-out;
+}
+.input_style{
+  height: 37px;
+  border: 1px solid #DADCE0;
+  border-radius: 3px;
+  padding: 5px 10px;
+  color: #4A5057;
+}
+.input_style:focus{
+   border: 2px solid #5585F0;
+  // border-color: #5585F0;
+  outline: none;
 }
 </style>

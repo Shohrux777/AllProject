@@ -35,7 +35,7 @@
   
           <div class="col-3">
             <input-search-year  @select="selectClientBorn" type="text" :label="$t('born_date')" :selected="born_date" placeholder="дд-мм-гггг"
-              url="/TegirmonClient/getPaginationByBornDate?page=0&size=100&born_date_str="
+              url="/SkudMyUserinfoes/getPaginationSearchByIsmOrPassportSerailNumberOrMobilePhoneNumberFaceUser?page=0&size=100&fio_or_serial_number="
               ref="search_client_born_date" style="height:32px;">
             </input-search-year>
           </div>

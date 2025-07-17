@@ -20,7 +20,11 @@
         <mdb-btn class="top-btn " v-if="btnshow==true " color="primary"
         @click="btn_add" size="sm">{{$t('add')}}</mdb-btn>
         
-
+      <p style="font-size: 11.5px;"
+          @click="selectOption({[searchKey]: 'Все', [KeyId]: 0})"
+      >
+        Все 
+      </p>
       <p v-for="option in filteredList" :key="option.id" style="font-size: 11.5px;"
           @click="selectOption(option)"
       >
@@ -77,7 +81,11 @@ export default {
       },
       searchKey:{
         type:String,
-        default: 'md'
+        default: ''
+      },
+      KeyId:{
+        type:String,
+        default: ''
       },
 
     },

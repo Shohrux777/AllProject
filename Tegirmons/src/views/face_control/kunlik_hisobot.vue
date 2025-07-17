@@ -24,8 +24,8 @@
                         @select="selectOption"
                         :selected="smena_name"
                         searchKey="smena_nomi"
+                        KeyId="id"
                         :label="$t('smena')"
-                        
                       />
                       <!-- <small style="position:absolute; top:-12px; left:3px; font-size: 11.5px;" class="font-weight-bold">{{$t('kassa')}}</small> -->
                     </div>
@@ -42,6 +42,7 @@
                         @select="selectOptionDept"
                         :selected="dept_name"
                         searchKey="deptname"
+                        KeyId="deptid"
                         :label="$t('dept')"
                         
                       />
@@ -82,6 +83,9 @@
           <div class="col-3 py-2">
             <Circle_progress label="Ishga kelmaganlar" :qty="xodim_soni" :activ_qty="xodim_kelmagan" progress_bg="progress_bg_danger"/>
           </div>
+          <div class="col-3 py-2">
+            <Circle_progress label="Ishga kech kelganlar" :qty="xodim_soni" :activ_qty="xodim_kech_kel" progress_bg="progress_bg_warning"/>
+          </div>
         </div>
 
         <div class="TablePatientDocId p-0 pt-2 px-1">
@@ -92,8 +96,10 @@
                 <th width="40">ID</th>
                 <th width="400">FIO</th>
                 <th >Tel. nomer</th>
-                <th width="140">Kirish</th>
-                <th  width="140">Chiqish</th>
+                <th >{{$t('smena')}}</th>
+                <th >{{$t('dept')}}</th>
+                <th width="100">Kirish</th>
+                <th  width="100">Chiqish</th>
                 <th >Status</th>
                 <th >Vaqt</th>
                 <th >Summa</th>
@@ -106,6 +112,8 @@
                 <td> <small >{{row.userId}}</small> </td>
                 <td> <small >{{row.fio}}</small> </td>
                 <td> <small >{{row.user.phone_number}}</small> </td>
+                <td> <small >{{row.user.group_name}}</small> </td>
+                <td> <small >{{row.user.familiya}}</small> </td>
                 <td>
                   <small v-if="row.kirish" class="bg-success px-2 rounded text-white">{{row.kirish}}</small>
                   <small v-else class="bg-danger px-2 rounded text-white">--:--</small>
@@ -114,8 +122,9 @@
                   <small v-if="row.chiqish" class="bg-success px-2 rounded text-white">{{row.chiqish}}</small> 
                   <small v-else class="bg-danger px-2 rounded text-white">--:--</small> 
                 </td>
-                <td> 
-                  <small v-if="row.kirish" class=" px-2 rounded text-success">Ishga keldi</small>
+                <td>
+                  <small v-if="row.isLate" class=" px-2 rounded text-warning">Ishga kech kelgan</small>
+                  <small v-else-if="row.kirish" class=" px-2 rounded text-success">Ishga keldi</small>
                   <small v-else class="px-2 rounded text-danger">Ishga kelmadi</small>
                 </td>
                 <td> <small >{{row.workedTime}}</small> </td>
@@ -163,6 +172,7 @@ import Circle_progress from './circle_progress.vue';
         xodim_soni: 0,
         xodim_kelgan: 0,
         xodim_kelmagan: 0,
+        xodim_kech_kel:0,
 
         dept_name: '',
         dept_id: 0,
@@ -235,6 +245,7 @@ import Circle_progress from './circle_progress.vue';
 
       
       async apply(){
+        this.xodim_kech_kel = 0;
         try{
             const res = await fetch(this.$store.state.hostname + '/SkudMyCheckinouts/by-date?sana=' + this.Start_time + '&smena_id=' + this.smena_id + '&dept_id=' + this.dept_id);
             const data = await res.json();
@@ -245,6 +256,7 @@ import Circle_progress from './circle_progress.vue';
               this.xodim_soni = data.totalUsers;
               this.xodim_kelgan = data.checkedInUsers;
               this.xodim_kelmagan = data.totalUsers - data.checkedInUsers;
+              this.xodim_kech_kel = data.users.filter(item => item.isLate).length;
             }
         }
         catch(error){
