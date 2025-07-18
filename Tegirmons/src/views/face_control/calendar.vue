@@ -107,8 +107,13 @@ export default {
       this.workdays = await res.json();
       this.generateCalendar();
     },
-    refreshCalendar() {
-        this.generateCalendar(this.selectedYear, this.selectedMonth);
+    async refreshCalendar() {
+        if(this.user_id){
+          await this.update_user_salary(this.user_id);
+        }
+        else{
+          this.generateCalendar(this.selectedYear, this.selectedMonth);
+        }
     },
     generateCalendar(year, month) {
     const start = new Date(year, month, 1);

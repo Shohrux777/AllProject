@@ -10,7 +10,7 @@
       </div>
     </div>
     <div class="droplistSearch card w-100 down_list" v-if="dropshow">
-      <p  class="m-0  px-3 bg_light" v-for="(item,i) in list" :key="i"   @click="selectitem(item)">{{item.fio}}</p>
+      <p  class="m-0  px-3 bg_light" v-for="(item,i) in list" :key="i"   @click="selectitem(item)">{{item[KeyName]}}</p>
     </div>
     
   </div>
@@ -54,6 +54,10 @@ export default {
     placeholder:{
       type: String,
       default: ''
+    },
+    KeyName:{
+      type: String,
+      default: 'fio'
     },
     valid:Boolean,
     fab:Boolean,

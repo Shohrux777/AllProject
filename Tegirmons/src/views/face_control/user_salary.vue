@@ -27,14 +27,14 @@
         
           </div> -->
           <div class="col-3">
-            <input-search  @select="selectClientPassport" :label="$t('passport_number')" :selected="passport_number"
+            <input-search KeyName="ism"  @select="selectClientPassport" :label="$t('passport_number')" :selected="passport_number"
               url="/SkudMyUserinfoes/getPaginationSearchByIsmOrPassportSerailNumberOrMobilePhoneNumberFaceUser?page=0&size=100&fio_or_serial_number="
               ref="search_client" placeholder="AA12345678"  style="height:32px;">
             </input-search>
           </div>
   
           <div class="col-3">
-            <input-search-year  @select="selectClientBorn" type="text" :label="$t('born_date')" :selected="born_date" placeholder="дд-мм-гггг"
+            <input-search-year KeyName="ism"  @select="selectClientBorn" type="text" :label="$t('born_date')" :selected="born_date" placeholder="дд-мм-гггг"
               url="/SkudMyUserinfoes/getPaginationSearchByIsmOrPassportSerailNumberOrMobilePhoneNumberFaceUser?page=0&size=100&fio_or_serial_number="
               ref="search_client_born_date" style="height:32px;">
             </input-search-year>
@@ -238,8 +238,6 @@
                 <td  v-else> <span class="bg-danger px-3 text-white rounded" style="padding: 2px 10px;">Расход</span></td>
                 
                 <td> <small >{{row.note}}</small> </td>
-
-                
               </tr>
             </tbody>
           </table>
@@ -475,10 +473,24 @@ data(){
     //kerak
     async selectClientPassport(option){
       this.client_info = option;
+       this.user_name = option.ism;
+      this.user_id = option.userid;
+      this.user_ishlagan_puli_list = [];
+      await this.fetchuseroylik();
+      this.$refs.user_salary_calendar.update_user_salary(option.userid);
+      await this.get_user_rasxod_prixod_list()
+      console.log(option)
       console.log(option)
     },
 
     async selectClientBorn(option){
+      this.client_info = option;
+      this.user_name = option.ism;
+      this.user_id = option.userid;
+      this.user_ishlagan_puli_list = [];
+      await this.fetchuseroylik();
+      this.$refs.user_salary_calendar.update_user_salary(option.userid);
+      await this.get_user_rasxod_prixod_list()
       console.log(option)
 
     },
