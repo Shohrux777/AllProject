@@ -349,10 +349,17 @@ export default {
                         "cardno" : user_data.cardno,
                         "departid" : user_data.departid,
                         "familiya": user_data.familiya,
+                        "group_id": user_data.group_id,
+                        "group_name": user_data.group_name,
                         "image_url": user_data.image_url,
+                        "middle_name" : user_data.middle_name,
                         "gr": user_data.gr,
                         "res_badgenumber": user_data.res_badgenumber,
-                        "without_gr_id": this.salary_type
+                        "without_gr_id": this.salary_type,
+                        "address" : user_data.address,
+                        "passport" : user_data.passport,
+                        "phone_number": user_data.phone_number,
+                        "born_date": user_data.born_date,
                         })
                     };
                     const response = await fetch(this.$store.state.hostname + '/SkudMyUserinfoes/updateUserInfo', requestOptions);

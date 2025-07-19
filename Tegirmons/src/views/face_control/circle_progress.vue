@@ -3,10 +3,10 @@
     <div class="d-flex justify-content-between">
         <div class="">
             <div class="">
-                <div class="icon_bg_style">
+                <div class="icon_bg_style" :class="progress_bg">
                     <svg viewBox="0 0 24 24" width="27" height="27">
                     <path
-                        fill="#673AB7"
+                        fill="#fff"
                         d="M12 12c2.67 0 8 1.34 8 4v2H4v-2c0-2.66 5.33-4 8-4zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"
                     />
                     </svg>
@@ -86,7 +86,7 @@ export default {
   width: 100%;
   padding: 10px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   background: white;
   text-align: center;
   font-family: sans-serif;
@@ -98,18 +98,18 @@ export default {
 
 .label_circle {
   /* font-weight: bold; */
-  font-size: 20px;
-  margin-bottom: 5px;
+  font-size: 17px;
+  margin-bottom: 8px;
 }
 .label_circle p{
-    color: #505050;
-    font-style: italic;
+    color: #6e6e6e;
+    font-weight: bold;
+    /* font-style: italic; */
 }
 .circle {
-  width: 100px;
-  height: 100px;
+  width: 90px;
+  height: 90px;
   margin: 0 10px;
-  
 }
 
 .circular-chart {
@@ -121,12 +121,12 @@ export default {
 .circle-bg {
   fill: none;
   stroke:  #ffe5b4;
-  stroke-width: 3.8;
+  stroke-width: 2.5;
 }
 
 .circle-progress {
   fill: none;
-  stroke-width: 3.8;
+  stroke-width: 2.5;
   stroke-linecap: round;
   transform: rotate(-90deg);
   transform-origin: center;
@@ -134,12 +134,17 @@ export default {
 }
 .progress_bg_success{
     stroke: #28d886;
+    background: #28d886;
 }
 .progress_bg_danger{
-    stroke: #ee2c2c;
+    stroke: #f84e4e;
+    background: #fd6767;
+
 }
 .progress_bg_warning{
     stroke: #eeba2c;
+    background: #eeba2c;
+
 }
 .progress_bg_info{
     stroke: #2ca0ee;
@@ -152,11 +157,10 @@ export default {
 .icon_bg_style{
     width: 40px;
     height: 40px;
-    background: #f5af54;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 5px;
+    border-radius: 7px;
     margin-bottom: 10px;
 }
 </style>

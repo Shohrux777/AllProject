@@ -268,6 +268,8 @@ export default {
       dept_id: 0,
       smena_name: '',
       smena_id: 0,
+      res_badgenumber:0,
+      without_gr_id: 0,
 
     }
   },
@@ -298,7 +300,8 @@ export default {
       this.passport_number = data.passport;
       this.born_date = data.born_date;
       this.address = data.address;
-
+      this.res_badgenumber = data.res_badgenumber;
+      this.without_gr_id = data.without_gr_id;
       this.photo_url = data.image_url;
       this.note = data.group_name;
       if(data.departid){
@@ -439,19 +442,23 @@ export default {
         headers: { "Content-Type" : "application/json" },
         body: JSON.stringify({
           "ism" : this.name,
-          "address" : this.address,
-          "passport" : this.passport_number,
-          "phone_number": this.phone_number,
-          "born_date": this.born_date,
-          "group_name" : this.note,
-          "image_url": this.photo_url,
-          "gr": this.auth_user_updator_id,
           "userid" : this.id,
           "badgenumber" : this.id,
           "departid": this.dept_id,
           "familiya": this.dept_name,
           "group_id": this.smena_id,
           "group_name": this.smena_name,
+          "image_url": this.photo_url,
+          "middle_name" : this.note,
+          "gr": this.auth_user_updator_id,
+          "res_badgenumber": this.res_badgenumber,
+          "without_gr_id" : this.without_gr_id,
+          "address" : this.address,
+          "passport" : this.passport_number,
+          "phone_number": this.phone_number,
+          "born_date": this.born_date,
+          
+          
         })
       };
       try{

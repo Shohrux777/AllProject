@@ -1,5 +1,5 @@
 <template>
-  <div class="zaxira">
+  <div class="zaxira"> 
     <div class="getProduct">
       <div class="container-fluid">
         <div class="row px-3 py-2 d-flex align-items-center main_header_bg_new" :class="{'bg_red_color': oshibka_client == 1}">
@@ -53,7 +53,10 @@
   
         </div>
       </div>
-      <div class="mainWorkChange">
+      <div v-if="user_id == null">
+        <Kunlik_hisobot  :comp_status="true"/>
+      </div>
+      <div v-else class="mainWorkChange">
         <div class="d-flex justify-content-between px-2">
             <div class="w-100 p-2">
                 <div class="row">
@@ -194,11 +197,9 @@
         
         <webcam  v-show="showPhoto" @getPhotosub="takePhoto"/>
 
-      <hr class="mt-4 mb-3 gradint"/>
+      <hr v-if="user_id" class="mt-4 mb-3 gradint"/>
         <!-- <loaderFixed v-if="loading"/> -->
-    
-
-      <div>
+      <div v-if="user_id">
         <div class="px-0 userSalaryTable">
           <loader-table v-if="loading"/>
           <table v-else class="myTableuserSalaryList mt-2">
@@ -243,7 +244,8 @@
           </table>
         </div>
       </div>
-      <modal-train  :show="rasxod_show" headerbackColor="#fc4640"  titlecolor="black" :title="$t('rasxod')" 
+    </div>
+    <modal-train  :show="rasxod_show" headerbackColor="#fc4640"  titlecolor="black" :title="$t('rasxod')" 
         @close="rasxod_show = false" width="35%">
         <template v-slot:body>
           <rasxod @close="closeRasxod" :client_info="client_info"  ref="rasxodWorkerSum">
@@ -257,9 +259,8 @@
             </chiqarPulOlish>
           </template>
       </modal-train>
-      
       <Toast ref="message"></Toast>
-    </div>
+
     <massage_box :hide="modal_status" :detail_info="modal_info"
     :m_text="$t('Failed_to_add')" @to_hide_modal="modal_status= false"/>
     <Alert ref="alert"></Alert> 
@@ -279,6 +280,7 @@ import inputSearchYear from '../../components/inputSearchYear';
 import Camera from './avtoCamera.vue';
   import rasxod from './rasxod.vue'
   import chiqarPulOlish from './chiqarPulOlish.vue'
+import Kunlik_hisobot from './kunlik_hisobot.vue';
 
 
 
@@ -330,7 +332,7 @@ data(){
       check_number: 0,
       product_status: false,
       main_product_measure: '',
-      user_rasxod_prixod_list: []
+      user_rasxod_prixod_list: [],
 
     }
   },
@@ -345,7 +347,8 @@ data(){
     calendar,
     Camera,
     rasxod,
-    chiqarPulOlish
+    chiqarPulOlish,
+    Kunlik_hisobot
   },
 //   validations: {
       
