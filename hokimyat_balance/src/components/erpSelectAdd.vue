@@ -1,8 +1,8 @@
 <template>
   <div class="erp-select">
-    <div class="input_div my-4 " @click="select_input" :class="{'vaeble': change,  'varible': change_color}" >
+    <div class="input_div my-3 " @click="select_input" :class="{'vaeble': change,  'varible': change_color}" >
         <input  group type="text" :value="selected" />
-        <label for="text" >
+        <label for="text" style="margin-top: -5px;" class="px-2" >
           {{label}}
         </label>
         <div class="icon_caret">
@@ -295,10 +295,11 @@ export default {
   .input_div{
   position: relative;
   width: 100%;
-  height: 35px;
+  height: 31px;
   transition: transform 0.2s ease-in-out;
   border: none;
-  border-bottom: 1px solid #DEE2E6;
+  border: 1px solid #cecfcf;
+  border-radius: 4px;
 }
 
 .input_div input{
@@ -325,7 +326,7 @@ export default {
   transition: transform 0.2s ease-in-out;
   background:transparent;
   font-size: 13px;
-  color:#757575;
+  color:#646464;
   cursor:pointer;
 }
 

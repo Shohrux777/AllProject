@@ -57,10 +57,10 @@
                     </MDBInput>
 
                     <erpSelect
-                      :options = "get_company_list.rows"
+                      :options = "get_user_list.rows"
                       @select="sub_comp_select"
                       :selected="company_name"
-                      :label="$t('otdel')"
+                      :label="$t('Customer')"
                       class="mt-2"
                     />
 
@@ -150,7 +150,8 @@
     MDBTabItem,
     } from "mdb-vue-ui-kit";
   import erpSelect from '@/components/erpSelectAdd.vue'
-  import {mapActions} from 'vuex'
+  import {mapActions, mapGetters} from 'vuex'
+  
   import axios from 'axios';
   
   export default {
@@ -208,9 +209,12 @@
               this.show_picture = true;
            
         }
+        await this.fetch_user();
       
     },
-
+    computed: {
+      ...mapGetters(['get_user_list']),
+      },
     methods:{
       ...mapActions([ 'fetch_user']),
 
