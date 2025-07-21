@@ -18,10 +18,6 @@ export default createStore({
     hostname: 'https://test.musa777.uz',
     hostname1: 'https://test.musa777.uz/storage/answers/',
     hostname2: 'https://test.musa777.uz/storage/user_img/',
-    // hostname: 'http://192.168.3.222:5003/api',
-    // hostname1: 'http://192.168.3.222:5003/',
-
-
     // hostname: 'http://192.168.100.222:5003/api',
     // hostname1: 'http://192.168.100.222:5003/',
   },

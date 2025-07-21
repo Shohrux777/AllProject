@@ -4,7 +4,7 @@ export default {
     state: {
         user_list: {
             rows: [],
-            columns: [ 'name','full_name', 'passport', 'phone', 'mobile_phone' ],
+            columns: [ 'name','contact', 'info', 'debet', 'balance' ],
             col: []
         },
         nosalary_user: [],

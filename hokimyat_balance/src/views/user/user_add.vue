@@ -1,5 +1,23 @@
 <template>
     <div class="container-fluid">
+      <div class="container">
+        <MDBTabs v-model="activeTabId1" >
+          <!-- Tabs navs -->
+          <MDBTabNav tabsClasses="mb-3">
+            <MDBTabItem tabId="admin" class="py-2 px-3" href="admin">Admin</MDBTabItem>
+            <MDBTabItem tabId="customer" class="py-2 px-3" href="customer">Customer</MDBTabItem>
+            <MDBTabItem tabId="user" class="py-2 px-3" href="user">User</MDBTabItem>
+          </MDBTabNav>
+          <!-- Tabs navs -->
+          <!-- Tabs content -->
+          <!-- <MDBTabContent>
+            <MDBTabPane tabId="admin">Admin</MDBTabPane>
+            <MDBTabPane tabId="customer">Customer</MDBTabPane>
+            <MDBTabPane tabId="user">User</MDBTabPane>
+          </MDBTabContent> -->
+          <!-- Tabs content -->
+        </MDBTabs>
+      </div>
         <div class="row">
             <div class="col-9">
                 <form @submit.prevent="submit_add" class="container">
@@ -13,28 +31,12 @@
                     >
                     </MDBInput>
 
-                    <MDBInput
-                        type="text"
-                        id="form1"
-                        size="sm"
-                        class="form-icon-trailing mt-3"
-                        label="Лавозим"
-                        v-model="full_name"
-                    >
-                    </MDBInput>
+                    
 
                     
-                    <MDBInput
-                        type="text"
-                        id="form1"
-                        size="sm"
-                        class="form-icon-trailing mt-3"
-                        label="ЖШШИР"
-                        v-model="passport"
-                    >
-                    </MDBInput>
+                    
 
-                    <MDBInput
+                    <!-- <MDBInput
                         type="text"
                         id="form1"
                         size="sm"
@@ -42,7 +44,7 @@
                         label="IP"
                         v-model="phone"
                     >
-                    </MDBInput>
+                    </MDBInput> -->
 
                     <MDBInput
                         type="text"
@@ -54,12 +56,40 @@
                     >
                     </MDBInput>
 
+                    <erpSelect
+                      :options = "get_company_list.rows"
+                      @select="sub_comp_select"
+                      :selected="company_name"
+                      :label="$t('otdel')"
+                      class="mt-2"
+                    />
 
 
-                    <!-- <MDBTextarea label="Tavsif" 
+
+                    <MDBTextarea label="Tavsif" 
                         class="mt-3"
                         size="sm"
-                        rows="2" v-model="description" /> -->
+                        rows="2" v-model="description" />
+
+                    <MDBInput
+                        type="number"
+                        id="form1"
+                        size="sm"
+                        class="form-icon-trailing mt-3"
+                        label="Debet"
+                        v-model="debet"
+                    >
+                    </MDBInput>
+
+                    <MDBInput
+                        type="number"
+                        id="form1"
+                        size="sm"
+                        class="form-icon-trailing mt-3"
+                        label="Balance"
+                        v-model="balance"
+                    >
+                    </MDBInput>
 
                         <hr class="mt-4">
                     <MDBInput
@@ -114,7 +144,11 @@
   </template>
   
   <script>
-  import { MDBInput, MDBIcon, MDBModalFooter, MDBBtn, MDBSwitch, MDBTextarea  } from "mdb-vue-ui-kit";
+  import { MDBInput, MDBIcon, MDBModalFooter, MDBBtn, MDBSwitch, MDBTextarea,
+    MDBTabs,
+    MDBTabNav,
+    MDBTabItem,
+    } from "mdb-vue-ui-kit";
   import erpSelect from '@/components/erpSelectAdd.vue'
   import {mapActions} from 'vuex'
   import axios from 'axios';
@@ -127,26 +161,29 @@
         erpSelect,
         MDBBtn,
         MDBSwitch,
-        MDBTextarea
+        MDBTextarea,
+        MDBTabs,
+        MDBTabNav,
+        MDBTabItem,
       },
       data(){
         return{
           
             name: '',
-            full_name: '',
+            debet: null,
             email: '',
             password: '',
-            passport: '',
+            balance: null,
             status: 1,
             phone: '',
             mobile_phone: '',
-            description: 'Yaratildi',
+            description: '',
             image_base64: '',
             picture_user: '',
             show_picture: false,
             hostname2: this.$store.state.hostname2,
-          file: null,
-
+            file: null,
+            activeTabId1: 'admin',
         }
       },
       props:{
@@ -159,15 +196,15 @@
       if(Object.keys(this.select_data).length != 0){
             
               this.name = this.select_data.name;
-              this.full_name = this.select_data.full_name;
+              this.debet = this.select_data.debet;
               this.email= this.select_data.email;
               this.password= this.select_data.password;
               this.status= this.select_data.status;
-              this.phone= this.select_data.phone;
-              this.mobile_phone= this.select_data.mobile_phone;
-              this.description= this.select_data.description;
+              this.mobile_phone= this.select_data.contact;
+              this.description= this.select_data.info;
               this.image_base64= this.select_data.image_base64;
-              this.passport= this.select_data.passport;
+              this.balance = this.select_data.balance;
+
               this.show_picture = true;
            
         }
@@ -192,17 +229,18 @@
           console.log(this.name)
           const formData = new FormData();
           formData.append('name', this.name);
-          formData.append('full_name', this.full_name);
           formData.append('email', this.email);
           formData.append('password', this.password);
-          formData.append('phone', this.phone);
-          formData.append('mobile_phone', this.mobile_phone);
-          formData.append('description', this.description);
-          formData.append('passport', this.passport);
-          formData.append('task_count', this.select_data.task_count);
-          formData.append('task_id', this.select_data.task_id);
-          formData.append('task_info', this.select_data.task_info);
-          formData.append('dead_line', this.select_data.dead_line);
+          formData.append('contact', this.mobile_phone);
+          formData.append('info', this.description);
+          formData.append('debet', this.debet);
+          formData.append('balance', this.balance);
+          formData.append('role', this.activeTabId1);
+
+          // formData.append('task_count', this.select_data.task_count);
+          // formData.append('task_id', this.select_data.task_id);
+          // formData.append('task_info', this.select_data.task_info);
+          // formData.append('dead_line', this.select_data.dead_line);
           formData.append('image_base64', this.file); // Fayl (PDF yoki JPG)
           console.log('formData', formData);
           const response = await axios.post(this.$store.state.hostname + '/api/admin/users', formData, {
@@ -230,13 +268,15 @@
           const token = localStorage.getItem('auth_token'); // login paytida saqlangan token
           const formData = new FormData();
           formData.append('name', this.name);
-          formData.append('full_name', this.full_name);
           formData.append('email', this.email);
           formData.append('password', this.password);
-          formData.append('phone', this.phone);
-          formData.append('mobile_phone', this.mobile_phone);
-          formData.append('description', this.description);
-          formData.append('passport', this.passport);
+          // formData.append('phone', this.phone);
+          formData.append('contact', this.mobile_phone);
+          formData.append('info', this.description);
+          formData.append('debet', this.debet);
+          formData.append('balance', this.balance);
+          formData.append('role', this.activeTabId1);
+          
           formData.append('image_base64', this.file); // Fayl (PDF yoki JPG)
           const response = await axios.put(this.$store.state.hostname + '/api/admin/users/' + this.select_data.id, formData, {
             headers: {
