@@ -56,10 +56,10 @@
                     >
                     </MDBInput>
 
-                    <erpSelect
-                      :options = "get_user_list.rows"
-                      @select="sub_comp_select"
-                      :selected="company_name"
+                    <erpSelect v-show="activeTabId1 == 'user'"
+                      :options = "get_user_customer_list"
+                      @select="user_customer_select"
+                      :selected="customer_name"
                       :label="$t('Customer')"
                       class="mt-2"
                     />
@@ -71,7 +71,7 @@
                         size="sm"
                         rows="2" v-model="description" />
 
-                    <MDBInput
+                    <MDBInput v-if="activeTabId1 == 'user'"
                         type="number"
                         id="form1"
                         size="sm"
@@ -81,7 +81,7 @@
                     >
                     </MDBInput>
 
-                    <MDBInput
+                    <MDBInput v-if="activeTabId1 == 'user'"
                         type="number"
                         id="form1"
                         size="sm"
@@ -185,6 +185,8 @@
             hostname2: this.$store.state.hostname2,
             file: null,
             activeTabId1: 'admin',
+            customer_id: null,
+            customer_name: '',
         }
       },
       props:{
@@ -213,7 +215,7 @@
       
     },
     computed: {
-      ...mapGetters(['get_user_list']),
+      ...mapGetters(['get_user_list', 'get_user_customer_list']),
       },
     methods:{
       ...mapActions([ 'fetch_user']),
@@ -226,7 +228,11 @@
           await this.fetch_user_new_add();
         }
       },
-
+      async user_customer_select(option){
+        console.log(option);
+        this.customer_name = option.name
+        this.customer_id = option.id
+      },
       async fetch_user_new_add(){
         try {
           const token = localStorage.getItem('auth_token'); // login paytida saqlangan token
@@ -240,6 +246,7 @@
           formData.append('debet', this.debet);
           formData.append('balance', this.balance);
           formData.append('role', this.activeTabId1);
+          formData.append('customer_id', this.customer_id);
 
           // formData.append('task_count', this.select_data.task_count);
           // formData.append('task_id', this.select_data.task_id);
@@ -280,6 +287,7 @@
           formData.append('debet', this.debet);
           formData.append('balance', this.balance);
           formData.append('role', this.activeTabId1);
+          formData.append('customer_id', this.customer_id);
           
           formData.append('image_base64', this.file); // Fayl (PDF yoki JPG)
           const response = await axios.put(this.$store.state.hostname + '/api/admin/users/' + this.select_data.id, formData, {

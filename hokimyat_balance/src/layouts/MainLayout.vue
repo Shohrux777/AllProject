@@ -8,18 +8,18 @@
             class="ml-3 w-100 shadow d-flex align-items-center justify-content-start">
             <!-- <span style="font-size: 22px;" class="mb-1 text-white">Маркет</span> -->
             <img
-                src="../assets/logo.png"
+                src="../assets/money.png"
                 height="35"
                 width="35"
                 alt=""
                 loading="lazy"
               />
-              <span class="text-white ms-2" style="font-size: 15px;">Ходимларни ўқитиш</span>
+              <span class="text-white ms-2" style="font-size: 15px;">Статистика</span>
           </div>
         </div>
         <div class="smallIcon shadow d-flex align-items-center justify-content-center" v-if="!show_title">
             <img
-                src="../assets/logo.png"
+                src="../assets/money.png"
                 height="30"
                 width="30"
                 alt=""
@@ -120,7 +120,7 @@
               </MDBNavbarNav>
             </div>
           </MDBNavbar>
-          <span class="creater_database">Самарқанд вил. Прократура</span>
+          <span class="creater_database"></span>
         </div>
         <div class="main_router_page">
           <router-view></router-view>
@@ -237,18 +237,18 @@
               down_list:[]
             },
             { title: 'answers_list', icon: 'landmark', url: '/answers_list', view: false, color: '#ddd', count: true, down_list:[], role:'admin' },
+            { title: 'Баланc қўшиш', icon: 'landmark', url: '/answers_userID', view: false, color: '#ddd', count: true, down_list:[], role:'user' },
 
-            { title: 'Топшириклар', icon: 'landmark', url: '/user_topshiriqlar', view: false, color: '#ddd',  down_list:[], role:'user', count: false, },
           
             { title: 'user', icon: 'user', url: '/user', view: false, color: '#ddd', role:'admin', count: false,
               down_list:[]
             },
-            { title: 'task', icon: 'landmark', url: '/task', view: false, color: '#ddd', role:'admin', count: false,
-              down_list:[]
-            },
-            { title: 'arxiv', icon: 'landmark', url: '/arxiv', view: false, color: '#ddd', role:'admin', count: false,
-              down_list:[]
-            },
+            // { title: 'task', icon: 'landmark', url: '/task', view: false, color: '#ddd', role:'admin', count: false,
+            //   down_list:[]
+            // },
+            // { title: 'arxiv', icon: 'landmark', url: '/arxiv', view: false, color: '#ddd', role:'admin', count: false,
+            //   down_list:[]
+            // },
             // { title: 'menu_setting', icon: 'tools', url: '', view: false, color: '#ddd', down_list:[
             //     { title: "company", url: '/', dview: false, color: '#ddd', down_list:[] },
             // ] },

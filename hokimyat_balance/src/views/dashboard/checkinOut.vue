@@ -13,7 +13,7 @@
                       <div class="icon_box bg-secondary card">
                         <i class="fas fa-users text-white"></i>
                       </div>
-                      <small >Ходимлар</small>
+                      <small >Ташкилотлар</small>
                     </div>
                     <div class="dashboard_card_item_right">
                       <small v-if="get_user_list.rows.length" class="text-secondary">{{get_user_list.rows.length}}</small>
@@ -22,7 +22,7 @@
                 </div>
               </div>
               
-              <div class="col-3 " style="cursor:pointer;" @click="task_show = !taskshow">
+              <!-- <div class="col-3 " style="cursor:pointer;" @click="task_show = !taskshow">
                 <div class="card">
                   <div class="dashboard_card_item  p-3 d-flex">
                     <div class="dashboard_card_item_left">
@@ -36,7 +36,7 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> -->
               
               <div class="col-3 " style="cursor:pointer;">
                 <div class="card" @click="showAll_Answer(1)">
@@ -69,29 +69,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-6 mt-3 " v-if="role == 'admin'" style="cursor:pointer;">
-                <div class="card">
-                  <div class="dashboard_card_item  p-3 d-flex">
-                    <div class="dashboard_card_item_left">
-                      <div class="icon_box bg-info card ">
-                        <i class="fas fa-chart-pie text-white"></i>
-                      </div>
-                      <div class="w-100">
-                        <small >Ходимлар умумий кўрсатгичи</small>
-                        <div class=" range_component mx-3 mt-1">
-                          <div :class="{'foiz_0': get_user_all_foiz == 0 || get_user_all_foiz == null, 'foiz_56': get_user_all_foiz < 56 && get_user_all_foiz > 0, 'foiz_71': get_user_all_foiz < 71 && get_user_all_foiz > 56,  'foiz_95': get_user_all_foiz < 95 && get_user_all_foiz >71, 'foiz_100': get_user_all_foiz>=95}" 
-                          style=" height:4px;" :style="{ width: (get_user_all_foiz ? get_user_all_foiz : 0) + '%' }"></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="dashboard_card_item_right">
-                      <small class="text-info">{{get_user_all_foiz}}%</small>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div class=""  :class="{'col-6 mt-3': role == 'admin', 'col-3': role == 'user'}" style="cursor:pointer;">
+              <div class=""  :class="{'col-3 ': role == 'admin', 'col-3': role == 'user'}" style="cursor:pointer;">
                 <div class="card" @click="showAll_Answer(0)">
                   <div class="dashboard_card_item  p-3 d-flex">
                     <div class="dashboard_card_item_left">
@@ -106,6 +84,57 @@
                   </div>
                 </div>
               </div>
+              <div class="col-3 " v-if="role == 'user'" style="cursor:pointer;">
+                <div class="card">
+                  <div class="dashboard_card_item  p-3 d-flex">
+                    <div class="dashboard_card_item_left">
+                      <div class="icon_box bg-info card ">
+                        <i class="fas fa-chart-pie text-white"></i>
+                      </div>
+                      <div class="w-100">
+                        <small style="font-size: 12px;">Ташкилот умумий кўрсатгичи</small>
+                        <div class=" range_component mx-3 mt-1">
+                          <div :class="{'foiz_0': get_user_all_foiz == 0 || get_user_all_foiz == null, 'foiz_56': get_user_all_foiz < 56 && get_user_all_foiz > 0, 'foiz_71': get_user_all_foiz < 71 && get_user_all_foiz > 56,  'foiz_95': get_user_all_foiz < 95 && get_user_all_foiz >71, 'foiz_100': get_user_all_foiz>=95}" 
+                          style=" height:4px;" :style="{ width: (get_user_all_foiz ? get_user_all_foiz : 0) + '%' }"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="dashboard_card_item_right">
+                      <small class="text-info" style="font-size: 17px;">{{get_user_all_foiz}}%</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+
+              <div class="col-6 mt-3 " v-if="role == 'admin' || role == 'user'" style="cursor:pointer;">
+                <Circle_progress label="Бажариш кўрсаткичи" :qty="xodim_soni" :activ_qty="xodim_kelmagan" progress_bg="progress_bg_danger"/>
+              </div>
+
+
+              <div class="col-6 mt-3 " v-if="role == 'admin'" style="cursor:pointer;">
+                <div class="card">
+                  <div class="dashboard_card_item  p-3 d-flex">
+                    <div class="dashboard_card_item_left">
+                      <div class="icon_box bg-info card ">
+                        <i class="fas fa-chart-pie text-white"></i>
+                      </div>
+                      <div class="w-100">
+                        <small >Ташкилотлар умумий кўрсатгичи</small>
+                        <div class=" range_component mx-3 mt-1">
+                          <div :class="{'foiz_0': get_user_all_foiz == 0 || get_user_all_foiz == null, 'foiz_56': get_user_all_foiz < 56 && get_user_all_foiz > 0, 'foiz_71': get_user_all_foiz < 71 && get_user_all_foiz > 56,  'foiz_95': get_user_all_foiz < 95 && get_user_all_foiz >71, 'foiz_100': get_user_all_foiz>=95}" 
+                          style=" height:4px;" :style="{ width: (get_user_all_foiz ? get_user_all_foiz : 0) + '%' }"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="dashboard_card_item_right">
+                      <small class="text-info">{{get_user_all_foiz}}%</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              
             </div>
           </div>
 
@@ -125,10 +154,10 @@
               <table class="table align-middle mb-0 bg-white">
                 <thead class="bg-light">
                   <tr>
-                    <th width="450">ФИО</th>
+                    <th width="450">Ташкилотлар</th>
                     <th>Телифон рақами</th>
                     <th >Статус</th>
-                    <th width="300">Кўрсатгич</th>
+                    <th width="350">Кўрсатгич</th>
                     <th v-if="role == 'admin'" width="100">Кўриш</th>
                   </tr>
                 </thead>
@@ -166,8 +195,8 @@
                           </div>
                         </div>
                         <div class="range_item_procent">
-                          <small v-if="user.foiz>0" class="mx-2" style="font-weight:bold;">{{user.foiz}}%</small>
-                          <small v-else class="mx-2" style="font-weight:bold;">0 %</small>
+                          <small v-if="user.foiz>0" class="mx-2" style="font-weight:bold;">{{user.foiz}}/20 000</small>
+                          <small v-else class="mx-2" style="font-weight:bold;">0 / 20 000</small>
                         </div>
                       </div>
                     </td>
@@ -311,6 +340,7 @@
     import ModalTask from '@/components/modal.vue';
 
     import {mapActions, mapGetters} from 'vuex';
+import Circle_progress from './circle_progress.vue';
     export default {
       setup() {
         const exampleModal = ref(false);
@@ -321,7 +351,8 @@
       components: {
           navbar,
           Loader,
-          ModalTask
+          ModalTask,
+          Circle_progress
       },
       data(){
         return{
@@ -354,7 +385,9 @@
               "10": "Окт",
               "11": "Ноя",
               "12": "Дек"
-            }
+            },
+          xodim_soni: 150000,
+          xodim_kelmagan: 20000,
 
         }
       },
@@ -488,10 +521,10 @@
     border-radius: 7px;
   }
   .range_item_table{
-    width: 80%;
+    width: 70%;
   }
   .range_item_procent{
-    width: 20%;
+    width: 30%;
   }
   tr{
     cursor:pointer;

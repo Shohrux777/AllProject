@@ -7,15 +7,15 @@
         <div class="w-100 d-flex justify-content-between">
           <div>
             <p class="m-0 pt-1" style="font-size: 14px;">
-              {{task_info.name}}
+              Қарздорликни ёпиш
             </p>
           </div>
           <div class="d-flex" style="cursor:pointer;">
             <div  class="px-1 py-1 pb-2 mx-1" :class="{'active_border_bottom': type_status == 3}" @click="type_status=3">
-              <p class="m-0 " style="font-size: 13px; color:#293142;">Топшириқлар<span class="badge rounded-pill" style="background:#F4AA79;" >{{ task_info.count }}</span></p>
+              <p class="m-0 " style="font-size: 13px; color:#293142;">Ҳужжатлар<span class="badge rounded-pill" style="background:#F4AA79;" >{{ task_info.count }}</span></p>
             </div>
             <div  class="px-1 py-1 pb-2 mx-1" :class="{'active_border_bottom': type_status == 1}" @click="func_accept" >
-              <p class="m-0 " style="font-size: 13px; color:#293142;" 
+              <p class="m-0 " style="font-size: 13px; color:#293142;"
               >Бажарилган<span class="badge rounded-pill " style="background:#4EC264;">{{user_accept_answer.length}}</span></p>
             </div>
             <div  class="px-1 py-1 pb-2 mx-1" @click="func_pending"
@@ -34,9 +34,9 @@
         <div class="card mt-2 px-3 pt-3 pb-0" style="cursor:pointer">
           <div>
             <div class="">
-              <p class="m-0 " style="font-size: 14.5px; color:#293142;">{{task_info.name}}</p>
+              <p class="m-0 " style="font-size: 14.5px; color:#293142;">Ҳужжатларни киритиш</p>
               <small class="mx-2" style="font-style:italic; font-size: 12.5px; color:#67748A;">
-                {{task_info.note}}
+                Қарздорлик буйича керакли ҳужжатлар билан сўммани киритинг.
               </small>
               <div class="mt-3 need_sendFile" v-html="task_info.description">
               </div>
@@ -265,25 +265,7 @@ import Loader from '@/components/loader.vue';
               "11": "Ноя",
               "12": "Дек"
             },
-            sudlar: [
-              {
-                // <p class="m-0 p-0"> <i class="fas fa-square-check mx-2 text-succes" style="color:green"></i> </p>
-                text: 'Фуқаролик суди бўйича 10 тадан иш юклаш.',
-                value: false,
-              },
-              {
-                text: 'Жиноят суди бўйича 10 тадан иш юклаш.',
-                value: false,
-              },
-              {
-                text: 'Маъмурий суд бўйича 10 тадан иш юклаш.',
-                value: false,
-              },
-              {
-                text: 'Иқтисодий суд бўйича 10 тадан иш юклаш.',
-                value: false,
-              },
-              ],
+            
             
             
         }
@@ -291,33 +273,33 @@ import Loader from '@/components/loader.vue';
     async mounted(){
       this.loading = true;
       
-      await this.fetch_user_task();
-      const user_id = localStorage.getItem('task_user_Id');
-      await this.fetch_user_id(user_id);
+      // await this.fetch_user_task();
+      // const user_id = localStorage.getItem('task_user_Id');
+      // await this.fetch_user_id(user_id);
       this.loading = false;
-      if(this.get_user_data.task_info && this.task_id == 8){
-          const arrayBack = this.get_user_data.task_info.split(' | ');
-          this.task_info.count = arrayBack.length * 10;
-          // console.log("Qayta ajratilgan array:", arrayBack);
-          for(let i=0; i<this.sudlar.length; i++){
-              // console.log(this.sudlar[i].text)
-            for(let j=0; j<arrayBack.length; j++){
-              // console.log(arrayBack[j])
-              if(this.sudlar[i].text.slice(0,5) == arrayBack[j].slice(0,5)){
-                this.sudlar[i].value = true;
-              }
-            }
-          }
-      }
+      // if(this.get_user_data.task_info && this.task_id == 8){
+      //     const arrayBack = this.get_user_data.task_info.split(' | ');
+      //     this.task_info.count = arrayBack.length * 10;
+      //     // console.log("Qayta ajratilgan array:", arrayBack);
+      //     for(let i=0; i<this.sudlar.length; i++){
+      //         // console.log(this.sudlar[i].text)
+      //       for(let j=0; j<arrayBack.length; j++){
+      //         // console.log(arrayBack[j])
+      //         if(this.sudlar[i].text.slice(0,5) == arrayBack[j].slice(0,5)){
+      //           this.sudlar[i].value = true;
+      //         }
+      //       }
+      //     }
+      // }
 
 
-      if(this.get_user_data.dead_line && this.task_id == 12){
-        this.task_date = this.get_user_data.dead_line.slice(0,10)
-      }
+      // if(this.get_user_data.dead_line && this.task_id == 12){
+      //   this.task_date = this.get_user_data.dead_line.slice(0,10)
+      // }
       
-      await this.fetch_user_all_answers()
+      // await this.fetch_user_all_answers()
       
-      console.log('get answer list',this.get_user_answer_list);
+      // console.log('get answer list',this.get_user_answer_list);
     },
     computed: mapGetters(['get_salary_list', 'get_user_answer_list', 'get_answer_user_task_status', 'get_user_data']),
     methods:{

@@ -3,7 +3,7 @@
     <div class="navbar_mdb container-fluid">
       <MDBNavbarBrand>
         <img
-            src="../assets/logo.png"
+            src="../assets/money.png"
             height="30"
             width="30"
             alt=""

@@ -10,6 +10,7 @@ export default {
         nosalary_user: [],
         user_all_foiz: 0,
         user_data: {},
+        user_customer: [],
     },
     actions: {
         async fetch_user(ctx) {
@@ -86,6 +87,7 @@ export default {
         },
         UpdateuserId_list(state,data){
             state.user_data = data;
+            state.user_customer = data.filter(item=>item.role == 'customer')
         },
         
         user_row_delete(state, index) {
@@ -107,6 +109,9 @@ export default {
         },
         get_user_data(state){
             return state.user_data;
-        }
+        },
+        get_user_customer_list(state) {
+            return state.user_customer;
+        },
     }
 }

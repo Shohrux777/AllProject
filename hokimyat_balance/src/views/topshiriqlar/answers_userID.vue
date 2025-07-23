@@ -7,12 +7,12 @@
         <div class="w-100 d-flex justify-content-between">
           <div>
             <p class="m-0 pt-1" style="font-size: 14px;">
-              {{task_info.name}}
+              Қарздорликни ёпиш
             </p>
           </div>
           <div class="d-flex" style="cursor:pointer;">
             <div  class="px-1 py-1 pb-2 mx-1" :class="{'active_border_bottom': type_status == 3}" @click="type_status=3">
-              <p class="m-0 " style="font-size: 13px; color:#293142;">Топшириқлар<span class="badge rounded-pill" style="background:#F4AA79;" >{{ task_info.count }}</span></p>
+              <p class="m-0 " style="font-size: 13px; color:#293142;">Ҳужжатлар<span class="badge rounded-pill" style="background:#F4AA79;" >{{ task_info.count }}</span></p>
             </div>
             <div  class="px-1 py-1 pb-2 mx-1" :class="{'active_border_bottom': type_status == 1}" @click="func_accept" >
               <p class="m-0 " style="font-size: 13px; color:#293142;" 
@@ -34,9 +34,9 @@
         <div class="card mt-2 px-3 pt-3 pb-0" style="cursor:pointer">
           <div>
             <div class="">
-              <p class="m-0 " style="font-size: 14.5px; color:#293142;">{{task_info.name}}</p>
+              <p class="m-0 " style="font-size: 14.5px; color:#293142;">Ҳужжатларни киритиш</p>
               <small class="mx-2" style="font-style:italic; font-size: 12.5px; color:#67748A;">
-                {{task_info.note}}
+                Қарздорлик буйича керакли ҳужжатлар билан сўммани киритинг.
               </small>
               <div class="mt-3 need_sendFile" v-html="task_info.description">
               </div>
@@ -60,11 +60,15 @@
           <hr class="m-0 mb-2">
           <div class="mt-0">
             <div class="">
-              <label for="summary" style="font-size: 12.5px;" class="ms-1 mb-0">Қисқача мазмуни *</label>
-              <textarea id="summary" v-model="description" class="p-2" style="font-size: 12px;" placeholder="Қисқача мазмуни"></textarea>
+              <label for="input_summa" style="font-size: 12.5px;" class="ms-1 mb-0">Сўмма</label>
+              <input type="number" class="form-control " v-model="summa" id="input_summa" style="font-size: 14px;">
+
+
+              <label for="summary" style="font-size: 12.5px;" class="ms-1 mb-0 mt-1">Қисқача мазмуни *</label>
+              <textarea id="summary" v-model="description" class="p-2" style="font-size: 14px;" placeholder="Қисқача мазмуни"></textarea>
 
               <div class="upload-container">
-                <label for="file-upload" style="font-size: 12px;">
+                <label for="file-upload" style="font-size: 13px;">
                   <img class="upload-icon" src="https://img.icons8.com/material-rounded/24/6a5acd/attach.png"/>
                   Yuklash
                 </label>
@@ -255,6 +259,7 @@ import Loader from '@/components/loader.vue';
             user_incorrect_answer: [],
             pdfUrl: null,
             task_date: '',
+            summa:null,
             oylar:{
               "01": "Янв",
               "02": "Фев",
@@ -274,21 +279,21 @@ import Loader from '@/components/loader.vue';
         }
     },
     async mounted(){
-      this.loading = true;
-      await this.fetch_user_task();
+      // this.loading = true;
+      // await this.fetch_user_task();
       
-      const user_id = localStorage.getItem('user_id');
-      await this.fetch_user_id(user_id);
-      this.loading = false;
+      // const user_id = localStorage.getItem('user_id');
+      // await this.fetch_user_id(user_id);
+      // this.loading = false;
 
-      if(this.get_user_data.task_info && this.task_id == 8){
-          this.sudlar = this.get_user_data.task_info.split(' | ');
-          this.task_info.count = this.sudlar.length * 10;
-      }
-      if(this.get_user_data.dead_line && this.task_id == 12){
-        this.task_date = this.get_user_data.dead_line.slice(0,10)
-      }
-      await this.fetch_user_all_answers()
+      // if(this.get_user_data.task_info && this.task_id == 8){
+      //     this.sudlar = this.get_user_data.task_info.split(' | ');
+      //     this.task_info.count = this.sudlar.length * 10;
+      // }
+      // if(this.get_user_data.dead_line && this.task_id == 12){
+      //   this.task_date = this.get_user_data.dead_line.slice(0,10)
+      // }
+      // await this.fetch_user_all_answers()
       // console.log('get answer list',this.get_user_answer_list);
       
       
