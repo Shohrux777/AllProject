@@ -73,7 +73,7 @@
           </div>
         </div>
         <form @submit.prevent="submit" v-if="comp_status">
-          <div style="height: 40px;" class="d-flex justify-content-between border-bottom border-top align-items-center  ">
+          <div style="height: 40px;" class="d-flex justify-content-between border-bottom border-top align-items-center">
             <div class="title w-75 row align-items-center">
                <div class="col-4">
                   <div style="position: relative; margin-top: 25px;">
@@ -143,7 +143,6 @@
                 <th >Status</th>
                 <th >Vaqt</th>
                 <th >Summa</th>
-                
               </tr>
             </thead>
             <tbody>
@@ -231,6 +230,8 @@ import Circle_progress from './circle_progress.vue';
     async mounted(){
       this.fetch_Dept();
       this.fetch_Smena();
+      await this.apply();
+
       // await this.fetchUserAccess(localStorage.user_id);
       if(localStorage.getItem('end_date')){
         this.Start_time = localStorage.getItem('begin_date'); 
@@ -245,7 +246,6 @@ import Circle_progress from './circle_progress.vue';
         localStorage.setItem('end_date',this.End_time)
         localStorage.setItem('menu_item',this.selected)
       } 
-      await this.apply();
       if(this.comp_status){
         await this.change_user_status(1);
       }

@@ -63,8 +63,8 @@
                   <div class="col-5">
                     <div class="card" v-if="client_info.ism">
                       <div class="d-flex w-100">
-                        <div class="user_img">
-                          <img :src="hostname + client_info.image_url" alt="not found image">
+                        <div class="user_img" v-if="client_info.image_url">
+                          <img :src="hostname + client_info.image_url" alt="">
                         </div>
                         <div class="user_info_selected pt-4 px-3">
                           <h6 class="font-weight-bold" style="font-size: 14.5px;">{{client_info.ism}}</h6>
