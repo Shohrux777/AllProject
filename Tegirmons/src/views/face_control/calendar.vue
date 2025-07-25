@@ -85,7 +85,8 @@ export default {
       console.log(user_id)
       this.user_id = user_id;
       const selectedDate = `${this.selectedYear}-${(this.selectedMonth + 1).toString().padStart(2, '0')}-01`;
-      console.log(selectedDate)
+      localStorage.selectedDate = selectedDate;
+      console.log('selectedDate', selectedDate)
       try{
         const response = await fetch(this.$store.state.hostname + "/TegirmonUserIshlaganVaqt/getUserWorkedDays?page=0&size=200&userid=" + user_id + '&month=' + selectedDate);
         const data = await response.json();

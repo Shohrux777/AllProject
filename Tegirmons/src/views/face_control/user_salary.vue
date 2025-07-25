@@ -41,6 +41,11 @@
           </div>
           <div class="col-3">
             <div class="d-flex justify-content-end">
+              <div style="width:180px" class="mr-2" v-if="user_id">
+                <div class="main_kassa_btn m-0 bg_col_info1" @click="$router.push('/oylik_hisobot/' + user_id)">
+                  <small>Ежемесячный отчет</small>
+                </div>
+              </div>
               <div style="width:150px">
                 <div class="main_kassa_btn m-0 bg_col_info1" @click="$router.push('/kunlik_hisobot')">
                   <small>Ежедневный отчет</small>
@@ -99,7 +104,7 @@
                   </div>
                   <!-- <camera/> -->
                   <div class="col-7">
-                    <User_vaqt_info :client_info="client_info" ref="user_vaqt_info_comp"/>
+                    <User_vaqt_info :client_info="client_info" @update_calendar="update_calendar" ref="user_vaqt_info_comp"/>
                   </div>
                 </div>
             </div>
@@ -355,6 +360,7 @@ data(){
       await this.fetchuseroylik();
       this.$refs.user_salary_calendar.update_user_salary(option.userid);
       await this.get_user_rasxod_prixod_list()
+        this.$refs.user_vaqt_info_comp.changeUser();
       console.log(option)
       console.log(option)
     },
@@ -366,6 +372,7 @@ data(){
       await this.fetchuseroylik();
       this.$refs.user_salary_calendar.update_user_salary(option.userid);
       await this.get_user_rasxod_prixod_list()
+        this.$refs.user_vaqt_info_comp.changeUser();
       console.log(option)
 
     },
@@ -378,8 +385,12 @@ data(){
         await this.fetchuseroylik();
         this.$refs.user_salary_calendar.update_user_salary(option.userid);
         await this.get_user_rasxod_prixod_list()
-    },
+        this.$refs.user_vaqt_info_comp.changeUser();
 
+    },
+    async update_calendar(){
+      this.$refs.user_salary_calendar.update_user_salary(option.userid);
+    },
     getPhoto(){
       this.showPhoto = true;
     },

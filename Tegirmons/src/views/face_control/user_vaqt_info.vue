@@ -90,6 +90,16 @@
           Ma'lumot topilmadi!
         </p>
       </div>
+      <div class="mt-2" v-if="user_ishlagan_puli_list.length == 0">
+        <div class="d-flex justify-content-end w-100">
+          <mdb-btn @click="AddKirishorChiqish()" color="success py-2 px-3" style="font-size:9px;">
+            Kirish qo'shish
+          </mdb-btn>
+          <mdb-btn @click="AddKirishorChiqish()" color="primary py-2 px-3" style="font-size:9px;">
+            Chiqish qo'shish
+          </mdb-btn>
+        </div>
+      </div>
     </div>
     <modal-train  :show="show" headerbackColor="#C9DCE4"  titlecolor="black" title="Ishlagan vaqtni uzgartirish" 
       @close="show = false" width="35%">
@@ -118,9 +128,9 @@
             <div class="d-flex justify-content-between w-100">
               <div class="d-flex px-3 mt-1">
                 <mdb-input class="m-0 p-0 " type="time" size="sm"  v-model="ishlagan_vaqt" outline/>
-                <!-- <p class="m-0 mt-2 ml-4" style="font-size: 14px;">
+                <p class="m-0 mt-2 ml-4" style="font-size: 14px;">
                   {{ishlagan_puli.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
-                </p> -->
+                </p>
               </div>
               <mdb-btn @click="save_vaqt_change()" color="success py-2 px-3" style="font-size:9px;">
                 {{$t('save')}}
@@ -129,10 +139,15 @@
           </div>
         </template>
     </modal-train>
+    <Toast ref="message"></Toast>
+
+    <massage_box :hide="modal_status" :detail_info="modal_info"
+    :m_text="$t('Failed_to_add')" @to_hide_modal="modal_status= false"/>
   </div>
 </template>
 
 <script>
+
   import { mdbBtn, mdbInput } from 'mdbvue';
 
 export default {
@@ -150,6 +165,9 @@ props:{
 },
 data(){
     return{
+        modal_info: '',
+        modal_status: false,  
+        loading: false,
         user_ishlagan_puli_list: [],
         usercheck_in_out: [],
         user_oylik_info: [],
@@ -162,7 +180,12 @@ data(){
         chiqish_date: null,
         chiqish_time: null,
         ishlagan_vaqt: null,
-        ishlagan_puli: 0
+        ishlagan_puli: 0,
+        old_work_money: 0,
+        select_ishlagan_puli_item: {},
+        salary_sum: 0,
+        salary_id: 0,
+        user_id: null,
     }
 },
 watch: {
@@ -172,14 +195,16 @@ watch: {
   chiqish_time: 'hisoblaIshVaqti',
 },
 methods:{
+    async changeUser(){
+        this.usercheck_in_out = [];
+        this.user_ishlagan_puli_list = [];
+        this.choosen_day.hours = '';
+        this.choosen_day_date = '';
+    },
     async handleChooseDay(data){
       this.choosen_day = data;
       this.usercheck_in_out = [];
       this.user_ishlagan_puli_list = [];
-    //   if(!this.client_info.userid){
-    //     this.$refs.message.error('not_found_user');
-    //     return;
-    //   };
     console.log('ishladi kirdi', data)
       const formatted = data.date.getFullYear() + "-" +
       String(data.date.getMonth() + 1).padStart(2, '0') + "-" +
@@ -202,21 +227,89 @@ methods:{
         this.$refs.message.error("Foydalanuvchida " + formatted + " ushbu kun uchun ma'lumot topilmadi");
         console.log(error)
       }
-
       await this.getCheckInOut(formatted);
 
       console.log(formatted)
     },
 
+    async AddKirishorChiqish(){
+      for(let i=0; i<this.usercheck_in_out.length; i++){
+        if(this.usercheck_in_out[i].checktype == 'C'){
+          this.chiqish_date = this.usercheck_in_out[i].sana.slice(0,10);
+          this.chiqish_time = this.usercheck_in_out[i].checktime.slice(0,5);
+          break;
+        }
+      }
+      for(let i=0; i<this.usercheck_in_out.length; i++){
+        if(this.usercheck_in_out[i].checktype == 'K'){
+          this.kirish_date = this.usercheck_in_out[i].sana.slice(0,10);
+          this.kirish_time = this.usercheck_in_out[i].checktime.slice(0,5);
+        }
+      }
+      console.log(this.client_info)
+      if(this.client_info.res_badgenumber){
+        await this.fetchSalary(this.client_info.res_badgenumber);
+      }
+      else{
+        this.salary_sum = 0;
+      }
+      this.old_work_money = 0;
+      this.select_item_id = 0;
+      this.show = true;
+    },
+
     async Select_work_time(item){
       console.log(item);
+      this.select_ishlagan_puli_item = item;
+      this.select_item_id = item.id;
+      this.user_id = item.userid;
+      this.salary_id = item.salary_id;
       this.kirish_date = item.k_date.slice(0,10);
       this.kirish_time = item.k_date.slice(11,16);
       this.chiqish_date = item.created_date.slice(0,10);
       this.chiqish_time = item.created_date.slice(11,16);
       this.ishlagan_vaqt = item.work_time;
-      this.ishlagan_puli = item.sum.toFixed();
       this.show = true;
+      await this.fetchSalary(item.salary_id);
+
+      this.ishlagan_puli = item.sum.toFixed();
+      this.old_work_money = item.sum.toFixed();
+
+      let pul = parseInt(this.old_work_money);
+        let qoldiq = pul % 1000;
+
+        if (qoldiq < 500) {
+          pul = pul - qoldiq; // pastga yaxlitlash
+        } else {
+          pul = pul + (1000 - qoldiq); // tepaga yaxlitlash
+        }
+        this.old_work_money = pul;
+
+
+      console.log(this.old_work_money)
+      console.log(this.ishlagan_puli)
+    },
+
+    async fetchSalary(salary_id){
+      this.salary_sum = 0;
+      try{
+        const response = await fetch(this.$store.state.hostname + "/SkudOyliks/" + salary_id);
+        const data = await response.json();
+        console.log(data)
+        if(response.status == 201 || response.status == 200)
+        {
+          if(data.reserved_value == 1){
+            this.salary_sum = data.value
+          }
+          this.salary_id = data.id;
+          console.log(this.salary_sum)
+          return true;
+        }
+      }
+      catch(error){
+        console.log(error)
+      }
+
     },
 
     hisoblaIshVaqti() {
@@ -235,11 +328,87 @@ methods:{
         } else {
           this.ishlagan_vaqt = "00:00:00";
         }
+
+        let vaqt = this.ishlagan_vaqt; // "05:10:00"
+        let [soat, daqiqa, soniya] = vaqt.split(":").map(Number);
+
+        // Soatlarga aylantiramiz
+        let umumiy_soat = soat + daqiqa / 60 + soniya / 3600;
+
+        // Jami ishlab topilgan pul
+        let ishlab_topilgan_pul = umumiy_soat * this.salary_sum;
+
+        // Natijani saqlash
+        this.ishlagan_puli = Math.round(ishlab_topilgan_pul); // yoki toFixed(2)
+
+        let pul = this.ishlagan_puli;
+
+        let qoldiq = pul % 1000;
+
+        if (qoldiq < 500) {
+          pul = pul - qoldiq; // pastga yaxlitlash
+        } else {
+          pul = pul + (1000 - qoldiq); // tepaga yaxlitlash
+        }
+
+        this.ishlagan_puli = pul;
       }
     },
 
     async save_vaqt_change(){
-      console.log('change')
+      if (!this.kirish_date || !this.kirish_time || !this.chiqish_date || !this.chiqish_time){
+        return;
+      }
+      const kirish = this.kirish_date +'T' + this.kirish_time + ':00.000Z';
+      const chiqish = this.chiqish_date +'T' + this.chiqish_time + ':00.000Z';
+
+      const requestOptions = {
+        method : "POST",
+        headers: { "Content-Type" : "application/json" },
+        body: JSON.stringify({
+          "userid": this.client_info.userid,
+          "salary_id": this.salary_id,
+          "work_time": this.ishlagan_vaqt,
+          "sum": this.ishlagan_puli,
+          "num": 1,
+          "id": this.select_item_id,
+          "k_date": kirish,
+          "created_date": chiqish,
+          "note": 'Update ishlagan puli',
+          "auth_user_creator_id": parseInt(this.ishlagan_puli) - parseInt(this.old_work_money),
+          "auth_user_updator_id": localStorage.AuthId
+        })
+      };
+      console.log('requestOptions.body')
+      console.log(requestOptions.body)
+      try{
+        this.loading = true;
+        const response = await fetch(this.$store.state.hostname + "/TegirmonUserIshlaganPuli", requestOptions);
+        // const data = await response.json();
+        console.log('update TegirmonUserIshlaganPuli', response)
+        if(response.status == 201 || response.status == 200)
+        {
+          this.loading = false;
+          await this.handleChooseDay(this.choosen_day);
+          this.show = false;
+          this.$refs.message.success("Ma'lumot qushildi");
+          this.$emit('update_calendar')
+          return true;
+        }
+        else{
+          this.modal_info = this.$i18n.t('network_ne_connect');
+          this.modal_status = true;
+          this.loading = false;
+          return false;
+        }
+      }
+      catch{
+        this.loading = false;
+        this.modal_info = this.$i18n.t('network_ne_connect', error);
+        this.modal_status = true;
+        return false;
+      }
+                                                                                                                                                      
     },
 
     async getCheckInOut(date){
