@@ -72,7 +72,7 @@
                           <img :src="hostname + client_info.image_url" alt="">
                         </div>
                         <div class="user_info_selected pt-4 px-3">
-                          <h6 class="font-weight-bold" style="font-size: 14.5px;">{{client_info.ism}}</h6>
+                          <h5 class="font-weight-bold" style="font-size: 14.5px;">{{client_info.ism}}</h5>
                           <p class="m-0 pt-1"><span class=" pr-1">ID:</span>  {{client_info.userid}}</p>
                           <p class="m-0"><span class=" pr-1">Номер паспорта:</span>  {{client_info.passport}}</p>
                           <p class="m-0 "><span class=" pr-1">Дата рождения:</span>  {{client_info.born_date}}</p>
@@ -80,9 +80,9 @@
                         </div>
                       </div>
                       <div class="ishlagan_puli d-flex align-items-center justify-content-between py-2 px-5 border-top">
-                          <h6 class="font-weight-bold m-0" style="font-size: 17px;">Ishlagan puli :</h6>
-                          <h6 v-if="user_oylik_info.length>0" class="font-weight-bold ml-3 m-0 text-primary" style="font-size: 25px;">{{ user_oylik_info[0].sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')  }} сўм</h6>
-                          <h6 v-else class="font-weight-bold ml-3 m-0 text-primary" style="font-size: 25px;">0 сўм</h6>
+                          <h5 class="font-weight-bold m-0" style="font-size: 17px;">Balance :</h5>
+                          <h5 v-if="user_oylik_info.length>0" class="font-weight-bold ml-3 m-0 text-primary" style="font-size: 25px;">{{ user_oylik_info[0].sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')  }} сўм</h5>
+                          <h5 v-else class="font-weight-bold ml-3 m-0 text-primary" style="font-size: 25px;">0 сўм</h5>
                       </div>
                       <div class="ishlagan_puli d-flex align-items-center py-1 px-4 border-top">
                           <!-- <mdb-btn color="success" class="py-2 px-3" style="font-size: 10px;">
@@ -101,6 +101,70 @@
                           </div>
                       </div>
                     </div>
+
+                    <div class="card mt-3" v-if="oylik_data.reserved_value>1">
+                      <div class="d-flex w-100">
+                        <div class="user_info_selected pt-1 px-2 w-100">
+                          <p class="m-0 pt-1 text-center">
+                            <!-- <small style="font-size: 15px;" class="pr-1">Oylik turi:</small> -->
+                            <small style="font-size: 17px; font-weight: bold;" class="pl-2">{{oylik_name}}</small> 
+                          </p>
+                          <div class="row container">
+                            <div class="col-6 py-1 px-2 card rounded mt-2"  v-if="oylik_data.reserved_value == 1">
+                              <small style="font-size: 15px; " class="pr-1">Kunlik summa:</small>
+                              <div class="text-right">
+                                <small style="font-size: 18px; font-weight: bold;" class="pl-2">{{oylik_value.toFixed(0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small>
+                              </div>
+                            </div>
+                            <div v-else class="col-6 p-1">
+                              <div class="py-1 px-2 border rounded mt-2">
+                                <small style="font-size: 15px; color:dimgrey;" class="pr-1">Oylik summa:</small>
+                                <div class="text-right">
+                                  <small style="font-size: 18px; font-weight: bold; color:dimgrey;" class="pl-2">{{oylik_value.toFixed(0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-6 p-1" v-if="oylik_dollor">
+                              <div class="py-1 px-2 border rounded mt-2">
+                                <small style="font-size: 15px; color:dimgrey;" class="pr-1">Oylik dollorda:</small>
+                                <div class="text-right">
+                                  <small style="font-size: 18px; font-weight: bold; color:dimgrey;" class="pl-2">{{oylik_dollor.toFixed(0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div class="row container">
+                            
+                            <div  class="col-6 p-1">
+                              <div class="py-1 px-2 border rounded mt-1 mb-2">
+                                <small style="font-size: 15px; color:dimgrey;" class="pr-1">Ish kunlari soni:</small>
+                                <div class="text-right">
+                                  <small style="font-size: 18px; font-weight: bold; color:dimgrey;" class="ml-2 px-2 alert-warning rounded">{{daysInSelectedMonth - 4}}</small>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="col-6 p-1">
+                              <div class="py-1 px-2 border rounded mt-1 mb-2">
+                                <small style="font-size: 15px; color:dimgrey;" class="pr-1">Ishlagan kunlari soni:</small>
+                                <div class="text-right">
+                                  <small style="font-size: 18px; font-weight: bold; color:dimgrey;" class="ml-2 px-2 alert-success rounded">{{user_ishlagan_kunlari}}</small>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          
+                        </div>
+                      </div>
+                      <div class="ishlagan_puli d-flex align-items-center justify-content-between py-2 px-5 border-top">
+                          <h5 class="font-weight-bold m-0" style="font-size: 17px;">Hisoblangan summa :</h5>
+                          <h5 v-if="user_hisoblangan_sum>0" class="font-weight-bold ml-3 m-0 text-primary" style="font-size: 25px;">{{ user_hisoblangan_sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')  }} сўм</h5>
+                          <h5 v-else class="font-weight-bold ml-3 m-0 text-primary" style="font-size: 25px;">0 сўм</h5>
+                      </div>
+                      
+                    </div>
                   </div>
                   <!-- <camera/> -->
                   <div class="col-7">
@@ -109,7 +173,7 @@
                 </div>
             </div>
             <div >
-                <calendar @choose_day="handleChooseDay1" ref="user_salary_calendar" class="card mt-2"/>
+                <calendar @choose_day="handleChooseDay1" @change_date="handleChooseDate" ref="user_salary_calendar" class="card mt-2"/>
             </div>
         </div>
       </div>
@@ -257,6 +321,18 @@ data(){
       main_product_measure: '',
       user_rasxod_prixod_list: [],
 
+      oylik_name: '',
+      oylik_value: 0,
+      oylik_dollor: 0,
+      oylik_data: {},
+      select_month: '',
+      user_hisoblangan_sum: 0,
+      user_ishlagan_kunlari: 0,
+      month_days: 0,
+
+      dollor_kurs: 0,
+      dollor_kurs_qty: 0,
+
     }
   },
   components: {
@@ -264,7 +340,7 @@ data(){
     mdbBtn, 
     mdbInput, 
     webcam,
-    erpSelect, 
+    erpSelect,
     InputSearch,
     inputSearchYear,
     calendar,
@@ -279,8 +355,18 @@ data(){
 //     },
     async mounted() {
       await this.fetch_user();
+      await this.nbuKurs();
+      let today = new Date();
+      this.select_month = today.toISOString().slice(0, 10);
     },
-   computed: mapGetters(['get_user_list', ]),
+   computed: {...mapGetters(['get_user_list',]),
+    daysInSelectedMonth() {
+      const date = new Date(this.select_month);
+      const year = date.getFullYear();
+      const month = date.getMonth(); // 0-based
+      return new Date(year, month + 1, 0).getDate();
+    },
+   },
     
   methods: {
     ...mapActions(['fetch_user',]),
@@ -318,9 +404,63 @@ data(){
     },
     async handleChooseDay1(data){
       this.choosen_day = data;
-      console.log('bu yerga keldi')
+      console.log('bu yerga keldi', data)
       this.$refs.user_vaqt_info_comp.handleChooseDay(data);
     },
+    async handleChooseDate(data){
+      this.select_month = data;
+      await this.fetchUserIshlaganVaqti();
+    },
+    async fetchUserIshlaganPuli(){
+      this.user_hisoblangan_sum = 0;
+      try{
+        const response = await fetch(this.$store.state.hostname + "/TegirmonUserIshlaganPuli/getUserWorkedDaysReports?page=0&size=100&userid=" + this.user_id + '&month=' + this.select_month);
+        const data = await response.json();
+        console.log('ishlagan pul list',data)
+        if(response.status == 200 || response.status == 201){
+          this.user_ishlagan_puli = data.items_list;
+          if(this.oylik_data.reserved_value == 1){
+            this.user_hisoblangan_sum = this.user_ishlagan_puli.reduce((summa, item)=>{
+              return summa + item.sum;
+            }, 0)
+          }
+          console.log(this.user_hisoblangan_sum);
+        }
+        else{
+          this.user_ishlagan_puli = [];
+        }
+      }
+      catch(error){
+        this.user_ishlagan_puli = [];
+        // this.$refs.message.error("Foydalanuvchida " + formatted + " ushbu kun uchun ma'lumot topilmadi");
+        console.log(error)
+      }
+    },
+    async fetchUserIshlaganVaqti(){
+      try{
+        const response = await fetch(this.$store.state.hostname + "/TegirmonUserIshlaganVaqt/getUserWorkedDays?page=0&size=200&userid=" + this.user_id + '&month=' + this.select_month);
+        const data = await response.json();
+        console.log('ishlagan vaqti list',data)
+        if(response.status == 200 || response.status == 201){
+          this.user_ishlagan_kunlari = data.items_list.length;
+          if(this.oylik_data.reserved_value >1){ 
+            let oy_days = this.daysInSelectedMonth;
+            console.log('oy_days', oy_days)
+            this.user_hisoblangan_sum = (this.user_ishlagan_kunlari * (this.oylik_value / (oy_days-4))).toFixed();
+          }
+          
+        }
+        else{
+          this.user_ishlagan_puli = [];
+        }
+      }
+      catch(error){
+        this.user_ishlagan_puli = [];
+        // this.$refs.message.error("Foydalanuvchida " + formatted + " ushbu kun uchun ma'lumot topilmadi");
+        console.log(error)
+      }
+    },
+
 
     async fetchuseroylik(){
       try{
@@ -363,6 +503,11 @@ data(){
         this.$refs.user_vaqt_info_comp.changeUser();
       console.log(option)
       console.log(option)
+      if(option.res_badgenumber){
+        await this.fetch_oylikId(option.res_badgenumber)
+      }
+      await this.fetchUserIshlaganVaqti();
+      
     },
 
     async selectClientBorn(option){
@@ -374,7 +519,10 @@ data(){
       await this.get_user_rasxod_prixod_list()
         this.$refs.user_vaqt_info_comp.changeUser();
       console.log(option)
-
+      if(option.res_badgenumber){
+        await this.fetch_oylikId(option.res_badgenumber)
+      }
+      await this.fetchUserIshlaganVaqti();
     },
     //kerak
     async selectOptionUser(option){
@@ -386,13 +534,53 @@ data(){
         this.$refs.user_salary_calendar.update_user_salary(option.userid);
         await this.get_user_rasxod_prixod_list()
         this.$refs.user_vaqt_info_comp.changeUser();
-
+        if(option.res_badgenumber){
+          await this.fetch_oylikId(option.res_badgenumber)
+        }
+      await this.fetchUserIshlaganVaqti();
     },
+    async fetch_oylikId(oylik_id){
+        try{
+          const res = await fetch(this.$store.state.hostname + '/SkudOyliks/' + oylik_id);
+          const data = await res.json();
+          if(res.status == 200 || res.status == 201){
+            console.log(data)
+            this.oylik_name = data.name;
+            this.oylik_value = data.value;
+            this.oylik_data = data; 
+            this.oylik_dollor = data.reserved_value2;
+            if(data.reserved_value2 && this.dollor_kurs_qty){
+              this.oylik_value = data.reserved_value2 * this.dollor_kurs_qty;
+            }
+            if(data.reserved_value == 1){
+              await this.fetchUserIshlaganPuli();
+            }
+          }
+        }
+        catch(error){
+            console.log(error)
+        }
+      },
     async update_calendar(){
       this.$refs.user_salary_calendar.update_user_salary(option.userid);
     },
     getPhoto(){
       this.showPhoto = true;
+    },
+    async nbuKurs(){
+      try{
+        const response = await fetch("https://cbu.uz/uz/arkhiv-kursov-valyut/json/");
+        const data = await response.json();
+        console.log('json valyuta')
+        console.log(data)
+        if(data.length>0){
+          this.dollor_kurs = parseInt(data[0].Rate).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')
+          this.dollor_kurs_qty = parseInt(data[0].Rate);
+        }
+      }
+      catch(error){
+        console.log(error)
+      }
     },
   },
 }

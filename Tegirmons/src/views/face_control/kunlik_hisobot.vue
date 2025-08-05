@@ -1,6 +1,7 @@
 <template>
   <div class="bg-white" style="position:relative;">
-    <div :class="{'p-4': comp_status== false}" >
+    <loader v-if="loading"/>
+    <div v-else :class="{'p-4': comp_status== false}" >
       <div class="bg-white  mb-5 pb-4 shadow" :class="{'px-4 pt-1': comp_status== false, 'px-2 pt-0': comp_status}" style="border-radius:5px; position:relative;">
         <form @submit.prevent="submit" v-if="comp_status == false">
           <div style="height: 40px;" class="d-flex justify-content-between border-bottom align-items-center  ">
@@ -143,10 +144,11 @@
                 <th >Status</th>
                 <th >Vaqt</th>
                 <th >Summa</th>
+                <th >Javob olganlar</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row,rowIndex) in select_status_list" :key="rowIndex" @click="selectInvoiceItem(row)">
+              <tr v-for="(row,rowIndex) in filteredUsers" :key="rowIndex" @click="selectInvoiceItem(row)">
                 <td> <small >{{rowIndex+1}}</small> </td>
                 <td> <small >{{row.userId}}</small> </td>
                 <td> <small >{{row.fio}}</small> </td>
@@ -168,7 +170,17 @@
                 </td>
                 <td> <small >{{row.workedTime}}</small> </td>
                 <td> <small >{{row.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small> </td>
-                
+                <td>
+                  <label for="for_checkbox"></label>
+                  <input
+                    v-model="row.isYuqlama"
+                    type="checkbox"
+                    class="mt-1 bg-success"
+                    id="for_checkbox"
+                    @change="onCheckboxChange(row)"
+                    style="width: 15px; height: 15px; cursor: pointer;"
+                  /> 
+                </td>
               </tr>
             </tbody>
           </table>
@@ -225,43 +237,104 @@ import Circle_progress from './circle_progress.vue';
         smena_id: 0,
 
         select_status_list: [],
+
+        search: "",
       }
     },
     async mounted(){
+      console.log('mounted ishlayabdi')
+      let time1 = new Date();
+      this.Start_time = time1.toISOString().slice(0,10);
+
       this.fetch_Dept();
       this.fetch_Smena();
       await this.apply();
 
       // await this.fetchUserAccess(localStorage.user_id);
-      if(localStorage.getItem('end_date')){
-        this.Start_time = localStorage.getItem('begin_date'); 
-        this.End_time = localStorage.getItem('end_date');
-        this.selected = localStorage.getItem('menu_item');
-      }
-      else{
-        let time1 = new Date();
-        this.Start_time = time1.toISOString().slice(0,10); 
-        this.End_time = time1.toISOString().slice(0,10);
-        localStorage.setItem('begin_date',this.Start_time)
-        localStorage.setItem('end_date',this.End_time)
-        localStorage.setItem('menu_item',this.selected)
-      } 
+      // if(localStorage.getItem('end_date')){
+      //   this.Start_time = localStorage.getItem('begin_date'); 
+      //   this.End_time = localStorage.getItem('end_date');
+      //   this.selected = localStorage.getItem('menu_item');
+      // }
+      // else{
+         
+      //   this.End_time = time1.toISOString().slice(0,10);
+      //   localStorage.setItem('begin_date',this.Start_time)
+      //   localStorage.setItem('end_date',this.End_time)
+      //   localStorage.setItem('menu_item',this.selected)
+      // } 
       if(this.comp_status){
         await this.change_user_status(1);
       }
-        
+      // qidiruv uchun inputsiz qidiruv
+      window.addEventListener("keydown", this.handleKeyDown);
     },
-   
+    
     computed:  {
       ...mapGetters(['get_zaxira_change_invoice_list', 'get_saled_invoice_list', 'get_zaxira_invoice_list',
      'get_change_invoice_list', 'get_product_all_item_one', 'get_dept_list', 'get_smena_list']),
+      filteredUsers() {
+        const s = this.search.toLowerCase();
+        return this.select_status_list.filter(user => user.fio.toLowerCase().includes(s));
+      }
     },
     methods: {
       ...mapActions(['fetchZaxira_change_invoice_list', 'fetchSaled_invoice_list', 'fetchZaxira_invoice_list', 
       'fetchChange_invoice_list', 'fetchSaled_invoice_list_productId', 'fetchZaxira_invoice_list_productId',
       'fetchChange_invoice_list_productId', 'fetch_Dept', 'fetch_Smena']),
       ...mapMutations(['district_row_delete',]),
+      
+      handleKeyDown(event) {
+        const key = event.key;
+        if (/^[a-zA-Zа-яА-Я0-9 ]$/.test(key)) {
+          this.search += key;
+        } else if (key === "Backspace") {
+          this.search = this.search.slice(0, -1);
+        }
+      },
 
+
+
+      async onCheckboxChange(row) {
+        console.log('Qiymati o‘zgardi:', row.isYuqlama);
+        // Shu yerda backendga so‘rov yuborsangiz ham bo‘ladi
+        const yuqlama_kuni = this.Start_time +'T13:32:00.000Z';
+
+        const requestOptions = {
+          method : "POST",
+          headers: { "Content-Type" : "application/json" },
+          body: JSON.stringify({
+            "userid": row.userId,
+            "k_date": yuqlama_kuni,
+            "status": row.isYuqlama,
+            "note": 'yuqlama qushildi',
+            "auth_user_updator_id": localStorage.AuthId
+          })
+        };
+        console.log('requestOptions.body')
+        console.log(requestOptions.body)
+        try{
+          // this.loading = true;
+          const response = await fetch(this.$store.state.hostname + "/TegirmonUserYuqlama", requestOptions);
+          if(response.status == 201 || response.status == 200)
+          {
+            // this.loading = false;
+            return true;
+          }
+          else{
+            this.modal_info = this.$i18n.t('network_ne_connect');
+            this.modal_status = true;
+            // this.loading = false;
+            return false;
+          }
+        }
+        catch{
+          // this.loading = false;
+          this.modal_info = this.$i18n.t('network_ne_connect', error);
+          this.modal_status = true;
+          return false;
+        }
+      },
 
       async fetchUserAccess(id){
         try{
@@ -291,40 +364,48 @@ import Circle_progress from './circle_progress.vue';
         this.dept_id = option.deptid;
         await this.apply();
       },
-
-      
-
-      
+    
       async apply(){
         this.xodim_kech_kel = 0;
+        console.log(this.Start_time)
         try{
+          this.loading = true;
             const res = await fetch(this.$store.state.hostname + '/SkudMyCheckinouts/by-date?sana=' + this.Start_time + '&smena_id=' + this.smena_id + '&dept_id=' + this.dept_id);
             const data = await res.json();
-            console.log('this is by id')
+            console.log('this is by id',res)
             if(res.status == 200 || res.status == 201){
-                console.log(data)
               this.get_payment_list = data.users;
               this.xodim_soni = data.totalUsers;
               this.xodim_kelgan = data.checkedInUsers;
               this.xodim_kelmagan = data.totalUsers - data.checkedInUsers;
               this.xodim_kech_kel = data.users.filter(item => item.isLate).length;
               this.select_status_list = data.users;
+              this.filteredUsers = data.users;
+              console.log('this.select_status_list', this.select_status_list);
             }
+          this.loading = false;
         }
         catch(error){
             console.log(error)
         }
       },
       async change_user_status(type){
+        this.loading = true;
         if(type == 1){
           this.select_status_list = this.get_payment_list.filter(item => item.kirish)
+          this.filteredUsers = this.select_status_list;
         }
         else if(type == 0){
           this.select_status_list = this.get_payment_list.filter(item => item.kirish == '')
+          this.filteredUsers = this.select_status_list;
         }
         else if(type == 2){
           this.select_status_list = this.get_payment_list.filter(item => item.isLate)
+          this.filteredUsers = this.select_status_list;
+
         }
+        this.loading = false;
+
       },
       async selectInvoiceItem(option){
         console.log(option)

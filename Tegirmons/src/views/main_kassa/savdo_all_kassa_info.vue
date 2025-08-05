@@ -1074,7 +1074,7 @@
   }
   </script>
   
-  <style lang="scss">
+  <style lang="scss" >
     .addProductQtyAcceptCash{
       position: fixed;
       display: flex;

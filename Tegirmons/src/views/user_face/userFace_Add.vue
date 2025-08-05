@@ -149,6 +149,24 @@
           </mdb-col>
         </mdb-row>
         <mdb-row class="mt-3">
+          <mdb-col col="4">
+            <p class="p-0 m-0 mt-2" style="font-size: 14px;">Зарплата</p>
+          </mdb-col>
+          <mdb-col col="8">
+            <div style="position:relative;">
+                  <erpSelect
+                    :options="get_salary_list.rows"
+                    @select="selectOptionSalary"
+                    :selected="oylik_name"
+                    searchKey="name"
+                    :label="$t('smena')"
+                    style="margin-top:8px;"
+                  />
+                  <!-- <small style="position:absolute; top:-12px; left:3px; font-size: 11.5px;" class="font-weight-bold">{{$t('kassa')}}</small> -->
+                </div>
+          </mdb-col>
+        </mdb-row>
+        <mdb-row class="mt-3">
             <mdb-col col="4">
               <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('note')}}</p>
             </mdb-col>
@@ -268,9 +286,10 @@ export default {
       dept_id: 0,
       smena_name: '',
       smena_id: 0,
+      oylik_name: '',
+      oulik_id: 0,
       res_badgenumber:0,
       without_gr_id: 0,
-
     }
   },
   // props:{
@@ -279,10 +298,11 @@ export default {
   //     default: null,
   //   }
   // },
-   computed: mapGetters(['all_district_t', 'all_client_controler', 'allWorker', 'get_dept_list', 'get_smena_list']),
+   computed: mapGetters(['all_district_t', 'all_client_controler', 'allWorker', 'get_dept_list', 'get_smena_list', 'get_salary_list']),
   async mounted(){
       this.fetch_Dept();
       this.fetch_Smena();
+      this.fetch_Salary();
       // await this.fetch_user();
       this.client_list = this.allWorker;
       this.active_bemor = -1;
@@ -322,7 +342,7 @@ export default {
 
   },
   methods: {
-    ...mapActions([ 'fetch_user', 'fetch_Dept', 'fetch_Smena']),
+    ...mapActions([ 'fetch_user', 'fetch_Dept', 'fetch_Smena', 'fetch_Salary']),
     delImage(){
       this.base64 = ''
       this.PicShow = true
@@ -336,6 +356,13 @@ export default {
     selectOptionDept(option){
       this.dept_name = option.deptname;
       this.dept_id = option.deptid;
+    },
+    selectOptionSalary(option){
+      console.log(option);
+      this.oylik_name = option.name;
+      this.oylik_id = option.id;
+      this.res_badgenumber = option.id;
+      this.without_gr_id = option.reserved_value;
     },
 
     async previewFile(){

@@ -11,14 +11,14 @@
       <div class="infoHeader" style="width:100%;">
         <div style="margin: 5px 0px;">
           <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between;  margin-top:3px;">
-            <span style="font-size:11px;" class="paymentCheckPrintCheck">Кассир </span>
-            <span style="font-size: 11.5px;" class="paymentCheckPrintCheck">{{kassir}}</span>
+            <strong style="font-size:11px;" class="paymentCheckPrintCheck">Кассир </strong>
+            <strong style="font-size: 11.5px;" class="paymentCheckPrintCheck">{{kassir}}</strong>
           </div>
         </div>
         <div style="margin: 5px 0px;">
           <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between;  margin-top:3px;">
-            <span style="font-size:11px;" class="paymentCheckPrintCheck">Напечатан </span>
-            <span style="font-size: 11.5px;" class="paymentCheckPrintCheck">{{dateTime}} <span class="ml-1">{{time}}</span></span>
+            <strong style="font-size:11px;" class="paymentCheckPrintCheck">Напечатан </strong>
+            <strong style="font-size: 11.5px;" class="paymentCheckPrintCheck">{{dateTime}} <strong class="ml-1">{{time}}</strong></strong>
           </div>
         </div>
       </div>
@@ -49,8 +49,8 @@
 
       <div style="margin: 5px 0px;">
         <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between;  margin-top:3px;">
-          <span style="font-size:11px;" class="paymentCheckPrintCheck">{{$t('total')}} </span>
-          <span style="font-size: 10.5px; font-weight: bold;" class="paymentCheckPrintCheck ">{{get_all_summa[get_page_savat]}}</span>
+          <strong style="font-size:11px;" class="paymentCheckPrintCheck">{{$t('total')}} </strong>
+          <strong style="font-size: 10.5px; font-weight: bold;" class="paymentCheckPrintCheck ">{{get_all_summa[get_page_savat]}}</strong>
         </div>
       </div>
       <div style="border-bottom: 1px dashed black;">
@@ -58,8 +58,8 @@
       </div>
       <div style="margin: 5px 0px;">
         <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between;  margin-top:3px;">
-          <span style="font-size: 11px;" class="paymentCheckPrintCheck">Итого к оплате: </span>
-          <span style="font-size: 10.5px; font-weight: bold;" class="paymentCheckPrintCheck">{{get_all_summa[get_page_savat]}}</span>
+          <strong style="font-size: 11px;" class="paymentCheckPrintCheck">Итого к оплате: </strong>
+          <strong style="font-size: 10.5px; font-weight: bold;" class="paymentCheckPrintCheck">{{get_all_summa[get_page_savat]}}</strong>
         </div>
       </div>
       <div style="border-bottom: 1px dashed black;">
@@ -67,22 +67,22 @@
       </div>
 
       <div style="margin: 10px 10px 0px 10px; display:flex; justify-content:center;">
-          <span style="font-size: 11px;">****************************************** </span>
+          <strong style="font-size: 11px;">****************************************** </strong>
       </div>
       <div style="margin: 0px 10px; display:flex; justify-content:center;">
-          <span style="font-size: 11px;" class="paymentCheckPrintCheck">Контакты:  </span>
+          <strong style="font-size: 11px;" class="paymentCheckPrintCheck">Контакты:  </strong>
       </div>
       <div style="margin: 5px 10px; display:flex; justify-content:center;">
-          <span style="font-size: 11px;" class="paymentCheckPrintCheck">+998 97 9999945 </span>
+          <strong style="font-size: 11px;" class="paymentCheckPrintCheck">+998 97 9999945 </strong>
       </div>
       <!-- <div style="margin: 5px 10px; display:flex; justify-content:center;">
-          <span style="font-size: 11px;" class="paymentCheckPrintCheck">+998 99 6005555 </span>
+          <strong style="font-size: 11px;" class="paymentCheckPrintCheck">+998 99 6005555 </strong>
       </div>
       <div style="margin: 5px 10px; display:flex; justify-content:center;">
-          <span style="font-size: 11px; font-weight:bold;" class="paymentCheckPrintCheck">+998 97 3855555 </span>
+          <strong style="font-size: 11px; font-weight:bold;" class="paymentCheckPrintCheck">+998 97 3855555 </strong>
       </div> -->
       <div style="margin: 5px 10px 0px 10px; display:flex; justify-content:center;">
-          <span style="font-size: 11px;">****************************************** </span>
+          <strong style="font-size: 11px;">****************************************** </strong>
       </div>
       
       
@@ -139,7 +139,7 @@ export default {
 .paymentCheckPrintCheck{
   font-family: 'Ubuntu';  
 }
-span, h6 {
+strong, h6 {
   font-family: 'Ubuntu';
   font-weight: bold; 
 

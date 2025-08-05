@@ -20,7 +20,8 @@
       </thead>
       <tbody>
         <tr v-for="(week, index) in calendar" :key="index" class="border-bottom">
-          <td v-for="day in week" :key="day.date.toDateString()" @click="chooseDayInfo(day)" 
+          <td v-for="day in week" :key="day.date.toDateString()" @click="chooseDayInfo(day)"
+            style="position: relative;" 
             :class="{
                     'today': day.isToday,
                     'working': day.hours,
@@ -28,6 +29,9 @@
                     }">
             <div class="calendar_date">{{ day.date.getDate() }}</div>
             <small class="calendar_hours" v-if="day.hours">{{ day.hours }}</small>
+            <i v-if="day.isYuqlama" class="fas fa-check text-warning font-weight-bold"
+              style="position: absolute; top:2px; right: 3px; font-size: 11px;">
+            </i>
           </td>
         </tr>
       </tbody>
@@ -35,7 +39,6 @@
   </div>
 </template>
 <script>
-import user from '../../store/modules/user';
 
 export default {
   data() {
@@ -49,6 +52,7 @@ export default {
       workdays: 
         [], // API dan bir oyga qaytgan kunlik ishlaganlar
       calendar: [],
+      yuqlama_list: [],
       selectedMonth: now.getMonth(), // 0-based
       selectedYear: now.getFullYear(), 
       months: [
@@ -86,6 +90,8 @@ export default {
       this.user_id = user_id;
       const selectedDate = `${this.selectedYear}-${(this.selectedMonth + 1).toString().padStart(2, '0')}-01`;
       localStorage.selectedDate = selectedDate;
+      this.$emit('change_date', selectedDate);
+
       console.log('selectedDate', selectedDate)
       try{
         const response = await fetch(this.$store.state.hostname + "/TegirmonUserIshlaganVaqt/getUserWorkedDays?page=0&size=200&userid=" + user_id + '&month=' + selectedDate);
@@ -97,7 +103,25 @@ export default {
         else{
           this.workdays = [];
         }
+        await this.update_user_yuqlama(this.user_id)
         this.generateCalendar(this.selectedYear, this.selectedMonth);
+      }
+      catch(error){
+        console.log(error)
+      }
+    },
+    async update_user_yuqlama(user_id){
+      const selectedDate = `${this.selectedYear}-${(this.selectedMonth + 1).toString().padStart(2, '0')}-01`;
+      try{
+        const response = await fetch(this.$store.state.hostname + "/TegirmonUserYuqlama/getUserWorkedDays?page=0&size=200&userid=" + user_id + '&month=' + selectedDate);
+        const data = await response.json();
+        if(response.status == 200 || response.status == 201){
+          console.log('yuqlama list', data.items_list)
+          this.yuqlama_list = data.items_list;
+        }
+        else{
+          this.yuqlama_list = [];
+        }
       }
       catch(error){
         console.log(error)
@@ -135,11 +159,17 @@ export default {
         if(this.workdays.length>0){
           work = this.workdays.find(w => w.K_date.slice(0, 10) === isoDate);
         }
+        
+        const yuqlama_item = null;
+        if(this.yuqlama_list.length>0){
+          yuqlama_item = this.yuqlama_list.find(w => w.K_date.slice(0, 10) === isoDate);
+        }
 
         week.push({
         date: new Date(date),
         isToday: isoDate === todayStr,
         hours: work ? work.work_time.slice(0, 5) : null,
+        isYuqlama: yuqlama_item ? true : false,
         isOtherMonth: date.getMonth() !== month
         });
 
@@ -150,8 +180,8 @@ export default {
 
         date.setDate(date.getDate() + 1);
     }
-
     this.calendar = weeks;
+    console.log('calendar', this.calendar )
     }
   },
   mounted() {

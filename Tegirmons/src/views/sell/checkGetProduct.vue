@@ -8,41 +8,41 @@
       <div class="infoHeader" style="width:100%;">
         <div style="margin: 5px 0px;">
           <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between;  margin-top:3px;">
-            <span style="font-size:12px; font-weight:bold;" class="paymentCheckPrintCheck">Кассир </span>
-            <span style="font-size: 12.5px; font-weight:bold;" class="paymentCheckPrintCheck" v-if="check_get_invoice.auth != null">{{check_get_invoice.auth.user.fio}}</span>
-            <span style="font-size: 12.5px; font-weight:bold;" class="paymentCheckPrintCheck" v-else>{{kassir}}</span>
+            <strong style="font-size:12px; font-weight:bold;" class="paymentCheckPrintCheck">Кассир </strong>
+            <strong style="font-size: 12.5px; font-weight:bold;" class="paymentCheckPrintCheck" v-if="check_get_invoice.auth != null">{{check_get_invoice.auth.user.fio}}</strong>
+            <strong style="font-size: 12.5px; font-weight:bold;" class="paymentCheckPrintCheck" v-else>{{kassir}}</strong>
           </div>
         </div>
         <div style="margin: 5px 0px;">
           <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between;  margin-top:3px;">
-            <span style="font-size:12px; font-weight:bold;" class="paymentCheckPrintCheck">Напечатан </span>
-            <span style="font-size: 12.5px; font-weight:bold;" class="paymentCheckPrintCheck">{{ check_get_invoice.created_date_time.slice(8,10) + '-' + check_get_invoice.created_date_time.slice(5,7) + '-' + check_get_invoice.created_date_time.slice(0,4)}} <span class="ml-1">{{check_get_invoice.created_date_time.slice(11,16)}}</span></span>
+            <strong style="font-size:12px; font-weight:bold;" class="paymentCheckPrintCheck">Напечатан </strong>
+            <strong style="font-size: 12.5px; font-weight:bold;" class="paymentCheckPrintCheck">{{ check_get_invoice.created_date_time.slice(8,10) + '-' + check_get_invoice.created_date_time.slice(5,7) + '-' + check_get_invoice.created_date_time.slice(0,4)}} <strong class="ml-1">{{check_get_invoice.created_date_time.slice(11,16)}}</strong></strong>
           </div>
         </div>
       </div>
       <div class="infoHeader" style="width:100%;">
         <div style="margin: 5px 0px;" v-show="check_get_invoice.check_number">
           <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between;  margin-top:3px;">
-            <span style="font-size:12px; font-weight:bold;" class="paymentCheckPrintCheck">{{$t('check_number')}} </span>
-            <span style="font-size: 12.5px; font-weight:bold;" class="paymentCheckPrintCheck">{{check_get_invoice.check_number}} </span>
+            <strong style="font-size:12px; font-weight:bold;" class="paymentCheckPrintCheck">{{$t('check_number')}} </strong>
+            <strong style="font-size: 12.5px; font-weight:bold;" class="paymentCheckPrintCheck">{{check_get_invoice.check_number}} </strong>
           </div>
         </div>
         <div style="margin: 5px 0px;">
           <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between;  margin-top:3px;">
-            <span style="font-size:12px; font-weight:bold;" class="paymentCheckPrintCheck">{{$t('client')}} </span>
-            <span style="font-size: 12.5px; font-weight:bold;" class="paymentCheckPrintCheck">{{check_get_invoice.user_name}} </span>
+            <strong style="font-size:12px; font-weight:bold;" class="paymentCheckPrintCheck">{{$t('client')}} </strong>
+            <strong style="font-size: 12.5px; font-weight:bold;" class="paymentCheckPrintCheck">{{check_get_invoice.user_name}} </strong>
           </div>
         </div>
         <div style="margin: 5px 0px;">
           <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between;  margin-top:3px;">
-            <span style="font-size:12px; font-weight:bold;" class="paymentCheckPrintCheck">{{$t('product')}}</span>
-            <span style="font-size: 12.5px; font-weight:bold;" class="paymentCheckPrintCheck">{{check_get_invoice.product.name}} </span>
+            <strong style="font-size:12px; font-weight:bold;" class="paymentCheckPrintCheck">{{$t('product')}}</strong>
+            <strong style="font-size: 12.5px; font-weight:bold;" class="paymentCheckPrintCheck">{{check_get_invoice.product.name}} </strong>
           </div>
         </div>
         <div style="margin: 5px 0px;">
           <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between;  margin-top:3px;">
-            <span style="font-size:12px; font-weight:bold;" class="paymentCheckPrintCheck">{{$t('qty')}} </span>
-            <span style="font-size: 12.5px; font-weight:bold;" class="paymentCheckPrintCheck">{{check_get_invoice.qty_real}}  </span>
+            <strong style="font-size:12px; font-weight:bold;" class="paymentCheckPrintCheck">{{$t('qty')}} </strong>
+            <strong style="font-size: 12.5px; font-weight:bold;" class="paymentCheckPrintCheck">{{check_get_invoice.qty_real}}  </strong>
           </div>
         </div>
       </div>
@@ -75,49 +75,49 @@
       </div>
 
       <div style="margin: 10px 10px 0px 10px; display:flex; justify-content:center;">
-          <span style="font-size: 13px; font-weight:bold;">****************************************** </span>
+          <strong style="font-size: 13px; font-weight:bold;">****************************************** </strong>
       </div>
       <div style="margin: 0px 10px; display:flex; justify-content:center;">
-        <span style="font-size: 13px; font-weight:bold;" class="paymentCheckPrintCheck">Иш вақти:  </span>
+        <strong style="font-size: 13px; font-weight:bold;" class="paymentCheckPrintCheck">Иш вақти:  </strong>
       </div>
       <div style="margin: 5px 10px; display:flex; justify-content:center;">
-        <span style="font-size: 13px; font-weight:bold;" class="paymentCheckPrintCheck"> 07:00 - 19:00</span>
+        <strong style="font-size: 13px; font-weight:bold;" class="paymentCheckPrintCheck"> 07:00 - 19:00</strong>
       </div>
       <div style="margin: 0px 10px; display:flex; justify-content:center;">
-          <span style="font-size: 13px; font-weight:bold;" class="paymentCheckPrintCheck">Контакты:  </span>
+          <strong style="font-size: 13px; font-weight:bold;" class="paymentCheckPrintCheck">Контакты:  </strong>
       </div>
       <div style="margin: 5px 10px; display:flex; justify-content:center;">
-          <span style="font-size: 13px; font-weight:bold;" class="paymentCheckPrintCheck">+998 97 999-9945 </span>
+          <strong style="font-size: 13px; font-weight:bold;" class="paymentCheckPrintCheck">+998 97 999-9945 </strong>
       </div>
       <div style="margin: 5px 10px; display:flex; justify-content:center;">
-        <span style="font-size: 13px; font-weight:bold;" class="paymentCheckPrintCheck">+998 90 979-6666 </span>
+        <strong style="font-size: 13px; font-weight:bold;" class="paymentCheckPrintCheck">+998 90 979-6666 </strong>
       </div>
       <div style="margin: 5px 10px 0px 10px; display:flex; justify-content:center;">
-          <span style="font-size: 13px; font-weight:bold;">****************************************** </span>
+          <strong style="font-size: 13px; font-weight:bold;">****************************************** </strong>
       </div>
       
       <div class="d-flex justify-content-center mt-2">
           <qr-code :text="value" :size="size" error-level="L"></qr-code>
       </div>
       <div style="display:flex; justify-content: center; padding: 0; padding-top: 8px; margin-bottom: 0px;">
-        <span style="font-size: 13px;" class="paymentCheckPrintCheck"> 
-            <span style="font-size: 12px;" class="paymentCheckPrintCheck mr-2">Ид:</span>
+        <strong style="font-size: 13px;" class="paymentCheckPrintCheck"> 
+            <strong style="font-size: 12px;" class="paymentCheckPrintCheck mr-2">Ид:</strong>
             {{check_get_invoice.client.id}}
-          </span>
-          <span style="font-size: 13px; margin-left: 15px;" class="paymentCheckPrintCheck"> 
-            <span style="font-size: 12px;" class="paymentCheckPrintCheck mr-2">Парол:</span>
+          </strong>
+          <strong style="font-size: 13px; margin-left: 15px;" class="paymentCheckPrintCheck"> 
+            <strong style="font-size: 12px;" class="paymentCheckPrintCheck mr-2">Парол:</strong>
             {{check_get_invoice.client.car_number}}
-          </span>
+          </strong>
       </div>
       <div style="display:flex; justify-content: center; padding: 0; padding-top: 0px; margin-bottom: 1px;">
-      <span style="font-size: 12px;" class="paymentCheckPrintCheck text-center"> 
+      <strong style="font-size: 12px;" class="paymentCheckPrintCheck text-center"> 
         для получения остатки через телеграм
-      </span>
+      </strong>
      </div>
      <div style="display:flex; justify-content: center; padding: 0; padding-top: 0px; margin-bottom: 4px;">
-      <span style="font-size: 12px;" class="paymentCheckPrintCheck"> 
+      <strong style="font-size: 12px;" class="paymentCheckPrintCheck"> 
         @Oqqorgon_tegirmon_zahira_bot
-      </span>
+      </strong>
      </div>
 
       <div style="margin-top:15px; border:1px solid black;"></div>
@@ -176,7 +176,7 @@ export default {
   font-family: 'Ubuntu'; 
   font-weight: bold; 
 }
-span, h6 {
+strong, h6 {
   font-family: 'Ubuntu';
   font-weight: bold; 
 

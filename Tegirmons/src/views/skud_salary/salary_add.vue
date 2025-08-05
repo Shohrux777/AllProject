@@ -36,6 +36,16 @@
           </mdb-col>
         </mdb-row> 
 
+        <mdb-row class="mt-2">
+          <mdb-col col="3">
+            <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('salary')}} $</p>
+          </mdb-col>
+          <mdb-col col="5">
+            <input type="text" v-model="dollor_str"  @keyup="funcDollor($event.target.value)"   
+            class="form-control  mt-2 pr-2" style="border:1px solid #BDBDBD; outline:none;font-size:13px; height:30px;" >
+          </mdb-col>
+        </mdb-row> 
+
         <mdb-row class="mt-3">
           <mdb-col col="3">
             <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('salary_type')}}</p>
@@ -95,11 +105,18 @@ export default {
       salary_name: '',
       money: null,
       money_str: '',
+      dollor: null,
+      dollor_str: '',
       salary_type: 2,
+      dollor_kurs: 0,
+      dollor_kurs_qty: 0,
     }
   },
   components: {
     mdbInput, mdbRow, mdbCol, mdbIcon, mdbBtn
+  },
+  async mounted(){
+    await this.nbuKurs();
   },
   validations: {
       salary_name: {
@@ -116,7 +133,13 @@ export default {
         this.salary_name = data.name;
         this.money = data.value;
         this.salary_type = data.reserved_value;
+        this.dollor = data.reserved_value2;
+        this.dollor_str = data.reserved_value2.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
         this.money_str = this.money.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+        if(this.dollor_kurs_qty && data.reserved_value2){
+          this.money = this.dollor * this.dollor_kurs_qty;
+          this.money_str = this.money.toFixed(0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+        }
       }
     },
   methods:{
@@ -125,6 +148,8 @@ export default {
         this.salary_name = '';
         this.money = null;
         this.money_str = '';
+        this.dollor = null;
+        this.dollor_str = '';
         this.salary_name = 1;
         this.id = 0;
       },
@@ -146,6 +171,30 @@ export default {
         console.log(temp)
         if(temp != ''){
           this.money = parseFloat(temp);
+          this.dollor = 0;
+          this.dollor_str = '';
+        }
+      },
+      funcDollor(n){
+        var tols = ''
+        for(let i=0; i<n.length; i++){
+          if(n[i] != ' '){
+            tols += n[i];
+          }
+        }
+
+        this.dollor_str = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+        var temp = '';
+        for(let i=0; i<this.dollor_str.length; i++){
+          if(this.dollor_str[i] != ' '){
+            temp += this.dollor_str[i];
+          }
+        }
+        console.log(temp)
+        if(temp != ''){
+          this.dollor = parseFloat(temp);
+          this.money = this.dollor_kurs_qty * this.dollor;
+          this.money_str = this.money.toFixed(0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
         }
       },
     save_data :  async function(){
@@ -163,6 +212,7 @@ export default {
               "name" : this.salary_name,
               "value": this.money,
               "reserved_value": parseInt(this.salary_type),
+              "reserved_value2": parseFloat(this.dollor)
             })
           };
           try{
@@ -209,6 +259,22 @@ export default {
           }
         }
       },
+
+    async nbuKurs(){
+      try{
+        const response = await fetch("https://cbu.uz/uz/arkhiv-kursov-valyut/json/");
+        const data = await response.json();
+        console.log('json valyuta')
+        console.log(data)
+        if(data.length>0){
+          this.dollor_kurs = parseInt(data[0].Rate).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')
+          this.dollor_kurs_qty = parseInt(data[0].Rate);
+        }
+      }
+      catch(error){
+        console.log(error)
+      }
+    },
   }
 }
 </script>

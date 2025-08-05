@@ -8,42 +8,42 @@
       <div class="infoHeader" style="width:100%;">
         <div style="margin: 5px 0px;">
           <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between;  margin-top:3px;">
-            <span style="font-size:12px; font-weight:bold" class="paymentCheckPrint">Кассир </span>
-            <span v-if="kassir" style="font-size: 13px; font-weight:bold" class="paymentCheckPrint">{{kassir}}</span>
+            <strong style="font-size:12px; font-weight:bold" class="paymentCheckPrint">Кассир </strong>
+            <strong v-if="kassir" style="font-size: 13px; font-weight:bold" class="paymentCheckPrint">{{kassir}}</strong>
           </div>
         </div>
         <div style="margin: 5px 0px;">
           <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between;  margin-top:3px;">
-            <span style="font-size:12px; font-weight:bold" class="paymentCheckPrint">Напечатан </span>
-            <span style="font-size: 13px; font-weight:bold" class="paymentCheckPrint">{{dateTime.slice(8,10) + '-' + dateTime.slice(5,7) + '-' + dateTime.slice(0,4) }} <span class="ml-1">{{time}}</span></span>
+            <strong style="font-size:12px; font-weight:bold" class="paymentCheckPrint">Напечатан </strong>
+            <strong style="font-size: 13px; font-weight:bold" class="paymentCheckPrint">{{dateTime.slice(8,10) + '-' + dateTime.slice(5,7) + '-' + dateTime.slice(0,4) }} <strong class="ml-1">{{time}}</strong></strong>
           </div>
         </div>
       </div>
       <div class="client_all_info" v-for="(item, index) in zaxiraList" :key="index" style=" border-bottom: 1px dashed black;">
         <div class="infoList infoHeader">
           <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between; margin-top:3px;">
-            <span style="font-size: 12px; font-weight: bold;">{{$t('check_number')}}:</span>
-            <span style="font-size: 12px; font-weight:bold"  class="paymentCheckPrint">{{item.id}}</span>
+            <strong style="font-size: 12px; font-weight: bold;">{{$t('check_number')}}:</strong>
+            <strong style="font-size: 12px; font-weight:bold"  class="paymentCheckPrint">{{item.id}}</strong>
           </div>
           <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between; margin-top:3px;">
-            <span style="font-size: 12px; font-weight: bold;">{{$t('client_name')}}:</span>
-            <span style="font-size: 12px; font-weight:bold"  class="paymentCheckPrint">{{item.client_name}}</span>
+            <strong style="font-size: 12px; font-weight: bold;">{{$t('client_name')}}:</strong>
+            <strong style="font-size: 12px; font-weight:bold"  class="paymentCheckPrint">{{item.client_name}}</strong>
           </div>
           <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between; margin-top:3px;">
-            <span style="font-size: 12px; font-weight: bold;">Основной клиент:</span>
-            <span style="font-size: 12px; font-weight:bold"  class="paymentCheckPrint">{{item.main_client}}</span>
+            <strong style="font-size: 12px; font-weight: bold;">Основной клиент:</strong>
+            <strong style="font-size: 12px; font-weight:bold"  class="paymentCheckPrint">{{item.main_client}}</strong>
           </div>
           <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between; margin-top:3px;">
-            <span style="font-size: 12px; font-weight: bold;">{{$t('product')}}</span>
-            <span style="font-size: 12px; font-weight:bold"  class="paymentCheckPrint">{{item.product_name}}</span>
+            <strong style="font-size: 12px; font-weight: bold;">{{$t('product')}}</strong>
+            <strong style="font-size: 12px; font-weight:bold"  class="paymentCheckPrint">{{item.product_name}}</strong>
           </div>
           <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between; margin-top:3px;">
-            <span style="font-size: 12px; font-weight: bold;">{{$t('ostatka')}}</span>
-            <span style="font-size: 12px; font-weight:bold" class="paymentCheckPrint">{{get_ostatka_check_zaxira.toFixed(2)}}</span>
+            <strong style="font-size: 12px; font-weight: bold;">{{$t('ostatka')}}</strong>
+            <strong style="font-size: 12px; font-weight:bold" class="paymentCheckPrint">{{get_ostatka_check_zaxira.toFixed(2)}}</strong>
           </div>
           <!-- <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between; margin-top:3px;">
-            <span style="font-size: 14px; font-weight: bold;">{{$t('qty')}}</span>
-            <span style="font-size: 14px;">{{item.real_qty}}</span>
+            <strong style="font-size: 14px; font-weight: bold;">{{$t('qty')}}</strong>
+            <strong style="font-size: 14px;">{{item.real_qty}}</strong>
           </div> -->
         </div>
 
@@ -90,53 +90,53 @@
       
       <div style="margin: 5px 0px;">
         <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between;  margin-top:3px;">
-          <span  class="paymentCheckPrint" style="font-size: 12px; font-weight:bold">Итого к оплате: </span>
-          <span  class="paymentCheckPrint" style="font-size: 12px; font-weight:bold">{{zaxira_summa}}</span>
+          <strong  class="paymentCheckPrint" style="font-size: 12px; font-weight:bold">Итого к оплате: </strong>
+          <strong  class="paymentCheckPrint" style="font-size: 12px; font-weight:bold">{{zaxira_summa}}</strong>
         </div>
       </div>
       <div style="border-bottom: 1px dashed black;">
         <!-- ******************************************************************************************** -->
       </div>
       <div style="margin: 10px 0px 0px 0px; display:flex; justify-content:center;">
-          <span  class="paymentCheckPrint" style="font-weight:bold; font-size: 12px;">****************************************** </span>
+          <strong  class="paymentCheckPrint" style="font-weight:bold; font-size: 12px;">****************************************** </strong>
       </div>
       <div style="margin: 0px 0px; display:flex; justify-content:center;">
-          <span  class="paymentCheckPrint" style="font-weight:bold; font-size: 12px;">Контакты:  </span>
+          <strong  class="paymentCheckPrint" style="font-weight:bold; font-size: 12px;">Контакты:  </strong>
       </div>
       <div style="margin: 5px 0px; display:flex; justify-content:center;">
-          <span  class="paymentCheckPrint" style="font-weight:bold; font-size: 12px;">+998 97 9999945 </span>
+          <strong  class="paymentCheckPrint" style="font-weight:bold; font-size: 12px;">+998 97 9999945 </strong>
       </div>
       <!-- <div style="margin: 5px 0px; display:flex; justify-content:center;">
-          <span  class="paymentCheckPrint" style="font-weight:bold; font-size: 12px;">+998 99 6005555 </span>
+          <strong  class="paymentCheckPrint" style="font-weight:bold; font-size: 12px;">+998 99 6005555 </strong>
       </div>
       <div style="margin: 5px 10px; display:flex; justify-content:center;">
-          <span style="font-size: 12px; font-weight:bold;" class="paymentCheckPrintCheck">+998 97 3855555 </span>
+          <strong style="font-size: 12px; font-weight:bold;" class="paymentCheckPrintCheck">+998 97 3855555 </strong>
       </div> -->
       <div style="margin: 5px 0px 0px 0px; display:flex; justify-content:center;">
-          <span  class="paymentCheckPrint" style="font-weight:bold; font-size: 12px;">****************************************** </span>
+          <strong  class="paymentCheckPrint" style="font-weight:bold; font-size: 12px;">****************************************** </strong>
       </div>
       <div class="d-flex justify-content-center mt-2">
           <qr-code :text="value" :size="size" error-level="L"></qr-code>
       </div>
       <div style="display:flex; justify-content: center; padding: 0; padding-top: 8px; margin-bottom: 0px;">
-        <span style="font-size: 13px;" class="paymentCheckPrintCheck"> 
-            <span style="font-size: 12px;" class="paymentCheckPrintCheck mr-2">Ид:</span>
+        <strong style="font-size: 13px;" class="paymentCheckPrintCheck"> 
+            <strong style="font-size: 12px;" class="paymentCheckPrintCheck mr-2">Ид:</strong>
             {{zaxiraList[0].client_id}}
-          </span>
-          <span style="font-size: 13px; margin-left: 15px;" class="paymentCheckPrintCheck"> 
-            <span style="font-size: 12px;" class="paymentCheckPrintCheck mr-2">Парол:</span>
+          </strong>
+          <strong style="font-size: 13px; margin-left: 15px;" class="paymentCheckPrintCheck"> 
+            <strong style="font-size: 12px;" class="paymentCheckPrintCheck mr-2">Парол:</strong>
             {{zaxiraList[0].client_key}}
-          </span>
+          </strong>
       </div>
       <div style="display:flex; justify-content: center; padding: 0; padding-top: 0px; margin-bottom: 1px;">
-      <span style="font-size: 12px;" class="paymentCheckPrintCheck text-center"> 
+      <strong style="font-size: 12px;" class="paymentCheckPrintCheck text-center"> 
         для получения остатки через телеграм
-      </span>
+      </strong>
      </div>
      <div style="display:flex; justify-content: center; padding: 0; padding-top: 0px; margin-bottom: 4px;">
-      <span style="font-size: 12px;" class="paymentCheckPrintCheck"> 
+      <strong style="font-size: 12px;" class="paymentCheckPrintCheck"> 
         @Oqqorgon_tegirmon_zahira_bot
-      </span>
+      </strong>
      </div>
 
       <div style="margin-top:15px; border:1px solid black;"></div>
@@ -199,7 +199,7 @@ export default {
 }
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 @font-face{
   font-family: "Ubuntu";
   src: url("../../font/Ubuntu/Ubuntu-Bold.ttf")
@@ -208,10 +208,9 @@ export default {
   font-family: 'Ubuntu';  
   font-weight: bold;
 }
-span, h6 {
+strong, h6 {
   font-family: 'Ubuntu';
-  font-weight: bold; 
-
+  font-weight: bold;
 }
 td, th {
   font-family: 'Ubuntu'; 
