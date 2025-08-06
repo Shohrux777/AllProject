@@ -254,6 +254,9 @@ export default {
       this.showPhoto = false;
     },
     async saveRasxod(){
+      let vaqt = new Date();
+      let K_date = vaqt.toISOString()
+      console.log('K_date', K_date)
       if(!this.rasxod_qty){
         this.$refs.alert.error('Summa kiritilmadi!');
         return;
@@ -271,6 +274,7 @@ export default {
         body: JSON.stringify({
           "userid": this.client_info.userid,
           "salary_id": this.client_info.res_badgenumber,
+          'k_date': K_date,
           "work_time": "00:00:00",
           "sum": this.all_summ,
           "num": 2,

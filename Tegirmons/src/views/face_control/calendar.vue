@@ -1,7 +1,7 @@
 <template>
   <div style="width: 350px;">
     <div class="calendar-controls">
-        <select v-model="selectedYear" @change="refreshCalendar" >
+        <select v-model="selectedYear" @change="refreshCalendar">
             <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
         </select>
 

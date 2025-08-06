@@ -1,68 +1,32 @@
 <template>
-  <div class="bg-white" style="position:relative;">
-    <div  >
-      <div class="bg-white  mb-5 pb-4 shadow"  style="border-radius:5px; position:relative;">
-        <form @submit.prevent="submit" >
-          <div style="height: 45px;" class="d-flex justify-content-between border-bottom align-items-center  ">
-            <div class="title w-100 row align-items-center">
-              <div class="col-2">
-                <div class="calendar-controls">
-                  <select v-model="selectedYear" @change="refreshCalendar" >
-                      <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
-                  </select>
-                  <select v-model="selectedMonth" @change="refreshCalendar">
-                      <option v-for="month in months" :key="month.value" :value="month.value">
-                      {{ month.name }}
-                      </option>
-                  </select>
-                </div>
-              </div>
-              <div class="col-3">
-                <div style="position: relative; margin-top: 25px;">
-                  <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -10px; color: #757575;">    
-                  </small>
-                  <mdb-input type="text" size="sm"  v-model="fio" placeholder="FIO" disabled outline/>
-                </div>
-              </div>
-              <div class="col-3">
-                <div style="position: relative; margin-top: 25px;">
-                  <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -10px; color: #757575;">    
-                  </small>
-                  <mdb-input type="text" size="sm"  v-model="oylik_name" placeholder="Oylik turi" disabled outline/>
-                </div>
-              </div>
-              <div class="col-3">
-                <div style="position: relative; margin-top: 25px;">
-                  <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -10px; color: #757575;">    
-                  </small>
-                  <mdb-input type="text" size="sm"  v-model="dept_name" placeholder="Отдель" disabled outline/>
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-3 py-2 pl-1 pr-2" style="cursor: pointer;" @click="change_user_status(1)">
-              <Circle_progress label="Ishga kelgan kunlari" :qty="xodim_soni" :activ_qty="xodim_kelgan" progress_bg="progress_bg_success"/>
-            </div>
-            <div class="col-3 py-2 px-1 pr-2" style="cursor: pointer;" @click="change_user_status(0)">
-              <Circle_progress label="Ishga kelmagan kunlari" :qty="xodim_soni" :activ_qty="xodim_kelmagan" progress_bg="progress_bg_danger"/>
-            </div>
-            <div class="col-3 py-2 px-1 pr-2" style="cursor: pointer;" @click="change_user_status(2)">
-              <Circle_progress label="Ishga kech kelgan kunlari" :qty="xodim_soni" :activ_qty="xodim_kech_kel" progress_bg="progress_bg_warning"/>
-            </div>
-          </div>
-        </div>
-        
-        <!-- <div class="TablePatientDocId p-0 pt-2 px-1">
+  <div class="bg-white p-3" style="position:relative;">
+    <div>
+      <div class="d-flex justify-content-end">
+        <download-excel
+
+          class=" rounded px-2 excel_btn m-0 bg_col_blue"
+          style="margin-top:6px; cursor:pointer; height: 29px; width: 100px;"
+          :data = "user_report_list"
+          :fields = "json_fields"
+          :before-generate = "startDownload"
+          :before-finish   = "finishDownload"
+          :name="`Oylik ( ` + user_report_list[0].fio + ' ).xls'">
+          <small class="text-white ml-0" style="font-size: 12px;">
+              <mdb-icon icon="file-excel" class="m-0 p-0 mr-1"></mdb-icon>
+              Excel
+          </small>
+        </download-excel>
+      </div>
+      
+      <div class="bg-white  mb-5 p-0 shadow"  style="border-radius:5px; position:relative;">
+        <div class="TablePatientDocId p-0 pt-2 px-1">
           <table class="kunlik_hisobot_table">
             <thead style="background-color: #C4DEE4;">
               <tr class="header ">
                 <th  width="40" class="text-left">№</th>
                 <th width="40">ID</th>
+                <th >Kun</th>
                 <th width="400">FIO</th>
-                <th >Tel. nomer</th>
                 <th >{{$t('smena')}}</th>
                 <th >{{$t('dept')}}</th>
                 <th width="100">Kirish</th>
@@ -73,33 +37,41 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row,rowIndex) in select_status_list" :key="rowIndex" @click="selectInvoiceItem(row)">
+              <tr v-for="(row,rowIndex) in user_report_list" :key="rowIndex" @click="selectInvoiceItem(row)">
                 <td> <small >{{rowIndex+1}}</small> </td>
                 <td> <small >{{row.userId}}</small> </td>
+                <td> <small >{{row.day.slice(0,10)}}</small> </td>
                 <td> <small >{{row.fio}}</small> </td>
-                <td> <small >{{row.user.phone_number}}</small> </td>
                 <td> <small >{{row.user.group_name}}</small> </td>
                 <td> <small >{{row.user.familiya}}</small> </td>
                 <td>
-                  <small v-if="row.kirish" class="bg-success px-2 rounded text-white">{{row.kirish}}</small>
-                  <small v-else class="bg-danger px-2 rounded text-white">--:--</small>
+                  <small v-if="row.kirish == '--:--'" class="bg-danger px-2 rounded text-white">{{row.kirish}}</small>
+                  <small v-else class="bg-success px-2 rounded text-white">{{row.kirish}}</small>
                 </td>
                 <td>
-                  <small v-if="row.chiqish" class="bg-success px-2 rounded text-white">{{row.chiqish}}</small> 
-                  <small v-else class="bg-danger px-2 rounded text-white">--:--</small> 
+                  <small v-if="row.chiqish == '--:--'" class="bg-danger px-2 rounded text-white">{{row.chiqish}}</small>
+                  <small v-else class="bg-success px-2 rounded text-white">{{row.chiqish}}</small> 
                 </td>
                 <td>
-                  <small v-if="row.isLate" class=" px-2 rounded text-warning">Ishga kech kelgan</small>
-                  <small v-else-if="row.kirish" class=" px-2 rounded text-success">Ishga keldi</small>
-                  <small v-else class="px-2 rounded text-danger">Ishga kelmadi</small>
+                  <small v-if="row.isYuqlama" class=" px-2 rounded text-secondary">Javob olgan</small>
+                  <small v-else-if="row.isLate" class=" px-2 rounded text-warning">Ishga kech kelgan</small>
+                  <small v-else-if="row.kirish == '--:--'" class=" px-2 rounded text-danger">Ishga kelmadi</small>
+                  <small v-else class="px-2 rounded  text-success">Ishga keldi</small>
                 </td>
-                <td> <small >{{row.workedTime}}</small> </td>
+                <td> <small >{{row.workedTime}}</small></td>
                 <td> <small >{{row.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small> </td>
-                
+              </tr>
+              <tr>
+                <td colspan="3">
+                  Общий
+                </td>
+                <td colspan="7">
+                </td>
+                <td>{{oylik_summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</td>
               </tr>
             </tbody>
           </table>
-        </div> -->
+        </div>
       </div>
     </div>
     
@@ -119,40 +91,76 @@ import Circle_progress from './circle_progress.vue';
   // import 'vue2-datepicker/index.css';
   export default {
     data(){
-    const now = new Date();
       return{
         loading:false,
         modal_info : '',
         modal_status: false,
-        selected: 0,
-        get_payment_list: [],
-        xodim_soni: 0,
-        xodim_kelgan: 0,
-        xodim_kelmagan: 0,
-        xodim_kech_kel:0,
-        select_status_list: [],
-        selectedMonth: now.getMonth(), // 0-based
-        selectedYear: now.getFullYear(), 
-        months: [
-        { value: 0, name: 'Yanvar' },
-        { value: 1, name: 'Fevral' },
-        { value: 2, name: 'Mart' },
-        { value: 3, name: 'Aprel' },
-        { value: 4, name: 'May' },
-        { value: 5, name: 'Iyun' },
-        { value: 6, name: 'Iyul' },
-        { value: 7, name: 'Avgust' },
-        { value: 8, name: 'Sentabr' },
-        { value: 9, name: 'Oktabr' },
-        { value: 10, name: 'Noyabr' },
-        { value: 11, name: 'Dekabr' }
-        ],
+        user_report_list: [],
+        
         id: this.$route.params.id,
         fio: '',
         oylik_name: '',
-        dept_name: ''
+        dept_name: '',
+        selected_date: null,
+        user_id: null,
+        oylik_summa: 0,
+
+        json_fields: {
+          'Ish kunlar': {
+            callback: (value) => {
+              return value.day.slice(0,10);
+            }
+          },
+          'Fio': 'fio',
+          'Kirish': 'kirish',
+          'Chiqish': 'chiqish',
+          'Status':{
+            callback: (value) => {
+              if(value.isYuqlama){
+                return 'Javob olgan';
+              }
+              else if(value.isLate){
+                return `Ishga kech kelgan`;
+              }
+              else if(value.kirish == '--:--'){
+                return '-'
+              }
+              else if (value.kirish == ''){
+                return ''
+              }
+              else{
+                return '+'
+              }
+            },
+          },
+          
+          'Ishlagan vaqti':'workedTime',
+          'Ish haqqi': {
+            callback: (value) => {
+              if(value.sum){
+                return value.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+              }
+              else if(value.sum == null){
+                return null
+              }
+              else{
+                return 0;
+              }
+            },
+          },
+        },
       }
     },
+    props:{
+    selected_date:{
+      type: String,
+      default: ''
+    },
+    user_id:{
+      type: Number,
+      default: null,
+    },
+  },
     components: {
       mdbBtn,
       mdbIcon,
@@ -160,68 +168,31 @@ import Circle_progress from './circle_progress.vue';
       Circle_progress,
       // erpSelect
     },
-    
+
     async mounted(){
-      await this.fetch_userId();
+      let time1 = new Date();
+      this.selected_date = time1.toISOString().slice(0,10);
+      await this.fetchUserOylikReport();
     },
-   
     computed:  {
       ...mapGetters([]),
-     years() {
-            const currentYear = new Date().getFullYear();
-            const startYear = currentYear - 5;
-            return Array.from({ length: 50 }, (_, i) => startYear + i);
-        }
     },
     methods: {
       ...mapActions([]),
       ...mapMutations([]),
-      async fetch_userId(){
-        console.log(this.id);
+    
+      async fetchUserOylikReport(){
         try{
-          const res = await fetch(this.$store.state.hostname + '/SkudMyUserinfoes/' + this.id);
-          const data = await res.json();
-          console.log('this is by id')
-          if(res.status == 200 || res.status == 201){
-            console.log(data)
-            this.fio = data.ism;
-            this.dept_name = data.group_name;
-            if(data.res_badgenumber){
-              await this.fetch_oylikId(data.res_badgenumber)
-            }
-          }
-        }
-        catch(error){
-            console.log(error)
-        }
-      },
-      async fetch_oylikId(oylik_id){
-        try{
-          const res = await fetch(this.$store.state.hostname + '/SkudOyliks/' + oylik_id);
-          const data = await res.json();
-          if(res.status == 200 || res.status == 201){
-            console.log(data)
-            this.oylik_name = data.name;
-          }
-        }
-        catch(error){
-            console.log(error)
-        }
-      },
-      async refreshCalendar() {
-       
-      },
-
-      async fetchUserAccess(id){
-        try{
-            const res = await fetch(this.$store.state.hostname + '/TegirmonUserAccess/getTegirmonUserAccessUserId?user_id=' + id);
+            const res = await fetch(this.$store.state.hostname + '/SkudMyCheckinouts/by-date_month?month=' + this.selected_date + '&user_id=' + this.user_id);
             const data = await res.json();
             console.log('this is by id')
             if(res.status == 200 || res.status == 201){
                 console.log(data)
-                if(data.status_1 == false){
-                  this.$refs.blocked.show_block();
-                }
+                this.user_report_list = data;
+                this.oylik_summa = 0;
+                this.oylik_summa = this.user_report_list.reduce((sum, item)=>{
+                  return sum + item.sum
+                },0)
             }
         }
         catch(error){
@@ -229,34 +200,38 @@ import Circle_progress from './circle_progress.vue';
         }
       },
 
-      async selectOption(option){
-        this.smena_name = option.smena_nomi;
-        this.smena_id = option.id;
-        await this.apply();
-      },
 
-      async selectOptionDept(option){
-        this.dept_name = option.deptname;
-        this.dept_id = option.deptid;
-        await this.apply();
-      },
+       async startDownload(){
+        console.log();
+        let temp = {
+          day : '',
+          fio: '',
+          kirish: '',
+          chiqish: '',
+          isYuqlama: false,
+          isLate: false,
+          workedTime: '',
+          sum: null,
+        }
+        this.user_report_list.push(temp);
 
+        let temp2 = {
+          day : 'Общий',
+          fio: '',
+          kirish: '',
+          chiqish: '',
+          isYuqlama: false,
+          isLate: false,
+          workedTime: '',
+          sum: this.oylik_summa,
+        }
+        this.user_report_list.push(temp2);
+       },
+       async finishDownload(){
+          this.user_report_list.splice(this.user_report_list.length-1,1);
+          this.user_report_list.splice(this.user_report_list.length-1,1);
+       }
 
-      async change_user_status(type){
-        if(type == 1){
-          this.select_status_list = this.get_payment_list.filter(item => item.kirish)
-        }
-        else if(type == 0){
-          this.select_status_list = this.get_payment_list.filter(item => item.kirish == '')
-        }
-        else if(type == 2){
-          this.select_status_list = this.get_payment_list.filter(item => item.isLate)
-        }
-      },
-      async selectInvoiceItem(option){
-        console.log(option)
-      
-      },
     },
   };
 </script>
@@ -335,5 +310,31 @@ import Circle_progress from './circle_progress.vue';
   font-size: 14px;
   padding: 5px;
   margin-left: 5px;
+}
+
+.excel_btn{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  padding: 0 15px;
+  color:#3a4b52;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 7px;
+  margin-top: 10px;
+  small{
+    font-size: 12px;
+  }
+}
+.bg_col_blue{
+  border: 1.5px solid #009587;
+  background: #009587;   
+  color:white;
+
+  &:hover{
+    color:white;
+    background: #009587;  
+  }
 }
 </style>

@@ -42,7 +42,7 @@
           <div class="col-3">
             <div class="d-flex justify-content-end">
               <div style="width:180px" class="mr-2" v-if="user_id">
-                <div class="main_kassa_btn m-0 bg_col_info1" @click="$router.push('/oylik_hisobot/' + user_id)">
+                <div class="main_kassa_btn m-0 bg_col_info1" @click="show_user_reports">
                   <small>Ежемесячный отчет</small>
                 </div>
               </div>
@@ -101,8 +101,8 @@
                           </div>
                       </div>
                     </div>
-
-                    <div class="card mt-3" v-if="oylik_data.reserved_value>1">
+<!-- v-if="oylik_data.reserved_value>1" -->
+                    <div class="card mt-3" >
                       <div class="d-flex w-100">
                         <div class="user_info_selected pt-1 px-2 w-100">
                           <p class="m-0 pt-1 text-center">
@@ -248,6 +248,12 @@
             </chiqarPulOlish>
           </template>
       </modal-train>
+      <modal-train  :show="hisobot_show" headerbackColor="#009587"  titlecolor="black" :title="$t('Oylik Hisobot')" 
+        @close="hisobot_show = false" width="75%">
+          <template v-slot:body >
+            <Oylik_hisobot :user_id = "user_id" :selected_date="select_month" ref="user_monthly_report"/>
+          </template>
+      </modal-train>
       <Toast ref="message"></Toast>
 
     <massage_box :hide="modal_status" :detail_info="modal_info"
@@ -271,6 +277,7 @@ import Camera from './avtoCamera.vue';
   import chiqarPulOlish from './chiqarPulOlish.vue'
 import Kunlik_hisobot from './kunlik_hisobot.vue';
 import User_vaqt_info from './user_vaqt_info.vue';
+import Oylik_hisobot from './oylik_hisobot.vue';
 
 
 
@@ -285,6 +292,7 @@ data(){
 
       rasxod_show: false,
       pul_olib_qolish: false,
+      hisobot_show: false,
       
       allList: [],
 
@@ -326,6 +334,7 @@ data(){
       oylik_dollor: 0,
       oylik_data: {},
       select_month: '',
+      choosen_day: '',
       user_hisoblangan_sum: 0,
       user_ishlagan_kunlari: 0,
       month_days: 0,
@@ -348,7 +357,8 @@ data(){
     rasxod,
     chiqarPulOlish,
     Kunlik_hisobot,
-    User_vaqt_info
+    User_vaqt_info,
+    Oylik_hisobot
   },
 //   validations: {
       
@@ -371,6 +381,12 @@ data(){
   methods: {
     ...mapActions(['fetch_user',]),
     ...mapMutations(['check_invoice_zaxira']),
+
+
+    async show_user_reports(){
+      this.hisobot_show = !this.hisobot_show;
+      this.$refs.user_monthly_report.fetchUserOylikReport();
+    },
 
     async get_user_rasxod_prixod_list(){
       try{
@@ -404,7 +420,7 @@ data(){
     },
     async handleChooseDay1(data){
       this.choosen_day = data;
-      console.log('bu yerga keldi', data)
+      console.log('bu yerga keldi choosen_day', data)
       this.$refs.user_vaqt_info_comp.handleChooseDay(data);
     },
     async handleChooseDate(data){
