@@ -102,7 +102,7 @@
                       </div>
                     </div>
 <!-- v-if="oylik_data.reserved_value>1" -->
-                    <div class="card mt-3" >
+                    <div class="card mt-3" style="position: relative;">
                       <div class="d-flex w-100">
                         <div class="user_info_selected pt-1 px-2 w-100">
                           <p class="m-0 pt-1 text-center">
@@ -110,11 +110,14 @@
                             <small style="font-size: 17px; font-weight: bold;" class="pl-2">{{oylik_name}}</small> 
                           </p>
                           <div class="row container">
-                            <div class="col-6 py-1 px-2 card rounded mt-2"  v-if="oylik_data.reserved_value == 1">
-                              <small style="font-size: 15px; " class="pr-1">Kunlik summa:</small>
-                              <div class="text-right">
-                                <small style="font-size: 18px; font-weight: bold;" class="pl-2">{{oylik_value.toFixed(0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small>
+                            <div class="col-6 p-1 "  v-if="oylik_data.reserved_value == 1">
+                              <div class=" py-1 px-2 border rounded mt-2" >
+                                <small style="font-size: 15px; color:dimgrey;" class="pr-1">Kunlik summa:</small>
+                                <div class="text-right">
+                                  <small style="font-size: 18px; font-weight: bold; color:dimgrey;" class="pl-2">{{oylik_value.toFixed(0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small>
+                                </div>
                               </div>
+                              
                             </div>
                             <div v-else class="col-6 p-1">
                               <div class="py-1 px-2 border rounded mt-2">
@@ -135,7 +138,6 @@
                           </div>
                           
                           <div class="row container">
-                            
                             <div  class="col-6 p-1">
                               <div class="py-1 px-2 border rounded mt-1 mb-2">
                                 <small style="font-size: 15px; color:dimgrey;" class="pr-1">Ish kunlari soni:</small>
@@ -154,22 +156,136 @@
                               </div>
                             </div>
                           </div>
-                          
-                          
                         </div>
                       </div>
                       <div class="ishlagan_puli d-flex align-items-center justify-content-between py-2 px-5 border-top">
-                          <h5 class="font-weight-bold m-0" style="font-size: 17px;">Hisoblangan summa :</h5>
+                          <h5 class="font-weight-bold m-0" style="font-size: 17px;">Hisoblangan summa:</h5>
                           <h5 v-if="user_hisoblangan_sum>0" class="font-weight-bold ml-3 m-0 text-primary" style="font-size: 25px;">{{ user_hisoblangan_sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')  }} сўм</h5>
                           <h5 v-else class="font-weight-bold ml-3 m-0 text-primary" style="font-size: 25px;">0 сўм</h5>
                       </div>
-                      
                     </div>
                   </div>
                   <!-- <camera/> -->
                   <div class="col-7">
-                    <User_vaqt_info :client_info="client_info" @update_calendar="update_calendar" ref="user_vaqt_info_comp"/>
+                    <div class="card  p-2 container-fluid">
+                        <p class="m-0 text-center">
+                          <small style="font-size: 15px; font-weight: bold; color: #595961;" class="pl-2">Oylik berish</small> 
+                        </p>
+                        <div class="row mt-2 px-2">
+                          <div class="col-4">
+                            <input type="text" :value="selectedMonthName" disabled class="oylik_input oylik_input_blue">
+                            <small
+                              style="position: absolute; top: -10px; left: 20px; font-size: 11px;" 
+                              class="bg-white px-2 py-0"
+                              >Oy</small
+                            >
+                          </div>
+                          <div class="col-3">
+                            <input type="date" v-model="begin_date" class="oylik_input oylik_input_blue">
+                            <small
+                              style="position: absolute; top: -10px; left: 20px; font-size: 11px;" 
+                              class="bg-white px-2 py-0"
+                              >Boshlanish</small
+                            >
+                          </div>
+                          <div class="col-3">
+                            <input type="date" v-model="end_date" class="oylik_input oylik_input_blue">
+                            <small
+                              style="position: absolute; top: -10px; left: 20px; font-size: 11px;" 
+                              class="bg-white px-2 py-0"
+                              >Tugash</small
+                            >
+                          </div>
+                          <div class="col-2">
+                            <div class="d-flex justify-content-end mt-0 w-100">
+                              <div>
+                                <mdb-btn  color="success py-2 px-3 m-0" style="font-size:9px;" @click="userDateSalaryRefresh">
+                                  Yangilash
+                                </mdb-btn>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row mt-3 pb-3 px-2 border-bottom">
+                          <div class="col-3">
+                            <input type="text" disabled :value="user_hisoblangan_sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')" class="oylik_input oylik_input_green">
+                            <small
+                              style="position: absolute; top: -10px; left: 20px; font-size: 11px"
+                              class="bg-white px-2 py-0"
+                              >Hisoblangan ish haqqi</small
+                            >
+                          </div>
+                          <div class="col-3">
+                            <input type="text" :value="pay_poluchit.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')" disabled class="oylik_input oylik_input_green">
+                            <small
+                              style="position: absolute; top: -10px; left: 20px; font-size: 11px;" 
+                              class="bg-white px-2 py-0"
+                              >Получать деньги</small
+                            >
+                          </div>
+                          <div class="col-3">
+                            <input type="text" :value="pay_rasxod.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')" disabled class="oylik_input oylik_input_red">
+                            <small
+                              style="position: absolute; top: -10px; left: 20px; font-size: 11px;"
+                              class="bg-white px-2 py-0"
+                              >{{ $t("rasxod") }}</small
+                            >
+                          </div>
+
+
+                          <div class="col-3">
+                            <input type="text" :value="old_debt.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')" disabled class="oylik_input oylik_input_red">
+                            <small
+                              style="position: absolute; top: -10px; left: 20px; font-size: 11px;"
+                              class="bg-white px-2 py-0"
+                              >Oldingi oydan qolgan qarz</small
+                            >
+                          </div>
+                        </div>
+
+                        <div class="row mt-3 pb-2 px-2 border-bottom">
+                          <div class="col-5" :class="{'col-6': !oylik_dollor}">
+                            <input type="text" v-model="user_beriladigan_sum_str" @keyup="funcUserBerilganSum($event.target.value)" 
+                            class="oylik_input oylik_input_green">
+                            <small
+                              style="position: absolute; top: -10px; left: 20px; font-size: 11px;"
+                              class="bg-white px-2 py-0"
+                              >Beriladigan summa</small
+                            >
+                          </div>
+                          <div class="col-3" v-if="oylik_dollor">
+                            <input type="text" v-model="pay_dollor_str"
+                            class="oylik_input oylik_input_red">
+                            <small
+                              style="position: absolute; top: -10px; left: 20px; font-size: 11px;"
+                              class="bg-white px-2 py-0"
+                              >Dollor</small
+                            >
+                          </div>
+                          <div class="col-4" :class="{'col-6': !oylik_dollor}" @click="click_diff_change">
+                            <input type="text" v-model="pay_diff_str" class="oylik_input oylik_input_green"
+                            :class="{'text-danger': pay_diff < 0, 'text-primary': pay_diff>0}">
+                            <small
+                              style="position: absolute; top: -10px; left: 20px; font-size: 11px;"
+                              class="bg-white px-2 py-0"
+                              >Keyingi oyga sum</small
+                            >
+                          </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-0">
+                          <div>
+                            <mdb-btn  color="success py-2 px-3" style="font-size:9px;" @click="Ish_haqqi_berish">
+                              Ish haqqi berish
+                            </mdb-btn>
+                          </div>
+                        </div>
+                      </div>
+
+                      <User_vaqt_info class="mt-3" :client_info="client_info" @update_calendar="update_calendar" ref="user_vaqt_info_comp"/>
                   </div>
+
                 </div>
             </div>
             <div >
@@ -184,7 +300,7 @@
           <img :src="hostname + image_url_str" width="240" alt="" class="shadow border rounded">
         </div>
         
-        <webcam  v-show="showPhoto" @getPhotosub="takePhoto"/>
+      <webcam  v-show="showPhoto" @getPhotosub="takePhoto"/>
 
       <hr v-if="user_id" class="mt-4 mb-3 gradint"/>
         <!-- <loaderFixed v-if="loading"/> -->
@@ -197,12 +313,13 @@
                 <th  width="40" class="text-left">№</th>
                 <th width="40" >ID</th>
                 <th>{{$t('client_name')}}</th>
-                <th>Kirish</th>
-                <th>Chiqish</th>
-                <th>Vaqt</th>
+                <th>{{$t('date')}}</th>
                 <th>Summa</th>
+                <th>Qolgan sum</th>
                 <th>Cтатус</th>
                 <th>{{$t('note')}}</th>
+                <th>Boshlanish</th>
+                <th>Tugash</th>
                 <!-- <th width="80" class="text-center">{{$t('Action')}}</th> -->
               </tr>
             </thead>
@@ -216,18 +333,26 @@
                   <small v-if="row.K_date">{{row.K_date.slice(8,10) + '-' + row.K_date.slice(5,7) + '-' + row.K_date.slice(0,4)}}</small> 
                   <small v-if="row.K_date" class="ml-2">{{row.K_date.slice(11,16)}}</small> 
                 </td>
-                <td> 
-                  <small v-if="row.created_date">{{row.created_date.slice(8,10) + '-' + row.created_date.slice(5,7) + '-' + row.created_date.slice(0,4)}}</small> 
-                  <small v-if="row.created_date" class="ml-2">{{row.created_date.slice(11,16)}}</small> 
-                </td>
-                <td> <small >{{row.work_time}}</small> </td>
-                <td v-if="row.sum"> <span :class="{'text-success': row.num == 1, 'text-danger': row.num == 2, 'status_btn_cl': row.num == 3}" >{{row.sum.toFixed(0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>  
+                <td v-if="row.sum"> <span :class="{'text-success': row.num == 5, 'text-danger': row.num == 2, 'status_btn_cl': row.num == 3}" >{{row.sum.toFixed(0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>  
                 <td  v-else> <span class="text-success">{{row.sum}}</span></td>
-                <td v-if="row.num == 1"> <span class="bg-success px-3 text-white rounded" style="padding: 1px 6px;">Приход</span> </td>  
+                <td v-if="row.old_debt>0"> <span class="text-success">{{row.old_debt}}</span></td>
+                <td v-else> <span class="text-danger">{{row.old_debt}}</span></td>
+
+                <td v-if="row.num == 5"> <span class="bg-success px-3 text-white rounded" style="padding: 1px 6px;">Oylik hisob</span> </td>  
                 <td v-else-if="row.num == 3"> <span class="status_btn_bg px-3 text-white rounded" style="padding: 1px 6px;">Получыть </span> </td>  
                 <td  v-else> <span class="bg-danger px-3 text-white rounded" style="padding: 2px 10px;">Расход</span></td>
                 
                 <td> <small >{{row.note}}</small> </td>
+                <td> 
+                  <small v-if="row.created_date_time" class="px-2  rounded text-white" :class="{'bg-secondary': row.num == 5}">
+                    {{row.created_date_time .slice(8,10) + '-' + row.created_date_time .slice(5,7) + '-' + row.created_date_time .slice(0,4)}}
+                  </small>
+                </td>
+                <td>
+                  <small v-if="row.updated_date_time " class="px-2  rounded text-white" :class="{'bg-secondary': row.num == 5}">
+                    {{row.updated_date_time .slice(8,10) + '-' + row.updated_date_time .slice(5,7) + '-' + row.updated_date_time .slice(0,4)}}
+                  </small>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -342,6 +467,39 @@ data(){
       dollor_kurs: 0,
       dollor_kurs_qty: 0,
 
+
+      pay_rasxod: 0,
+      pay_poluchit: 0,
+      pay_dollor: 0,
+      pay_dollor_str: '0',
+      old_debt: 0,
+      user_beriladigan_sum: 0,
+      user_default_sum: 0,
+      user_beriladigan_sum_str: '0',
+      pay_diff_str: '0',
+      pay_diff: 0,
+
+
+
+
+      months: [
+        { value: 0, name: 'Yanvar' },
+        { value: 1, name: 'Fevral' },
+        { value: 2, name: 'Mart' },
+        { value: 3, name: 'Aprel' },
+        { value: 4, name: 'May' },
+        { value: 5, name: 'Iyun' },
+        { value: 6, name: 'Iyul' },
+        { value: 7, name: 'Avgust' },
+        { value: 8, name: 'Sentabr' },
+        { value: 9, name: 'Oktabr' },
+        { value: 10, name: 'Noyabr' },
+        { value: 11, name: 'Dekabr' }
+        ],
+        begin_date: '',
+        end_date: '',
+        photo_url: ''
+
     }
   },
   components: {
@@ -376,17 +534,80 @@ data(){
       const month = date.getMonth(); // 0-based
       return new Date(year, month + 1, 0).getDate();
     },
+    selectedMonthName() {
+      if (!this.select_month) return '';
+
+      const date = new Date(this.select_month);
+      const monthIndex = date.getMonth(); // 0 dan 11 gacha
+      const month = this.months.find(m => m.value === monthIndex);
+      return month ? month.name : '';
+    }
    },
+   watch: {
+    select_month(newVal) {
+      console.log('newVal', newVal);
+      const selected = new Date(newVal);
+
+      const year = selected.getFullYear();
+      const month = String(selected.getMonth() + 1).padStart(2, '0');
+
+      // Oy boshidan
+      this.begin_date = `${year}-${month}-01`;
+
+      // Oy oxirigacha
+      const endDay = new Date(year, selected.getMonth() + 1, 0).getDate();
+      this.end_date = `${year}-${month}-${String(endDay).padStart(2, '0')}`;
+
+      let today = new Date();
+      let todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate()); // bugungi sana faqat
+      console.log('todayDateOnly', todayDateOnly);
+
+      let endDate = new Date(this.end_date);
+
+      // Agar end_date shu oy ichida bo‘lsa va bugungi kundan katta bo‘lsa
+      if (endDate.getFullYear() === today.getFullYear() && 
+          endDate.getMonth() === today.getMonth() &&
+          endDate > todayDateOnly) {
+        this.end_date = this.formatLocalDateToIsoWithoutTimezone(todayDateOnly);
+      }
+    }
+  },
     
   methods: {
     ...mapActions(['fetch_user',]),
     ...mapMutations(['check_invoice_zaxira']),
 
-
+     funcUserBerilganSum(n){
+        var tols = ''
+        for(let i=0; i<n.length; i++){
+          if(n[i] != ' '){
+            tols += n[i];
+          }
+        }
+        if(tols[tols.length-1] != '0' && tols[tols.length-1] != '1' && tols[tols.length-1] != '2' && tols[tols.length-1] != '3' && tols[tols.length-1] != '4' && 
+          tols[tols.length-1] != '5' && tols[tols.length-1] != '6' && tols[tols.length-1] != '7' && tols[tols.length-1] != '8' && tols[tols.length-1] != '9'){
+          tols = tols.slice(0,tols.length-1)
+        }
+        this.user_beriladigan_sum_str = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+        var temp = ''
+        for(let i=0; i<this.user_beriladigan_sum_str.length; i++){
+          if(this.user_beriladigan_sum_str[i] != ' '){
+            temp += this.user_beriladigan_sum_str[i];
+          }
+        }
+        this.user_beriladigan_sum = parseFloat(temp);
+        this.pay_diff = this.user_default_sum - this.user_beriladigan_sum;
+        this.pay_diff_str = this.pay_diff.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      },
+      async click_diff_change(){
+        this.pay_diff = this.user_default_sum - this.user_beriladigan_sum;
+        this.pay_diff_str = this.pay_diff.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      },
     async show_user_reports(){
       this.hisobot_show = !this.hisobot_show;
       this.$refs.user_monthly_report.fetchUserOylikReport();
     },
+
 
     async get_user_rasxod_prixod_list(){
       try{
@@ -426,11 +647,49 @@ data(){
     async handleChooseDate(data){
       this.select_month = data;
       await this.fetchUserIshlaganVaqti();
+      if(this.client_info.res_badgenumber){
+        await this.fetch_oylikId(this.client_info.res_badgenumber)
+      }
     },
+
+    formatLocalDateToIsoWithoutTimezone(date) {
+      const pad = (n) => n.toString().padStart(2, '0');
+
+      const year = date.getFullYear();
+      const month = pad(date.getMonth() + 1); // JS'da oy 0-based
+      const day = pad(date.getDate());
+      // const hours = pad(date.getHours());
+      // const minutes = pad(date.getMinutes());
+      // const seconds = pad(date.getSeconds());
+
+      return `${year}-${month}-${day}`;
+    },
+
+    async userDateSalaryRefresh(){
+      let today = new Date();
+      let todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate()); // bugungi sana faqat
+      console.log('todayDateOnly', todayDateOnly);
+
+      let endDate = new Date(this.end_date);
+
+      // Agar end_date shu oy ichida bo‘lsa va bugungi kundan katta bo‘lsa
+      if (endDate.getFullYear() === today.getFullYear() && 
+          endDate.getMonth() === today.getMonth() &&
+          endDate > todayDateOnly) {
+        this.end_date = this.formatLocalDateToIsoWithoutTimezone(todayDateOnly);
+      }
+      await this.fetchUserIshlaganVaqti();
+      if(this.client_info.res_badgenumber){
+        await this.fetch_oylikId(this.client_info.res_badgenumber)
+      }
+    },
+
+
     async fetchUserIshlaganPuli(){
       this.user_hisoblangan_sum = 0;
+      console.log( this.begin_date , '&end_date=' , this.end_date)
       try{
-        const response = await fetch(this.$store.state.hostname + "/TegirmonUserIshlaganPuli/getUserWorkedDaysReports?page=0&size=100&userid=" + this.user_id + '&month=' + this.select_month);
+        const response = await fetch(this.$store.state.hostname + "/TegirmonUserIshlaganPuli/getUserWorkedDaysBeginEnd?page=0&size=500&userid=" + this.user_id + '&begin_date=' + this.begin_date + '&end_date=' + this.end_date);
         const data = await response.json();
         console.log('ishlagan pul list',data)
         if(response.status == 200 || response.status == 201){
@@ -439,6 +698,10 @@ data(){
             this.user_hisoblangan_sum = this.user_ishlagan_puli.reduce((summa, item)=>{
               return summa + item.sum;
             }, 0)
+            this.user_hisoblangan_sum = this.user_hisoblangan_sum.toFixed();
+            this.user_beriladigan_sum = this.user_hisoblangan_sum - this.pay_rasxod + this.pay_poluchit + this.old_debt;
+            this.user_default_sum = this.user_beriladigan_sum;
+            this.user_beriladigan_sum_str = this.user_beriladigan_sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
           }
           console.log(this.user_hisoblangan_sum);
         }
@@ -452,32 +715,10 @@ data(){
         console.log(error)
       }
     },
-    async fetchUserIshlaganVaqti(){
-      try{
-        const response = await fetch(this.$store.state.hostname + "/TegirmonUserIshlaganVaqt/getUserWorkedDays?page=0&size=200&userid=" + this.user_id + '&month=' + this.select_month);
-        const data = await response.json();
-        console.log('ishlagan vaqti list',data)
-        if(response.status == 200 || response.status == 201){
-          this.user_ishlagan_kunlari = data.items_list.length;
-          if(this.oylik_data.reserved_value >1){ 
-            let oy_days = this.daysInSelectedMonth;
-            console.log('oy_days', oy_days)
-            this.user_hisoblangan_sum = (this.user_ishlagan_kunlari * (this.oylik_value / (oy_days-4))).toFixed();
-          }
-          
-        }
-        else{
-          this.user_ishlagan_puli = [];
-        }
-      }
-      catch(error){
-        this.user_ishlagan_puli = [];
-        // this.$refs.message.error("Foydalanuvchida " + formatted + " ushbu kun uchun ma'lumot topilmadi");
-        console.log(error)
-      }
-    },
 
 
+
+    // bu balance chiqaradi.
     async fetchuseroylik(){
       try{
         const response = await fetch(this.$store.state.hostname + "/TegirmonUserOylik/getPagination?page=0&size=10&userid=" + this.user_id);
@@ -494,6 +735,103 @@ data(){
         this.user_oylik_info = [];
         // this.$refs.message.error("Foydalanuvchida " + formatted + " ushbu kun uchun ma'lumot topilmadi");
         console.log(error)
+      }
+    },
+
+    // bu oylik ishchilarni ishlagan kunlari va oyligini hisoblaydi
+    async fetchUserIshlaganVaqti(){
+      try{
+        const response = await fetch(this.$store.state.hostname + "/TegirmonUserIshlaganVaqt/getUserWorkedDays?page=0&size=500&userid=" + this.user_id + '&month=' + this.select_month);
+        const data = await response.json();
+        console.log('ishlagan vaqti list',data)
+        if(response.status == 200 || response.status == 201){
+          this.user_ishlagan_kunlari = data.items_list.length;
+          if(this.oylik_data.reserved_value >1){
+            let oy_days = this.daysInSelectedMonth;
+            console.log('oy_days', oy_days)
+            this.user_hisoblangan_sum = (this.user_ishlagan_kunlari * (this.oylik_value / (oy_days-4))).toFixed();
+            this.user_beriladigan_sum = this.user_hisoblangan_sum - this.pay_rasxod + this.pay_poluchit;
+            this.user_default_sum = this.user_beriladigan_sum;
+            this.user_beriladigan_sum_str = this.user_beriladigan_sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+          }
+        }
+        else{
+          this.user_ishlagan_puli = [];
+        }
+      }
+      catch(error){
+        this.user_ishlagan_puli = [];
+        // this.$refs.message.error("Foydalanuvchida " + formatted + " ushbu kun uchun ma'lumot topilmadi");
+        console.log(error)
+      }
+    },
+
+
+    async Ish_haqqi_berish(){
+      let now = new Date();
+
+      let year = now.getFullYear();
+      let month = String(now.getMonth() + 1).padStart(2, '0');
+      let day = String(now.getDate()).padStart(2, '0');
+      let hour = String(now.getHours()).padStart(2, '0');
+      let minute = String(now.getMinutes()).padStart(2, '0');
+
+      // Har doim sekund = 00, millisekund = 000 bo‘lsin
+      let new_date = `${year}-${month}-${day}T${hour}:${minute}:00.000Z`;
+
+      let begin = this.begin_date + `T${hour}:${minute}:00.000Z`;
+      let end = this.end_date + `T${hour}:${minute}:00.000Z`;
+
+      const requestOptions = {
+        method : "POST",
+        headers: { "Content-Type" : "application/json" },
+        body: JSON.stringify({
+          "userid": this.client_info.userid,
+          "salary_id": this.client_info.res_badgenumber,
+          'k_date': new_date,
+          "work_time": "00:00:00",
+          "sum": this.user_beriladigan_sum,
+          "old_qarz": this.old_debt,
+          "hisoblan_sum": this.user_hisoblangan_sum,
+          "prixod_sum": this.pay_poluchit,
+          "rasxod_sum": this.pay_rasxod,
+          "old_debt": this.pay_diff,
+          "num": 5,
+          "note": 'Oylik berildi.',
+          "image_url": this.photo_url,
+          "inv_accepted_status": true,
+          "auth_name": localStorage.user_name,
+          "auth_user_creator_id": localStorage.AuthId,
+          "created_date_time": begin,
+          "updated_date_time": end,
+          "num1": this.client_info.without_gr_id
+        })
+      };
+      console.log('requestOptions.body')
+      console.log(requestOptions.body)
+
+      try{
+        this.loading = true;
+        const response = await fetch(this.$store.state.hostname + "/TegirmonUserIshlaganPuli", requestOptions);
+        const data = await response.json();
+        console.log('oylik berildi', data)
+        if(response.status == 201 || response.status == 200)
+        {
+          this.loading = false;
+          return true;
+        }
+        else{
+          this.modal_info = this.$i18n.t('network_ne_connect');
+          this.modal_status = true;
+          this.loading = false;
+          return false;
+        }
+      }
+      catch{
+        this.loading = false;
+        this.modal_info = this.$i18n.t('network_ne_connect');
+        this.modal_status = true;
+        return false;
       }
     },
     
@@ -542,7 +880,7 @@ data(){
     },
     //kerak
     async selectOptionUser(option){
-        console.log(option)
+        console.log(option, 'user client')
         this.user_name = option.ism;
         this.user_id = option.userid;
         this.client_info = option;
@@ -556,6 +894,9 @@ data(){
       await this.fetchUserIshlaganVaqti();
     },
     async fetch_oylikId(oylik_id){
+      await this.fetch_User_Last_Salary();
+      await this.fetch_userRasxod_list();
+      await this.fetch_userPrixod_list();
         try{
           const res = await fetch(this.$store.state.hostname + '/SkudOyliks/' + oylik_id);
           const data = await res.json();
@@ -563,7 +904,7 @@ data(){
             console.log(data)
             this.oylik_name = data.name;
             this.oylik_value = data.value;
-            this.oylik_data = data; 
+            this.oylik_data = data;
             this.oylik_dollor = data.reserved_value2;
             if(data.reserved_value2 && this.dollor_kurs_qty){
               this.oylik_value = data.reserved_value2 * this.dollor_kurs_qty;
@@ -577,6 +918,57 @@ data(){
             console.log(error)
         }
       },
+    async fetch_User_Last_Salary(){
+      this.old_debt = 0;
+      try{
+          const res = await fetch(this.$store.state.hostname + '/TegirmonUserIshlaganPuli/getLastUserWorkedOylikSumma?userid=' + this.user_id);
+          const data = await res.json();
+          if(res.status == 200 || res.status == 201){
+            console.log(data)
+            this.old_debt = data.old_debt;
+          }
+        }
+        catch(error){
+            console.log(error)
+        }
+    },
+    
+    async fetch_userRasxod_list(){
+      this.user_monthly_rasxod_list = [];
+      this.pay_rasxod = 0;
+      try{
+          const res = await fetch(this.$store.state.hostname + '/TegirmonUserIshlaganPuli/getUserWorkedDaysRasxodBeginEnd?page=0&size=200&userid=' + this.user_id + '&begin_date=' + this.begin_date + '&end_date=' + this.end_date);
+          const data = await res.json();
+          if(res.status == 200 || res.status == 201){
+            console.log(data.items_list)
+            this.user_monthly_rasxod_list = data.items_list;
+            this.pay_rasxod = this.user_monthly_rasxod_list.reduce((sum, item) => {
+              return sum += item.sum;
+            },0)
+          }
+        }
+        catch(error){
+            console.log(error)
+        }
+    },
+    async fetch_userPrixod_list(){
+      this.user_monthly_prixod_list = [];
+      this.pay_poluchit = 0;
+      try{
+          const res = await fetch(this.$store.state.hostname + '/TegirmonUserIshlaganPuli/getUserWorkedDaysPrixodBeginEnd?page=0&size=200&userid=' + this.user_id + '&begin_date=' + this.begin_date + '&end_date=' + this.end_date);
+          const data = await res.json();
+          if(res.status == 200 || res.status == 201){
+            console.log(data.items_list)
+            this.user_monthly_prixod_list = data.items_list;
+            this.pay_poluchit = this.user_monthly_prixod_list.reduce((sum, item)=>{
+              return sum += item.sum;
+            },0)
+          }
+        }
+        catch(error){
+            console.log(error)
+        }
+    },
     async update_calendar(){
       this.$refs.user_salary_calendar.update_user_salary(option.userid);
     },
@@ -667,7 +1059,7 @@ data(){
   font-size: 13px;
 }
 .userSalaryTable{
-  height: 300px;
+  height: 290px;
   overflow: hidden;
   overflow-y: scroll;
   // border: 1px solid #757575;
@@ -718,7 +1110,7 @@ data(){
 }
 .mainWorkChange{
   // border: 1px solid black;
-  min-height: calc(100vh - 500px);
+  min-height: calc(100vh - 450px);
 }
 .hover_info{
   display: none;
@@ -847,5 +1239,38 @@ data(){
 }
 .status_btn_cl{
   color: #369387 !important;
+}
+.oylik_hisob_payed{
+  position: absolute;
+  top: 0; 
+  right: -580px;
+  width: 550px;
+  z-index: 11;
+}
+.oylik_input{
+  width: 100%;
+  height: 30px;
+  border-radius: 4px;
+  padding: 1px 7px;
+  font-size: 14px;
+  text-align: right;
+  border: 1px solid #d3d3d3;
+  outline: none;
+}
+.oylik_input_red{
+  color: red;
+}
+.oylik_input_green{
+  color: green;
+}
+.oylik_input_blue{
+  color:#006b95;
+  
+}
+.oylik_input:focus{
+  border: 1px solid #a5a5a5;
+}
+.oylik_input:disabled{
+  background: white;
 }
 </style>

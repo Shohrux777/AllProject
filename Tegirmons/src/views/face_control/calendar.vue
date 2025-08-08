@@ -24,6 +24,7 @@
             style="position: relative;" 
             :class="{
                     'today': day.isToday,
+                    'is_Paid': day.isPaid,
                     'working': day.hours,
                     'other-month': day.isOtherMonth
                     }">
@@ -53,6 +54,7 @@ export default {
         [], // API dan bir oyga qaytgan kunlik ishlaganlar
       calendar: [],
       yuqlama_list: [],
+      user_puli_payed: [],
       selectedMonth: now.getMonth(), // 0-based
       selectedYear: now.getFullYear(), 
       months: [
@@ -103,8 +105,26 @@ export default {
         else{
           this.workdays = [];
         }
+        await this.update_user_ishlagan_puli();
         await this.update_user_yuqlama(this.user_id)
         this.generateCalendar(this.selectedYear, this.selectedMonth);
+      }
+      catch(error){
+        console.log(error)
+      }
+    },
+    async update_user_ishlagan_puli(){
+      const selectedDate = `${this.selectedYear}-${(this.selectedMonth + 1).toString().padStart(2, '0')}-01`;
+      try{
+        const response = await fetch(this.$store.state.hostname + "/TegirmonUserIshlaganPuli/getUserSelectMonthSalary?page=0&size=20&userid=" + this.user_id + '&month=' + selectedDate);
+        const data = await response.json();
+        if(response.status == 200 || response.status == 201){
+          console.log('ishlagan puli list', data.items_list)
+          this.user_puli_payed = data.items_list;
+        }
+        else{
+          this.user_puli_payed = [];
+        }
       }
       catch(error){
         console.log(error)
@@ -164,12 +184,18 @@ export default {
         if(this.yuqlama_list.length>0){
           yuqlama_item = this.yuqlama_list.find(w => w.K_date.slice(0, 10) === isoDate);
         }
+        
+        const paid_user_ishlagan_puli = null;
+        if(this.user_puli_payed.length>0){
+          paid_user_ishlagan_puli = this.user_puli_payed.find(w => w.created_date_time.slice(0,10) <= isoDate && isoDate <= w.updated_date_time.slice(0,10));
+        }
 
         week.push({
         date: new Date(date),
         isToday: isoDate === todayStr,
         hours: work ? work.work_time.slice(0, 5) : null,
         isYuqlama: yuqlama_item ? true : false,
+        isPaid: paid_user_ishlagan_puli ? true : false,
         isOtherMonth: date.getMonth() !== month
         });
 
@@ -244,5 +270,8 @@ tr:hover{
   font-size: 14px;
   padding: 5px;
   margin-left: 5px;
+}
+.is_Paid{
+  background-color: #b8cefd;
 }
 </style>
