@@ -11,8 +11,8 @@
             </option>
         </select>
     </div>
-
-    <table  class="calendar-table">
+    <loader v-if="loading"/>
+    <table v-else class="calendar-table">
       <thead>
         <tr class="border-bottom">
           <th v-for="day in days" :key="day">{{day}}</th>
@@ -45,6 +45,7 @@ export default {
   data() {
     const now = new Date();
     return {
+      loading: false,
       selectedUserId: null,
       users: [{
         name: 'shohrux',
@@ -96,6 +97,7 @@ export default {
 
       console.log('selectedDate', selectedDate)
       try{
+        this.loading = true;
         const response = await fetch(this.$store.state.hostname + "/TegirmonUserIshlaganVaqt/getUserWorkedDays?page=0&size=200&userid=" + user_id + '&month=' + selectedDate);
         const data = await response.json();
         console.log('K_data',data)
@@ -107,7 +109,8 @@ export default {
         }
         await this.update_user_ishlagan_puli();
         await this.update_user_yuqlama(this.user_id)
-        this.generateCalendar(this.selectedYear, this.selectedMonth);
+        await this.generateCalendar(this.selectedYear, this.selectedMonth);
+        this.loading = false;
       }
       catch(error){
         console.log(error)

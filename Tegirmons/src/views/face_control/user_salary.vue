@@ -41,11 +41,7 @@
           </div>
           <div class="col-3">
             <div class="d-flex justify-content-end">
-              <div style="width:180px" class="mr-2" v-if="user_id">
-                <div class="main_kassa_btn m-0 bg_col_info1" @click="show_user_reports">
-                  <small>Ежемесячный отчет</small>
-                </div>
-              </div>
+              
               <div style="width:150px">
                 <div class="main_kassa_btn m-0 bg_col_info1" @click="$router.push('/kunlik_hisobot')">
                   <small>Ежедневный отчет</small>
@@ -264,7 +260,7 @@
                             >
                           </div>
                           <div class="col-4" :class="{'col-6': !oylik_dollor}" @click="click_diff_change">
-                            <input type="text" v-model="pay_diff_str" class="oylik_input oylik_input_green"
+                            <input type="text" disabled v-model="pay_diff_str" class="oylik_input oylik_input_green"
                             :class="{'text-danger': pay_diff < 0, 'text-primary': pay_diff>0}">
                             <small
                               style="position: absolute; top: -10px; left: 20px; font-size: 11px;"
@@ -276,14 +272,17 @@
 
                         <div class="d-flex justify-content-end mt-0">
                           <div>
-                            <mdb-btn  color="success py-2 px-3" style="font-size:9px;" @click="Ish_haqqi_berish">
+                            <mdb-btn  color="info py-2 px-3" style="font-size:9px;" @click="show_user_reports">
+                              Oylik hisobot
+                            </mdb-btn>
+                            <mdb-btn  color="success py-2 px-3" style="font-size:9px;" @click="user_payment">
                               Ish haqqi berish
                             </mdb-btn>
                           </div>
                         </div>
                       </div>
 
-                      <User_vaqt_info class="mt-3" :client_info="client_info" @update_calendar="update_calendar" ref="user_vaqt_info_comp"/>
+                      <User_vaqt_info class="mt-3" :client_info="client_info" @update_calendar="update_calendar" :end_date="last_slary_end_date" ref="user_vaqt_info_comp"/>
                   </div>
 
                 </div>
@@ -328,10 +327,10 @@
               :class="{'zero_item': row.sum == 0}">
                 <td> <small >{{rowIndex+1}}</small> </td>
                 <td> <small >{{row.userid}}</small> </td>
-                <td> <small >{{client_info.ism}}</small> </td>
-                <td> 
+                <td> <small >{{client_info.ism}}</small></td>
+                <td>
                   <small v-if="row.K_date">{{row.K_date.slice(8,10) + '-' + row.K_date.slice(5,7) + '-' + row.K_date.slice(0,4)}}</small> 
-                  <small v-if="row.K_date" class="ml-2">{{row.K_date.slice(11,16)}}</small> 
+                  <small v-if="row.K_date" class="ml-2">{{row.K_date.slice(11,16)}}</small>
                 </td>
                 <td v-if="row.sum"> <span :class="{'text-success': row.num == 5, 'text-danger': row.num == 2, 'status_btn_cl': row.num == 3}" >{{row.sum.toFixed(0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>  
                 <td  v-else> <span class="text-success">{{row.sum}}</span></td>
@@ -344,12 +343,12 @@
                 
                 <td> <small >{{row.note}}</small> </td>
                 <td> 
-                  <small v-if="row.created_date_time" class="px-2  rounded text-white" :class="{'bg-secondary': row.num == 5}">
+                  <small v-if="row.created_date_time" class="px-2  rounded " :class="{'bg-secondary text-white': row.num == 5}">
                     {{row.created_date_time .slice(8,10) + '-' + row.created_date_time .slice(5,7) + '-' + row.created_date_time .slice(0,4)}}
                   </small>
                 </td>
                 <td>
-                  <small v-if="row.updated_date_time " class="px-2  rounded text-white" :class="{'bg-secondary': row.num == 5}">
+                  <small v-if="row.updated_date_time " class="px-2  rounded " :class="{'bg-secondary text-white': row.num == 5}">
                     {{row.updated_date_time .slice(8,10) + '-' + row.updated_date_time .slice(5,7) + '-' + row.updated_date_time .slice(0,4)}}
                   </small>
                 </td>
@@ -376,9 +375,48 @@
       <modal-train  :show="hisobot_show" headerbackColor="#009587"  titlecolor="black" :title="$t('Oylik Hisobot')" 
         @close="hisobot_show = false" width="75%">
           <template v-slot:body >
-            <Oylik_hisobot :user_id = "user_id" :selected_date="select_month" ref="user_monthly_report"/>
+            <Oylik_hisobot :user_id = "user_id" :selected_date="select_month" :start_date="begin_date" :end_date="end_date" ref="user_monthly_report"/>
           </template>
       </modal-train>
+
+      <modal-train  :show="payment_show" headerbackColor="#009587"  titlecolor="black" :title="$t('Oylik Hisobot')" 
+        @close="payment_show = false" width="30%">
+          <template v-slot:body >
+            <div>
+              <div class="d-flex justify-content-between mt-2 w-100 payment_info px-3" style="font-style: italic;">
+                <small>Hisoblangan ish haqqi</small>
+                <small class="font-weight-bold">{{ user_hisoblangan_sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</small>
+              </div>
+              <div class="d-flex justify-content-between mt-2 w-100 payment_info px-3" style="font-style: italic;">
+                <small>Получать деньги:</small>
+                <small class="font-weight-bold">{{ pay_poluchit.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</small>
+              </div>
+              <div class="d-flex justify-content-between mt-2 w-100 payment_info px-3" style="font-style: italic;">
+                <small>Расходъ:</small>
+                <small class="font-weight-bold">{{ pay_rasxod.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</small>
+              </div>
+              <div class="d-flex justify-content-between mt-2 w-100 payment_info px-3" style="font-style: italic;">
+                <small>Oldingi oydan qolgan qarz:</small>
+                <small class="font-weight-bold">{{ old_debt.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</small>
+              </div>
+              <div class="d-flex justify-content-between mt-2 w-100 payment_info px-3" style="font-style: italic;">
+                <small>Beriladigan summa:</small>
+                <small class="font-weight-bold">{{ user_beriladigan_sum_str }}</small>
+              </div>
+              <div class="d-flex justify-content-between mt-2 w-100 payment_info px-3" style="font-style: italic;">
+                <small>Keyingi oyga qoladigan summa:</small>
+                <small class="font-weight-bold">{{ pay_diff_str }}</small>
+              </div>
+
+              <div class="mt-2 text-right">
+                <mdb-btn  color="success py-2 px-3" style="font-size:9px;" @click="Ish_haqqi_berish">
+                  Tasdiqlash
+                </mdb-btn>
+              </div>
+            </div>
+          </template>
+      </modal-train>
+
       <Toast ref="message"></Toast>
 
     <massage_box :hide="modal_status" :detail_info="modal_info"
@@ -418,6 +456,7 @@ data(){
       rasxod_show: false,
       pul_olib_qolish: false,
       hisobot_show: false,
+      payment_show: false,
       
       allList: [],
 
@@ -478,6 +517,8 @@ data(){
       user_beriladigan_sum_str: '0',
       pay_diff_str: '0',
       pay_diff: 0,
+
+      last_slary_end_date: '',
 
 
 
@@ -605,7 +646,7 @@ data(){
       },
     async show_user_reports(){
       this.hisobot_show = !this.hisobot_show;
-      this.$refs.user_monthly_report.fetchUserOylikReport();
+      this.$refs.user_monthly_report.fetchUserOylikReport({num: -1});
     },
 
 
@@ -630,13 +671,21 @@ data(){
     async closeRasxod(){
       this.rasxod_show = false;
       await this.get_user_rasxod_prixod_list();
-      await this.fetchuseroylik()
+      await this.fetchuseroylik();
+      await this.fetchUserIshlaganVaqti();
+      if(this.client_info.res_badgenumber){
+        await this.fetch_oylikId(this.client_info.res_badgenumber)
+      }
 
     },
     async closePulChiqish(){
       this.pul_olib_qolish = false;
       await this.get_user_rasxod_prixod_list();
-      await this.fetchuseroylik()
+      await this.fetchuseroylik();
+      await this.fetchUserIshlaganVaqti();
+      if(this.client_info.res_badgenumber){
+        await this.fetch_oylikId(this.client_info.res_badgenumber)
+      }
 
     },
     async handleChooseDay1(data){
@@ -652,9 +701,9 @@ data(){
       }
     },
 
+    // data ni 2025-08-08 kurinishida qilib beradigan funksiya
     formatLocalDateToIsoWithoutTimezone(date) {
       const pad = (n) => n.toString().padStart(2, '0');
-
       const year = date.getFullYear();
       const month = pad(date.getMonth() + 1); // JS'da oy 0-based
       const day = pad(date.getDate());
@@ -678,30 +727,32 @@ data(){
           endDate > todayDateOnly) {
         this.end_date = this.formatLocalDateToIsoWithoutTimezone(todayDateOnly);
       }
+      
       await this.fetchUserIshlaganVaqti();
       if(this.client_info.res_badgenumber){
         await this.fetch_oylikId(this.client_info.res_badgenumber)
       }
     },
 
-
     async fetchUserIshlaganPuli(){
       this.user_hisoblangan_sum = 0;
       console.log( this.begin_date , '&end_date=' , this.end_date)
       try{
-        const response = await fetch(this.$store.state.hostname + "/TegirmonUserIshlaganPuli/getUserWorkedDaysBeginEnd?page=0&size=500&userid=" + this.user_id + '&begin_date=' + this.begin_date + '&end_date=' + this.end_date);
+        const response = await fetch(this.$store.state.hostname + "/TegirmonUserIshlaganPuli/getUserWorkedDaysSalaryEnd?userid=" + this.user_id + '&end_date=' + this.end_date);
         const data = await response.json();
         console.log('ishlagan pul list',data)
         if(response.status == 200 || response.status == 201){
-          this.user_ishlagan_puli = data.items_list;
+          this.user_ishlagan_puli = data;
           if(this.oylik_data.reserved_value == 1){
             this.user_hisoblangan_sum = this.user_ishlagan_puli.reduce((summa, item)=>{
               return summa + item.sum;
             }, 0)
             this.user_hisoblangan_sum = this.user_hisoblangan_sum.toFixed();
-            this.user_beriladigan_sum = this.user_hisoblangan_sum - this.pay_rasxod + this.pay_poluchit + this.old_debt;
+            this.user_beriladigan_sum = this.user_hisoblangan_sum - this.pay_rasxod + this.pay_poluchit + parseFloat(this.old_debt);
             this.user_default_sum = this.user_beriladigan_sum;
             this.user_beriladigan_sum_str = this.user_beriladigan_sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+            this.pay_diff = 0;
+            this.pay_diff_str = this.pay_diff.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
           }
           console.log(this.user_hisoblangan_sum);
         }
@@ -766,7 +817,9 @@ data(){
       }
     },
 
-
+    async user_payment(){
+      this.payment_show = true;
+    },
     async Ish_haqqi_berish(){
       let now = new Date();
 
@@ -818,6 +871,12 @@ data(){
         if(response.status == 201 || response.status == 200)
         {
           this.loading = false;
+          await this.fetchuseroylik();
+          await this.fetchUserIshlaganVaqti();
+          if(this.client_info.res_badgenumber){
+            await this.fetch_oylikId(this.client_info.res_badgenumber)
+          }
+          this.payment_show = false;
           return true;
         }
         else{
@@ -837,8 +896,12 @@ data(){
     
 
     //kerak
-    async selectInvoiceItem(data){
-      console.log(data);
+    async selectInvoiceItem(inv_item){
+      if(inv_item.num == 5){
+        console.log(inv_item);
+        this.hisobot_show = !this.hisobot_show;
+        this.$refs.user_monthly_report.fetchUserOylikReport(inv_item);
+      }
     },
 
     //kerak
@@ -924,7 +987,26 @@ data(){
           const res = await fetch(this.$store.state.hostname + '/TegirmonUserIshlaganPuli/getLastUserWorkedOylikSumma?userid=' + this.user_id);
           const data = await res.json();
           if(res.status == 200 || res.status == 201){
-            console.log(data)
+            let updatedDate = new Date(data.updated_date_time);
+            let beginDate = new Date(this.begin_date);
+            this.last_slary_end_date = data.updated_date_time;
+
+            if( updatedDate > beginDate &&
+                updatedDate.getMonth() === beginDate.getMonth() &&
+                updatedDate.getFullYear() === beginDate.getFullYear()
+              )
+            {
+              let nextDay = new Date(updatedDate);
+              nextDay.setDate(updatedDate.getDate() + 1);
+              console.log('nextDay',nextDay);
+              // ISO formatga o‘tkazamiz (faqat sana qismi)
+              this.begin_date = nextDay.toISOString().slice(0,10);
+              this.info_status = true;
+              
+            }
+            else if(updatedDate > beginDate){
+              this.info_status = false;
+            }
             this.old_debt = data.old_debt;
           }
         }
@@ -937,11 +1019,11 @@ data(){
       this.user_monthly_rasxod_list = [];
       this.pay_rasxod = 0;
       try{
-          const res = await fetch(this.$store.state.hostname + '/TegirmonUserIshlaganPuli/getUserWorkedDaysRasxodBeginEnd?page=0&size=200&userid=' + this.user_id + '&begin_date=' + this.begin_date + '&end_date=' + this.end_date);
+          const res = await fetch(this.$store.state.hostname + '/TegirmonUserIshlaganPuli/getUserWorkedDaysRasxodEnd?userid=' + this.user_id + '&end_date=' + this.end_date);
           const data = await res.json();
           if(res.status == 200 || res.status == 201){
-            console.log(data.items_list)
-            this.user_monthly_rasxod_list = data.items_list;
+            console.log(data)
+            this.user_monthly_rasxod_list = data;
             this.pay_rasxod = this.user_monthly_rasxod_list.reduce((sum, item) => {
               return sum += item.sum;
             },0)
@@ -955,12 +1037,12 @@ data(){
       this.user_monthly_prixod_list = [];
       this.pay_poluchit = 0;
       try{
-          const res = await fetch(this.$store.state.hostname + '/TegirmonUserIshlaganPuli/getUserWorkedDaysPrixodBeginEnd?page=0&size=200&userid=' + this.user_id + '&begin_date=' + this.begin_date + '&end_date=' + this.end_date);
+          const res = await fetch(this.$store.state.hostname + '/TegirmonUserIshlaganPuli/getUserWorkedDaysPrixodEnd?userid=' + this.user_id + '&end_date=' + this.end_date);
           const data = await res.json();
           if(res.status == 200 || res.status == 201){
-            console.log(data.items_list)
-            this.user_monthly_prixod_list = data.items_list;
-            this.pay_poluchit = this.user_monthly_prixod_list.reduce((sum, item)=>{
+            console.log(data)
+            this.user_monthly_prixod_list = data;
+            this.pay_poluchit = this.user_monthly_prixod_list.reduce((sum, item) => {
               return sum += item.sum;
             },0)
           }
@@ -970,7 +1052,12 @@ data(){
         }
     },
     async update_calendar(){
-      this.$refs.user_salary_calendar.update_user_salary(option.userid);
+      await this.$refs.user_salary_calendar.update_user_salary(this.user_id);
+      await this.fetchuseroylik();
+      await this.fetchUserIshlaganVaqti();
+      if(this.client_info.res_badgenumber){
+        await this.fetch_oylikId(this.client_info.res_badgenumber)
+      }
     },
     getPhoto(){
       this.showPhoto = true;
@@ -1272,5 +1359,13 @@ data(){
 }
 .oylik_input:disabled{
   background: white;
+}
+.payment_info{
+  font-style: 17px;
+  border-bottom: 1px dashed #757575;
+  small{
+    color: #4e4a4a;
+     font-style: 17px;
+  }
 }
 </style>

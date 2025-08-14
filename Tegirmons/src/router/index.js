@@ -82,6 +82,20 @@ const routes = [{
             import ('../views/face_control/oylik_hisobot.vue')
     },
     {
+        path: '/main_qarz',
+        name: 'main_qarz',
+        meta: { layout: 'navbar' },
+        component: () =>
+            import ('../views/qarz_daftar/main_page.vue')
+    },
+    {
+        path: '/user_list',
+        name: 'user_list',
+        meta: { layout: 'navbar' },
+        component: () =>
+            import ('../views/qarz_daftar/user_list.vue')
+    },
+    {
         path: '/doors',
         name: 'doors',
         meta: { layout: 'main' },

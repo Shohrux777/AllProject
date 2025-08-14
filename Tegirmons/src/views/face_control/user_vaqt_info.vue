@@ -161,6 +161,10 @@ props:{
     default() {
         return {}
     }
+    },
+    end_date:{
+      type:String,
+      default: ''
     }
 },
 data(){
@@ -354,8 +358,41 @@ methods:{
         this.ishlagan_puli = pul;
       }
     },
-
+    async fetch_User_Last_Salary(){
+      this.old_debt = 0;
+      try{
+          const res = await fetch(this.$store.state.hostname + '/TegirmonUserIshlaganPuli/getLastUserWorkedOylikSumma?userid=' + this.user_id);
+          const data = await res.json();
+          if(res.status == 200 || res.status == 201){
+            let updatedDate = new Date(data.updated_date_time);
+            let beginDate = new Date(this.kirish_date);
+            
+            if(updatedDate >= beginDate){
+              return false;
+            }
+            else{
+              return true;
+            }
+          }
+          else{
+            return true;
+          }
+        }
+        catch(error){
+            console.log(error)
+        }
+    },
     async save_vaqt_change(){
+      if(this.end_date != ''){
+        let updatedDate = new Date(this.end_date);
+        let beginDate = new Date(this.kirish_date);
+        if(updatedDate >= beginDate){
+          this.$refs.message.warning("Oylik tulov qilingan kunga qo'shib bo'lmaydi.");
+          return;
+        }
+      }
+      
+      
       if (!this.kirish_date || !this.kirish_time || !this.chiqish_date || !this.chiqish_time){
         return;
       }

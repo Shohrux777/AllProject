@@ -65,6 +65,7 @@
           {name: 'Асосий касса', url: '/main_kassa', active: false,  status: true},
           {name: 'Счета', url: '/hisoblar', active: false,  status: true},
           {name: 'Зарплата', url: '/user_salary', active: false,  status: true},
+          {name: 'Журнал долгов', url: '/main_qarz', active: false,  status: true},
           {name: 'Остатка', url: '/changeProduct', active: false,  status: true},
           {name: 'Выйти', url: '/', active: false,  status: true},
         ],

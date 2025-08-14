@@ -248,8 +248,18 @@ export default {
       this.showPhoto = false;
     },
     async saveRasxod(){
-      let vaqt = new Date();
-      let K_date = vaqt.toISOString();
+      let now = new Date();
+
+      let year = now.getFullYear();
+      let month = String(now.getMonth() + 1).padStart(2, '0');
+      let day = String(now.getDate()).padStart(2, '0');
+      let hour = String(now.getHours()).padStart(2, '0');
+      let minute = String(now.getMinutes()).padStart(2, '0');
+
+      // Har doim sekund = 00, millisekund = 000 bo‘lsin
+      let new_date = `${year}-${month}-${day}T${hour}:${minute}:00.000Z`;
+
+      
       if(!this.rasxod_qty){
         this.$refs.alert.error('Summa kiritilmadi!');
         return;
@@ -268,7 +278,7 @@ export default {
           "userid": this.client_info.userid,
           "salary_id": this.client_info.res_badgenumber,
           "work_time": "00:00:00",
-          "k_date": K_date,
+          "k_date": new_date,
           "sum": this.all_summ,
           "num": 3,
           "note": this.note,

@@ -126,8 +126,8 @@
         <div class="row px-3 m-0" :class="{'bg_red_color': oshibka_client == 1}">
           <loader-table v-if="loading_table"/>
           <div v-else class="col-3 mt-4 main_hover_info"  v-for="(item,i) in OstatkaList" :key="i" 
-            style="position:relative;">
-            <div v-if="item.real_qty>=1" class=" card pt-2 pr-3" style="position:relative;" @click="getProductId(item.product.id,item.real_qty, item.product.name, item)">
+            style="position:relative; ">
+            <div v-if="item.real_qty>=1" class=" card pt-2 pr-3" style="position: relative; " @click="getProductId(item.product.id,item.real_qty, item.product.name, item)">
               <div  class="text-right">
                 <h6 class="pro_name_color text-left ml-3">{{item.client.fio}}</h6>
                 <div class="d-flex justify-content-between align-items-center">
@@ -137,7 +137,6 @@
                 </div>
               </div>
             </div>
-            
             <div class="hover_info shadow">
               <div class="addDavernis d-flex justify-content-center border-bottom pb-2 mb-2">
                 <mdb-btn

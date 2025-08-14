@@ -2,69 +2,19 @@
   <div class="rasxod_list_add p-4">
     <loader v-if="loading"/>
     <div v-else class="d-flex w-100">
-      <div style="width: 50%;" v-show="false">
-        <div class="row px-3">
-          <div class="col-7 pr-1" >
-            <div class="" style="position:relative;">
-              <input class="m-0 px-2 form-control" v-model="search" @input="SearchClientNamePass()" 
-                 group type="input" validate error="wrong" success="right"
-                 style="height:30px; font-size: 12.5px;"/>
-              <small
-                style="position: absolute; top: -10px; left: 5px; font-size: 11px"
-                class="bg-white px-2 py-0"
-              >Поиск сотрудник</small>
-            </div>
-          </div>
-          <div class="col-5 pl-1">
-            <div class="" style="position:relative;">
-              <input
-                class="m-0 p-0 form-control px-2"
-                style="height: 30px; font-size: 12.5px;"
-                v-model="phone_number"
-                @input="SearchClientBornDate()"
-                outline
-                group
-                type="text"
-                validate
-                error="wrong"
-                success="right"
-              />
-              <small
-                style="position: absolute; top: -10px; left: 5px; font-size: 11px"
-                class="bg-white px-2 py-0"
-                >{{ $t("born_date") }}</small
-              >
-            </div>
-          </div>
-        </div>
-        
-        <div class="user_rasxod_worker_list py-1 border-bottom  px-3" >
-          <div  v-for="(item,i) in client_list.rows" :key="i" class="item px-3" 
-            @click="getBemorId(i,item)" :class="{'activeUser' : active_bemor == i }">
-            <div>
-              <div class="d-flex">
-                <div class=" user_photo">
-                  <img src="../../assets/client.png" style="height: 45px; overflow: none;" class="img-fluid" alt="">
-                </div>
-                <div class="px-3">
-                  <p class="m-0 p-0 font-weight-bold" style="font-size: 11px;">{{item.ism}}</p>
-                  <p class="m-0 mt-1 rangRasxod" style="font-size:10px;">Год: <span v-if="item.born_date" class="px-2">
-                    {{ item.born_date.slice(8,10) + '-' + item.born_date.slice(5,7) + '-' + item.born_date.slice(0,4)}}</span> 
-                    Тел: <span class="px-2">{{item.phone_number}}</span></p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <div style="width: 100%;">
         <div  class="row pl-3">
           <div class="col-12 mt-0">
-            <input class="m-0 px-2 form-control" :value="client_info.ism" @keypress="change_klient_name()"
-            @blur="blur_client_name()"
+            <input class="m-0 px-2 form-control" v-model="client_info.fio" disabled
              group type="input" validate error="wrong" success="right"
              style="height:32px; font-size: 13.5px;"/>
-            
+            <small
+              style="position: absolute; top: -7px; left: 20px; font-size: 11px"
+              class="bg-white px-2 py-0"
+              >Cотрудник</small>
+               <!-- <small class="invalid-text pt-4" style="margin-left:5px; "  v-if="$v.client_name.$dirty && !$v.client_name.required" >
+                  {{$t('name_invalid_text')}}
+              </small> -->
           </div>
           <div class="col-12 mt-3">
             <input class="m-0 px-2 form-control applied" :value="all_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')" 
@@ -88,10 +38,8 @@
                   {{$t('name_invalid_text')}}
                 </small>
           </div>
-          
-
-          <div class="col-12 mt-3" v-show="false">
-            <div class="d-flex w-100" >
+          <div class="col-12 mt-3">
+            <div class="d-flex w-100">
               <div style="width:50%; position:relative;" class="pr-1">
                 <input class="m-0 px-2 form-control" v-model="dollor_string" @keyup="funcDollor($event.target.value)"
                   @click="select_qty_dl()" @blur="blur_qty_dl()"
@@ -102,7 +50,7 @@
                   class="bg-white px-2 py-0"
                   >{{ $t("price") + ' $' }}</small>
               </div>
-              <div  style="width:40%; position:relative;" class="pr-1 pl-2">
+              <div style="width:40%; position:relative;" class="pr-1 pl-2">
                 <input class="m-0 px-2 form-control" v-model="dollor_kurs" @keyup="funcDollorKurs($event.target.value)"
                   @click="select_qty_dl()" @blur="blur_qty_dl()"
                 group type="input" validate error="wrong" success="right"
@@ -133,25 +81,11 @@
             </div>
           </div>
           <div class="col-12 mt-3">
-            <mdb-input class="m-0 p-0" v-model="note" style="font-size: 14px;" size="sm" outline group type="textarea" validate error="wrong" success="right"/>
+            <mdb-input class="m-0 p-0" v-model="note"  outline group type="textarea" validate error="wrong" success="right"/>
             <small
-              style="position: absolute; top: -10px; left: 20px; font-size: 11px"
+              style="position: absolute; top: -7px; left: 20px; font-size: 11px"
               class="bg-white px-2 py-0"
               >{{ $t("reason") }}</small>
-          </div>
-          <div class="col-12">
-            <!-- Default radio -->
-            <div class="form-check" @click="note = 'Avans berildi.'">
-              <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"/>
-              <label style="font-size: 13px;" class="form-check-label" for="flexRadioDefault1"> Avans berildi. </label>
-            </div>
-          </div>
-          <div class="col-12">
-            <!-- Default radio -->
-            <div class="form-check" @click="note = 'Oylik berildi.'">
-              <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2"/>
-              <label style="font-size: 13px;" class="form-check-label" for="flexRadioDefault2"> Oylik berildi. </label>
-            </div>
           </div>
           <div class="col-12 mt-2 text-right border-top mx-3 pt-1 d-flex justify-content-between">
             <div class="photoUrlShow">
@@ -222,23 +156,21 @@ export default {
     },
   },
   props:{
-    client_info:{
+    client_info: {
       type: Object,
-      default() {
-        return {}; // yoki istalgan default object
+      default(){
+        return {}
       }
     },
-    
   },
-  computed: mapGetters(['get_user_list']),
+  computed: mapGetters(['allWorker', 'user_kassa_list', 'user_kassa_info']),
   async mounted(){
-    await this.fetch_user();
-    this.client_list = this.get_user_list;
-    console.log('this.get_user_list', this.get_user_list)
-    // await this.nbuKurs();
+    await this.fetchWorker();
+    this.client_list = this.allWorker;
+    await this.nbuKurs();
   },
   methods: {
-    ...mapActions(['fetch_user', ]),
+    ...mapActions(['fetchWorker','fetchKassa_userId', 'fetchKassa_info' ]),
     clw_rw(){
       this.rasxod = '0';
       this.rasxod_qty = 0;
@@ -254,53 +186,70 @@ export default {
       this.showPhoto = false;
     },
     async saveRasxod(){
-      let now = new Date();
-
-      let year = now.getFullYear();
-      let month = String(now.getMonth() + 1).padStart(2, '0');
-      let day = String(now.getDate()).padStart(2, '0');
-      let hour = String(now.getHours()).padStart(2, '0');
-      let minute = String(now.getMinutes()).padStart(2, '0');
-
-      // Har doim sekund = 00, millisekund = 000 bo‘lsin
-      let new_date = `${year}-${month}-${day}T${hour}:${minute}:00.000Z`;
-
-      if(!this.rasxod_qty){
+      if(!this.dollor && !this.rasxod_qty){
         this.$refs.alert.error('Summa kiritilmadi!');
         return;
       }
-       if(this.$v.$invalid )
-        {
-          this.$v.$touch();
-          this.$refs.message.warning('please_fill')
-          return false;
+      if(this.$v.$invalid )
+      {
+        this.$v.$touch();
+        this.$refs.message.warning('please_fill')
+        return false;
+      }
+
+        await this.fetchKassa_userId(localStorage.user_id);
+        if(this.user_kassa_list.length){
+          localStorage.kassa_id = this.user_kassa_list[0].id;
+          localStorage.kassa_num = this.user_kassa_list[0].num_1;
         }
-      console.log('dadas')
+        else{
+          this.$refs.alert.error('Bu foydalanuvchi kassaga biriktirilmagan, unda savdo qilish huquqi yuq !');
+          localStorage.kassa_id = 0;
+          localStorage.kassa_num = 0;
+          return;
+        }
+        // if(this.dollor>this.dollor_kassa){
+        //   this.$refs.alert.error('Kassada Dollor yetarli emas !');
+        //   return;
+        // }
+        // else if(this.rasxod_qty>this.cash_kassa){
+        //   this.$refs.alert.error('Kassada Naqd pul yetarli emas !');
+        //   return;
+        // }
       const requestOptions = {
         method : "POST",
         headers: { "Content-Type" : "application/json" },
         body: JSON.stringify({
-          "userid": this.client_info.userid,
-          "salary_id": this.client_info.res_badgenumber,
-          'k_date': new_date,
-          "work_time": "00:00:00",
-          "sum": this.all_summ,
-          "num": 2,
-          "note": this.note,
-          "image_url": this.photo_url,
+          "worker_name": this.client_info.fio,
+          "tegirmonQarzUserId": this.client_info.id,
+          "passport_number": this.client_info.addiotionala_information,
+          "phone_number": this.photo_url,
+          "auth_user_creator_id": localStorage.AuthId,
+          "dollor": this.dollor,
+          "dollor_string": this.dollor_string,
+          "all_summ": this.all_summ,
+          "all_summ_string": this.all_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 '),
+          "kurs": this.dollor_kurs_qty,
+          "note": this.note + '(' + this.client_info.fio + " tomonidan qarz to'lov qildi. <<Qarz bo'limi>>)",
+          "addiotionala_information": localStorage.user_name,
+          "sum" : this.rasxod_qty,
+          "sum_str": this.rasxod,
+          "status_rasxod": 1,
+          "auth_user_updator_id": localStorage.kassa_id
+          // "uz_card": 0,     for skidka uchun ishlataman
         })
       };
       console.log('requestOptions.body')
       console.log(requestOptions.body)
       try{
         this.loading = true;
-        const response = await fetch(this.$store.state.hostname + "/TegirmonUserIshlaganPuli", requestOptions);
+        const response = await fetch(this.$store.state.hostname + "/TegirmonQarzUserRasxod", requestOptions);
         // const data = await response.json();
         console.log(response)
         if(response.status == 201 || response.status == 200)
         {
           this.clw_rw();
-          this.$emit('close');
+          await this.getQarzUserId()
           this.loading = false;
           return true;
         }
@@ -319,16 +268,36 @@ export default {
       }
       
     },
+    async getQarzUserId(){
+      try{
+        const response = await fetch(this.$store.state.hostname + "/TegirmonQarzdorlikUser/" + this.client_info.id,);
+        if(response.status == 201 || response.status == 200)
+        {
+          const data = await response.json();
+          this.$emit('close',data);
+        }
+        else{
+          this.loading = false;
+          this.modal_info = this.$i18n.t('network_ne_connect');
+          this.modal_status = true;
+          return false;
+        }
+      }
+      catch{
+        this.loading = false;
+        this.modal_info = this.$i18n.t('network_ne_connect');
+        this.modal_status = true;
+        return false;
+      }
+    },
     getBemorId(i, data){
       console.log(data)
       this.client_data = data;
       this.active_bemor = i;
-      this.client_name = data.ism;
-      this.client_id = data.userid;
-      this.search = data.ism;
-      if(data.born_date){
-        this.phone_number = data.born_date.slice(8,10) + '-' + data.born_date.slice(5,7) + '-' + data.born_date.slice(0,4)
-      }
+      this.client_name = data.fio;
+      this.client_id = data.id;
+      this.search = data.fio;
+      this.phone_number = data.addiotionala_information.slice(8,10) + '-' + data.addiotionala_information.slice(5,7) + '-' + data.addiotionala_information.slice(0,4)
     },
     async change_klient_name(){
       this.client_data = {};
@@ -345,14 +314,14 @@ export default {
     async SearchClientNamePass(){
       this.phone_number = '';
       if(this.search == ''){
-        await this.fetch_user();
-        this.client_list = this.get_user_list;
+        await this.fetchWorker();
+        this.client_list = this.allWorker;
         return
       }
       // /TegirmonClient/getPaginationSearchByFioOrPassportSerailNumberOrHomeOrMobilePhoneNumber?page=0&size=100&fio_or_serial_number=
       try{
         // this.loading = true;
-        const response = await fetch(this.$store.state.hostname + "/SkudMyUserinfoes/getPaginationSearchByIsmOrPassportSerailNumberOrMobilePhoneNumberFaceUser?page=0&size=100&fio_or_serial_number=" + this.search);
+        const response = await fetch(this.$store.state.hostname + "/TegirmonWorker/getPaginationSearchByFioOrPassportSerailNumberOrHomeOrMobilePhoneNumber?page=0&size=100&fio_or_serial_number=" + this.search);
         const data = await response.json();
         if(response.status == 201 || response.status == 200)
         {
@@ -369,7 +338,7 @@ export default {
       }
       catch{
         // this.loading = false;
-        this.client_list = this.get_user_list;
+        this.client_list = this.allWorker;
         this.modal_info = this.$i18n.t('network_ne_connect');
         this.modal_status = true;
       }
@@ -378,8 +347,8 @@ export default {
     async SearchClientBornDate(){
       this.search = '';
       if(this.phone_number == ''){
-        await this.fetch_user();
-        this.client_list = this.get_user_list;
+        await this.fetchWorker();
+        this.client_list = this.allWorker;
         return
       }
       var x = this.phone_number.replace(/\D/g, '').match(/(\d{0,2})(\d{0,2})(\d{0,4})/);
@@ -409,7 +378,7 @@ export default {
       // /TegirmonClient/getPaginationSearchByFioOrPassportSerailNumberOrHomeOrMobilePhoneNumber?page=0&size=100&fio_or_serial_number=
       try{
         // this.loading = true;
-        const response = await fetch(this.$store.state.hostname + "/SkudMyUserinfoes/getPaginationSearchByIsmOrPassportSerailNumberOrMobilePhoneNumberFaceUser?page=0&size=100&fio_or_serial_number=" + search_birthday);
+        const response = await fetch(this.$store.state.hostname + "/TegirmonWorker/getPaginationByBornDate?page=0&size=100&born_date_str=" + search_birthday);
         const data = await response.json();
         // this.loading = false;
         if(response.status == 201 || response.status == 200)
@@ -430,7 +399,7 @@ export default {
       }
       catch{
         // this.loading = false;
-        this.client_list = this.get_user_list;
+        this.client_list = this.allWorker;
         this.modal_info = this.$i18n.t('network_ne_connect');
         this.modal_status = true;
       }

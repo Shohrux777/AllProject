@@ -3,7 +3,7 @@
     <loader v-if="loading"/>
       <div class="navbar_Nav_Edit d-flex justify-content-between"  container>
           <div class="d-flex align-items-center">
-              <span to="#"> <span class="text-white">Kirish Chiqish</span> </span>
+              <span to="#"> <span class="text-white">Kirish Chiqish1</span> </span>
           </div>
           <div>
               <div  class="excel d-flex  align-items-center">
@@ -83,7 +83,13 @@
             <MDBTable class="align-middle mb-0 bg-white">
                 <thead class="bg-light">
                   <tr>
-                      <th>{{$t('FIO')}}
+                    <th width="150">Стаж работы 
+                        <span style="position:relative;">
+                            <span @click="sortedWorkersAsc()"><MDBIcon icon="angle-up"  class="px-1 up_down_icon"  style="position:absolute; font-size: 11px; top:-2px; cursor:pointer;"/></span>
+                            <span @click="sortedWorkers()"><MDBIcon icon="angle-down"  class="px-1 up_down_icon" style="position:absolute; font-size: 11px; bottom:-4px; cursor:pointer;"/></span>
+                          </span>
+                      </th>
+                      <th width="300">{{$t('FIO')}}
                         <span style="position:relative;">
                             <span @click="sortedArrayAsc('ism')"><MDBIcon icon="angle-up"  class="px-1 up_down_icon"  style="position:absolute; font-size: 11px; top:-2px; cursor:pointer;"/></span>
                             <span @click="sortedArray('ism')"><MDBIcon icon="angle-down"  class="px-1 up_down_icon" style="position:absolute; font-size: 11px; bottom:-4px; cursor:pointer;"/></span>
@@ -135,7 +141,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(row, index) in filteredList" :key="index">
+                <tr v-for="(row, index) in filteredList" :key="index" 
+                :class="{'alert-danger': row.vaqt_flag == 3, 'alert-warning': row.vaqt_flag == 0, 'alert-success': row.vaqt_flag == 1,}">
+                    <td>{{ row.kelganidan_beri }}</td>
                     <td>
                     <div class="d-flex align-items-center">
                         <div class="ms-3">
@@ -158,7 +166,7 @@
                     <td v-if="row.without_gr_id == 2" :class="{'text-success': row.ishlagan_puli != 0, 'text-danger': row.ishlagan_puli<0}" >
                       {{row.ishlagan_puli.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
                     </td>
-                    <td v-else :class="{'text-success': row.ishlagan_puli != 0, 'text-danger': row.ishlagan_puli<0}" >
+                    <td v-else :class="{'text-success': row.ishlagan_puli != 0, 'text-danger': row.ishlagan_puli<0}">
                       {{row.ishlagan_puli.toFixed(0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
                     </td>
                     <!-- <td>{{row.ishlagan_puli}}</td> -->
@@ -583,11 +591,12 @@ export default {
       },
       list_of_in_out: [],
       working_day_count: 0,
-
+      sortKey: '',
     }
   },
   computed: {
     ...mapGetters(['get_door_list', 'get_deparment_list', 'get_user_add_note_list', 'get_user_rasxod_list']),
+    
     filteredList: function(){
       let items = this.reportList;
       this.all_summa = 0;
@@ -649,6 +658,7 @@ export default {
       }
       return items;
     },
+
   },
   async mounted(){
     let time1 = new Date();
@@ -666,6 +676,8 @@ export default {
   },
   methods:{
     ...mapActions([ 'fetch_Door', 'fetch_Department', 'fetch_user_add_note_list', 'fetch_user_rasxod_list']),
+
+    
     async fetchFindSundayInMonth(){
       const daysInMonth = (year, month) => new Date(year, month, 0).getDate();
       var d = new Date(this.Start_time);
@@ -1011,6 +1023,8 @@ export default {
             rasxod_list: [],
             day_count: 0,
             day_list: [],
+            vaqt_flag: data.items_list[i].vaqt_flag,
+            kelganidan_beri: data.items_list[i].kelganidan_beri,
           }
           if(data.items_list[i].oylik_nomi != ''){
             a.oylik_haqqi = data.items_list[i].skudOylik.value;
@@ -1102,7 +1116,39 @@ export default {
         }
 
         this.filteredList.sort(compare);
-    }
+    },
+    toSeconds(str) {
+      // Masalan: "0 yil 7 kun 4 soat"
+      if(str){
+        const match = str.match(/(\d+)\s*yil\s*(\d+)\s*kun\s*(\d+)\s*soat/);
+        if (!match) return 0;
+
+        const years = parseInt(match[1]);
+        const days = parseInt(match[2]);
+        const hours = parseInt(match[3]);
+
+        return years * 365 * 24 * 3600 + days * 24 * 3600 + hours * 3600;
+      }
+      
+    },
+
+    sortedWorkersAsc(){
+      console.log('jkasdkasdjas')
+      this.filteredList.sort((a, b) => {
+        const aSeconds = this.toSeconds(a.kelganidan_beri);
+        const bSeconds = this.toSeconds(b.kelganidan_beri);
+
+        return bSeconds - aSeconds; // eng ko‘p ishlagan oldin
+      });
+    },
+    sortedWorkers(){
+      this.filteredList.sort((a, b) => {
+      const aSeconds = this.toSeconds(a.kelganidan_beri);
+      const bSeconds = this.toSeconds(b.kelganidan_beri);
+
+      return aSeconds - bSeconds; // eng kam ishlagan oldin
+    });
+    },
   },
   
 }
