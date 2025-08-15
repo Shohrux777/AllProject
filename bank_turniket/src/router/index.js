@@ -188,6 +188,18 @@ const routes = [
     meta: { layout: 'main' },
     component: () => import( '../views/rasxod/userRasxod.vue')
   },
+   {
+    path: '/user_avto_rasxod',
+    name: 'user_avto_rasxod',
+    meta: { layout: 'main' },
+    component: () => import( '../views/rasxod/user_avto_rasxod.vue')
+  },
+   {
+    path: '/userNotes',
+    name: 'userNotes',
+    meta: { layout: 'main' },
+    component: () => import( '../views/rasxod/user_note.vue')
+  },
   {
     path: '/infopage',
     name: 'infopage',

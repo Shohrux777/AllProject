@@ -137,7 +137,7 @@
                           <span @click="sortedArray('ishlagan_puli')"><MDBIcon icon="angle-down"  class="px-1 up_down_icon" style="position:absolute; font-size: 11px; bottom:-4px; cursor:pointer;"/></span>
                         </span>
                       </th>
-                      <th width="110">{{$t('Action')}}</th>
+                      <th width="140">{{$t('Action')}}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -171,6 +171,15 @@
                     </td>
                     <!-- <td>{{row.ishlagan_puli}}</td> -->
                     <td class="text-center">
+                      <span class="mx-1 action_info" style="display: inline-block;" @click="func_show_add_note(row.userid, row.ism, index)">
+                        <i v-if="row.user_note != 1" class="fas fa-sticky-note"  style="cursor: pointer;"></i>
+                        <i v-else class="fas fa-check text-success" style="cursor: pointer;"></i>
+                        <small>Заметка</small>
+                      </span>
+                      <span class="mx-1 action_info" style="display: inline-block;" @click="func_add_avto_rasxod(row.userid, row.ism, index)">
+                        <i class="fas fa-bolt" data-fa-transform="shrink-8 up-4 right-6" style="cursor: pointer;"></i>
+                        <small>Авто расход</small>
+                      </span>
                       <span class="mx-1 action_info" style="display: inline-block;" @click="func_show_add_days(row.userid, row.ism, index)">
                         <i class="fa-solid fa-hourglass-start text-info" style="cursor: pointer;"></i>
                         <small>День</small>
@@ -385,6 +394,134 @@
       </MDBModal>
 
       <MDBModal
+          id="exampleModal5"
+          tabindex="2"
+          labelledby="exampleModalLabel5"
+          v-model="show_avto_rasxod"
+      > 
+          <MDBModalHeader style="background: #475a65;" class="text-white px-3 py-2">
+              <MDBModalTitle id="exampleModalLabel"> Авто расходь </MDBModalTitle>
+          </MDBModalHeader>
+          <MDBModalBody>
+            <div class="px-3 row">
+              <div class="col-12 mb-3" style="position:relative;">
+                <!-- <MDBInput v-model="rasxod_summa" type="number" size="sm" label="Расходь сумма" /> -->
+                <input type="number" v-model="rasxod_day"    
+                class="form-control  mt-2 text-right pr-2" style="border:1px solid #BDBDBD; outline:none;font-size:13px; height:30px;" >
+                <small style="position:absolute; background:white; padding: 0px 3px; z-index: 55; top:-2px; left:21px; font-size:11.5px; " class="testing">
+                  День
+                </small> 
+              </div>
+              <div class="col-12 mb-3" style="position:relative;">
+                <!-- <MDBInput v-model="rasxod_summa" type="number" size="sm" label="Расходь сумма" /> -->
+                <input type="text" v-model="rasxod_summaString"  @keyup="funcCash($event.target.value)"  
+                class="form-control  mt-2 text-right pr-2" style="border:1px solid #BDBDBD; outline:none;font-size:13px; height:30px;" >
+                <small style="position:absolute; background:white; padding: 0px 3px; z-index: 55; top:-2px; left:21px; font-size:11.5px; " class="testing">
+                  Авто расходь сумма
+                </small> 
+              </div>
+              
+              <div class="col-12 mb-3">
+                <MDBInput v-model="day_info" type="text" size="sm" label="Примечания" />
+              </div>
+              <div class="col-12 mb-3 border-top border-bottom pt-1 pb-1">
+                <div class="d-flex justify-content-end">
+                  <MDBBtn style="font-size: 9px;" @click="submit_avto_rasxod" color="success">Сохранить</MDBBtn>
+                </div>
+              </div>
+
+              <div class="col-12 mt-3 ">
+                <div class="userWorkTime">
+                  <MDBTable class="align-middle mb-0 bg-white">
+                    <thead class="bg-light">
+                      <tr>
+                          <th>{{$t('FIO')}}
+                          </th>
+                          <th width="50">День</th>
+                          <th>Cумма</th>
+                          <th>{{$t('note')}}</th>
+                          <th>{{$t('date')}}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(row, index) in user_avto_rasxod_list" :key="index" >
+                        <td>
+                          {{row.user_name}}
+                        </td>
+                        <td >
+                          {{ row.day }}
+                        </td>
+                        <td >
+                          {{ row.sum }}
+                        </td>
+                        <td>
+                          {{row.note}}
+                        </td>
+                        <td>
+                          {{row.created_date_time.slice(0,10)}}
+                        </td>
+                    </tr>
+                    </tbody>
+                  </MDBTable>
+                </div>
+              </div>
+            </div>
+          </MDBModalBody>
+      </MDBModal>
+
+      <MDBModal
+          id="exampleModal6"
+          tabindex="2"
+          labelledby="exampleModalLabel6"
+          v-model="show_user_note"
+      > 
+          <MDBModalHeader style="background: #475a65;" class="text-white px-3 py-2">
+              <MDBModalTitle id="exampleModalLabel"> Заметка </MDBModalTitle>
+          </MDBModalHeader>
+          <MDBModalBody>
+            <div class="px-3 row">
+              
+              <div class="col-12 mb-3">
+                <MDBInput v-model="day_info" type="text" size="sm" label="Заметка" />
+              </div>
+              <div class="col-12 mb-3 border-top border-bottom pt-1 pb-1">
+                <div class="d-flex justify-content-end">
+                  <MDBBtn style="font-size: 9px;" @click="submit_user_note" color="success">Сохранить</MDBBtn>
+                </div>
+              </div>
+
+              <div class="col-12 mt-3 ">
+                <div class="userWorkTime">
+                  <MDBTable class="align-middle mb-0 bg-white">
+                    <thead class="bg-light">
+                      <tr>
+                          <th>{{$t('FIO')}}
+                          </th>
+                          <th>{{$t('note')}}</th>
+                          <th>{{$t('date')}}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(row, index) in user_note_list" :key="index">
+                        <td>
+                          {{row.user_name}}
+                        </td>
+                        <td>
+                          {{row.note}}
+                        </td>
+                        <td>
+                          {{row.created_date_time.slice(0,10)}}
+                        </td>
+                    </tr>
+                    </tbody>
+                  </MDBTable>
+                </div>
+              </div>
+            </div>
+          </MDBModalBody>
+      </MDBModal>
+
+      <MDBModal
           id="exampleModal"
           tabindex="-1"
           labelledby="exampleModalLabel"
@@ -477,10 +614,7 @@
                       </td>
                       <td style="width:60px;">
                         {{ row.userid }}
-                      </td>
-                      <!-- <td v-if="row.ishlagan_vaqtlar_ls.length>0"><small v-for="(item, i) in row.ishlagan_vaqtlar_ls" :key="i" style="display: block;">{{ item }}</small></td>
-                      <td v-else class="text-danger">---</td> -->
-                      
+                      </td>                      
                       <td>{{row.count}}</td>
                       <td v-if="row.num_1 == 0" class="text "><MDBBadge badge="danger" pill>Расходь сумма</MDBBadge></td>
                       <td v-else class="text "><MDBBadge badge="success" pill>Зарплата сумма</MDBBadge></td>
@@ -568,6 +702,7 @@ export default {
       show_user_add_data: [],
       show_user_rasxod_data: [],
 
+
       rasxod_summa : null,
       rasxod_summaString: '',
       zaplata_summa : null,
@@ -578,6 +713,12 @@ export default {
       user_add_del_list: [],
       user_rasxod_list: [],
       userWorkTime: [],
+      show_avto_rasxod: false,
+      user_avto_rasxod_list: [],
+      rasxod_day: null,
+      show_user_note: false,
+      user_note_list: [],
+
       search: '',
       json_fields: {
         'ФИО': 'ism',
@@ -591,7 +732,8 @@ export default {
       },
       list_of_in_out: [],
       working_day_count: 0,
-      sortKey: '',
+      sortKey :  '',
+      sortDir : '',
     }
   },
   computed: {
@@ -655,6 +797,13 @@ export default {
         this.all_summa = items.reduce((accumulator ,item) => {
           return accumulator += parseFloat(item.ishlagan_puli);
         }, 0)
+      }
+      if (this.sortKey) {
+        items.sort((a, b) => {
+          if (a[this.sortKey] < b[this.sortKey]) return this.sortDir === 'asc' ? -1 : 1;
+          if (a[this.sortKey] > b[this.sortKey]) return this.sortDir === 'asc' ? 1 : -1;
+          return 0;
+        });
       }
       return items;
     },
@@ -789,6 +938,105 @@ export default {
       this.rasxod_summaString = '';
       this.zaplata_summaString = '';
     },
+    async func_add_avto_rasxod(user_id, user_name, index){
+      this.show_avto_rasxod = true;
+      this.user_id = user_id;
+      this.user_name = user_name;
+      this.item_index = index;
+      await this.fetch_avto_rasxod_list(user_id);
+    },
+    async fetch_avto_rasxod_list(userId){
+      try{
+        const response = await fetch(this.$store.state.hostname + "/SkudUserAvtoRasxod/getUserAddDayUser_ID?user_id=" + userId);
+        const data = await response.json();
+        if(response.status == 200 || response.status == 201){
+          this.user_avto_rasxod_list = data;
+        }
+      }
+      catch(error){
+        this.loading = false;
+        console.log(error)
+      }
+    },
+
+    async submit_avto_rasxod(){
+      if(!this.rasxod_summa || !this.rasxod_day)return;
+      try{
+        const requestOptions = {
+          method: "POST",
+          headers: { "Content-Type" : "application/json" },
+          body: JSON.stringify({
+            "user_name" : this.user_name,
+            "userid" : this.user_id,
+            "day" : this.rasxod_day,
+            "sum": this.rasxod_summa,
+            "note": this.day_info
+            })
+          };
+          const response = await fetch(this.$store.state.hostname + '/SkudUserAvtoRasxod', requestOptions);
+          // const data = await response.json();
+          if(response.status == 200 || response.status == 201){
+            this.show_avto_rasxod = false;
+            this.rasxod_day = null,
+            this.rasxod_summa = 0,
+            this.rasxod_summaString = '';
+            this.day_info = ''
+          }
+      }
+      catch(error){
+        console.log(error)
+      }
+      console.log('rasxod_submit')
+    },
+
+    async func_show_add_note(user_id, user_name, index){
+      this.show_user_note = true;
+      this.user_id = user_id;
+      this.user_name = user_name;
+      this.item_index = index;
+      await this.fetch_note_list(user_id);
+    },
+
+    async fetch_note_list(userId){
+      try{
+        const response = await fetch(this.$store.state.hostname + "/SkudUserNote/getUserAddDayUser_ID?user_id=" + userId);
+        const data = await response.json();
+        if(response.status == 200 || response.status == 201){
+          this.user_note_list = data;
+        }
+      }
+      catch(error){
+        this.loading = false;
+        console.log(error)
+      }
+    },
+
+    async submit_user_note(){
+      if(!this.day_info)return;
+      try{
+        const requestOptions = {
+          method: "POST",
+          headers: { "Content-Type" : "application/json" },
+          body: JSON.stringify({
+            "user_name" : this.user_name,
+            "userid" : this.user_id,
+            "note": this.day_info
+            })
+          };
+          const response = await fetch(this.$store.state.hostname + '/SkudUserNote', requestOptions);
+          // const data = await response.json();
+          if(response.status == 200 || response.status == 201){
+            this.show_user_note = false;
+            this.day_info = ''
+          }
+      }
+      catch(error){
+        console.log(error)
+      }
+      console.log('rasxod_submit')
+    },
+
+
     async submit_day_info(){
       if(this.day_num == null || this.day_num == 0)return;
       try{
@@ -1025,6 +1273,7 @@ export default {
             day_list: [],
             vaqt_flag: data.items_list[i].vaqt_flag,
             kelganidan_beri: data.items_list[i].kelganidan_beri,
+            user_note: data.items_list[i].user_note,
           }
           if(data.items_list[i].oylik_nomi != ''){
             a.oylik_haqqi = data.items_list[i].skudOylik.value;
@@ -1097,25 +1346,29 @@ export default {
       this.switch2 = false;
     },
     sortedArrayAsc(key){
-        function compare(a, b) {
-          if (a[key] < b[key])
-            return -1;
-          if (a[key] > b[key])
-            return 1;
-          return 0;
-        }
-        this.filteredList.sort(compare);
+        // function compare(a, b) {
+        //   if (a[key] < b[key])
+        //     return -1;
+        //   if (a[key] > b[key])
+        //     return 1;
+        //   return 0;
+        // }
+        // this.filteredList.sort(compare);
+        this.sortKey = key;
+        this.sortDir = 'asc';
     },
     sortedArray(key){
-        function compare(a, b) {
-          if (a[key] > b[key])
-            return -1;
-          if (a[key] < b[key])
-            return 1;
-          return 0;
-        }
+        // function compare(a, b) {
+        //   if (a[key] > b[key])
+        //     return -1;
+        //   if (a[key] < b[key])
+        //     return 1;
+        //   return 0;
+        // }
 
-        this.filteredList.sort(compare);
+        // this.filteredList.sort(compare);
+        this.sortKey = key;
+        this.sortDir = 'desc';
     },
     toSeconds(str) {
       // Masalan: "0 yil 7 kun 4 soat"
@@ -1198,6 +1451,7 @@ th,td{
 }
 .action_info small{
   position: absolute;
+  width:100px;
   bottom:-15px;
   left: 0;
   border-radius: 3px;

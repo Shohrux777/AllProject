@@ -258,6 +258,8 @@
             { title: 'note', icon: 'chart-line', url: '', view: false, color: '#ddd', down_list:[
                 { title: "userAddRemoveDay", url: '/userAddRemoveDay', dview: false, color: '#ddd', down_list:[] },
                 { title: "userRasxod", url: '/userRasxod', dview: false, color: '#ddd', down_list:[] },
+                { title: "notes", url: '/userNotes', dview: false, color: '#ddd', down_list:[] },
+                { title: "avto_rasxod", url: '/user_avto_rasxod', dview: false, color: '#ddd', down_list:[] },
             ] },
 
             { title: 'smena', icon: 'desktop', url: '', view: false, color: '#ddd', down_list:[
