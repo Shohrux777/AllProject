@@ -163,10 +163,14 @@
                     <td class="text-info" style="cursor:pointer" @click="func_show_user_add_status(row)">{{ row.day_count }}</td>
                     <td class="text-danger" style="cursor:pointer" @click="func_show_user_rasxod_status(row)">{{ row.rasxod.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</td>
                     <td>{{row.oylik_nomi}}</td>
-                    <td v-if="row.without_gr_id == 2" :class="{'text-success': row.ishlagan_puli != 0, 'text-danger': row.ishlagan_puli<0}" >
+                    <td v-if="row.without_gr_id == 2" @click="func_show_add_rasxod(row.userid, row.ism, index,row.ishlagan_puli)" 
+                    :class="{'text-success': row.ishlagan_puli != 0, 'text-danger': row.ishlagan_puli<0}" 
+                    style="cursor:pointer" >
                       {{row.ishlagan_puli.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
                     </td>
-                    <td v-else :class="{'text-success': row.ishlagan_puli != 0, 'text-danger': row.ishlagan_puli<0}">
+                    <td v-else @click="func_show_add_rasxod(row.userid, row.ism, index, row.ishlagan_puli)" 
+                    :class="{'text-success': row.ishlagan_puli != 0, 'text-danger': row.ishlagan_puli<0}"
+                    style="cursor:pointer">
                       {{row.ishlagan_puli.toFixed(0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
                     </td>
                     <!-- <td>{{row.ishlagan_puli}}</td> -->
@@ -962,6 +966,20 @@ export default {
       this.item_index = index;
       this.rasxod_summaString = '';
       this.zaplata_summaString = '';
+    },
+    func_show_add_rasxod(user_id, user_name, index,summa){
+      this.show_add_rasxod = true;
+      let time1 = new Date();
+      this.day_time = time1.toISOString().slice(0,10);
+      this.rasxod_summa = 0;
+      this.zaplata_summa = summa;
+      this.day_info = '';
+      console.log(user_id);
+      this.user_id = user_id;
+      this.user_name = user_name;
+      this.item_index = index;
+      this.rasxod_summaString = '';
+      this.zaplata_summaString = summa.toFixed(0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
     },
     async change_kelgan_vaqt(userId){
       try{
