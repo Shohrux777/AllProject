@@ -21,6 +21,12 @@ import VueApexCharts from 'vue-apexcharts'
 import VueQRCodeComponent from 'vue-qrcode-component'
 import JsonExcel from "vue-json-excel";
 import VueTheMask from 'vue-the-mask';
+import ImageModal from "./components/ImageModal.vue";
+
+Vue.component("ImageModal", ImageModal);
+
+Vue.prototype.$imageModal = new Vue(ImageModal).$mount();
+document.body.appendChild(Vue.prototype.$imageModal.$el);
 
 Vue.use(VueTheMask)
 Vue.component("downloadExcel", JsonExcel);

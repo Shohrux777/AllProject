@@ -24,7 +24,7 @@
                 <mdb-badge v-show="row[column] === true" style="padding: 2px 8px;" pill color="success">{{row[column]}}</mdb-badge>
                 <mdb-badge v-show="row[column] === false"  pill color="danger" style="padding: 2px 8px;" >{{row[column]}}</mdb-badge>
                 <div v-show="column == 'colorCode'" :style="{background: row[column]}" style="width: 65px; height:3px; border-radius:10px;" ></div>
-                <div v-if="column == 'image' || column == 'image_url'" class="m-0 p-0" style="width: 50px; "><img :src="server_ip + row[column]" alt="" style="min-width:60px; max-height:45px;" class="img-fluid rounded"></div>
+                <div  v-if="column == 'image' || column == 'image_url'" class="m-0 p-0" style="width: 50px; "><img :src="server_ip + row[column]" @click="$imageModal.open(server_ip + row[column])" alt="" style="min-width:60px; max-height:45px; cursor: pointer;" class="img-fluid rounded"></div>
                 <span v-else-if="column == 'addiotionala_information' && row[column]">{{row[column].slice(8,10) + '-' + row[column].slice(5,7) + '-' + row[column].slice(0,4)}}</span>
                 <span v-show="row[column] !== true && row[column] !== false && column !== 'image' && column !== 'image_url' && column !== 'colorCode' && column !== 'addiotionala_information'">{{row[column]}}</span>
             </td>

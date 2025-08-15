@@ -81,6 +81,15 @@
             </div>
           </div>
           <div class="col-12 mt-3">
+            <erpSelectHisob
+              :options="allHisob.rows"
+              @select="selectOptionHisob"
+              :selected="hisob_name"
+              :label="$t('hisob')"
+              size="sm"
+            />
+          </div>
+          <div class="col-12 mt-3">
             <mdb-input class="m-0 p-0" v-model="note"  outline group type="textarea" validate error="wrong" success="right"/>
             <small
               style="position: absolute; top: -7px; left: 20px; font-size: 11px"
@@ -112,6 +121,7 @@
 </template>
 
 <script>
+import erpSelectHisob from "../../components/erpSelect.vue";
 import { required } from 'vuelidate/lib/validators'
 import {mdbInput, mdbBtn, mdbIcon } from 'mdbvue'
 import {mapActions, mapGetters} from 'vuex'
@@ -119,7 +129,7 @@ import webcam from '../webcam/webcam_Add.vue'
 
 export default {
   components: {
-    mdbInput, mdbBtn,mdbIcon, webcam
+    mdbInput, mdbBtn,mdbIcon, webcam, erpSelectHisob
   }, 
   data() {
     return {
@@ -148,6 +158,9 @@ export default {
 
       photo_url: '',
       showPhoto: false,
+
+      hisob_name: '',
+      hisob_id: 0,
     }
   },
   validations: {
@@ -163,14 +176,18 @@ export default {
       }
     },
   },
-  computed: mapGetters(['allWorker', 'user_kassa_list', 'user_kassa_info']),
+  computed: mapGetters(['allWorker', 'user_kassa_list', 'user_kassa_info', 'allHisob']),
   async mounted(){
     await this.fetchWorker();
     this.client_list = this.allWorker;
     await this.nbuKurs();
   },
   methods: {
-    ...mapActions(['fetchWorker','fetchKassa_userId', 'fetchKassa_info' ]),
+    ...mapActions(['fetchWorker','fetchKassa_userId', 'fetchKassa_info','fetchHisob']),
+    selectOptionHisob(option){
+      this.hisob_name = option.name;
+      this.hisob_id = option.id;
+    },
     clw_rw(){
       this.rasxod = '0';
       this.rasxod_qty = 0;
@@ -184,6 +201,8 @@ export default {
       this.dollor = 0;
       this.photo_url = '';
       this.showPhoto = false;
+      this.hisob_id = 0;
+      this.hisob_name = '';
     },
     async saveRasxod(){
       if(!this.dollor && !this.rasxod_qty){
@@ -235,7 +254,9 @@ export default {
           "sum" : this.rasxod_qty,
           "sum_str": this.rasxod,
           "status_rasxod": 1,
-          "auth_user_updator_id": localStorage.kassa_id
+          "auth_user_updator_id": localStorage.kassa_id,
+          "bot_id": this.hisob_id,
+          "reserve": this.hisob_name
           // "uz_card": 0,     for skidka uchun ishlataman
         })
       };

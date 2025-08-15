@@ -143,7 +143,7 @@
                 <tbody>
                 <tr v-for="(row, index) in filteredList" :key="index" 
                 :class="{'alert-danger': row.vaqt_flag == 3, 'alert-warning': row.vaqt_flag == 0, 'alert-success': row.vaqt_flag == 1,}">
-                    <td>{{ row.kelganidan_beri }}</td>
+                    <td style="cursor: pointer;" @click="change_kelgan_vaqt(row.userid)">{{ row.kelganidan_beri }}</td>
                     <td>
                     <div class="d-flex align-items-center">
                         <div class="ms-3">
@@ -351,6 +351,29 @@
             </div>
           </MDBModalBody>
       </MDBModal>
+      <MDBModal
+          id="exampleModal7"
+          tabindex="2"
+          labelledby="exampleModalLabel7"
+          v-model="show_checkinout"
+      > 
+          <MDBModalHeader style="background: #475a65;" class="text-white px-3 py-2">
+              <MDBModalTitle id="exampleModalLabel"> Xodimni birinchi kelgan vaqtini kiritish </MDBModalTitle>
+          </MDBModalHeader>
+          <MDBModalBody>
+            <div class="px-3 row">
+              <div class="col-12 mt-2 mb-3">
+                <MDBInput v-model="day_time" type="date" size="sm" label="Дата" />
+              </div>
+              <div class="col-12 mb-3 border-top pt-1">
+                <div class="d-flex justify-content-end">
+                  <MDBBtn style="font-size: 9px;" @click="submit_checkinout" color="success">Сохранить</MDBBtn>
+                </div>
+              </div>
+            </div>
+          </MDBModalBody>
+      </MDBModal>
+
       <MDBModal
           id="exampleModal2"
           tabindex="2"
@@ -718,6 +741,8 @@ export default {
       rasxod_day: null,
       show_user_note: false,
       user_note_list: [],
+      checkinout_data: {},
+      show_checkinout: false,
 
       search: '',
       json_fields: {
@@ -937,6 +962,60 @@ export default {
       this.item_index = index;
       this.rasxod_summaString = '';
       this.zaplata_summaString = '';
+    },
+    async change_kelgan_vaqt(userId){
+      try{
+        const response = await fetch(this.$store.state.hostname + "/SkudMyCheckinouts/getPaginationGetByUserID?page=0&size=1&user_id=" + userId);
+        const data = await response.json();
+        if(response.status == 200 || response.status == 201){
+          this.show_checkinout = true;
+          if(data.items_list.length>0){
+            this.checkinout_data = data.items_list[0];
+            this.day_time = this.checkinout_data.sana.slice(0,10);
+          }
+          else{
+            let time1 = new Date();
+            this.day_time = time1.toISOString().slice(0,10);
+            this.checkinout_data = {
+              userid: userId,
+              sana: '',
+              checktime: "10:55:40",
+              checktype: "K",
+              door_name: "Face",
+              code: 0,
+            }
+          }
+        }
+      }
+      catch(error){
+        this.loading = false;
+        console.log(error)
+      }
+    },
+    async submit_checkinout(){
+      try{
+        const requestOptions = {
+          method: "POST",
+          headers: { "Content-Type" : "application/json" },
+          body: JSON.stringify({
+            "userid" : this.checkinout_data.userid,
+            "sana" : this.day_time + 'T00:00:00',
+            "checktime" : this.checkinout_data.checktime,
+            "checktype": this.checkinout_data.checktype,
+            "door_name": this.checkinout_data.door_name,
+            "code": this.checkinout_data.code
+            })
+          };
+          const response = await fetch(this.$store.state.hostname + '/SkudMyCheckinouts', requestOptions);
+          // const data = await response.json();
+          if(response.status == 200 || response.status == 201){
+            this.day_time = null;
+            this.show_checkinout = false;
+          }
+      }
+      catch(error){
+        console.log(error)
+      }
     },
     async func_add_avto_rasxod(user_id, user_name, index){
       this.show_avto_rasxod = true;

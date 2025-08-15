@@ -70,7 +70,7 @@
                     <div class="card" v-if="client_info.fio" :class="{'alert-danger': client_info.sum>0 || client_info.dollor>0, 'alert-success': client_info.sum<0 || client_info.dollor<0}">
                       <div class="d-flex w-100">
                         <div class="user_img" v-if="client_info.image_url">
-                          <img :src="hostname + client_info.image_url" alt="">
+                          <img :src="hostname + client_info.image_url" alt="" @click="$imageModal.open(hostname + client_info.image_url)">
                         </div>
                         <div class="user_info_selected pt-4 px-3">
                           <h5 class="font-weight-bold" style="font-size: 14.5px;">{{client_info.fio}}</h5>

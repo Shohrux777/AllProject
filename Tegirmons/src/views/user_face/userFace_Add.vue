@@ -101,8 +101,9 @@
             </div>
             <input hidden  id="inputFileToLoad" @change="previewFile()" accept="image/png, image/gif, image/jpeg" type="file" ref="file_Img" class="shadow text-right ml-2"  />
               <div class="d-flex">
-                <label @click="scanerFile" class="download">
-                  <span>Изображение паспорта</span>
+                <input type="file" style="display: none;" id="file_download" @change="onFileChange" accept="image/*" />
+                <label for="file_download" class="download">
+                  <span>📁 Rasm yuklash</span>
                 </label>
                   
                   <label @click="showPhoto = true" class="download ml-2">
@@ -687,7 +688,17 @@ export default {
         console.log(this.image)
         this.PicShow = false;
       },
+      async onFileChange(event) {
+        const file = event.target.files[0];
+        if (!file) return;
 
+        const reader = new FileReader();
+        reader.onload = e => {
+        this.fetchBase64ToHttpImg(e.target.result);
+          this.imageBase64 = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      },
       async fetchBase64ToHttpImg(img){
         try{
           const requestOptions = {
@@ -703,14 +714,14 @@ export default {
           console.log(data)
           if(response.status == 201 || response.status == 200)
           {
-            this.image = data.image_url_str;
+            this.photo_url = data.image_url_str;
           }
           else{
-            this.image = '';
+            this.photo_url = '';
           }
         }
         catch{
-          this.image = '';
+          this.photo_url = '';
         }
       },
       async fetchBase64ToHttpImg2(img){
