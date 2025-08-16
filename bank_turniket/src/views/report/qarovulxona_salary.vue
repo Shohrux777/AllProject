@@ -973,6 +973,7 @@ export default {
       this.day_time = time1.toISOString().slice(0,10);
       this.rasxod_summa = 0;
       this.zaplata_summa = summa;
+      this.zaplata_status = 1;
       this.day_info = '';
       console.log(user_id);
       this.user_id = user_id;

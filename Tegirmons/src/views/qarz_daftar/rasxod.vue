@@ -175,7 +175,7 @@ export default {
       }
     },
   },
-  computed: mapGetters(['allWorker', 'user_kassa_list', 'user_kassa_info', 'allHisob']),
+  computed: mapGetters(['allWorker', 'user_kassa_list', 'user_kassa_info', 'allHisob','hisob_info']),
   async mounted(){
     await this.fetchWorker();
     this.client_list = this.allWorker;
@@ -184,7 +184,7 @@ export default {
       // console.log('allHisob', this.allHisob)
   },
   methods: {
-    ...mapActions(['fetchWorker','fetchKassa_userId', 'fetchKassa_info','fetchHisob']),
+    ...mapActions(['fetchWorker','fetchKassa_userId', 'fetchKassa_info','fetchHisob', 'fetchHisob_info']),
     selectOptionHisob(option){
       this.hisob_name = option.name;
       this.hisob_id = option.id;
@@ -231,7 +231,17 @@ export default {
         }
         if(this.hisob_id>0){
           // bunda hisobda pul yetarlimi shuni tekshirayabdi
-
+          await this.fetchHisob_info(this.hisob_id);
+            console.log('hisob_info')
+            console.log(this.hisob_info)
+            if(this.dollor>this.hisob_info.dollor){
+              this.$refs.alert.error(this.hisob_info.hisob.name + 'da dollor yetarli emas !');
+              return;
+            }
+            else if(this.rasxod_qty>this.hisob_info.cash){
+              this.$refs.alert.error(this.hisob_info.hisob.name + 'da naqd pul yetarli emas !');
+              return;
+            }
           console.log('bu yerga hisobda pul yetarlimi shuni tekshirish kerak')
         }
         else{
@@ -247,15 +257,11 @@ export default {
             return;
           }
         }
-        // if(this.dollor>this.dollor_kassa){
-        //   this.$refs.alert.error('Kassada Dollor yetarli emas !');
-        //   return;
-        // }
-        // else if(this.rasxod_qty>this.cash_kassa){
-        //   this.$refs.alert.error('Kassada Naqd pul yetarli emas !');
-        //   return;
-        // }
-      const requestOptions = {
+        let sum_ostatka = 0;
+        let dollor_ostatka = 0;
+        sum_ostatka = this.client_info.sum + this.rasxod_qty;
+        dollor_ostatka = this.client_info.dollor + this.dollor;
+        const requestOptions = {
         method : "POST",
         headers: { "Content-Type" : "application/json" },
         body: JSON.stringify({
@@ -276,8 +282,9 @@ export default {
           "status_rasxod": 0,
           "auth_user_updator_id": localStorage.kassa_id,
           "bot_id": this.hisob_id,
-          "reserve": this.hisob_name
-          // "uz_card": 0,     for skidka uchun ishlataman
+          "reserve": this.hisob_name,
+          "reserve_val_1": sum_ostatka,  // bu qolgan ostatka sumniki
+          "reserve_val_2": dollor_ostatka  // bu qolgan ostatka dollorniki
         })
       };
       console.log('requestOptions.body')

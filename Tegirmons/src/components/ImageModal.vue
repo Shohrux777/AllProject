@@ -38,7 +38,7 @@ export default {
   align-items: center;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.8);
-  z-index: 9999;
+  z-index: 99999999999999;
 
   &-content {
     position: relative;

@@ -137,6 +137,8 @@
                 <th>{{ $t('status') }}</th>
                 <th>{{$t('date')}}</th>
                 <th>{{$t('note')}}</th>
+                <th>{{ $t('ostatka') }}</th>
+                <th>{{ $t('ostatka') }} $</th>
                 <th>Кассир</th>
 
                 <!-- <th width="80" class="text-center">{{$t('Action')}}</th> -->
@@ -152,13 +154,17 @@
                 <td> <small >{{row.dollor_string}}</small></td>
                 <td> <small >{{row.kurs.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small></td>
 
-                <td v-if="row.status_rasxod == 1"> <span class="status_btn_bg px-3 text-white rounded" style="padding: 1px 6px;">Получыть </span> </td>  
-                <td  v-else-if="row.status_rasxod == 0"> <span class="bg-danger px-3 text-white rounded" style="padding: 2px 10px;">Расход</span></td>
+                <td v-if="row.status_rasxod == 1"> <span class="status_btn_bg px-2 text-white rounded" style="padding: 1px 6px; font-size: 10px;">Получыть </span> </td>  
+                <td  v-else-if="row.status_rasxod == 0"> <span class="bg-danger px-2 text-white rounded" style="padding: 2px 10px; font-size: 10px;">Расход</span></td>
+                
                 <td>
                   <small v-if="row.created_date">{{row.created_date.slice(8,10) + '-' + row.created_date.slice(5,7) + '-' + row.created_date.slice(0,4)}}</small> 
                   <small v-if="row.created_date" class="ml-2">{{row.created_date.slice(11,16)}}</small>
                 </td>
                 <td> <small >{{row.note}}</small></td>
+                <td> <small :class="{'text-danger': row.reserve_val_1>0}" >{{row.reserve_val_1.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small></td>
+                <td> <small :class="{'text-danger': row.reserve_val_2>0}" >{{row.reserve_val_2.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small></td>
+
                 <td> <small >{{row.addiotionala_information}}</small></td>
 
               </tr>
@@ -196,6 +202,14 @@
             </user_list>
           </template>
       </modal-train>
+
+      <modal-train  :show="show_debt_info" :headerbackColor="rasxod_color"  titlecolor="black" title="Долг инфо" 
+        @close="show_debt_info = false" width="32%">
+          <template v-slot:body>
+            <info_rasxod @close="show_debt_info = false" v-if="show_debt_info"  :option="debt_data" >
+            </info_rasxod>
+          </template>
+      </modal-train>
       
       <Toast ref="message"></Toast>
 
@@ -214,9 +228,10 @@ import erpSelect from "../../components/erpSelectFioSearch.vue";
 import InputSearch from '../../components/inputSearch';
 import inputSearchYear from '../../components/inputSearchYear';
 import add_dolg_user from './add_dolg_user.vue'
-  import rasxod from './rasxod.vue'
-  import chiqarPulOlish from './chiqarPulOlish.vue'
-  import user_list from './user_list.vue'
+import rasxod from './rasxod.vue'
+import chiqarPulOlish from './chiqarPulOlish.vue'
+import user_list from './user_list.vue'
+import info_rasxod from './rasxod_info.vue'
 
 export default {
 data(){
@@ -261,7 +276,9 @@ data(){
     
       oshibka_client: 0,
       
-
+      show_debt_info: false,
+      debt_info: {},
+      rasxod_color: '#64B0FB',
     }
   },
   components: {
@@ -275,7 +292,8 @@ data(){
     add_dolg_user,
     rasxod,
     chiqarPulOlish,
-    user_list
+    user_list,
+    info_rasxod
   },
 //   validations: {
       
@@ -293,6 +311,18 @@ data(){
   methods: {
     ...mapActions(['fetch_user',]),
     ...mapMutations(['check_invoice_zaxira']),
+    // xodimni olgan yoki bergan pullarini kurish
+    async selectInvoiceItem(data){
+      this.show_debt_info = true;
+      this.debt_data = data;
+      if(this.debt_data.status_rasxod == 1){
+        this.rasxod_color = "#369387";
+      }
+      else{
+      this.rasxod_color = "#ff504a";
+      }
+    },
+
     // skud userdan qarzdolikuserga malumotlarni utkazish
     async refresh_skudUser(){
       try{

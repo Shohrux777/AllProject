@@ -65,7 +65,7 @@
                     <div class="card" v-if="client_info.ism">
                       <div class="d-flex w-100">
                         <div class="user_img" v-if="client_info.image_url">
-                          <img :src="hostname + client_info.image_url" alt="">
+                          <img :src="hostname + client_info.image_url" alt="" @click="$imageModal.open(hostname + client_info.image_url)">
                         </div>
                         <div class="user_info_selected pt-4 px-3">
                           <h5 class="font-weight-bold" style="font-size: 14.5px;">{{client_info.ism}}</h5>
@@ -81,14 +81,7 @@
                           <h5 v-else class="font-weight-bold ml-3 m-0 text-primary" style="font-size: 25px;">0 сўм</h5>
                       </div>
                       <div class="ishlagan_puli d-flex align-items-center py-1 px-4 border-top">
-                          <!-- <mdb-btn color="success" class="py-2 px-3" style="font-size: 10px;">
-                            <i class="fas fa-download"></i>
-                            Приход
-                          </mdb-btn>
-                          <mdb-btn color="danger" class="py-2 px-3" style="font-size: 10px;">
-                            <i class="fas fa-share-square"></i>
-                            Расход
-                          </mdb-btn> -->
+                          
                           <div class="main_kassa_btn bg_col_blue" @click="pul_olib_qolish = !pul_olib_qolish">
                             <small>Получать деньги</small>
                           </div>
@@ -97,7 +90,7 @@
                           </div>
                       </div>
                     </div>
-<!-- v-if="oylik_data.reserved_value>1" -->
+                    <!-- v-if="oylik_data.reserved_value>1" -->
                     <div class="card mt-3" style="position: relative;">
                       <div class="d-flex w-100">
                         <div class="user_info_selected pt-1 px-2 w-100">

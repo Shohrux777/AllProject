@@ -235,6 +235,10 @@ export default {
         //   this.$refs.alert.error('Kassada Naqd pul yetarli emas !');
         //   return;
         // }
+        let sum_ostatka = 0;
+        let dollor_ostatka = 0;
+        sum_ostatka = this.client_info.sum - this.rasxod_qty;
+        dollor_ostatka = this.client_info.dollor - this.dollor;
       const requestOptions = {
         method : "POST",
         headers: { "Content-Type" : "application/json" },
@@ -256,8 +260,9 @@ export default {
           "status_rasxod": 1,
           "auth_user_updator_id": localStorage.kassa_id,
           "bot_id": this.hisob_id,
-          "reserve": this.hisob_name
-          // "uz_card": 0,     for skidka uchun ishlataman
+          "reserve": this.hisob_name,
+          "reserve_val_1": sum_ostatka,  // bu qolgan ostatka sumniki
+          "reserve_val_2": dollor_ostatka  // bu qolgan ostatka dollorniki
         })
       };
       console.log('requestOptions.body')
