@@ -127,6 +127,13 @@
             { title: "user", icon: 'user-tie', url: '/user', view: false, color: '#c4cbcb', down_list:[] },
             { title: "kassa", icon: 'cash-register', url: '/kassa', view: false, color: '#c4cbcb', down_list:[] },
             { title: "hisob", icon: 'wallet', url: '/hisob', view: false, color: '#c4cbcb', down_list:[] },
+
+
+            { title: "sklad", icon: 'calendar-plus', url: '', view: false, color: '#c4cbcb', down_list:[
+               { title: "new_sklad", url: '/sklad', dview: false, color: '#c4cbcb', down_list:[] },              
+            ] },
+
+
             { title: "report", icon: 'calendar-plus', url: '', view: false, color: '#c4cbcb', down_list:[
                { title: "usedProductList", url: '/usedProductList', dview: false, color: '#c4cbcb', down_list:[] },
                { title: "getProduct", url: '/getProduct_report', dview: false, color: '#c4cbcb', down_list:[] },

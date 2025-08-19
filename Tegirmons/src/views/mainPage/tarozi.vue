@@ -706,7 +706,8 @@ export default {
           "note": this.change_unit_qty,
           "tegirmonAuthid": localStorage.AuthId,
           "user_name": localStorage.user_name,
-          "image_str_url": skidkaItem
+          "image_str_url": skidkaItem,
+          "tegirmonSkladid": 1,
         })
       };
       try{
@@ -804,6 +805,7 @@ export default {
           "id": 0,
           "summ": summ_all,
           "tegirmonAuthid": localStorage.AuthId,
+          "tegirmonSkladid": 1,
           // "item_list": item_list_change,
           // "auth_user_creator_id": localStorage.AuthId,
           // "auth_user_updator_id": localStorage.AuthId,

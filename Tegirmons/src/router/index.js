@@ -221,6 +221,7 @@ const routes = [{
         component: () =>
             import ('../views/measurment/measurment_Add.vue')
     },
+    
     {
         path: '/kassa',
         name: 'kassa',
@@ -234,6 +235,20 @@ const routes = [{
         meta: { layout: 'main' },
         component: () =>
             import ('../views/kassa/kassa_Add.vue')
+    },
+    {
+        path: '/sklad',
+        name: 'sklad',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/sklad/sklad.vue')
+    },
+    {
+        path: '/sklad_add/:id',
+        name: 'sklad_add',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/sklad/sklad_Add.vue')
     },
     {
         path: '/hisob',

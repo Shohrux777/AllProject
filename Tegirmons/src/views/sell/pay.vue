@@ -413,6 +413,8 @@ export default {
           "image_url": this.dollor_kurs.toString(),
           "auth_user_updator_id": localStorage.kassa_id,
           "payments": orderList,
+          "auth_user_creator_id": 1,
+          "image_base_64": localStorage.user_name
           // "uz_card": 0,     for skidka uchun ishlataman
         })
       };
@@ -421,12 +423,13 @@ export default {
       // try{
         this.loading = true;
         const response = await fetch(this.$store.state.hostname + "/TegirmonCheck", requestOptions);
-        const data = await response.json();
-        console.log('check')
-        console.log(data)
+        
         this.loading = false;
         if(response.status == 201 || response.status == 200)
         {
+          const data = await response.json();
+          console.log('check')
+          console.log(data)
           console.log(data.id)
           this.updateCheckId(data.id)
           this.$emit('print')
@@ -435,13 +438,15 @@ export default {
           return true;
         }
         else{
-          this.modal_info = this.$i18n.t('network_ne_connect');
+          const text = await response.text();
+          this.modal_info = this.$i18n.t(text);
           this.modal_status = true;
           return false;
         }
       }
       catch{
-        this.modal_info = this.$i18n.t('network_ne_connect'); 
+        const text = await response.text();
+        this.modal_info = this.$i18n.t(text);
         this.modal_status = true;
         return false;
       }
@@ -457,7 +462,6 @@ export default {
           temp += this.enterSumma[i];
         }
        }
-
         this.currency = parseInt(temp);
         this.zdachi = parseFloat(this.summa)-this.currency;
         this.zdachiString = this.zdachi.toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, " ")

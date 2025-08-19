@@ -11,33 +11,51 @@
             {{$t('new_buy')}}</h5>
       </router-link>
     </div>
+
     <div class="changing_add px-3 pt-4 pb-5">
       <div class="row mb-3">
         <div class="col-3">
-          <mdb-input class="m-0 p-0" disabled v-model="user_name" size="md"  outline  group type="text" validate error="wrong" success="right"/>
+          <input class="m-0 form-control" style="height:32px; font-size: 13px;" v-model="user_name" size="md"  outline  group type="text" validate error="wrong" success="right"/>
           <small
-            style="position: absolute; top: -7px; left: 20px; font-size: 11px"
+            style="position: absolute; top: -11px; left: 20px; font-size: 11px;"
             class="bg-white px-2 py-0"
             >{{ $t("user_name") }}</small
           >
         </div>
         <div class="col-3">
-          <mdb-input class="m-0 p-0" disabled v-model="all_sum" size="md"  outline  group type="text" validate error="wrong" success="right"/>
+          <erpSelectSklad
+              :options="allSklad.rows"
+              @select="selectOptionSklad"
+              :selected="sklad_name"
+              :label="$t('sklad')"
+              size="sm"
+            />
+            <small
+              class="invalid-text"
+              style="margin-left: 10px; margin-top: -5px; font-size: 12px;"
+              v-if="$v.sklad_name.$dirty && !$v.sklad_name.required"
+            >
+              {{ $t("Select_sklad") }}
+            </small>
+        </div>
+        <div class="col-3">
+          <input class="m-0 form-control" disabled style="height:32px; font-size: 13px;" v-model="all_sum" size="md"  outline  group type="text" validate error="wrong" success="right"/>
           <small
-            style="position: absolute; top: -7px; left: 20px; font-size: 11px"
+            style="position: absolute; top: -11px; left: 20px; font-size: 11px;"
             class="bg-white px-2 py-0"
             >{{ $t("summ") }}</small
           >
         </div>
-        <div class="col-6">
-          <mdb-input class="m-0 p-0" v-model="note" size="md"  outline  group type="text" validate error="wrong" success="right"/>
+        <div class="col-3">
+            <input class="m-0 form-control"  style="height:32px; font-size: 13px;" v-model="note" size="md"  outline  group type="text" validate error="wrong" success="right"/>
           <small
-            style="position: absolute; top: -7px; left: 20px; font-size: 11px"
+            style="position: absolute; top: -11px; left: 20px; font-size: 11px"
             class="bg-white px-2 py-0"
             >{{ $t("note") }}</small
           >
         </div>
       </div>
+
       <form @submit.prevent="submit">
         <div class="d-flex w-100">
           <div class=" " >
@@ -54,7 +72,7 @@
               >{{ $t("Add_product") }}</mdb-btn
             >
 
-            <mdb-btn-group style="margin-top: -14px">
+            <!-- <mdb-btn-group style="margin-top: -14px">
               <mdb-dropdown>
                 <mdb-btn
                   style="font-size: 12px"
@@ -71,17 +89,17 @@
                     style="font-size: 12px"
                     >{{ $t("") }}</mdb-dropdown-item
                   >
-                  <!-- <mdb-dropdown-item style="font-size:12px"  >{{'Export_to_PDF'|locolize}}</mdb-dropdown-item> -->
+                  <mdb-dropdown-item style="font-size:12px"  >{{'Export_to_PDF'|locolize}}</mdb-dropdown-item>
                 </mdb-dropdown-menu>
               </mdb-dropdown>
-            </mdb-btn-group>
+            </mdb-btn-group> -->
           </div>
           
         </div>
         
         <div class="d_table">
           <mdb-tbl class="fixed-column">
-            <mdb-tbl-head>
+            <mdb-tbl-head class="m-0 p-0">
               <tr>
                 <td></td>
                 <!-- product -->
@@ -159,10 +177,10 @@
 
                 <th>
                   <input
-                    v-model="row.qty"
+                    v-model="row.qty_str"
                     type="text"
                     class="form-control form-control-sm"
-                    @input="changeSumma(rowIndex)"
+                    @input="changeSumma($event.target.value,rowIndex)"
                   />
                   <small
                     class="invalid-text"
@@ -180,7 +198,7 @@
                 </th>
                 <th>
                   <input
-                    v-model="row.price"
+                    :value="row.price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')"
                     disabled
                     type="text"
                     class="form-control form-control-sm"
@@ -188,14 +206,12 @@
                 </th>
                 <th>
                   <input
-                    v-model="row.sum"
+                    :value="row.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')"
                     disabled
                     type="text"
                     class="form-control form-control-sm"
                   />
                 </th>
-                
-                
               </tr>
             </mdb-tbl-body>
           </mdb-tbl>
@@ -205,16 +221,16 @@
          
         
         <div class="blue-gradient">
-          <hr class="mt-5 "/>
+          <hr class="mt-1 mb-0"/>
         </div>
         <mdb-row class="mt-4">
-          <mdb-col col="8">
-            <div class="mt-2 text-right">
-          
-          <mdb-btn color="success"  type="submit" style="font-size: 10.5px"
-            p="r4 l4 t2 b2">
-            <mdb-icon  />{{$t('add')}}</mdb-btn>
-        </div>
+          <mdb-col col="12">
+            <div class="mt-0 text-right">
+              <mdb-btn color="success"  type="submit" style="font-size: 10.5px"
+                p="r4 l4 t2 b2">
+                <mdb-icon  />{{$t('add')}}
+              </mdb-btn>
+            </div>
           </mdb-col>
         </mdb-row>
         
@@ -238,6 +254,9 @@ import { mdbInput, mdbRow, mdbCol, mdbIcon, mdbBtn,  mdbTbl,
 import { required } from 'vuelidate/lib/validators'
 import lineSelect from "../../components/lineSelect.vue";
 import {mapActions,mapGetters} from 'vuex'
+// import { all } from "core-js/fn/promise";
+import erpSelectSklad from "../../components/erpSelect.vue";
+
 export default {
   naem: "changingAdd",
   
@@ -273,15 +292,19 @@ export default {
           "summ"
         ],
       },
+      sklad_name: '',
+      sklad_id: null,
     }
   },
   components: {
     mdbInput, mdbRow, mdbCol, mdbIcon, mdbBtn, mdbTbl, mdbBtnGroup,
-  mdbDropdown, lineSelect,
-  mdbDropdownItem,
-  mdbDropdownMenu,
-  mdbTblHead,
-  mdbTblBody,
+    mdbDropdown, 
+    mdbDropdownItem,
+    mdbDropdownMenu,
+    mdbTblHead,
+    mdbTblBody,
+    lineSelect,
+    erpSelectSklad
   },
   validations: {
     datasource: {
@@ -292,6 +315,9 @@ export default {
         },
       },
     },
+    sklad_name: {
+      required
+    }
   },
   async created()
   {
@@ -327,13 +353,18 @@ export default {
   },
   async mounted() {
     await this.fetch_product_t();
+    await this.fetchSklad();
   },
-  computed: mapGetters([ 'allClient', 'all_product_t',]),
+  computed: mapGetters([ 'allSklad', 'all_product_t',]),
   methods:{
-    ...mapActions(['fetchClient', 'fetch_product_t']),
+    ...mapActions(['fetchSklad', 'fetch_product_t']),
     cls_wnd()
     {
       
+    },
+    async selectOptionSklad(option){
+      this.sklad_name = option.name;
+      this.sklad_id = option.id;
     },
     selectOptionProduct(option){
       this.product_name = option.name;
@@ -351,6 +382,7 @@ export default {
         tegirmonProductid: 0,
         product_name: "",
         qty: 0,
+        qty_str: '0',
         price: 0,
         sum:0,
         id: 0,
@@ -358,7 +390,27 @@ export default {
       });
       console.log(this.datasource)
     },
-    changeSumma(i){
+    changeSumma(n,i){
+      var tols = ''
+      for(let i=0; i<n.length; i++){
+        if(n[i] != ' '){
+          tols += n[i];
+        }
+       }
+       if(tols[tols.length-1] != '0' && tols[tols.length-1] != '1' && tols[tols.length-1] != '2' && tols[tols.length-1] != '3' && tols[tols.length-1] != '4' && 
+        tols[tols.length-1] != '5' && tols[tols.length-1] != '6' && tols[tols.length-1] != '7' && tols[tols.length-1] != '8' && tols[tols.length-1] != '9'){
+        tols = tols.slice(0,tols.length-1)
+       }
+       this.datasource.rows[i].qty_str = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+
+       var temp = ''
+       for(let j=0; j<this.datasource.rows[i].qty_str.length; j++){
+        if(this.datasource.rows[i].qty_str[j] != ' '){
+          temp += this.datasource.rows[i].qty_str[j];
+        }
+       }
+      this.datasource.rows[i].qty = parseFloat(temp);
+     
       this.datasource.rows[i].sum = parseFloat(this.datasource.rows[i].price) * parseFloat(this.datasource.rows[i].qty) 
     },
     save_data :  async function(){
@@ -379,6 +431,7 @@ export default {
               "note": this.note,
               "user_name": this.user_name,
               "item_list": this.datasource.rows,
+              "tegirmonSkladid": this.sklad_id,
               "id" : this.id,
               "tegirmonAuthid": localStorage.AuthId
             })
@@ -420,7 +473,11 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped >
+td{
+  // margin: 0px !important;
+  padding: 5px 15px !important;
+}
 .delIcon:hover {
   color: #000;
 }

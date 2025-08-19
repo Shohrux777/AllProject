@@ -3,7 +3,7 @@
     <checkgroup v-if="checkShow" @close="closeAllGroup"/>
     <div v-else class="groupList">
       <div class="header_group rounded  px-2 mb-1 py-1">
-        <div class="row">
+        <div class="row container-fluid">
           <div class="col-3">
             <div class="d-flex  align-items-center">
               <small style="font-size: 12px;">Имя водителя: </small>
@@ -47,181 +47,183 @@
         </div>
       </div>
       <loader v-if="loading"/>
-      <div v-else class="backColor rounded mx-2 mb-4 py-4 px-2 border"
-        v-for="(item,indexRow) in invoice_list" :key="indexRow"
-        :class="{'bg_danger': (item.check_qty + item.zaxira_qty) > item.qty+1 || (item.check_qty + item.zaxira_qty) < item.qty-1 }"
-        >
-        <div class="row border-bottom">
-          <div class="col-3 appleid" v-show="false">
-            <erpSelectFio
-              :options="allClient.rows"
-              @select="selectOptionUser"
-              :selected="item.client_name"
-              :row="indexRow"
-              :label="$t('client')"
-                url="/TegirmonClient/getPaginationSearchByFioOrPassportSerailNumberOrHomeOrMobilePhoneNumber?page=0&size=100&fio_or_serial_number="
-            />
-            <small
-              style="position: absolute; top: -7px; left: 20px; font-size: 11px"
-              class="bg-white px-2 py-0"
-              >{{ $t("client") }}</small
-            >
-          </div>
-          <div class="col-3">
-            <mdb-input class="m-0 p-0 bg-white" disabled v-model="item.client_new_name" size="sm"  outline  group type="text" validate error="wrong" success="right"/>
+      <div v-else>
+        <div  class="backColor  rounded mx-2 mb-4 py-4 px-2 border"
+          v-for="(item,indexRow) in invoice_list" :key="indexRow"
+          :class="{'bg_danger': (item.check_qty + item.zaxira_qty) > item.qty+1 || (item.check_qty + item.zaxira_qty) < item.qty-1 }"
+          >
+          <div class="row border-bottom">
+            <div class="col-3 appleid" v-show="false">
+              <erpSelectFio
+                :options="allClient.rows"
+                @select="selectOptionUser"
+                :selected="item.client_name"
+                :row="indexRow"
+                :label="$t('client')"
+                  url="/TegirmonClient/getPaginationSearchByFioOrPassportSerailNumberOrHomeOrMobilePhoneNumber?page=0&size=100&fio_or_serial_number="
+              />
               <small
-                style="position: absolute; top: -15px; left: 15px; font-size: 11px"
-                class="font-weight-bold px-2 py-0"
+                style="position: absolute; top: -7px; left: 20px; font-size: 11px"
+                class="bg-white px-2 py-0"
                 >{{ $t("client") }}</small
               >
-          </div>
-          <div class="col-3">
-            <mdb-input class="m-0 p-0 bg-white" disabled v-model="item.product_name" size="sm"   outline  group type="text" validate error="wrong" success="right"/>
+            </div>
+            <div class="col-3">
+              <mdb-input class="m-0 p-0 bg-white" disabled v-model="item.client_new_name" size="sm"  outline  group type="text" validate error="wrong" success="right"/>
+                <small
+                  style="position: absolute; top: -15px; left: 15px; font-size: 11px"
+                  class="font-weight-bold px-2 py-0"
+                  >{{ $t("client") }}</small
+                >
+            </div>
+            <div class="col-3">
+              <mdb-input class="m-0 p-0 bg-white" disabled v-model="item.product_name" size="sm"   outline  group type="text" validate error="wrong" success="right"/>
+                <small
+                  style="position: absolute; top: -15px; left: 15px; font-size: 11px"
+                  class="font-weight-bold px-2 py-0"
+                  >{{ $t("product") }}</small
+                >
+            </div>
+            <div class="col-3">
+              <mdb-input class="m-0 p-0 bg-white" disabled v-model="item.qty" size="sm"   outline  group type="number" validate error="wrong" success="right"/>
+                <small
+                  style="position: absolute; top: -15px; left: 15px; font-size: 11px"
+                  class="font-weight-bold px-2 py-0"
+                  >Общий масса</small
+                >
+            </div>
+            <div class="col-1">
+              <mdb-input class="m-0 p-0 bg-white" disabled v-model="item.skidka" size="sm"   outline  group type="number" validate error="wrong" success="right"/>
+                <small
+                  style="position: absolute; top: -15px; left: 15px; font-size: 11px"
+                  class="font-weight-bold px-2 py-0"
+                  >{{$t('skidka')}}</small
+                >
+            </div>
+            <div class="col-2">
+              <mdb-input  disabled :value="(item.qty - (item.check_qty + item.zaxira_qty)).toFixed(1)" size="sm"   
+                outline  group type="number" validate error="wrong" success="right"
+                class="m-0 p-0 bg-white" />
+                <small
+                  style="position: absolute; top: -15px; left: 15px; font-size: 11px"
+                  class="font-weight-bold px-2 py-0"
+                  >Остатка масса</small
+                >
+            </div>
+            <div class="col-6 mt-1">
+              <mdb-input class="m-0 p-0" v-model="item.note" size="sm" outline group type="text" validate error="wrong" success="right"/>
               <small
-                style="position: absolute; top: -15px; left: 15px; font-size: 11px"
-                class="font-weight-bold px-2 py-0"
-                >{{ $t("product") }}</small
-              >
-          </div>
-          <div class="col-3">
-            <mdb-input class="m-0 p-0 bg-white" disabled v-model="item.qty" size="sm"   outline  group type="number" validate error="wrong" success="right"/>
-              <small
-                style="position: absolute; top: -15px; left: 15px; font-size: 11px"
-                class="font-weight-bold px-2 py-0"
-                >Общий масса</small
-              >
-          </div>
-          <div class="col-1">
-            <mdb-input class="m-0 p-0 bg-white" disabled v-model="item.skidka" size="sm"   outline  group type="number" validate error="wrong" success="right"/>
-              <small
-                style="position: absolute; top: -15px; left: 15px; font-size: 11px"
-                class="font-weight-bold px-2 py-0"
-                >{{$t('skidka')}}</small
-              >
-          </div>
-          <div class="col-2">
-            <mdb-input  disabled :value="(item.qty - (item.check_qty + item.zaxira_qty)).toFixed(1)" size="sm"   
-              outline  group type="number" validate error="wrong" success="right"
-              class="m-0 p-0 bg-white" />
-              <small
-                style="position: absolute; top: -15px; left: 15px; font-size: 11px"
-                class="font-weight-bold px-2 py-0"
-                >Остатка масса</small
-              >
-          </div>
-          <div class="col-6 mt-1">
-            <mdb-input class="m-0 p-0" v-model="item.note" size="sm" outline group type="text" validate error="wrong" success="right"/>
-            <small
-              style="position: absolute; top: -10px; left: 20px; font-size: 11px"
-              class="bg-white font-weight-bold px-2 py-0"
-              >{{ $t("reason") }}</small>
-          </div>
-          <div class="col-6 mt-1">
-            <div class="text-right">
-              <mdb-btn  :disabled="(item.qty - (item.check_qty + item.zaxira_qty)) < 1" @click="sendZaxira(item,indexRow)" color="success" m="r2" style="font-size: 8.5px"
-                p="r4 l4 t2 b2"> <mdb-icon fas class="mr-1"  icon="share-square"></mdb-icon>  {{$t('zaxira')}}
-              </mdb-btn>
-              <mdb-btn :disabled="item.zaxira_qty == item.qty" v-show="item.ruyxat_id>0"  @click="changingAdd(item,indexRow)" color="info" m="r2" style="font-size: 8.5px"
-                p="r3 l3 t2 b2"> <mdb-icon fas class="mr-2"  icon="sync"></mdb-icon>  {{$t('changing')}}
-              </mdb-btn>
+                style="position: absolute; top: -10px; left: 20px; font-size: 11px"
+                class="bg-white font-weight-bold px-2 py-0"
+                >{{ $t("reason") }}</small>
+            </div>
+            <div class="col-6 mt-1">
+              <div class="text-right">
+                <mdb-btn  :disabled="(item.qty - (item.check_qty + item.zaxira_qty)) < 1" @click="sendZaxira(item,indexRow)" color="success" m="r2" style="font-size: 8.5px"
+                  p="r4 l4 t2 b2"> <mdb-icon fas class="mr-1"  icon="share-square"></mdb-icon>  {{$t('zaxira')}}
+                </mdb-btn>
+                <mdb-btn :disabled="item.zaxira_qty == item.qty" v-show="item.ruyxat_id>0"  @click="changingAdd(item,indexRow)" color="info" m="r2" style="font-size: 8.5px"
+                  p="r3 l3 t2 b2"> <mdb-icon fas class="mr-2"  icon="sync"></mdb-icon>  {{$t('changing')}}
+                </mdb-btn>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Sotilgan mahsulot -->
-        <div class="text-center" v-if="item.summ>0">
-          <span style="font-size: 12px;">Sotilgan mahsulot</span>
-        </div>
-        <div class="" v-if="item.summ>0">
-          <table class="myTablegroupList">
-            <thead>
-              <tr class="header py-3" style="background: #ebcaff;">
-                <th  width="40" class="text-left">№</th>
-                <th>{{$t('product')}}</th>
-                <th>{{$t('measure')}}</th>
-                <th>{{$t('summ')}}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td> <span >{{1}}</span> </td>
-                <td> <span >{{item.product_name}}</span>  </td>
-                <td> <span >{{(item.invoice_note).toFixed(1)}}</span> <span>кг</span></td>
-                <td> <span >{{item.summ}}</span> <span>сум</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <!-- Sotilgan mahsulot -->
-        
-        <!-- Almashtirilgan mahsulot -->
-        <div class="text-center" v-if="item.changeProduct.length>0">
-          <span style="font-size: 12px;">Almashtirilgan mahsulot</span>
-        </div>
-        <div class="row mx-0" v-if="item.changeProduct.length>0">
-          <div class="col-12 p-0">
-            <table class="myTablegroupList ">
+          <!-- Sotilgan mahsulot -->
+          <div class="text-center" v-if="item.summ>0">
+            <span style="font-size: 12px;">Sotilgan mahsulot</span>
+          </div>
+          <div class="" v-if="item.summ>0">
+            <table class="myTablegroupList">
               <thead>
-                <tr class="header py-3" style="background: #c7e0ff;">
+                <tr class="header py-3" style="background: #ebcaff;">
                   <th  width="40" class="text-left">№</th>
                   <th>{{$t('product')}}</th>
                   <th>{{$t('measure')}}</th>
                   <th>{{$t('summ')}}</th>
-                  <th>{{item.product_name}}</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(row,index) in item.changeProduct" :key="index" v-show="row.real_qty != 0"
-                  :style="{'background': row.color}">
-                  <td> <span >{{index+1}}</span> </td>
-                  <td> <span >{{row.product_name}}</span> </td>
-                  <td> <span >{{row.real_qty}}</span>  <span>кг</span></td>
-                  <td> <span >{{row.summ}}</span> </td>
-                  <td> <span >{{row.persantage}}</span>  <span>кг</span></td>
+                <tr>
+                  <td> <span >{{1}}</span> </td>
+                  <td> <span >{{item.product_name}}</span>  </td>
+                  <td> <span >{{(item.invoice_note).toFixed(1)}}</span> <span>кг</span></td>
+                  <td> <span >{{item.summ}}</span> <span>сум</span></td>
                 </tr>
               </tbody>
             </table>
           </div>
-        </div>
-        <!-- Almashtirilgan mahsulot -->
-
-        <!-- Zaxiraga olinganlar -->
-        <div class="text-center" v-if="item.zaxira_invoice.length>0">
-          <span style="font-size: 12px;">Zaxiraga olinganlar</span>
-        </div>
-        <div class="row mx-0" v-if="item.zaxira_invoice.length>0">
-          <loader-table v-if="loading_table"/>
-          <div v-else class="col-12 p-0">
-            <table class="myTablegroupList ">
-              <thead>
-                <tr class="header py-3" style="background: #ceffd3;">
-                  <th  width="40" class="text-left">№</th>
-                  <th>{{$t('client')}}</th>
-                  <th>{{$t('product')}}</th>
-                  <th>{{$t('measure')}}</th>
-                  <!-- <th>{{$t('summ')}}</th> -->
-                  <th>{{$t('user')}}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(row,i) in item.zaxira_invoice" :key="i" >
-                  <td> <span >{{i+1}}</span> </td>
-                  <td> <span >{{row.client.fio}}</span> </td>
-                  <td> <span>{{item.product_name}}</span> </td>
-                  <td> <span >{{row.qty_real}}</span>  <span>кг</span></td>
-                  <!-- <td> <span >{{row.summ}}</span> </td> -->
-                  <td> 
-                    <span v-if="row.tegirmonAuthid">{{row.auth.user.fio}}</span>
-                    <span v-else>Foydalanuvchi topilmadi</span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <!-- Sotilgan mahsulot -->
+          
+          <!-- Almashtirilgan mahsulot -->
+          <div class="text-center" v-if="item.changeProduct.length>0">
+            <span style="font-size: 12px;">Almashtirilgan mahsulot</span>
           </div>
+          <div class="row mx-0" v-if="item.changeProduct.length>0">
+            <div class="col-12 p-0">
+              <table class="myTablegroupList ">
+                <thead>
+                  <tr class="header py-3" style="background: #c7e0ff;">
+                    <th  width="40" class="text-left">№</th>
+                    <th>{{$t('product')}}</th>
+                    <th>{{$t('measure')}}</th>
+                    <th>{{$t('summ')}}</th>
+                    <th>{{item.product_name}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(row,index) in item.changeProduct" :key="index" v-show="row.real_qty != 0"
+                    :style="{'background': row.color}">
+                    <td> <span >{{index+1}}</span> </td>
+                    <td> <span >{{row.product_name}}</span> </td>
+                    <td> <span >{{row.real_qty}}</span>  <span>кг</span></td>
+                    <td> <span >{{row.summ}}</span> </td>
+                    <td> <span >{{row.persantage}}</span>  <span>кг</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Almashtirilgan mahsulot -->
+
+          <!-- Zaxiraga olinganlar -->
+          <div class="text-center" v-if="item.zaxira_invoice.length>0">
+            <span style="font-size: 12px;">Zaxiraga olinganlar</span>
+          </div>
+          <div class="row mx-0" v-if="item.zaxira_invoice.length>0">
+            <loader-table v-if="loading_table"/>
+            <div v-else class="col-12 p-0">
+              <table class="myTablegroupList ">
+                <thead>
+                  <tr class="header py-3" style="background: #ceffd3;">
+                    <th  width="40" class="text-left">№</th>
+                    <th>{{$t('client')}}</th>
+                    <th>{{$t('product')}}</th>
+                    <th>{{$t('measure')}}</th>
+                    <!-- <th>{{$t('summ')}}</th> -->
+                    <th>{{$t('user')}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(row,i) in item.zaxira_invoice" :key="i" >
+                    <td> <span >{{i+1}}</span> </td>
+                    <td> <span >{{row.client.fio}}</span> </td>
+                    <td> <span>{{item.product_name}}</span> </td>
+                    <td> <span >{{row.qty_real}}</span>  <span>кг</span></td>
+                    <!-- <td> <span >{{row.summ}}</span> </td> -->
+                    <td> 
+                      <span v-if="row.tegirmonAuthid">{{row.auth.user.fio}}</span>
+                      <span v-else>Foydalanuvchi topilmadi</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Zaxiraga olinganlar -->
+
+
         </div>
-        <!-- Zaxiraga olinganlar -->
-
-
       </div>
       <div class="blue-gradient">
         <hr class="mt-1"/>
@@ -572,7 +574,8 @@ export default {
           "tegirmonAuthid": localStorage.AuthId,
           "user_name": localStorage.user_name,
           "image_str_url": skidkaItem,
-          "kassa_id": localStorage.kassa_id
+          "kassa_id": localStorage.kassa_id,
+          "tegirmonSkladid": 1,
         })
       };
       try{
@@ -732,7 +735,8 @@ export default {
           "tegirmonAuthid": localStorage.AuthId,
           "user_name": localStorage.user_name,
           "image_str_url": Inv_data.skidka,
-          "kassa_id": localStorage.kassa_id
+          "kassa_id": localStorage.kassa_id,
+          "tegirmonSkladid": 1,
         })
       };
       try{

@@ -159,14 +159,14 @@
             >
             <div class=" px-3 py-2">
               <div class="row">
-                <div class="col-3 px-2" v-for="(item,i) in productList" :key="i" @click="getProductOstatka(item)" v-show="item.real_qty>0">
+                <div class="col-3 px-2" v-for="(item,i) in productList" :key="i" @click="getProductOstatka(item)" v-show="item.qty>0">
                   <div class="border rounded p-2 mt-2" 
                     style="cursor:pointer; box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;">
                     <div style="height:20px; overflow:hidden;">
-                      <p class="m-0 mb-1" style="color:#707880; font-size: 14.5px;"> {{item.product.name}}</p>
+                      <p class="m-0 mb-1" style="color:#707880; font-size: 14.5px;"> {{item.Product.name}}</p>
                     </div>
                     <p class="m-0 mb-0 text-right" style="font-size: 14px;"> 
-                      {{item.product.price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                      {{item.Product.price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
                       <small class="ml-0">сўм</small>
                       <!-- <small class="ml-1">{{item.real_qty}}</small> -->
                     </p>
@@ -303,11 +303,18 @@
         <div class="d-flex align-items-center mt-3" style="position:relative;">
           <div class="skidka " style="width:40%">
             <div style="position:relative;">
-              <input type="text" v-model="acceptQty" v-on:keyup.39 = "ArrowLeftS"  v-on:keyup.13 = "AddAcceptPage" ref="upokovka" @input="summaDrag" @blur="blurQty" v-on:click.capture="writeNol" class="form-control form-control-md border mt-2 " style="border:none; outline:none;font-weight:bold;" >
+              <input type="text"
+              v-model="acceptQty_str"
+              v-on:keyup.39 = "ArrowLeftS"
+              v-on:keyup.13 = "AddAcceptPage" ref="upokovka"
+              @keyup="funcMassa($event.target.value)"
+              @blur="blurQty"
+              v-on:click.capture="writeNol"
+              class="form-control form-control-md border mt-2 " style="border:none; outline:none;font-weight:bold;" >
               <small style="position:absolute; top:-16px; left:3px; font-size: 12px;">
                 {{$t('kg_ves')}}
               </small>
-              
+              <!-- @input="summaDrag" -->
             </div>
           </div>
           
@@ -441,6 +448,7 @@ export default {
       payshow: false,
       unitPrice:'',
       acceptQty: 0,
+      acceptQty_str: '',
       acceptUnit: 0,
       number: [1,2,3,4,5,6,7,8,9,0],
       searchBarcodeData: [],
@@ -529,7 +537,7 @@ export default {
   methods: {
     ...mapActions([ 'fetchProduct', 'fetchCategoryAllProduct', 'fetchCategoryIdProduct', 
     'fetchProductSearchByName', 'fetchKassa_userId']),
-    ...mapMutations(['sklad_delete_row', 'add_product_order', 'minus_product', 'plus_product', 'del_product', 'clear_order', 'input_change', 'changeSumma', 'update_zakaz_product_all_list', 'select_savat_page', 'add_savat_page', 'del_savat_page']),
+    ...mapMutations([ 'add_product_order', 'minus_product', 'plus_product', 'del_product', 'clear_order', 'input_change', 'changeSumma', 'update_zakaz_product_all_list', 'select_savat_page', 'add_savat_page', 'del_savat_page']),
     async fetchUserAccess(id){
       try{
           const res = await fetch(this.$store.state.hostname + '/TegirmonUserAccess/getTegirmonUserAccessUserId?user_id=' + id);
@@ -538,7 +546,6 @@ export default {
           if(res.status == 200 || res.status == 201){
             this.kassa_setting_show = data.status_4;
             this.kassa_info_show = data.status_3;
-            
           }
       }
       catch(error){
@@ -592,7 +599,7 @@ export default {
     
     async fetchOstatikProduct(){
       try{
-        const response = await fetch(this.$store.state.hostname + "/TegirmonOstatka/getPagination?page=0&size=100");
+        const response = await fetch(this.$store.state.hostname + "/TegirmonSkladTovar/getPagination?page=0&size=100");
         const data = await response.json();
         console.log('data product ostatka list')
         console.log(data)
@@ -633,6 +640,27 @@ export default {
         this.acceptQty = parseFloat(this.dataAccept.price/this.persantage_discount).toFixed(2)
         this.dataAccept.qty = this.acceptQty;
         this.dataAccept.skidka = (parseFloat(this.real_price_unit_product) - parseFloat(this.persantage_discount))*this.acceptQty;
+    },
+    async funcMassa(n){
+      var tols = ''
+      for(let i=0; i<n.length; i++){
+        if(n[i] != ' '){
+          tols += n[i];
+        }
+       }
+       if(tols[tols.length-1] != '0' && tols[tols.length-1] != '1' && tols[tols.length-1] != '2' && tols[tols.length-1] != '3' && tols[tols.length-1] != '4' && 
+        tols[tols.length-1] != '5' && tols[tols.length-1] != '6' && tols[tols.length-1] != '7' && tols[tols.length-1] != '8' && tols[tols.length-1] != '9'){
+        tols = tols.slice(0,tols.length-1)
+       }
+       this.acceptQty_str = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+       var temp = ''
+       for(let j=0; j<this.acceptQty_str.length; j++){
+        if(this.acceptQty_str[j] != ' '){
+          temp += this.acceptQty_str[j];
+        }
+       }
+      this.acceptQty = parseFloat(temp);
+      await this.summaDrag();
     },
     getNow: function() {
         const today = new Date();
@@ -799,7 +827,7 @@ export default {
             console.log('hiy')
             this.Arrowdown = 0;
 
-            const response = await fetch(this.$store.state.hostname + "/TegirmonOstatka/getPaginationSearchProductByNameOrCodeOrShtrixCode?page=0&size=100&name_o_code_or_shtrix=" + this.searchDrag);
+            const response = await fetch(this.$store.state.hostname + "/TegirmonSkladTovar/getPaginationSearchProductByNameOrCodeOrShtrixCode?page=0&size=100&name_o_code_or_shtrix=" + this.searchDrag + "&sklad_id=1");
             
             if(response.status == 200 || response.status == 201){
               // this.barcode = '';
@@ -835,7 +863,7 @@ export default {
             this.searchDrag=""
             console.log('hiy')
             this.Arrowdown = 0;
-            const response = await fetch(this.$store.state.hostname + "/TegirmonOstatka/getPaginationSearchProductByNameOrCodeOrShtrixCode?page=0&size=100&name_o_code_or_shtrix=" + this.barcode);
+            const response = await fetch(this.$store.state.hostname + "/TegirmonSkladTovar/getPaginationSearchProductByNameOrCodeOrShtrixCode?page=0&size=100&name_o_code_or_shtrix=" + this.barcode + "&sklad_id=1");
             console.log('data')
            
             if(response.status == 200 || response.status == 201){
@@ -864,8 +892,10 @@ export default {
 
     // <--  Productni tanlab sonini yozadigan oyna ochadi start-->
       async getProductOstatka(data){
+        this.acceptQty_str = '';
+        this.acceptQty = 0;
         try{
-          const response = await fetch(this.$store.state.hostname + "/TegirmonOstatka/getPaginationOstatkaProduct_Id?page=0&size=10&product_id=" + data.TegirmonProductid);
+          const response = await fetch(this.$store.state.hostname + "/TegirmonSkladTovar/getPaginationOstatkaProduct_Id?page=0&size=10&product_id=" + data.TegirmonProductId + '&sklad_id=1');
           if(response.status == 200 || response.status == 201){
             const data_ostatka = await response.json();
             console.log('data_ostatka', data_ostatka);
@@ -878,7 +908,7 @@ export default {
       },
       async updateOnlineProductOstatka(product_id){
         try{
-          const response = await fetch(this.$store.state.hostname + "/TegirmonOstatka/getPaginationOstatkaProduct_Id?page=0&size=10&product_id=" + product_id);
+          const response = await fetch(this.$store.state.hostname + "/TegirmonSkladTovar/getPaginationOstatkaProduct_Id?page=0&size=10&product_id=" + product_id + '&sklad_id=1');
           if(response.status == 200 || response.status == 201){
             const data_ostatka = await response.json();
             // console.log('data_ostatka product id', data_ostatka);
@@ -918,21 +948,21 @@ export default {
         })
 
 
-        this.dataAccept.inv= data.product.inv_accepted_status;
-        this.dataAccept.name = data.product.name;
+        this.dataAccept.inv= data.Product.inv_accepted_status;
+        this.dataAccept.name = data.Product.name;
         this.dataAccept.invoice = data.id;
-        this.dataAccept.id = data.product.id;
-        this.dataAccept.manifacturer_name = data.product.code;
+        this.dataAccept.id = data.Product.id;
+        this.dataAccept.manifacturer_name = data.Product.code;
         this.dataAccept.ostatka_qty = (parseFloat(data.real_qty)-chooseQty).toFixed(2);
         this.dataAccept.skidka = 0;
         this.choosenQty = chooseQty;
         // this.dataAccept.contains_number_in_pack = data.product.contains_number_in_pack;
         this.dataAccept.qty = 0;
-        this.dataAccept.expired_date = data.created_date.slice(0,10);
-        this.dataAccept.saledPrice = data.product.price;
-        this.real_price_unit_product = data.product.price;
+        // this.dataAccept.expired_date = data.created_date.slice(0,10);
+        this.dataAccept.saledPrice = data.Product.price;
+        this.real_price_unit_product = data.Product.price;
         this.dataAccept.price = 0;
-        this.persantage_discount = data.product.price;
+        this.persantage_discount = data.Product.price;
         this.unitPrice = new Intl.NumberFormat().format(this.dataAccept.saledPrice)
       },
 
@@ -960,6 +990,7 @@ export default {
           }
           if(this.acceptQty == ''){
             this.acceptQty = 0;
+            this.acceptQty_str = '';
           }
         })
       },
@@ -981,11 +1012,14 @@ export default {
 
     // <--  Tanlangan productni savatga qushadi start-->
       async AddAcceptPage(){
+
         this.blurUnit();
         this.blurQty();
         if(await this.updateOnlineProductOstatka(this.dataAccept.id)){
           return true;
         }
+        if(!this.acceptQty) return;
+
         if(this.enoughtDrag == false){
           if(this.acceptUnit == 0 && this.acceptQty == 0){
             this.showAccept = false;
@@ -1001,6 +1035,7 @@ export default {
           }
           this.acceptUnit = 0;
           this.acceptQty = 0;
+          this.acceptQty_str = '';
           this.UnitSumString = '0';
         
         }
@@ -1040,6 +1075,7 @@ export default {
       blurQty(){
         if(this.acceptQty == null || this.acceptQty == ''){
           this.acceptQty = 0;
+          this.acceptQty_str = '';
           this.dataAccept.qty = this.acceptQty;
         }
       },

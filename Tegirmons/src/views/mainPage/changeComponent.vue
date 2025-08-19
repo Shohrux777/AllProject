@@ -195,7 +195,7 @@ export default {
       this.product_price_buy = this.product_price;
       try{
         this.loading = true;
-        const response = await fetch(this.$store.state.hostname + "/TegirmonProductToProductPersentage/getPaginationByProductId?page=0&size=100&product_id=" + id);
+        const response = await fetch(this.$store.state.hostname + "/TegirmonProductToProductPersentage/getPaginationByProductId?page=0&size=100&product_id=" + id + "&sklad_id=1");
         const data = await response.json();
         // console.log('data percented')
         // console.log(data)
@@ -209,8 +209,8 @@ export default {
             // console.log(data.items_list[0].item_list)
             for(let i=0; i<data.items_list[0].item_list.length; i++){
               let ostatk = 0;
-              if(data.items_list[0].item_list[i].ostatkaList.length >0){
-                ostatk = data.items_list[0].item_list[i].ostatkaList[0].real_qty;
+              if(data.items_list[0].item_list[i].skladOstatka.length >0){
+                ostatk = data.items_list[0].item_list[i].skladOstatka[0].real_qty;
               }
               else{
                 ostatk = 0;
@@ -227,8 +227,10 @@ export default {
                 auth_user_updator_id: data.items_list[0].item_list[i].auth_user_updator_id,
                 id: 0,
               }
+              if(ostatk>0){
+                this.changeProduct.push(temp)
+              } 
               // console.log(temp)
-              this.changeProduct.push(temp)
             }
             this.product_qty_change = qty;
             this.product_real_qty = qty;
@@ -360,6 +362,7 @@ export default {
       }
     },
     changeRealQty(index){
+      console.log(index)
       // console.log(this.changeProduct[index])
       let test_qty = this.product_real_qty;
       for(let i=0; i<this.changeProduct.length; i++){

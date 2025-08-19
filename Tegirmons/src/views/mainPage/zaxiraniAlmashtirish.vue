@@ -125,59 +125,60 @@
       <div class="mainWorkChange" :class="{'bg_red_color': oshibka_client == 1}">
         <div class="row px-3 m-0" :class="{'bg_red_color': oshibka_client == 1}">
           <loader-table v-if="loading_table"/>
-          <div v-else class="col-3 mt-4 main_hover_info"  v-for="(item,i) in OstatkaList" :key="i" 
-            style="position:relative; ">
-            <div v-if="item.real_qty>=1" class=" card pt-2 pr-3" style="position: relative; " @click="getProductId(item.product.id,item.real_qty, item.product.name, item)">
-              <div  class="text-right">
-                <h6 class="pro_name_color text-left ml-3">{{item.client.fio}}</h6>
-                <div class="d-flex justify-content-between align-items-center">
-                  <h6 class="pro_name_color text-left ml-3 mt-2">{{item.product.name}}</h6>
-                  <h4 class="mt-2" v-if="item.real_qty">{{item.real_qty.toFixed(1).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} <small>{{item.product.unitMeasurment.name}}</small></h4>
-                  <h4 class="mt-2" v-else>{{item.real_qty.toFixed(1)}} <small>{{item.product.unitMeasurment.name}}</small></h4>
+          <div v-else>
+            <div class="col-3 mt-4 main_hover_info"  v-for="(item,i) in OstatkaList" :key="i" style="position:relative; ">
+              <div v-if="item.real_qty>=1" class="card pt-2 pr-3" style="position: relative; " @click="getProductId(item.product.id,item.real_qty, item.product.name, item)">
+                <div  class="text-right">
+                  <h6 class="pro_name_color text-left ml-3">{{item.client.fio}}</h6>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="pro_name_color text-left ml-3 mt-2">{{item.product.name}}</h6>
+                    <h4 class="mt-2" v-if="item.real_qty">{{item.real_qty.toFixed(1).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} <small>{{item.product.unitMeasurment.name}}</small></h4>
+                    <h4 class="mt-2" v-else>{{item.real_qty.toFixed(1)}} <small>{{item.product.unitMeasurment.name}}</small></h4>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="hover_info shadow">
-              <div class="addDavernis d-flex justify-content-center border-bottom pb-2 mb-2">
-                <mdb-btn
-                  class="mr-1 px-3 py-2 text-white"
-                  style="font-size: 12px"
-                  color="success"
-                  darkWaves
-                  tag="a"
-                  floating
-                  size="sm"
-                  @click="addDavernis(item.client.id)"
-                  >{{ $t("add_davernis") }}</mdb-btn
-                >
-                <mdb-btn
-                  class="mr-1 px-3 py-2 text-white"
-                  style="font-size: 12px"
-                  color="primary"
-                  darkWaves
-                  tag="a"
-                  floating
-                  size="sm"
-                  @click="showDavernis(item.client.id)"
-                  >{{ $t("show_davernis") }}</mdb-btn
-                >
-                  <!--  -->
-              </div>
-              <div class="d-flex justify-content-between border_dashed mb-2" @click="show_client_info_func">
-                <span style="color: #757575; font-size: 13.5px;">{{$t('client_name')}}</span>
-                <span style="color: #757575; font-size: 13.5px;">{{item.client.fio}}</span>
-              </div>
-              <div class="d-flex justify-content-between border_dashed mb-2" @click="show_client_info_func">
-                <span style="color: #757575; font-size: 13.5px;">{{$t('passport_number')}}</span>
-                <span style="color: #757575; font-size: 13.5px;">{{item.client.passport_number}}</span>
-              </div>
-              <div class="d-flex justify-content-between border_dashed mb-2" @click="show_client_info_func">
-                <span style="color: #757575; font-size: 13.5px;">{{$t('phone_number')}}</span>
-                <span style="color: #757575; font-size: 13.5px;">{{item.client.phone_number}}</span>
-              </div>
-              <div class="d-flex justify-content-between border_dashed mb-2" @click="show_client_info_func">
-                <span style="color: #757575; font-size: 13.5px;">{{$t('note')}}</span>
-                <span style="color: #757575; font-size: 13.5px;">{{item.client.note}}</span>
+              <div class="hover_info shadow">
+                <div class="addDavernis d-flex justify-content-center border-bottom pb-2 mb-2">
+                  <mdb-btn
+                    class="mr-1 px-3 py-2 text-white"
+                    style="font-size: 12px"
+                    color="success"
+                    darkWaves
+                    tag="a"
+                    floating
+                    size="sm"
+                    @click="addDavernis(item.client.id)"
+                    >{{ $t("add_davernis") }}</mdb-btn
+                  >
+                  <mdb-btn
+                    class="mr-1 px-3 py-2 text-white"
+                    style="font-size: 12px"
+                    color="primary"
+                    darkWaves
+                    tag="a"
+                    floating
+                    size="sm"
+                    @click="showDavernis(item.client.id)"
+                    >{{ $t("show_davernis") }}</mdb-btn
+                  >
+                    <!--  -->
+                </div>
+                <div class="d-flex justify-content-between border_dashed mb-2" @click="show_client_info_func">
+                  <span style="color: #757575; font-size: 13.5px;">{{$t('client_name')}}</span>
+                  <span style="color: #757575; font-size: 13.5px;">{{item.client.fio}}</span>
+                </div>
+                <div class="d-flex justify-content-between border_dashed mb-2" @click="show_client_info_func">
+                  <span style="color: #757575; font-size: 13.5px;">{{$t('passport_number')}}</span>
+                  <span style="color: #757575; font-size: 13.5px;">{{item.client.passport_number}}</span>
+                </div>
+                <div class="d-flex justify-content-between border_dashed mb-2" @click="show_client_info_func">
+                  <span style="color: #757575; font-size: 13.5px;">{{$t('phone_number')}}</span>
+                  <span style="color: #757575; font-size: 13.5px;">{{item.client.phone_number}}</span>
+                </div>
+                <div class="d-flex justify-content-between border_dashed mb-2" @click="show_client_info_func">
+                  <span style="color: #757575; font-size: 13.5px;">{{$t('note')}}</span>
+                  <span style="color: #757575; font-size: 13.5px;">{{item.client.note}}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -271,7 +272,7 @@
               </div>
             </div>
 
-            <div  class="col-sm-4 col-md-3 col-lg-2 col-4 mt-4  px-3" v-for="(item,index) in changeProduct" :key="index">
+            <div  class="col-sm-4 col-md-3 col-lg-2 col-4 mt-4  px-3" v-for="(item,index) in changeProduct" :key="index" > 
               <div class="card pt-2 pr-3" style="position:relative;" :class="{'bg_red_color': item.auth_user_updator_id == 1}">
                 <div class="product_name_price text-right ">
                   <div class="d-flex justify-content-between">
@@ -1001,7 +1002,7 @@ data(){
       this.summa_buy_string = '0';
       try{
         this.loading = true;
-        const response = await fetch(this.$store.state.hostname + "/TegirmonProductToProductPersentage/getPaginationByProductId?page=0&size=100&product_id=" + id);
+        const response = await fetch(this.$store.state.hostname + "/TegirmonProductToProductPersentage/getPaginationByProductId?page=0&size=100&product_id=" + id + "&sklad_id=1");
         const data = await response.json();
         console.log('data productlar')
         console.log(data)
@@ -1020,13 +1021,18 @@ data(){
                 measure: data.items_list[0].item_list[i].sub_product.unitMeasurment.name,
                 product_price: data.items_list[0].item_list[i].sub_product.price,
                 product_priceString: data.items_list[0].item_list[i].sub_product.price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 '),
-                _real:data.items_list[0].item_list[i].ostatkaList[0].real_qty,
+                _real:0,
                 real_qty:0,
                 all_sum_str: '0',
                 all_sum: 0,
                 auth_user_updator_id: data.items_list[0].item_list[i].auth_user_updator_id,
               }
-              this.changeProduct.push(temp)
+              if(data.items_list[0].item_list[i].skladOstatka.length>0){
+                temp._real = data.items_list[0].item_list[i].skladOstatka[0].qty;
+              }
+              if(temp._real>0){
+                this.changeProduct.push(temp);
+              }
             }
             this.product_name = name;
             this.product_qty = qty;
@@ -1454,16 +1460,17 @@ data(){
             "auth_user_updator_id": parseInt(this.ostatka_qty_real),
             "check_number": this.check_number,
             "kassa_id": localStorage.kassa_id,
+            "tegirmonSkladid": 1,
             "id" : 0,
           })
         };
         try{
           this.loading = true;
           const response = await fetch(this.$store.state.hostname + "/TegirmonInvoice/postInvoiceBugdoyniZaxiradanNarsalargaAlmashtrish", requestOptions);
-          const data = await response.json();
           this.loading = false;
           if(response.status == 201 || response.status == 200)
           {
+            const data = await response.json();
             await this.zaxiraCheckList({list: this.changeProduct, product_name: this.product_name, buy_qty: this.product_buy, buy_sum: this.summ_buy, client_name: this.olib_ketuvchi, client: this.client_info, client_key: this.parol_tg, invoice_id: data.check_number, measure_name: this.main_product_measure})
             this.fetchSendTgMessage(this.olib_ketuvchi, this.product_name, this.main_client_id, this.useQty )
             await this.fetchOstatka(this.user_id)
@@ -1486,7 +1493,8 @@ data(){
         }
         catch{
           this.loading = false;
-          this.modal_info = this.$i18n.t('network_ne_connect'); 
+          const data_string = await response.text();
+          this.modal_info = data_string;
           this.modal_status = true;
         }
     },
