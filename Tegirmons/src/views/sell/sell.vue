@@ -160,10 +160,10 @@
             <div class=" px-3 py-2">
               <div class="row">
                 <div class="col-3 px-2" v-for="(item,i) in productList" :key="i" @click="getProductOstatka(item)" v-show="item.qty>0">
-                  <div class="border rounded p-2 mt-2" 
+                  <div class="border rounded p-2 mt-2" :style="{ background: item.Product.shitrix_code}" 
                     style="cursor:pointer; box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;">
                     <div style="height:20px; overflow:hidden;">
-                      <p class="m-0 mb-1" style="color:#707880; font-size: 14.5px;"> {{item.Product.name}}</p>
+                      <p class="m-0 mb-1 sellProductLabel"> {{item.Product.name}}</p>
                     </div>
                     <p class="m-0 mb-0 text-right" style="font-size: 14px;"> 
                       {{item.Product.price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
@@ -599,7 +599,7 @@ export default {
     
     async fetchOstatikProduct(){
       try{
-        const response = await fetch(this.$store.state.hostname + "/TegirmonSkladTovar/getPagination?page=0&size=100");
+        const response = await fetch(this.$store.state.hostname + "/TegirmonSkladTovar/getPagination?page=0&size=100&sklad_id=1");
         const data = await response.json();
         console.log('data product ostatka list')
         console.log(data)
@@ -638,6 +638,7 @@ export default {
 
        this.dataAccept.price = parseFloat(temp);
         this.acceptQty = parseFloat(this.dataAccept.price/this.persantage_discount).toFixed(2)
+        this.acceptQty_str = this.acceptQty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
         this.dataAccept.qty = this.acceptQty;
         this.dataAccept.skidka = (parseFloat(this.real_price_unit_product) - parseFloat(this.persantage_discount))*this.acceptQty;
     },
@@ -945,6 +946,7 @@ export default {
         this.$nextTick(function () {
           this.$refs.upokovka.focus();
            this.acceptQty = null;
+           this.acceptQty_str = '';
         })
 
 
@@ -1587,5 +1589,9 @@ export default {
   }
   .bg_kassa_to_kassa{
     background: #3b678b !important;
+  }
+  .sellProductLabel{
+    color:#303030;
+    font-size: 14.5px;
   }
 </style>

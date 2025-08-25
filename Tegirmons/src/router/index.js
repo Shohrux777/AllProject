@@ -244,6 +244,13 @@ const routes = [{
             import ('../views/sklad/sklad.vue')
     },
     {
+        path: '/sklad_dashboard',
+        name: 'sklad_dashboard',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/sklad/sklad_dashboard.vue')
+    },
+    {
         path: '/sklad_add/:id',
         name: 'sklad_add',
         meta: { layout: 'main' },
@@ -383,7 +390,13 @@ const routes = [{
         component: () =>
             import ('../views/buy/buy_Add.vue')
     },
-    
+    {
+        path: '/new_buy',
+        name: 'new_buy',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/buy/new_buy.vue')
+    },
     {
         path: '/changing',
         name: 'changing',

@@ -130,6 +130,7 @@
 
 
             { title: "sklad", icon: 'calendar-plus', url: '', view: false, color: '#c4cbcb', down_list:[
+               { title: "dashboard", url: '/sklad_dashboard', dview: false, color: '#c4cbcb', down_list:[] },              
                { title: "new_sklad", url: '/sklad', dview: false, color: '#c4cbcb', down_list:[] },              
             ] },
 

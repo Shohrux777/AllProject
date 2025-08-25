@@ -16,7 +16,7 @@
     <div class="container-fluid">
       <div class="row border-bottom">
         <div class="col-4 mt-3">
-          <div style="position: relative; margin-top:0px;" class="m-0 p-0"> 
+          <div style="position: relative; margin-top:0px;" class="m-0 p-0">
             <small 
               style="position: absolute; z-index:1; left:0px; 
                 top: -10px; color: #757575; background:inherit;
@@ -59,7 +59,7 @@ export default {
       auth_id: localStorage.AuthId,
       product_list: {
         rows: [],
-        columns: ['name','price','code'],
+        columns: ['name','price','code','auth_user_updator_id'],
         col: []
       },
       status_table: false,

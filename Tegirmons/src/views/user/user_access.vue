@@ -125,6 +125,22 @@
                 <label  style="cursor:pointer;" class="custom-control-label " for="number15"></label>
             </div>
         </div>
+        <div 
+            class="access_item d-flex justify-content-between py-2 border-bottom">
+            <span>Склад</span>
+            <div class="custom-control custom-switch">
+                <input v-model="access_item.sklad" type="checkbox" class="custom-control-input " id="number17" checked>
+                <label  style="cursor:pointer;" class="custom-control-label " for="number17"></label>
+            </div>
+        </div>
+        <div 
+            class="access_item d-flex justify-content-between py-2 border-bottom">
+            <span>Список должников</span>
+            <div class="custom-control custom-switch">
+                <input v-model="access_item.debt" type="checkbox" class="custom-control-input " id="number18" checked>
+                <label  style="cursor:pointer;" class="custom-control-label " for="number18"></label>
+            </div>
+        </div>
         <div class="d-flex justify-content-end mt-4">
             <mdb-btn color="success" style="font-size: 10.5px"
             @click="saveAccess"
@@ -163,6 +179,8 @@ export default {
                 sotuv_kassa: false,
                 kassa_setting: false,
                 hisoblar: false,
+                debt: false,
+                sklad: false,
             },
             id: 0,
         }
@@ -195,7 +213,12 @@ export default {
                 this.access_item.sotuv_kassa = data.status_3;
                 this.access_item.kassa_setting = data.status_4;
                 this.access_item.hisoblar = data.status_5;
-
+                if(data.num_1 > 0){
+                    this.access_item.debt = true;
+                }
+                if(data.num_2 > 0){
+                    this.access_item.sklad = true;
+                }
                 this.id = data.id;
             }
         }
@@ -217,6 +240,14 @@ export default {
     },
     methods: {
         async saveAccess() {
+            let num_1 = 0;
+            let num_2 = 0;
+            if(this.access_item.debt == true){
+                num_1 = 1;
+            }
+            if(this.access_item.sklad == true){
+                num_2 = 1;
+            }
             const requestOptions = {
                 method : "POST",
                 headers: { "Content-Type" : "application/json" },
@@ -236,6 +267,8 @@ export default {
                     "status_3": this.access_item.sotuv_kassa,
                     "status_4": this.access_item.kassa_setting,
                     "status_5": this.access_item.hisoblar,
+                    "num_1": num_1,
+                    "num_2": num_2,
                     "tegirmonUserid": this.user_id,
                     "id" : this.id,
                 })

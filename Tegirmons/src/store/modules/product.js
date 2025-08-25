@@ -2,7 +2,7 @@ export default {
     state: {
         product_t: {
             rows: [],
-            columns: ['name','price','code'],
+            columns: ['name','price','code','auth_user_updator_id'],
             col: []
         },
 

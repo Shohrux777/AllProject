@@ -44,6 +44,7 @@ import loaderFixed from './components/loaderFixed.vue'
 import loaderTable from './components/loaderTable.vue'
 import modal from './components/modal.vue'
 import modal_new from './components/modal_new.vue'
+import modal_right from './components/modal_right.vue'
 import VueApexCharts from 'vue-apexcharts'
 import VueQRCodeComponent from 'vue-qrcode-component'
 import JsonExcel from "vue-json-excel";
@@ -65,6 +66,7 @@ Vue.component('Toast', Toast)
 Vue.component('Alert', Alert)
 Vue.component('massage_box', massage_box)
 Vue.component('modal-train', modal)
+Vue.component('modal-right', modal_right)
 Vue.component('modal-new', modal_new)
 Vue.component('loader', loader)
 Vue.component('block', block)

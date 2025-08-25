@@ -14,9 +14,10 @@
         <small style="position:absolute; top:-10px; left:22px; font-size: 11px;" class="bg-white px-2 py-0">{{$t('skidka')}}</small>
       </div>
     </div>
+    <!-- :class="{'bg_red_color': item.auth_user_updator_id == 1}" -->
     <div class="row px-2">
       <div class="col-3 mt-4 px-3" v-for="(item,index) in changeProduct" :key="index">
-        <div class=" card pt-2 pr-3" style="position:relative;" :class="{'bg_red_color': item.auth_user_updator_id == 1}">
+        <div class=" card pt-2 pr-3" style="position:relative;" :style="{background : item.color }" >
           <div class="product_name_price text-right">
             <div class="d-flex justify-content-between">
               <div style="height:30px; overflow: hidden;">

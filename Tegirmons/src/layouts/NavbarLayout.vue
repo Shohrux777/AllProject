@@ -116,7 +116,13 @@
               this.option[5].status = data.sell
               this.option[6].status = data.status_2
               this.option[7].status = data.status_5
-              this.option[8].status = data.ostatka
+              this.option[10].status = data.ostatka
+              if(data.num_1 == 0){
+                this.option[9].status = false;
+              }
+              else{
+                this.option[9].status = true;
+              }
           }
       }
       catch(error){

@@ -348,5 +348,9 @@
     "sklad_add": "Добавить склад",
     "add_sklad": "Добавить склад",
     "sklad_num": "Склад номер",
-    "Select_sklad": "Выбирать склад"
+    "Select_sklad": "Выбирать склад",
+    "dashboard": "Dashboard",
+    "search_products": "Поиск продукт",
+    "auth_user_updator_id": "Tartib raqam",
+    "sendOtherClient":"Отпр. продукт клиенту"
 }

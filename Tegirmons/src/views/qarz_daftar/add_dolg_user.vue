@@ -58,7 +58,7 @@
           </mdb-col>
         </mdb-row>
 
-        <mdb-row class="mt-3">
+        <!-- <mdb-row class="mt-3">
           <mdb-col col="4">
             <p class="p-0 m-0 mt-2" style="font-size: 14px;">Долг (UZS)</p>
           </mdb-col>
@@ -77,7 +77,7 @@
             <input class="m-0 form-control" style="height:34px;" v-model="dollor_str" @keyup="funcchangeDollor($event.target.value)"
             size="md" outline  group type="text" validate error="wrong" success="right"/>
           </mdb-col>
-        </mdb-row>
+        </mdb-row> -->
         
         <mdb-row class="mt-3">
           <mdb-col col="4">
@@ -87,17 +87,17 @@
             <div class="d-flex justify-content-start align-items-center">
               <!-- v-show="!PicShow" -->
               <div class="client_img" v-show="!PicShow" style="position: relative;">
-                  <img  :src="hostname + image" id="prewImageClientAdd" style="height: 150px;" class="img-fluid img-thumbnail img-responsive shadow" alt="">
-                <div @click="delImage"> 
+                  <!-- <img  :src="hostname + image" id="prewImageClientAdd" style="height: 150px;" class="img-fluid img-thumbnail img-responsive shadow" alt=""> -->
+                <!-- <div @click="delImage"> 
                   <svg xmlns="http://www.w3.org/2000/svg"  class="icon icon-tabler icon-tabler-x border p-1" style="border-radius:50%;
                     position: absolute; top:8px; right: 8px; cursor:pointer;" width="25" height="25" viewBox="0 0 24 24" stroke-width="2.5" stroke="#ff2825" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <line x1="18" y1="6" x2="6" y2="18" />
                     <line x1="6" y1="6" x2="18" y2="18" />
                   </svg>
-                </div>
+                </div> -->
               </div>
-                <img :src="hostname + image2" style="height: 150px;" v-show="!PicShow" class="img-fluid img-thumbnail img-responsive shadow" alt="">
+                <!-- <img :src="hostname + image2" style="height: 150px;" v-show="!PicShow" class="img-fluid img-thumbnail img-responsive shadow" alt=""> -->
                 <img :src="hostname + photo_url" v-if="photo_url" v-show="photo_url" style="height: 150px;" class="img-fluid img-thumbnail img-responsive shadow" alt="">
             </div>
             <input hidden  id="inputFileToLoad" @change="previewFile()" accept="image/png, image/gif, image/jpeg" type="file" ref="file_Img" class="shadow text-right ml-2"  />

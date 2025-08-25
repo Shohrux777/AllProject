@@ -56,6 +56,14 @@
             <input class="m-0 p-0 form-control" style="height: 25px;" v-model="color" size="md" type="color" />
           </mdb-col>
         </mdb-row>
+        <mdb-row class="mt-4">
+          <mdb-col col="3">
+            <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('auth_user_updator_id')}}</p>
+          </mdb-col>
+          <mdb-col col="5">
+            <mdb-input class="m-0 p-0" v-model="number" size="md" outline  group type="number" validate error="wrong" success="right"/>
+          </mdb-col>
+        </mdb-row>
 
         <!-- <mdb-row class="mt-4">
           <mdb-col col="3">
@@ -189,6 +197,7 @@ export default {
       status: false,
       color: '#ffffff',
       uzs_status: false,
+      number: 0,
     //address: '',
 
     }
@@ -226,13 +235,14 @@ export default {
         console.log(data)
         this.name = data.name,
         this.price = data.price,
-        this.measurment_id = data.tegirmonDepartmentid,
+        this.measurment_id = data.tegirmonUnitMeasurmentid,
         this.measurment_name = data.measurment_name,
         this.image = this.$store.state.server_ip +  data.image_base_64,
         this.base64 = data.image_base_64,
         this.code = data.code,
         this.status = data.inv_accepted_status;
         this.color = data.shitrix_code;
+        this.number = data.auth_user_updator_id;
         if(data.auth_user_creator_id == 0){
           this.uzs_status = false;
         }
@@ -241,6 +251,7 @@ export default {
         }
         // this.address = data.adddress,
         this.PicShow = false;
+        await this.MeasureName(this.measurment_id);
       }
 
     },
@@ -251,6 +262,20 @@ export default {
 
   methods:{
     ...mapActions(['fetchMeasurment']),
+    async MeasureName(m_id){
+      try{
+        const res = await fetch(this.$store.state.hostname + '/TegirmonUnitMeasurment/' + m_id);
+        if(res.status == 200 || res.status == 201){
+          const data = await res.json();
+          this.measurment_name = data.name;
+        }
+      }
+      catch(error){
+        console.log(error);
+      }
+      
+
+    },
     selectOption(option){
       this.measurment_name = option.name
       this.measurment_id = option.id
@@ -316,6 +341,7 @@ export default {
                 "inv_accepted_status": this.status,
                 "shitrix_code": this.color,
                 "auth_user_creator_id": uzs_num,
+                "auth_user_updator_id": this.number,
                 // "adddress": this.address,
                 // "image_url": this.image_url,
                 "id" : this.id,
