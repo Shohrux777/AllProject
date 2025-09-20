@@ -121,12 +121,17 @@
             { title: "product", icon: 'shopping-bag', url: '/product', view: false, color: '#c4cbcb', down_list:[] },
             { title: "measurment", icon: 'balance-scale', url: '/measurment', view: false, color: '#c4cbcb', down_list:[] },
             { title: "changing", icon: 'drafting-compass', url: '/changing', view: false, color: '#c4cbcb', down_list:[] },
-            { title: "buy", icon: 'truck-loading', url: '/buy', view: false, color: '#c4cbcb', down_list:[] },
             { title: "client", icon: 'user-shield', url: '/client', view: false, color: '#c4cbcb', down_list:[] },
             // { title: "client_controler", icon: 'users', url: '/client_controler', view: false, color: '#c4cbcb', down_list:[] },
-            { title: "user", icon: 'user-tie', url: '/user', view: false, color: '#c4cbcb', down_list:[] },
-            { title: "kassa", icon: 'cash-register', url: '/kassa', view: false, color: '#c4cbcb', down_list:[] },
-            { title: "hisob", icon: 'wallet', url: '/hisob', view: false, color: '#c4cbcb', down_list:[] },
+            { title: "user", icon: 'user-tie', url: '/user', view: false, color: '#c4cbcb', down_list:[]},
+            { title: "kassa", icon: 'cash-register', url: '/kassa', view: false, color: '#c4cbcb', down_list:[]},    
+            { title: "hisob", icon: 'wallet', url: '/hisob', view: false, color: '#c4cbcb', down_list:[]},
+
+            { title: "buy", icon: 'truck-loading', url: '', view: false, color: '#c4cbcb', down_list:[
+              { title: "buy", icon: 'truck-loading', url: '/buy', view: false, color: '#c4cbcb', down_list:[] },
+              { title: "contragent_info", icon: '', url: '/contragent_info', view: false, color: '#c4cbcb', down_list:[] },
+              { title: "contragent", icon: '', url: '/contragent', view: false, color: '#c4cbcb', down_list:[] },
+            ] },
 
 
             { title: "sklad", icon: 'calendar-plus', url: '', view: false, color: '#c4cbcb', down_list:[

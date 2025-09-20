@@ -119,7 +119,7 @@ export default
 }
 .applied{
   pointer-events: none;
-  background:#fcfcfc;
+  background:inherit;
 }
 .multiselect__single
 {

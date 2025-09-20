@@ -1,6 +1,6 @@
 <template>
   <div class="getProduct">
-      <div class="border-bottom d-flex justify-content-between main_header_bg_shadow">
+      <div class="border-bottom d-flex justify-content-between main_header_bg_shadow" v-if="currentLink != '/main_sklad'">
           <router-link to="/sklad">
               <h5 class="m-0 ml-4 d-flex" style="padding: 10px 0px">
                   {{$t('sklad')}}</h5>
@@ -20,11 +20,23 @@
                         <div>
                             <span class="header_name ml-2">{{ sklad_name }} oстатка</span>
                         </div>
-                        <div class="d-flex" style="position: relative;">
-                            <input class="m-0 form-control mr-2" style="height:30px; width: 250px; font-size: 14px;" v-model="search" @input="searchClick()"  type="text" validate error="wrong" success="right"/>
-                            <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -10px; color: #757575; font-size: 12px;">
-                              {{$t('search_products')}}
-                            </small>
+                        <div class="d-flex mr-2" >
+                            <div style="width:250px">
+                              <erpSelectSklad
+                                :options="allSklad.rows"
+                                @select="selectOptionSklad"
+                                :selected="sklad_name"
+                                :label="$t('sklad')"
+                                size="sm"
+                              />
+                            </div>
+                            <div style="position: relative;" class="ml-2">
+                              <input class="m-0 form-control mr-2" style="height:30px; width: 250px; font-size: 14px;" v-model="search" @input="searchClick()"  type="text" validate error="wrong" success="right"/>
+                              <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -10px; color: #757575; font-size: 12px;">
+                                {{$t('search_products')}}
+                              </small>
+                            </div>
+                            
                             <mdb-btn  class="m-0 mb-1 "  size="sm" outline="info" style="font-size:9px; height:30px;" @click="printDiv">
                                 Печат
                             </mdb-btn>
@@ -108,6 +120,7 @@ import { required } from 'vuelidate/lib/validators'
 import {mapActions,mapGetters} from 'vuex'
 import LoaderTable from '../../components/loaderTable.vue';
 import weeklySkladChart from './weeklySkladChard.vue'
+import erpSelectSklad from "../../components/erpSelect.vue";
 export default {
 data(){
     return{
@@ -127,6 +140,8 @@ data(){
       searchlist: [],
       sklad_name: 'Sotuv Sklad',
       sklad_id: null,
+      sklad_name: '',
+      sklad_id: 0,
 
       adminStatus: localStorage.AccessType,
       topProducts: [],
@@ -142,11 +157,21 @@ data(){
         "chiqimSum": 900000
       },
       ],
+       currentLink: '',
     }
+  },
+  created() {
+    // Hozirgi sahifa path ni oladi
+    this.currentLink = this.$route.path 
+    console.log('this.currentLink', this.currentLink)
+    
+    // Agar butun URL kerak bo‘lsa:
+    // this.currentLink = window.location.href
   },
   components: {
     mdbInput,  mdbBtn, erpSelect, erpSelectAdd,
-    LoaderTable, TopProductsPie, weeklySkladChart
+    LoaderTable, TopProductsPie, weeklySkladChart,
+    erpSelectSklad
   },
   validations: {
       name: {
@@ -164,15 +189,22 @@ data(){
 
         console.log('hiy')
       // await this.fetchClient();
-      await this.getTop5Sklad();
+      await this.getTop5Sklad(1);
+      await this.loadData(1);
       
       await this.updateOstatka();
-      await this.loadData();
+      await this.fetchSklad();
     },
-   computed: mapGetters(['all_district_t']),
-    
+  computed: mapGetters(['all_district_t', 'allSklad']),
   methods: {
-    ...mapActions(['fetch_district_t']),
+    ...mapActions(['fetch_district_t', 'fetchSklad']),
+    async selectOptionSklad(option){
+      this.sklad_name = option.name;
+      this.sklad_id = option.id;
+      await this.updateOstatkaSkladId(this.sklad_id);
+      await this.getTop5Sklad(this.sklad_id);
+      await this.loadData(this.sklad_id);
+    },
     async fetchUserAccess(id){
         try{
             const res = await fetch(this.$store.state.hostname + '/TegirmonUserAccess/getTegirmonUserAccessUserId?user_id=' + id);
@@ -194,7 +226,7 @@ data(){
     async updateOstatka(){
       try{
         // this.loading = true;
-        const response = await fetch(this.$store.state.hostname + "/TegirmonSkladHistory/getSkladStatistika?sklad_id=1");
+        const response = await fetch(this.$store.state.hostname + "/TegirmonSkladHistory/getSkladStatistikaNotSkladId");
         const data = await response.json();
         this.loading = false;
         if(response.status == 201 || response.status == 200)
@@ -219,10 +251,38 @@ data(){
         this.modal_status = true;
       }
     },
-    async getTop5Sklad(){
+    async updateOstatkaSkladId(id){
+      try{
+        // this.loading = true;
+        const response = await fetch(this.$store.state.hostname + "/TegirmonSkladHistory/getSkladStatistika?sklad_id=" + id);
+        const data = await response.json();
+        this.loading = false;
+        if(response.status == 201 || response.status == 200)
+        {
+          console.log('datwa');
+          console.log(data);
+          this.OstatkaList = data;
+          this.searchlist = data;
+          this.$refs.message.success('Added_successfully')
+          return true;
+        }
+        else{
+          // const data = await response.text();
+          this.modal_info = data;
+          this.modal_status = true;
+          return false;
+        }
+      }
+      catch{
+        this.loading = false;
+        this.modal_info = this.$i18n.t('network_ne_connect');
+        this.modal_status = true;
+      }
+    },
+    async getTop5Sklad(id){
       try{
         this.loading = true;
-        const response = await fetch(this.$store.state.hostname + "/TegirmonSkladHistory/getSkladStatistikaTop?sklad_id=1");
+        const response = await fetch(this.$store.state.hostname + "/TegirmonSkladHistory/getSkladStatistikaTop?sklad_id=" + id);
         const data = await response.json();
         this.loading = false;
         if(response.status == 201 || response.status == 200)
@@ -245,10 +305,10 @@ data(){
         this.modal_status = true;
       }
     },
-    async loadData(){
+    async loadData(id){
       try{
         this.loading = true;
-        const response = await fetch(this.$store.state.hostname + "/TegirmonSkladHistory/getSkladHaftalikStatistika?sklad_id=1");
+        const response = await fetch(this.$store.state.hostname + "/TegirmonSkladHistory/getSkladHaftalikStatistika?sklad_id=" + id);
         const data = await response.json();
         this.loading = false;
         if(response.status == 201 || response.status == 200)

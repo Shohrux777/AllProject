@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex  inputContentIcon " :class="{'activeInputContentSearch': active, 'activeInputError': error, 'inputBorderContent': !error}">
     <div class="d-flex w-100"  @click="activeInput">
-      <input :type="type" @blur="notActiveInput" :placeholder="placeholder" ref="inputIcon" class="input_style" @input="search" @focus="activeInput" v-model="name" >
+      <input :type="type" v-mask="'(##) ###-##-##'" @blur="notActiveInput" :placeholder="placeholder" ref="inputIcon" class="input_style" @input="search" @focus="activeInput" v-model="name" >
         <small style="position:absolute; top:-17px; left: 0px; font-size: 11px; color: rgb(62, 62, 139);" class="font-weight-bold px-2 py-0">{{label}}</small>
       <div v-if="icon" class="d-flex justify-content-center align-items-center" 
         :class="{'activeIconSearch': active, 'IconDivSearch': !active && !error, 'activeIconSearchError': error}">

@@ -24,7 +24,7 @@
       <p v-for="option in filteredList" :key="option.id"
           @click="selectOption(option)" style="font-size: 12.5px;"
       >
-        {{option.fio}}
+        {{option[KeyName]}}
       </p>
 
     </div>
@@ -74,6 +74,10 @@ export default {
       size:{
         type:String,
         default: 'md'
+      },
+      KeyName:{
+        type: String,
+        default: 'fio'
       },
 
     },

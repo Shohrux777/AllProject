@@ -352,5 +352,13 @@
     "dashboard": "Dashboard",
     "search_products": "Поиск продукт",
     "auth_user_updator_id": "Tartib raqam",
-    "sendOtherClient":"Отпр. продукт клиенту"
+    "sendOtherClient":"Отпр. продукт клиенту",
+    "buy_sum": "Цена покупки",
+    "all_buy_sum": "Сумма",
+    "buy_dollor": "Цена покупки $",
+    "all_buy_dollor": "Сумма $",
+    "new_rasxod": "Новый расходъ",
+    "contragent_info": "Инфо контрагент ",
+    "price_list": "Оптом цена",
+    "items": "Tовары"
 }

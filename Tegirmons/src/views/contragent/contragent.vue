@@ -1,17 +1,17 @@
 <template>
   <div>
-    <div class="border-bottom d-flex justify-content-between">
+    <div class="border-bottom d-flex justify-content-between main_header_bg_shadow">
       <router-link to="/contragent">
-         <h5 class="m-0 ml-4 d-flex" style="padding: 16px 0px">
+         <h5 class="m-0 ml-4 d-flex" style="padding: 15px 0px; font-size: 20px;">
             {{$t('contragent')}}</h5>
       </router-link>
       <div>
-         <router-link to="/contragent_Add/0">
-            <mdb-btn color="success mt-3" m="r3" size="sm" p="r4 l4 t2 b2"><mdb-icon icon="plus" class="mr-2"/>{{$t('add')}}</mdb-btn>
-          </router-link>
+        <router-link to="/contragent_Add/0">
+          <mdb-btn color="success mt-3" m="r3" style="font-size: 9px;" size="sm" p="r4 l4 t2 b2"><mdb-icon icon="plus" class="mr-2"/>{{$t('add')}}</mdb-btn>
+        </router-link>
       </div>
-     
     </div>
+    
     <loaderTable v-if="loading"/>
     <anyTable v-else
       :datasource="all_contragent_t"
@@ -55,7 +55,7 @@ export default {
       },
       async for_delete(del_data,index)
       {
-         const requestOptions = {
+          const requestOptions = {
             method : "delete",
           };
           const response = await fetch(this.$store.state.hostname + "/TegirmonContragent/" + del_data.id, requestOptions);

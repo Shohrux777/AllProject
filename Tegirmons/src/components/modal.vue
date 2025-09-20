@@ -8,8 +8,8 @@
    <transition name="slide"  appear>
      <div class="card modal_FP" style="z-index: 999999;" :style="{'width': width}" v-show="show">
       <!-- :class="'bg-' + headerbackColor" -->
-       <div :style="{'background': headerbackColor + ' !important'}" :class="'bg-' + headerbackColor" class="card-header d-flex justify-content-between align-items-center modal_head_shadow border-bottom" >
-         <h5 class="m-0 p-0" :style="{'color': titlecolor}" style="font-size:16px;">{{title}}</h5>
+       <div :style="{'background': headerbackColor + ' !important'}" :class="'bg-' + headerbackColor" class="card-header  d-flex justify-content-between align-items-center modal_head_shadow border-bottom" >
+         <h5 class="m-0 p-0" :style="{'color': titlecolor}" style="font-size:15px;">{{title}}</h5>
          <svg @click="close" xmlns="http://www.w3.org/2000/svg" style="border-radius: 50%; cursor:pointer;" class="icon icon-tabler icon-tabler-x bg-danger p-1 " width="21" height="21" viewBox="0 0 24 24" stroke-width="2.7" stroke="#fff" fill="none" stroke-linecap="round" stroke-linejoin="round">
           <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
           <line x1="18" y1="6" x2="6" y2="18" />
@@ -111,6 +111,7 @@ export default {
     z-index: 110;
      .modal_head_shadow{
       box-shadow: 0px 2px 3px #eee;
+      padding: 8px 12px;
     }
     
   }

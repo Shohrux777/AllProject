@@ -66,7 +66,8 @@
           {name: 'Счета', url: '/hisoblar', active: false,  status: true},
           {name: 'Зарплата', url: '/user_salary', active: false,  status: true},
           {name: 'Журнал долгов', url: '/main_qarz', active: false,  status: true},
-          {name: 'Остатка', url: '/changeProduct', active: false,  status: true},
+          {name: 'Склад', url: '/main_sklad', active: false,  status: true},
+          {name: 'Оптом савдо', url: '/main_order', active: false,  status: true},
           {name: 'Выйти', url: '/', active: false,  status: true},
         ],
         user_access: localStorage.access_user,
@@ -116,13 +117,19 @@
               this.option[5].status = data.sell
               this.option[6].status = data.status_2
               this.option[7].status = data.status_5
-              this.option[10].status = data.ostatka
               if(data.num_1 == 0){
                 this.option[9].status = false;
               }
               else{
                 this.option[9].status = true;
               }
+              if(data.num_2 == 0){
+                this.option[10].status = false;
+              }
+              else{
+                this.option[9].status = true;
+              }
+
           }
       }
       catch(error){

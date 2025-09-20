@@ -2,7 +2,7 @@ export default {
     state: {
         contragent_t: {
             rows: [],
-            columns: ['name','adddress','contragent_company_name','phone_number','passport_number','car_number' ],
+            columns: ['name','adddress','phone_number','passport_number','car_number' ],
             col: []
         },
 

@@ -89,6 +89,13 @@ const routes = [{
             import ('../views/qarz_daftar/main_page.vue')
     },
     {
+        path: '/main_order',
+        name: 'main_order',
+        meta: { layout: 'navbar' },
+        component: () =>
+            import ('../views/order/main_page.vue')
+    },
+    {
         path: '/user_list',
         name: 'user_list',
         meta: { layout: 'navbar' },
@@ -244,6 +251,13 @@ const routes = [{
             import ('../views/sklad/sklad.vue')
     },
     {
+        path: '/main_sklad',
+        name: 'main_sklad',
+        meta: { layout: 'navbar' },
+        component: () =>
+            import ('../views/sklad/sklad_dashboard.vue')
+    },
+    {
         path: '/sklad_dashboard',
         name: 'sklad_dashboard',
         meta: { layout: 'main' },
@@ -381,7 +395,7 @@ const routes = [{
         name: 'buy',
         meta: { layout: 'main' },
         component: () =>
-            import ('../views/buy/buy.vue')
+            import ('../views/buy/new_buy.vue')
     },
     {
         path: '/buy_add/:id',
@@ -391,11 +405,18 @@ const routes = [{
             import ('../views/buy/buy_Add.vue')
     },
     {
-        path: '/new_buy',
-        name: 'new_buy',
+        path: '/rasxod_add/:id',
+        name: 'rasxod_add',
         meta: { layout: 'main' },
         component: () =>
-            import ('../views/buy/new_buy.vue')
+            import ('../views/buy/rasxod_Add.vue')
+    },
+    {
+        path: '/contragent_info',
+        name: 'contragent_info',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/buy/contragent_info.vue')
     },
     {
         path: '/changing',

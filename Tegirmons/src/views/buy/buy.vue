@@ -6,9 +6,14 @@
             {{$t('buy')}}</h5>
       </router-link>
       <div>
+        <router-link to="/rasxod_add/0">
+            <mdb-btn class=" mt-3" m="r2" color="danger" size="sm" p="r4 l4 t2 b2" style="font-size: 8px;">
+              <mdb-icon icon="plus" class="mr-2"/>{{$t('rasxod')}}
+            </mdb-btn>
+          </router-link>
          <router-link to="/buy_add/0">
             <mdb-btn class="main_button_add mt-3" m="r3" size="sm" p="r4 l4 t2 b2" style="font-size: 8px;">
-              <mdb-icon icon="plus" class="mr-2"/>{{$t('add')}}</mdb-btn>
+              <mdb-icon icon="plus" class="mr-2"/>{{$t('prixod')}}</mdb-btn>
           </router-link>
       </div>
     </div>

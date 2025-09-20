@@ -39,6 +39,77 @@
             </small> -->
           </mdb-col>
         </mdb-row>
+        <mdb-row class="mt-4">
+          <mdb-col col="3">
+            <p class="p-0 m-0 mt-2" style="font-size: 14px;">Оптом цена</p>
+          </mdb-col>
+          <mdb-col col="5">
+            <div class="optom_price mt-2" v-for="(item,i) in productPrices" :key="i">
+              <div class="add_icon" @click="addProductPrice">
+                <i class="fas fa-plus-square text-success" style="font-size: 18px;"></i>
+              </div>
+              <div class="delete_icon" v-if="productPrices.length>1" @click="productPrices.splice(i,1)">
+                <i class="fas fa-trash-alt text-danger" style="font-size: 14px;"></i>
+              </div>
+              <div class="row mt-2">
+                <div class="col-12 mb-2">
+                  <mdb-input
+                    class="m-0 p-0"
+                    v-model="item.name"
+                    size="sm"
+                    outline
+                    type="text"
+                  />
+                  <small
+                    style="position: absolute; top: -10px; left: 20px; font-size: 11px"
+                    class="bg-white px-2 py-0"
+                    >{{ $t("name") }}</small
+                  >
+                </div>
+                <div class="col-4">
+                  <mdb-input
+                    class="m-0 p-0"
+                    v-model="item.qty"
+                    size="sm"
+                    outline
+                    type="number"
+                  />
+                  <small
+                    style="position: absolute; top: -10px; left: 20px; font-size: 11px"
+                    class="bg-white px-2 py-0"
+                    >{{ $t("qty") }}</small
+                  >
+                </div>
+                <div class="col-4 px-1">
+                  <mdb-input
+                    class="m-0 p-0"
+                    v-model="item.price"
+                    size="sm"
+                    outline
+                    type="number"
+                  />
+                  <small
+                    style="position: absolute; top: -10px; left: 10px; font-size: 11px"
+                    class="bg-white px-2 py-0"
+                    >{{ $t("price") }}</small
+                  >
+                </div>
+                <div class="col-2">
+                  <div class="custom-control custom-switch  pl-4">
+                    <input v-model="item.status_uzs" type="checkbox" class="custom-control-input " :id="i"  @change="updateStatusNum(i)">
+                    <label class="custom-control-label status-style " :for="i" style="font-size: 14.5px; padding-top:2px;">UZS</label>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="custom-control custom-switch  pl-4">
+                    <input v-model="item.status_usd" type="checkbox" class="custom-control-input " :id="i"  @change="updateStatusNum1(i)">
+                    <label class="custom-control-label status-style " :for="i" style="font-size: 14.5px; padding-top:2px;">USD</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mdb-col>
+        </mdb-row>
 
         <mdb-row class="mt-4">
           <mdb-col col="3">
@@ -90,6 +161,16 @@
                 </small>
           </mdb-col>
         </mdb-row>
+
+        <mdb-row class="mt-4">
+          <mdb-col col="3">
+            <p class="p-0 m-0 mt-2" style="font-size: 14px;">KG</p>
+          </mdb-col>
+          <mdb-col col="5">
+            <mdb-input class="m-0 p-0" v-model="numkg" size="md" outline  group type="text" validate error="wrong" success="right"/>
+          </mdb-col>
+        </mdb-row>
+
         <mdb-row class="mt-4">
           <mdb-col col="3">
             <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('status')}}</p>
@@ -109,7 +190,7 @@
               <div class="custom-control custom-switch  pl-5">
                 <input v-model="uzs_status" type="checkbox" class="custom-control-input " id="customSwitch2" checked>
                 <label class="custom-control-label status-style" for="customSwitch2"></label>
-            </div>
+              </div>
           </mdb-col>
         </mdb-row>
 
@@ -198,6 +279,19 @@ export default {
       color: '#ffffff',
       uzs_status: false,
       number: 0,
+      numkg:0,
+      productPrices: [
+        {
+          name: '',
+          qty: null,
+          price: null,
+          type: 1,
+          measure_str: 'UZS',
+          status_uzs: true,
+          status_usd: false,
+
+        }
+      ],
     //address: '',
 
     }
@@ -243,12 +337,38 @@ export default {
         this.status = data.inv_accepted_status;
         this.color = data.shitrix_code;
         this.number = data.auth_user_updator_id;
+        if(data.productPrices.length>0){
+          this.productPrices = [];
+          for(let i=0; i<data.productPrices.length; i++){
+            let tmp = {
+              name: data.productPrices[i].name,
+              qty: data.productPrices[i].qty,
+              price: data.productPrices[i].price,
+              type: data.productPrices[i].type,
+              measure_str: data.productPrices[i].measure_str,
+              id: 0,
+              status_uzs: true,
+              status_usd: false,
+            }
+            if(data.productPrices[i].type == 1){
+              tmp.status_uzs = true;
+              tmp.status_usd = false;
+            }
+            else{
+              tmp.status_uzs = false;
+              tmp.status_usd = true;
+            }
+            this.productPrices.push(tmp);
+          }
+        }
         if(data.auth_user_creator_id == 0){
           this.uzs_status = false;
         }
         else{
           this.uzs_status = true;
         }
+        this.numkg = data.real_qty
+
         // this.address = data.adddress,
         this.PicShow = false;
         await this.MeasureName(this.measurment_id);
@@ -262,6 +382,38 @@ export default {
 
   methods:{
     ...mapActions(['fetchMeasurment']),
+    async addProductPrice(){
+      let temp = {
+        name: '',
+        qty: null,
+        price: null,
+        type: 1,
+        measure_str: 'UZS',
+        status_uzs: true,
+        status_usd: false,
+      };
+      this.productPrices.push(temp)
+    },
+    async updateStatusNum(i){
+      if(this.productPrices[i].status_uzs == true){
+        this.productPrices[i].status_usd = false;
+        this.productPrices[i].type = 1;
+      }
+      else{
+        this.productPrices[i].status_usd = true;
+        this.productPrices[i].type = 2;
+      }
+    },
+    async updateStatusNum1(i){
+      if(this.productPrices[i].status_usd == true){
+        this.productPrices[i].status_uzs = false;
+        this.productPrices[i].type = 2;
+      }
+      else{
+        this.productPrices[i].status_uzs = true;
+        this.productPrices[i].type = 1;
+      }
+    },
     async MeasureName(m_id){
       try{
         const res = await fetch(this.$store.state.hostname + '/TegirmonUnitMeasurment/' + m_id);
@@ -273,8 +425,6 @@ export default {
       catch(error){
         console.log(error);
       }
-      
-
     },
     selectOption(option){
       this.measurment_name = option.name
@@ -312,6 +462,20 @@ export default {
         // this.address = '';
       },
     save_data :  async function(){
+      if(this.productPrices[0].price == null || this.productPrices[0].qty == null 
+      || this.productPrices[0].price == 0 || this.productPrices[0].qty == 0){
+        this.productPrices = [
+          {
+            name: '1 ' + this.measurment_name,
+            qty: 1,
+            price: this.price,
+            type: 1,
+            measure_str: 'UZS',
+            status_uzs: true,
+            status_usd: false,
+          }
+        ];
+      }
       var img = document.getElementById('prewImage');
         if(img.src.slice(0,4) != 'http'){
           this.base64 = img.src;
@@ -342,6 +506,8 @@ export default {
                 "shitrix_code": this.color,
                 "auth_user_creator_id": uzs_num,
                 "auth_user_updator_id": this.number,
+                "productPrices": this.productPrices,
+                "real_qty": this.numkg,
                 // "adddress": this.address,
                 // "image_url": this.image_url,
                 "id" : this.id,
@@ -411,5 +577,25 @@ export default {
 }
 .download span{
     margin-left: 10px;
+}
+.optom_price{
+  position: relative;
+  width: 100%;
+  border: 1px solid #4285F4;
+  padding: 5px;
+  border-radius: 5px;
+  .add_icon{
+    position: absolute;
+    right: -30px;
+    padding: 5px;
+    cursor: pointer;
+  }
+  .delete_icon{
+    position: absolute;
+    top: 30px;
+    right: -28px;
+    padding: 5px;
+    cursor: pointer;
+  }
 }
 </style>

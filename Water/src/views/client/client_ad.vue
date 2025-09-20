@@ -824,8 +824,9 @@ export default {
     async sendTextToTelegram(text){
       try{
         this.loading = true;
-        const res = await fetch('https://api.telegram.org/bot5168670876:AAGp9WQY4jDrk2j_ZU57Cy3-0g6av0TE-ZA/sendMessage?chat_id=@extreme_water_clients&text='+ text);
+        const res = await fetch('https://api.telegram.org/bot5168670876:AAGp9WQY4jDrk2j_ZU57Cy3-0g6av0TE-ZA/sendMessage?chat_id=@extreme_water_clients&text='+ encodeURIComponent(text));
         this.loading = false;
+        console.log('telegram: ',  res)
         if(res.status == 200 || res.status == 201){
           const data = await res.json();
           console.log('textli apai ishladi')

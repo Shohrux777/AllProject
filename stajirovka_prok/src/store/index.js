@@ -15,9 +15,9 @@ export default createStore({
     // hostname: 'http://192.168.11.2:5003/api',
     // hostname1: 'http://192.168.11.2:5003/',
     
-    hostname: 'https://sud.musa777.uz',
-    hostname1: 'https://sud.musa777.uz/storage/answers/',
-    hostname2: 'https://sud.musa777.uz/storage/user_img/',
+    hostname: 'https://050dff379d1f.ngrok-free.app',
+    hostname1: 'https://050dff379d1f.ngrok-free.app/storage/app/answers/',
+    hostname2: 'https://050dff379d1f.ngrok-free.app/storage/user_img/',
     // hostname: 'http://192.168.3.222:5003/api',
     // hostname1: 'http://192.168.3.222:5003/',
 
