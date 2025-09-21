@@ -116,9 +116,11 @@
           <div class="order_list p-2" v-if="!add_order_status">
             <div class="p-2 card order_list_display">
               <div class="mb-2">
-                <div class="order_main_head">
-                  <span v-for="(item,i) in order_link" :key="i" :class="{'bg-white text-dark': active_link == i}" @click="toggleLink(i)">
-                    {{item.name}} 
+                <div class="order_main_head d-flex">
+                  <span v-for="(item,i) in order_link" :key="i" :class="{'bg-white text-dark': active_link == i}" 
+                    @click="toggleLink(i)">
+                    {{item.name}}
+                    <mdb-badge class="ml-1" style="padding: 3px 8px; font-size: 11px;" pill :style="{ background: item.color + '!important' }">{{item.qty}}</mdb-badge>
                   </span>
                 </div>
               </div>
@@ -354,7 +356,7 @@
 <script>
 import calendar from './calendar.vue';
 import webcam from '../webcam/webcam_Add.vue'
-import { mdbInput, mdbIcon,  mdbBtn } from "mdbvue"
+import { mdbInput, mdbIcon,  mdbBtn, mdbBadge } from "mdbvue"
 // import { required } from 'vuelidate/lib/validators';
 import {mapActions,mapGetters, mapMutations} from 'vuex';
 import erpSelect from "../../components/erpSelectFioSearch.vue";
@@ -424,36 +426,54 @@ data(){
       select_order: {},
       loaded_status: false,
       loaded_width: '35',
-      active_link: 1,
+      active_link: localStorage.order_page,
       order_link: [
         {
           id: 0,
           name: 'Hammasi',
+          color: '#ED792C',
+          qty: 0,
         },
         {
           id: 1,
           name: 'Yopilmagan zakazlar',
+          color: '#E25049',
+          qty: 0,
         },
         {
           id: 2,
           name: "To'lov qilganlar",
+          color: "#A45CF2",
+          qty: 0,
         },
         {
           id: 3,
           name: "Yuklanganlar",
+          color: "#EBA12E",
+          qty: 0,
         },
         {
           id: 3,
           name: "Yopilgan zakazlar",
+          color: '#4EC264',
+          qty: 0,
+        },
+        {
+          id: 4,
+          name: "Puli kassaga kelmaganlar",
+          color: '#4EE244',
+          qty: 0,
         },
       ],
       payshow: false,
+      old_paid_not_deliver_cassa: [],
     }
   },
   components: {
     mdbIcon,
     mdbBtn, 
     mdbInput,
+    mdbBadge,
     webcam,
     erpSelect,
     InputSearch,
@@ -472,14 +492,26 @@ data(){
       
 //     },
     async mounted() {
+      await this.fetchOldDayNotClosed();
+      await this.fetchOrderPaidNotCassa();
       await this.fetchClient();
       let time1 = new Date();
       this.choosen_day = time1.toISOString().slice(0,10); 
       await this.fetchAllOrderList();
+      await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
       await this.nbuKurs();
       if(!localStorage.dollor_kurs){
         await this.nbuKurs();
+      }
+      if(localStorage.order_page>=0){
+        this.active_link = localStorage.order_page;
+      }
+      else{
+        localStorage.order_page = 0;
+      }
+      if(localStorage.order_page == 5){
+        this.order_list = this.old_paid_not_deliver_cassa;
       }
       // let today = new Date();
       // this.select_month = today.toISOString().slice(0, 10);
@@ -501,6 +533,8 @@ data(){
       this.payshow = false;
       if(index == 1){
         await this.fetchAllOrderList();
+        await this.fetchOrderPaidNotCassa();
+        await this.fetchAllOrderStatusNumber();
       }
     },
     toggleOrder(index) {
@@ -509,6 +543,7 @@ data(){
     async closeOrderAdd(){
       this.add_order_status = !this.add_order_status;
       await this.fetchAllOrderList();
+      await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
     },
     async toggleShafyorInfo(order, status){
@@ -526,15 +561,37 @@ data(){
     async close_loaded(){
       this.show_shafyor_info = false;
       await this.fetchAllOrderList();
+      await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
     },
-    toggleLink(index){
+    async toggleLink(index){
       this.active_link = index;
+      localStorage.order_page = index;
+      await this.fetchAllOrderList();
+      if(index == 5){
+        this.order_list = this.old_paid_not_deliver_cassa;
+      }
     },
 
     async fetchAllOrderList(){
+      let temp_link = '/TegirmonOrder/getByDate?date=';
+      if(localStorage.order_page == 0){
+        temp_link = '/TegirmonOrder/getByDate?date=';
+      }
+      else if(localStorage.order_page == 1){
+        temp_link = '/TegirmonOrder/getByDateNotClosed?date=';
+      }
+      else if(localStorage.order_page == 2){
+        temp_link = '/TegirmonOrder/getByDateNotClosedButPaid?date=';
+      }
+      else if(localStorage.order_page == 3){
+        temp_link = '/TegirmonOrder/getByDateNotClosedButLoaded?date=';
+      }
+      else{
+        temp_link = '/TegirmonOrder/getByDateClosedOrder?date=';
+      }
       try{
-        const response = await fetch(this.$store.state.hostname + "/TegirmonOrder/getByDate?date=" + this.choosen_day + '&clientId=' + this.user_id);
+        const response = await fetch(this.$store.state.hostname + temp_link + this.choosen_day + '&clientId=' + this.user_id);
         const data = await response.json();
         console.log('data_list order',data)
         if(response.status == 201 || response.status == 200)
@@ -553,6 +610,83 @@ data(){
         this.modal_info = this.$i18n.t('network_ne_connect');
         this.modal_status = true;
       }
+    },
+
+    async fetchAllOrderStatusNumber(){
+      try{
+        const response = await fetch(this.$store.state.hostname + "/TegirmonOrder/getOrderStatsByDate?date=" + this.choosen_day + '&clientId=' + this.user_id);
+        const data = await response.json();
+        console.log('data_list order',data)
+        if(response.status == 201 || response.status == 200)
+        {
+          this.order_link[0].qty = data.totalCount;
+          this.order_link[1].qty = data.notClosedCount;
+          this.order_link[2].qty = data.notClosedPaidCount;
+          this.order_link[3].qty = data.notClosedLoadedCount;
+          this.order_link[4].qty = data.closedCount;
+          return true;
+        }
+        else{
+          this.modal_info = data;
+          this.modal_status = true;
+          return false;
+        }
+      }
+      catch{
+        // this.client_list = [];
+        this.modal_info = this.$i18n.t('network_ne_connect');
+        this.modal_status = true;
+      }
+    },
+
+    // bu oldingi kunlarda pullari tulangan lekin puli pochtada kassaga yetib kelmaganlarni kursatadi
+    async fetchOrderPaidNotCassa(){
+      try{
+        const response = await fetch(this.$store.state.hostname + "/TegirmonOrder/getLoadedUnpaidOrders");
+        const data = await response.json();
+        console.log('data_list order',data)
+        if(response.status == 201 || response.status == 200)
+        {
+          this.old_paid_not_deliver_cassa = data;
+          this.order_link[5].qty = data.length;
+          return true;
+        }
+        else{
+          this.modal_info = data;
+          this.modal_status = true;
+          return false;
+        }
+      }
+      catch{
+        // this.client_list = [];
+        this.modal_info = this.$i18n.t('network_ne_connect');
+        this.modal_status = true;
+      }
+    },
+
+    // oldingi kunlarda yopilmay qolgan zakazlarni bugunga utkazish 10 kun oldinni tekshiradi
+    async fetchOldDayNotClosed(){
+      fetch(this.$store.state.hostname + '/TegirmonOrder/checkAndUpdateOldOrders', { // API manzili
+        method: 'POST',          // POST bo'lishi shart
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        // agar API hech qanday body qabul qilmasa, body shart emas:
+        // body: JSON.stringify({ ... })
+      })
+    .then(res => {
+      if (!res.ok) {
+        throw new Error('Server error');
+      }
+      return res.json();
+    })
+    .then(data => {
+      console.log('Yangilangan eski zakazlar:', data);
+      // data – C# API qaytargan ro‘yxat bo‘ladi
+    })
+    .catch(err => {
+      console.error(err);
+    });
     },
 
     async fetchAllOrderProductsList(){
@@ -586,6 +720,7 @@ data(){
       const year = data.date.getFullYear();
       this.choosen_day = `${year}-${month}-${day}`;
       await this.fetchAllOrderList();
+      await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
       // this.$refs.user_vaqt_info_comp.handleChooseDay(data);
     },
@@ -683,6 +818,7 @@ data(){
       }
       // await this.fetchUserPrixodRasxod();
       await this.fetchAllOrderList();
+      await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
       
     },
@@ -698,6 +834,7 @@ data(){
       }
       // await this.fetchUserPrixodRasxod();
       await this.fetchAllOrderList();
+      await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
 
 
@@ -715,6 +852,7 @@ data(){
       }
       // await this.fetchUserPrixodRasxod();
       await this.fetchAllOrderList();
+      await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
 
     },
@@ -732,6 +870,7 @@ data(){
       this.dolg_user_show = false;
       // await this.fetchUserPrixodRasxod();
       await this.fetchAllOrderList();
+      await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
     },
 
@@ -1146,7 +1285,7 @@ data(){
     cursor: pointer;
     display: inline-block;
     font-size: 13px;
-    padding: 5px 10px;
+    padding: 5px 13px;
     &:hover{
       background: white;
     }

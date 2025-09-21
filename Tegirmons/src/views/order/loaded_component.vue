@@ -153,9 +153,9 @@
       <div v-if="loaded_status" class="col-6 active_car">
         <div class="pb-3">
           <div class="ortilgan_mashina mb-3 p-2" v-for="(item,i) in car_order_list" :key="i" 
-          @click="select_car_order(item,i)" 
+          
           :class="{'alert-info': active_car_item == i}">
-            <div class="row p-2">
+            <div class="row p-2" @click="select_car_order(item,i)" >
               <div class="col-4 mt-2 mb-1 px-2">
                   <input class="m-0 form-control"
                   style="height:28px; font-size: 13px;" disabled v-model="item.shafyor_name" 
@@ -186,8 +186,8 @@
                   >{{ $t("phone_number") }}</small
                 >
               </div>
-            </div>
-            <div v-if="item.item_list.length>0">
+            </div >
+            <div v-if="item.item_list.length>0" @click="select_car_order(item,i)" >
               <table class="myTableuserSalaryList">
                   <thead>
                     <tr class="header py-0 info_client_header">
@@ -206,11 +206,110 @@
                   </tbody>
                 </table>
             </div>
+            <div class="text-right mt-2">
+              <mdb-btn  class="m-0 mb-1 "  size="sm" outline="info" style="font-size:9px; height:30px;" @click="printOrderCarItem(item)">
+                  Печат
+              </mdb-btn>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    
+    <div class="print_loaded" v-show="print_loaded" id="print_load">
+      <div class="">
+        <div class="delivery-form">
+          <div class="header">
+            <!-- <div class="form-no">Form No:</div> -->
+            <div>
+              <h2>ООО «OQQO'RG'ON TEGIRMON»</h2>
+              <div class="company-info">
+                <p> 📍 Таш. обл., Аккурганский р-н, Дустлик КФЙ</p>
+                <p> 📦 Заказ № {{ order_info.id }}</p>
+              </div>
+            </div>
+
+            <div 
+              class="payment-status" 
+              :class="order_info.pay_progress == 100 ? 'paid' : 'unpaid'">
+              {{ order_info.pay_progress == 100 ? 'ОПЛАЧЕНО' : 'НЕ ОПЛАЧЕНО' }}
+            </div>
+          </div>
+
+          <div class="section mt-1">
+            <h3>Информация о клиенте</h3>
+            <div class="row">
+              <div class="col-6">
+                <table class="customer-info" v-if="order_info.tegirmonOrderClientid">
+                  <tr>
+                    <td>Ф.И.О</td><td>:</td><td>{{order_info.client.fio}}</td>
+                  </tr>
+                  <tr>
+                    <td>Телефон</td><td>:</td><td>{{order_info.client.phone_number}}</td>
+                  </tr>
+                  <tr v-if="order_info.client.phone_number1">
+                    <td>Телефон</td><td>:</td><td>{{order_info.client.phone_number1}}</td>
+                  </tr>
+                </table>
+                <table class="customer-info" v-else>
+                  <tr>
+                    <td>Ф.И.О</td><td>:</td><td>________________________</td>
+                  </tr>
+                  <tr>
+                    <td>Телефон</td><td>:</td><td>________________________</td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-6">
+                <table class="customer-info" v-if="select_order_info.shafyor_name">
+                  <tr>
+                    <td>Имя водителя</td><td>:</td><td>{{select_order_info.shafyor_name}}</td>
+                  </tr>
+                  <tr>
+                    <td>Номер машины</td><td>:</td><td>{{select_order_info.car_nomer}}</td>
+                  </tr>
+                  <tr>
+                    <td>Телефон</td><td>:</td><td>{{select_order_info.phone_number}}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="section mt-1">
+            <h3>Информация о заказе</h3>
+            <table class="order-table">
+              <thead>
+                <tr>
+                  <th  width="50" class="text-left">№</th>
+                  <th>{{$t('product')}}</th>
+                  <th>{{$t('kg_ves')}}</th> 
+                  <th>{{$t('qty')}}</th> 
+                  <th>{{$t('all')}}</th> 
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item,i) in select_order_info.item_list" :key="i">
+                  <td>{{i+1}}</td>
+                  <td>{{item.product.name}}</td>
+                  <td>{{item.product.real_qty}} кг</td>
+                  <td>{{item.qty}} {{ item.product.unitMeasurment.name }}</td>
+                  <td>{{(item.qty * item.product.real_qty).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} кг</td>
+                </tr>
+                
+              </tbody>
+            </table>
+          </div>
+
+          <div class="footer">
+            <div class="truck">🚚</div>
+            <div class="signature">
+              Кассир: {{order_info.user_name}} <br>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
     <massage_box :hide="modal_status" :detail_info="modal_info"
       :m_text="$t('Failed_to_add')" @to_hide_modal="modal_status= false"/>
 
@@ -234,6 +333,7 @@ export default {
           modal_info: '',
           modal_status: false,
           loading: false,
+          print_loaded: false,
 
             shafyor_name: '',
             car_nomer: '',
@@ -257,6 +357,11 @@ export default {
             active_car_item: -1,
             car_order_id: 0,
             order_temp_car_order: [],
+            select_order_info: {
+              shafyor_name: '',
+              car_nomer: '',
+              phone_number: ''
+            }
         }
     },
     components:{
@@ -329,8 +434,6 @@ props: {
           }
           this.order_car_item.push(temp)
         }
-
-
     },
     async fetchOrderCarItem(order_id){
       try{
@@ -550,6 +653,63 @@ props: {
          this.order_car_item[i].qty_str = this.order_car_item[i].real_qty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
       }
     },
+    printOrderCarItem(order_data){
+      this.select_order_info = order_data;
+      console.log(order_data);
+      console.log(this.order_info)
+      this.$nextTick(() => {
+        this.printDiv();
+      });
+    },
+    printDiv() {      
+      this.print_loaded = true;
+      
+        let divContents = document.getElementById("print_load").innerHTML;
+
+        // CSS fayllarini olish
+        let styles = "";
+        document.querySelectorAll('link[rel="stylesheet"], style').forEach((node) => {
+          styles += node.outerHTML;
+        });
+
+        // Yangi oynani ochish
+        let printWindow = window.open("", "", "height=800,width=1000");
+
+        let html =
+          '<html>' +
+          '<head>' +
+          '<title>Chop etish</title>' +
+          styles +
+          '<style>' +
+          /* A4 format + ichki margin */
+          '@page { size: A4; margin: 1mm; }' +
+
+          /* print paytida layoutni cheklash */
+          '@media print {' +
+          '  html, body { width: 210mm; height: 297mm; margin: 0 0; }' +
+          '  #print-container { width: 100%; max-width: 190mm; margin: 0 0; }' +
+          '  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }' +
+          '}' +
+          '</style>' +
+          '</head>' +
+          '<body>' +
+          '<div id="print-container">' +
+          divContents +
+          '</div>' +
+          '<script>window.onafterprint = function() { window.close(); }<\/script>' +
+          '</body>' +
+          '</html>';
+
+        printWindow.document.open();
+        printWindow.document.write(html);
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(() => {
+          printWindow.print();
+        }, 1000);
+      this.print_loaded = false;
+        
+    }
     
   }
 }
@@ -628,5 +788,122 @@ input::placeholder {
     background: #ebebeb;
     cursor: pointer;
   }
+}
+.print_loaded{
+  position: fixed;
+  top:0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: white;
+}
+
+
+.delivery-form {
+  width: 1000px;
+  margin: 0px;
+  border: 2px solid #0099cc;
+  padding: 20px;
+}
+
+.delivery-form .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 3px solid #0099cc;
+  padding-bottom: 10px;
+}
+
+.header h1 {
+  font-size: 32px;
+  margin: 0;
+  color: #000;
+}
+
+.form-no {
+  font-size: 14px;
+  color: #333;
+}
+
+.company-info {
+  margin-top: 15px;
+  margin-left: 5px;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.icon {
+  font-size: 48px;
+}
+
+.section h3 {
+  color: #0099cc;
+  border-bottom: 1px solid #0099cc;
+  padding-bottom: 5px;
+}
+
+.customer-info td {
+  padding: 3px 8px;
+}
+
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.order-table th {
+  background-color: #0099cc;
+  color: #fff;
+  padding: 8px;
+}
+
+.order-table td {
+  border: 1px solid #0099cc;
+  height: 30px;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.truck {
+  font-size: 40px;
+  color: #0099cc;
+}
+
+.signature {
+  text-align: right;
+  font-size: 14px;
+}
+
+.payment-status {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 25px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border: 2px solid;
+  border-radius: 8px;
+  margin-top: 15px;
+  margin-right: 10px;
+  // transform: rotate(-5deg);
+}
+
+/* Tulangan holat */
+.payment-status.paid {
+  color: #2e7d32;            /* Yashil matn */
+  border-color: #2e7d32;     /* Yashil ramka */
+  background-color: #c8e6c9; /* Yashil fon (pastel) */
+}
+
+/* Tulamagan holat */
+.payment-status.unpaid {
+  color: #c62828;            /* Qizil matn */
+  border-color: #e24545;     /* Qizil ramka */
+  background-color: #ffd4d8; /* Qizil fon (pastel) */
 }
 </style>

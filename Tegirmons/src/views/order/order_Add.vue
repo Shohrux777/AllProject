@@ -477,7 +477,7 @@ export default {
               "note": this.note,
               "user_name": this.user_name,
               "client_name": this.client_info.fio,
-              "tegirmonClientid": this.client_info.id,
+              "tegirmonOrderClientid": this.client_info.id,
               "item_list": this.datasource.rows,
               "tegirmonSkladid": this.sklad_id,
               "pickUpDate": this.choosen_day + 'T10:00:00',

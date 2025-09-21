@@ -101,6 +101,7 @@ export default {
     localStorage.kassa_num = 0;
     localStorage.hisob_Name = '';
     localStorage.hisob_Id = 0;
+    localStorage.order_page = 0;
     if(this.allUser.rows.length == 0){
       localStorage.Login = '4';
       localStorage.AuthId = 1;
