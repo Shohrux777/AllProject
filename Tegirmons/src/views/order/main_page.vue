@@ -79,9 +79,9 @@
               <div class="col-2 p-1 balance" style="position: relative;">
                 <div class="card py-1 pt-2 px-2 alert-success ">
                   <span style="font-size: 13.5px;">Balance UZS</span>
-                  <span class="text-right" style="font-size: 19px;">600 000 </span>
+                  <span class="text-right" style="font-size: 19px;">{{client_info.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
                 </div>
-                <div style="position: absolute; bottom: -50px;" class="balance_btn w-100 ">
+                <div style="position: absolute; bottom: -50px;" class="balance_btn w-100">
                   <div class="d-flex justify-content-end px-2">
                     <div class="main_kassa_btn_sml bg_col_blue" @click="pul_olib_qolish = !pul_olib_qolish">
                       <small>Получать деньги</small>
@@ -92,12 +92,12 @@
                   </div>
                 </div>
               </div>
-              <div class="col-2 p-1 balance" >
+              <div class="col-2 p-1 balance">
                 <div class="card py-1 pt-2 px-2 alert-warning">
                   <span style="font-size: 13.5px;">Balance USD</span>
-                  <span class="text-right" style="font-size: 19px;">600 </span>
+                  <span class="text-right" style="font-size: 19px;">{{client_info.dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} </span>
                 </div>
-                <div style="position: absolute; bottom: -50px;" class="balance_btn w-100 ">
+                <div style="position: absolute; bottom: -50px;" class="balance_btn w-100">
                   <div class="d-flex justify-content-end px-2">
                     <div class="main_kassa_btn_sml bg_col_blue" @click="pul_olib_qolish = !pul_olib_qolish">
                       <small>Получать деньги</small>
@@ -202,8 +202,8 @@
                         </div>
                       </td>
                       <td class="p-2 text-center">
-                        <i class="fas fa-pen iconPen mask waves-effect  m-0 pr-3"></i>
-                        <i class="fa fa-cog iconCog mask waves-effect  m-0 "></i>
+                        <i class="fas fa-pen iconPen mask waves-effect  m-0 pr-3" @click="edit_order(order)"></i>
+                        <i class="fa fa-cog iconCog mask waves-effect  m-0 " @click="printReceipt"></i>
                       </td>
                     </tr>
 
@@ -341,7 +341,7 @@
             <Loaded_component  :order_info="select_order" @close="close_loaded" ref="loadedComp" :loaded_status="loaded_status"/>
           </template>
       </modal-train>
-       <pay v-show="payshow"  @close="closePay" 
+       <pay v-show="payshow" :client_info="pay_client_info" @close="closePay" 
          />
         <!-- @print="printChek()" -->
       
@@ -391,6 +391,7 @@ data(){
 
       client_info_show: false,
       client_info: {},
+      pay_client_info: {},
       add_order_status: false,
       order_id: 0,
 
@@ -500,7 +501,7 @@ data(){
       await this.fetchAllOrderList();
       await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
-      await this.nbuKurs();
+      // await this.nbuKurs();
       if(!localStorage.dollor_kurs){
         await this.nbuKurs();
       }
@@ -523,8 +524,23 @@ data(){
   methods: {
     ...mapActions(['fetch_user',]),
     ...mapMutations(['check_invoice_zaxira']),
+    printReceipt() {
+      console.log('printed')
+      
+    },
     async payOrder(order){
       console.log(order)
+      if(order.client){
+        this.pay_client_info = order.client;
+      }
+      else{
+        this.pay_client_info = {
+          fio:"",
+          id:null,
+          sum:0,
+          dollor:0,
+        }
+      }
       this.payshow = true;
       this.$root.$refs.order_payed.changingEnter({sum:order.remaining_sum, dollor: order.remaining_usd, order: order});
 
@@ -775,12 +791,12 @@ data(){
     async closeRasxod(data){
       this.client_info = data;
       this.rasxod_show = !this.rasxod_show;
-      await this.fetchUserPrixodRasxod();
+      // await this.fetchUserPrixodRasxod();
     },
     async closePulChiqish(data){
       this.client_info = data;
       this.pul_olib_qolish = !this.pul_olib_qolish;
-      await this.fetchUserPrixodRasxod();
+      // await this.fetchUserPrixodRasxod();
 
     },
     async fetchClient(){
@@ -872,6 +888,10 @@ data(){
       await this.fetchAllOrderList();
       await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
+    },
+    async edit_order(order){
+      this.order_id = order.id;
+      this.add_order_status = true;
     },
 
 

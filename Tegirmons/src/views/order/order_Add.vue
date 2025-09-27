@@ -2,13 +2,13 @@
   <div>
     <loader v-if="loading"/>
     <div class="px-3">
-      <h6 class="m-0 text-primary" style="font-style: italic; font-size: 15px;">Добавить заказ</h6>
+      <h6 class="m-0 text-primary" style="font-style: italic; font-size: 15px;">Добавить заказ <span v-if="id>0">№ {{ id }}</span></h6>
     </div>
     <div class="changing_add px-3 pt-3 pb-2">
       <div class="row mb-3">
         <div class="col-3">
           <input class="m-0 form-control" disabled
-            style="height:32px; font-size: 13px;" :value="client_info.fio" 
+            style="height:32px; font-size: 13px;" :value="client.fio" 
             type="text" validate error="wrong" success="right"/>
           <small
             style="position: absolute; top: -11px; left: 20px; font-size: 11px;"
@@ -236,8 +236,6 @@
           
         </div>
          
-         
-        
         <div class="blue-gradient">
           <hr class="mt-1 mb-0"/>
         </div>
@@ -276,7 +274,7 @@ import {mapActions,mapGetters} from 'vuex'
 
 
 export default {
-  naem: "changingAdd",
+  name: "changingAdd",
   
   data(){
     return{
@@ -294,7 +292,6 @@ export default {
       all_dollor: 0,
       note: '',
 
-
       producKg: 1,
       subproducKg: 0,
       percanteg: 0,
@@ -311,6 +308,7 @@ export default {
       },
       sklad_name: '',
       sklad_id: 3,
+      client: {},
     }
   },
   props: {
@@ -352,33 +350,59 @@ export default {
       },
     },
   },
+  watch: {
+    // prop butunlay yangilanganda
+    client_info: {
+      handler (newVal) {
+        this.client = newVal;
+      },
+      deep: true // agar client_info ichidagi maydonlar ham o‘zgarsa
+    }
+  },
   async created()
   {
+    this.client = this.client_info;
     if(this.id > 0)
     {
-      const res = await fetch(this.$store.state.hostname + '/TegirmonInvoice/getAnyInvoiceFullInfoById?invoice_id=' + this.id);
+      const res = await fetch(this.$store.state.hostname + '/TegirmonOrder/' + this.id);
       const data = await res.json();
-      console.log('data');
+      console.log('data invoice_malumot');
       console.log(data);
       this.user_name = data.user_name;
-      this.all_sum = data.summ;
+      this.all_sum = data.sum;
+      this.all_dollor = data.dollor;
+      this.shafyor_name = data.shafyor_name;
+      this.car_nomer = data.car_nomer;
       this.note = data.note;
+      this.client = data.client;
       for(let i=0; i<data.item_list.length; i++){
         this.datasource.rows.push({
           tegirmonProductid: 0,
           product_name: "",
           qty: 0,
+          qty_str: '0',
           price: 0,
+          price_str: '0',
+          price_type: 0,
+          price_qty: 0,
+          price_list: [],
+          sum_str: '', // bu optim price nomi
           sum:0,
           id: 0,
-          auth_user_updator_id: 1,
+          auth_user_updator_id: localStorage.AuthId,
         });
         this.datasource.rows[i].tegirmonProductid = data.item_list[i].tegirmonProductid;
         this.datasource.rows[i].product_name = data.item_list[i].product.name;
-        this.datasource.rows[i].price = data.item_list[i].product.price;
         this.datasource.rows[i].qty = data.item_list[i].qty;
+        this.datasource.rows[i].qty_str = data.item_list[i].qty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
         this.datasource.rows[i].sum = data.item_list[i].sum;
-        this.datasource.rows[i].id = data.item_list[i].id;  
+
+        
+        this.datasource.rows[i].price = data.item_list[i].price;
+        this.datasource.rows[i].price_str = data.item_list[i].price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+        this.datasource.rows[i].price_type = data.item_list[i].price_type;
+        this.datasource.rows[i].price_qty = data.item_list[i].price_qty;
+        this.datasource.rows[i].sum_str = data.item_list[i].sum_str;  
       }
       console.log(this.datasource.rows)
     }
@@ -476,8 +500,8 @@ export default {
               "car_nomer": this.car_nomer,
               "note": this.note,
               "user_name": this.user_name,
-              "client_name": this.client_info.fio,
-              "tegirmonOrderClientid": this.client_info.id,
+              "client_name": this.client.fio,
+              "tegirmonOrderClientid": this.client.id,
               "item_list": this.datasource.rows,
               "tegirmonSkladid": this.sklad_id,
               "pickUpDate": this.choosen_day + 'T10:00:00',

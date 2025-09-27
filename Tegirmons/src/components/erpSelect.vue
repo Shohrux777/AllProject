@@ -2,7 +2,7 @@
   <div class="erp-select">
     <div class=" mb-2" @click="select_input" :class="[{'vaeble': change,  'varible': change_color},{'input_div': size=='md', 'input_div_sm': size == 'sm'}]" >
         <input  group  type="text" class="px-2" :value="selected" @keyup="hideInput1" />
-        <label for="text" v-if="selected == ''" style="margin-top: -2px;" :class="{'selectLabel': size == 'sm'}">
+        <label for="text" v-if="selected == ''" style="margin-top: -4px;" :class="{'selectLabel': size == 'sm'}">
          {{$t('select_item') +  ' ' + label}}
         </label>
 
@@ -195,6 +195,7 @@ export default {
   position: relative;
   width: 100%;
   cursor: pointer;
+  background: white;
 }
 
 

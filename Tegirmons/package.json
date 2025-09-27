@@ -14,6 +14,7 @@
     "js-md5": "^0.7.3",
     "mdbvue": "^6.7.3",
     "mkcert": "^3.2.0",
+    "qz-tray": "^2.2.5",
     "vue": "^2.6.11",
     "vue-apexcharts": "^1.7.0",
     "vue-chartjs": "^3.5.1",

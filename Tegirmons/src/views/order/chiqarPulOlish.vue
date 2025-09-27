@@ -237,14 +237,14 @@ export default {
         // }
         let sum_ostatka = 0;
         let dollor_ostatka = 0;
-        sum_ostatka = this.client_info.sum - this.rasxod_qty;
-        dollor_ostatka = this.client_info.dollor - this.dollor;
+        sum_ostatka = this.client_info.sum + this.rasxod_qty;
+        dollor_ostatka = this.client_info.dollor + this.dollor;
       const requestOptions = {
         method : "POST",
         headers: { "Content-Type" : "application/json" },
         body: JSON.stringify({
-          "worker_name": this.client_info.fio,
-          "tegirmonQarzUserId": this.client_info.id,
+          "client_name": this.client_info.fio,
+          "tegirmonOrderClientId": this.client_info.id,
           "passport_number": this.client_info.addiotionala_information,
           "phone_number": this.photo_url,
           "auth_user_creator_id": localStorage.AuthId,
@@ -253,7 +253,7 @@ export default {
           "all_summ": this.all_summ,
           "all_summ_string": this.all_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 '),
           "kurs": this.dollor_kurs_qty,
-          "note": this.note + '(' + this.client_info.fio + " tomonidan qarz to'lov qildi. <<Qarz bo'limi>>)",
+          "note": this.note + '(' + this.client_info.fio + " tomonidan hisobiga pul tushdi. <<Optom savdo>>)",
           "addiotionala_information": localStorage.user_name,
           "sum" : this.rasxod_qty,
           "sum_str": this.rasxod,
@@ -269,7 +269,7 @@ export default {
       console.log(requestOptions.body)
       try{
         this.loading = true;
-        const response = await fetch(this.$store.state.hostname + "/TegirmonQarzUserRasxod", requestOptions);
+        const response = await fetch(this.$store.state.hostname + "/TegirmonOrderClientRasxod", requestOptions);
         // const data = await response.json();
         console.log(response)
         if(response.status == 201 || response.status == 200)
@@ -296,7 +296,7 @@ export default {
     },
     async getQarzUserId(){
       try{
-        const response = await fetch(this.$store.state.hostname + "/TegirmonQarzdorlikUser/" + this.client_info.id,);
+        const response = await fetch(this.$store.state.hostname + "/TegirmonOrderClient/" + this.client_info.id,);
         if(response.status == 201 || response.status == 200)
         {
           const data = await response.json();

@@ -220,6 +220,10 @@ export default {
     await this.fetchWorker();
     this.client_list = this.allWorker;
     await this.nbuKurs();
+    if(localStorage.dollor_kurs){
+      this.dollor_kurs = parseInt(localStorage.dollor_kurs).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')
+      this.dollor_kurs_qty = parseInt(localStorage.dollor_kurs);
+    }
   },
   methods: {
     ...mapActions(['fetchWorker', 'fetchKassa_userId']),

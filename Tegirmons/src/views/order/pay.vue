@@ -156,12 +156,20 @@
                 {{$t('Total')}}
               </small>
             </div>
+            
             <div style="position:relative;">
               <input type="text" v-model="dollor_kurs_str" @keyup="funcDolKurs($event.target.value)"
                 class="form-control  border mt-3 text-right" style="border:none; outline:none;font-weight:bold; height:30px;" >
               <small style="position:absolute; font-size: 11.5px; top:-16px; left:3px;">
                 Курс
               </small> 
+            </div>
+            <div style="position:relative; margin-top: 10px;" class="d-flex">
+              <span style="font-size: 13.5px; margin-top:2px;" class="ml-2">Pul kassada</span>
+              <div class="custom-control custom-switch  pl-5" >
+                <input v-model="isInCash" type="checkbox" class="custom-control-input "  id="customSwitch2" checked>
+                <label class="custom-control-label status-style" for="customSwitch2" style="cursor:pointer;"></label>
+              </div>
             </div>
             <div style="margin-top:15px;">
               <!-- <mdb-btn color="info" style="font-size:11px; padding: 6px 0;"   class="m-0  mt-1 w-100" > {{$t('print')}}</mdb-btn> -->
@@ -171,44 +179,30 @@
             </div>
           </div>
           <div style="width:75%;">
-            <div class="d-flex">
-              <div class="price ml-4"  style="width:55%; position:relative;">
-                <div style="position:relative;">
-                  <input type="text" v-model="cashInString"  v-on:keyup.13 = "payed" @keyup="funcCash($event.target.value)" v-on:click.capture="getNol" @blur="funcAllBlue" ref="cashIn"  
-                  class="form-control  border mt-2 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
-                  <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold; " class="testing">
-                    {{$t('cash')}}
-                  </small> 
-                </div> 
-                <div style="position:relative;">
-                  <input type="text" v-model="dollorInString" v-on:keyup.13 = "payed" @keyup="funcDollor($event.target.value)" v-on:click.capture="dollorNol" @blur="funcAllBlue" ref="clickIn" 
-                  class="form-control  border mt-3 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
-                  <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold;" class="testing">
-                    {{$t('dollor')}}
-                  </small> 
+            <!-- bu naqd va dollor tulovlar uchun -->
+            <div class="border rounded ml-4 px-1 pt-2">
+              <div class="d-flex">
+                <div class="price "  style="width:55%; position:relative;">
+                  <div style="position:relative;">
+                    <input type="text" v-model="cashInString"  v-on:keyup.13 = "payed" @keyup="funcCash($event.target.value)" v-on:click.capture="getNol" @blur="funcAllBlue" ref="cashIn"  
+                    class="form-control  border mt-2 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
+                    <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold; " class="testing">
+                      {{$t('cash')}}
+                    </small> 
+                  </div> 
                 </div>
-                <div style="position:relative;">
-                  <input type="text" v-model="uzcardInString" v-on:keyup.13 = "payed" @keyup="funcUzcard($event.target.value)" v-on:click.capture="uzcardNol" @blur="funcAllBlue"  ref="uzcardIn" 
-                  class="form-control  border mt-3 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;">
-                  <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold; " class="testing">
-                    {{'Uzcard'}}
-                  </small>
+                <div class="price ml-2"  style="width:45%; position:relative;">
+                  <div style="position:relative;">
+                    <input type="text" v-model="dollorInString" v-on:keyup.13 = "payed" @keyup="funcDollor($event.target.value)" v-on:click.capture="dollorNol" @blur="funcAllBlue" ref="clickIn" 
+                    class="form-control  border mt-2 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
+                    <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold;" class="testing">
+                      {{$t('dollor')}}
+                    </small> 
+                  </div>
                 </div>
-                <div style="position:relative;">
-                  <input type="text" v-model="humoInString" v-on:keyup.13 = "payed" @keyup="funcHumo($event.target.value)" v-on:click.capture="humoNol" @blur="funcAllBlue"  ref="humoIn" 
-                  class="form-control  border mt-3 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
-                  <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold; " class="testing">
-                    {{'Humo'}}
-                  </small>
-                </div>
-                <div style="position:relative;" v-show="false">
-                  <input type="text" v-model="onlineInString" v-on:keyup.13 = "payed" @keyup="funcOnline($event.target.value)" v-on:click.capture="onlineNol" @blur="funcAllBlue" ref="onlineIn"  
-                  class="form-control  border mt-3 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
-                  <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold;" class="testing">
-                    {{$t('online')}}
-                  </small> 
-                </div>
-                <div style="position:relative;" class="mt-3">
+              </div>
+              <div class="price "  style="width:100%; position:relative;">
+                <div style="position:relative;" class="mt-2">
                   <erpSelectHisob
                     :options="allHisob.rows"
                     @select="selectOptionHisob"
@@ -217,62 +211,109 @@
                     size="sm"
                   />
                 </div>
+              </div>
+            </div>
+            
+            <!-- bu online tulovlar uchun -->
+            <div class="border rounded ml-4 px-1 py-2 my-2">
+              <div class="d-flex">
+                <div class="price "  style="width:55%; position:relative;">
+                  <div style="position:relative;">
+                    <input type="text" v-model="uzcardInString" v-on:keyup.13 = "payed" @keyup="funcUzcard($event.target.value)" v-on:click.capture="uzcardNol" @blur="funcAllBlue"  ref="uzcardIn" 
+                    class="form-control  border mt-2 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;">
+                    <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold; " class="testing">
+                      {{'Uzcard'}}
+                    </small>
+                  </div>
+                  <div style="position:relative;">
+                    <input type="text" v-model="humoInString" v-on:keyup.13 = "payed" @keyup="funcHumo($event.target.value)" v-on:click.capture="humoNol" @blur="funcAllBlue"  ref="humoIn" 
+                    class="form-control  border mt-3 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
+                    <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold; " class="testing">
+                      {{'Humo'}}
+                    </small>
+                  </div>
+                  <div style="position:relative;">
+                    <input type="text" v-model="paymeInString"  v-on:keyup.13 = "payed" @keyup="funcPayme($event.target.value)" v-on:click.capture="paymeNol" @blur="funcAllBlue" ref="cashIn"  
+                    class="form-control  border mt-3 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
+                    <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold; " class="testing">
+                      {{'Payme'}}
+                    </small> 
+                  </div>  
+                </div>
+                <div class="price ml-2"  style="width:45%; position:relative;">
+                  <div style="position:relative;">
+                    <input type="text" v-model="clickedInString" v-on:keyup.13 = "payed" @keyup="funcClicked($event.target.value)" v-on:click.capture="clickedNol" @blur="funcAllBlue" ref="uzcardIn" 
+                    class="form-control  border mt-2 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;">
+                    <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold; " class="testing">
+                      {{'Click'}}
+                    </small> 
+                  </div>
+                  <div style="position:relative;">
+                    <input type="text" v-model="paynetInString" v-on:keyup.13 = "payed" @keyup="funcPaynet($event.target.value)" v-on:click.capture="paynetNol" @blur="funcAllBlue"  ref="humoIn" 
+                    class="form-control  border mt-3 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
+                    <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold; " class="testing">
+                      {{'Paynet'}}
+                    </small> 
+                  </div>
+                  <div style="position:relative;">
+                    <input type="text" v-model="uzumInString" v-on:keyup.13 = "payed" @keyup="funcUzum($event.target.value)" v-on:click.capture="uzumNol" @blur="funcAllBlue"  ref="onlineIn"  
+                    class="form-control  border mt-3 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
+                    <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold;" class="testing">
+                      {{'UzumPay'}}
+                    </small> 
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- bu client balansidan tulov qilish uchun -->
+            <div class="border rounded ml-4 px-1 pt-2 my-2" v-show="client_info.id">
+              <div class="d-flex">
+                <div class="price "  style="width:55%; position:relative;">
+                  <div style="position:relative;" >
+                    <input type="text" v-model="onlineInString" v-on:keyup.13 = "payed" @keyup="funcOnline($event.target.value)" v-on:click.capture="onlineNol" @blur="funcAllBlue" ref="onlineIn"  
+                    class="form-control  border mt-2 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
+                    <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold;" class="testing">
+                      Balance UZS
+                    </small> 
+                  </div>
+                  <div class="text-right">
+                    <small class="p-0 text-success">{{ client_info.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</small>
+                  </div>
+                </div>
+                <div class="price ml-2"  style="width:45%; position:relative;">
+                  <div style="position:relative;" >
+                    <input type="text" v-model="clickInString" v-on:keyup.13 = "payed" @keyup="funcClick($event.target.value)" v-on:click.capture="clickNol" @blur="funcAllBlue"  ref="clickIn" 
+                    class="form-control  border mt-2 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
+                    <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold;" class="testing">
+                      Balance USD
+                    </small>
+                  </div>
+                  <div class="text-right">
+                    <small class="p-0 text-success">{{ client_info.dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+            <div class="d-flex">
+              <div class="price ml-4"  style="width:45%; position:relative;">
                 
               </div>
-              <div class="price ml-4"  style="width:45%; position:relative;">
-                <div style="position:relative;">
-                  <input type="text" v-model="paymeInString"  v-on:keyup.13 = "payed" @keyup="funcPayme($event.target.value)" v-on:click.capture="paymeNol" @blur="funcAllBlue" ref="cashIn"  
-                  class="form-control  border mt-2 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
-                  <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold; " class="testing">
-                    {{'Payme'}}
-                  </small> 
-                </div> 
-                <div style="position:relative;">
-                  <input type="text" v-model="clickedInString" v-on:keyup.13 = "payed" @keyup="funcClicked($event.target.value)" v-on:click.capture="clickedNol" @blur="funcAllBlue" ref="uzcardIn" 
-                  class="form-control  border mt-3 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;">
-                  <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold; " class="testing">
-                    {{'Click'}}
-                  </small> 
-                </div>
-                <div style="position:relative;">
-                  <input type="text" v-model="paynetInString" v-on:keyup.13 = "payed" @keyup="funcPaynet($event.target.value)" v-on:click.capture="paynetNol" @blur="funcAllBlue"  ref="humoIn" 
-                  class="form-control  border mt-3 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
-                  <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold; " class="testing">
-                    {{'Paynet'}}
-                  </small> 
-                </div>
-                <div style="position:relative;">
-                  <input type="text" v-model="uzumInString" v-on:keyup.13 = "payed" @keyup="funcUzum($event.target.value)" v-on:click.capture="uzumNol" @blur="funcAllBlue"  ref="onlineIn"  
-                  class="form-control  border mt-3 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
-                  <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold;" class="testing">
-                    {{'UzumPay'}}
-                  </small> 
-                </div>
-                <div style="position:relative;" v-show="false">
-                  <input type="text" v-model="clickInString" v-on:keyup.13 = "payed" @keyup="funcClick($event.target.value)" v-on:click.capture="clickNol" @blur="funcAllBlue"  ref="clickIn" 
-                  class="form-control  border mt-3 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
-                  <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold;" class="testing">
-                    Пластикка ўтказма
-                  </small>
-                </div>
-                <div style="position:relative; margin-top: 20px;" class="d-flex">
-                  <div class="custom-control custom-switch  pl-5" >
-                    <input v-model="isInCash" type="checkbox" class="custom-control-input "  id="customSwitch2" checked>
-                    <label class="custom-control-label status-style" for="customSwitch2" style="cursor:pointer;"></label>
-                  </div>
-                  <span style="font-size: 13.5px; margin-top:2px;" class="ml-2">Pul kassada</span>
-                </div>
-              </div>
             </div>
+
             <div class="price ml-4">
               <div style="position:relative;">
-                  <input type="text" v-model="note"
-                  class="form-control  border mt-3 pr-2" style="border:none; outline:none; height:30px; font-size: 14px;" >
-                  <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold;" class="testing">
-                    {{$t('note')}}
-                  </small> 
-                </div>
+                <input type="text" v-model="note"
+                class="form-control  border mt-3 pr-2" style="border:none; outline:none; height:30px; font-size: 14px;" >
+                <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold;" class="testing">
+                  {{$t('note')}}
+                </small> 
+              </div>
             </div>
+
             <div style="width:100%; position:relative;" class="pl-4 mt-2 pb-0 mb-2 ">
               <div class="ml-0 px-2 py-1 border-bottom border-top" 
                 :class="{'alert-success': parseFloat(defaultSum.toFixed(2)) > summa, 'alert-danger': parseFloat(defaultSum.toFixed(2)) < summa}">
@@ -293,14 +334,14 @@
                   class="form-control  border mt-2 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
                   <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold; " class="testing">
                     Қайтим нақт
-                  </small> 
-                </div> 
+                  </small>
+                </div>
               </div>
               <div style="width:45%;" class="pl-4">
                 <div style="position:relative;">
-                  <input type="text" v-model="dollor_returnInString" v-on:keyup.13 = "payed" @keyup="funcDollor_return($event.target.value)" v-on:click.capture="dollor_returnNol" @blur="funcAllBlue"  ref="uzcardIn" 
-                  class="form-control  border mt-2 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;">
-                  <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold; " class="testing">
+                  <input type="text" v-model="dollor_returnInString " v-on:keyup.13 = "payed" @keyup="funcDollor_return($event.target.value)" v-on:click.capture="dollor_returnNol" @blur="funcAllBlue"  ref="uzcardIn" 
+                  class="form-control  border mt-2 text-right pr-2" style="border:none; outline:none; font-weight:bold; height:30px;">
+                  <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold;" class="testing">
                     {{'Қайтим доллор'}}
                   </small> 
                 </div>
@@ -346,6 +387,19 @@ export default {
     mdbBtn,mdbInput,
     erpSelectHisob,
     mdbModal, mdbModalHeader, mdbModalBody, mdbModalFooter
+  },
+   props:{
+    client_info: {
+      type: Object,
+      default(){
+        return {
+          id:null,
+          fio:'',
+          sum:0,
+          dollor:0,
+        }
+      }
+    },
   },
   data() {
     return {
@@ -480,11 +534,9 @@ export default {
       this.zdachi = '0';
       this.uzcardIn = 0;
       this.humoIn = 0;
-      this.clickIn = 0;
       this.onlineIn = 0;
       this.uzcardInString = '0';
       this.humoInString = '0';
-      this.clickInString = '0';
       this.onlineInString = '0';
       this.paymeIn = 0;
       this.clickedIn = 0;
@@ -502,6 +554,11 @@ export default {
       this.dollor_returnIn = 0;
       this.dollor_returnSumm = 0;
       this.defaultOrtiqchaSum = 0;
+
+      // balance dollor yozadigan qismi
+      this.clickIn = 0;
+      this.clickInString = '0';
+      this.balance_dollor = 0;
 
       this.zdachiString = '0';
       this.zdachi = 0;
@@ -648,7 +705,7 @@ export default {
         headers: { "Content-Type" : "application/json" },
         body: JSON.stringify({
           "tegirmonAuthid": localStorage.AuthId,
-          "tegirmonOrderClientid": this.order.tegirmonClientid,
+          "tegirmonOrderClientid": this.client_info.id,
           "summ" : this.defaultSum, // tulanadigan summa sumda
           "cash": parseFloat(this.cashIn) - parseFloat(this.naqd_returnIn),
           "dollor": parseFloat(this.dollorIn) - parseFloat(this.dollor_returnIn),
@@ -674,9 +731,14 @@ export default {
 
           "remaining_sum": this.order_old_sum,
           "remaining_usd": this.order_old_dollor,
-          "salary": this.noactiveCheckQty
-          // "perchisleniya": parseFloat(this.clickIn), // perichesliniya
-          // "online": parseFloat(this.onlineIn) 
+          "salary": this.noactiveCheckQty,
+
+          "sum_balance": parseFloat(this.onlineIn), // client balance sum
+          "dollor_balance": parseFloat(this.balance_dollor), //  client balance dollor
+
+          // "online": parseFloat(this.onlineIn), // client balance qaytim
+          // "perchisleniya": parseFloat(this.balance_dollor), //  client balance qaytim
+
           // "uz_card": 0,     for skidka uchun ishlataman
         })
       };
@@ -765,6 +827,7 @@ export default {
       this.summ_str = this.summa_default.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
 
       this.dol_convert_Sum = this.dollor_kurs * parseFloat(this.dollorIn);
+      this.clickIn = parseFloat(this.balance_dollor) *  this.dollor_kurs;
       this.defaultSum = this.cashIn + this.uzcardIn + this.humoIn + this.clickIn + this.onlineIn + 
       this.paymeIn + this.clickedIn + this.paynetIn + this.uzumIn + this.dol_convert_Sum;
       this.clw_cl();
@@ -882,18 +945,50 @@ export default {
       this.paymeIn + this.clickedIn + this.paynetIn + this.uzumIn + this.dol_convert_Sum;
       this.clw_cl();
     },
-    funcClick(n){
+    funcDollor(n){
       this.discount = parseFloat(this.clickIn) + parseFloat(this.cashIn) + parseFloat(this.uzcardIn) + parseFloat(this.humoIn) + parseFloat(this.onlineIn) + 
       parseFloat(this.dol_convert_Sum) + parseFloat(this.paymeIn) + parseFloat(this.clickedIn) + parseFloat(this.paynetIn) + parseFloat(this.uzumIn);
       this.discountSum = parseFloat(this.summa) - parseFloat(this.discount);
       this.discountSum = parseFloat(this.discountSum.toFixed(2))
+
+      if(this.discountSum == 0){
+        this.dollorIn = 0;
+        this.dollorInString = ''; 
+        this.dol_convert_Sum = 0;
+        n = n[n.length-1];
+      }
+      var tols = ''
+      for(let i=0; i<n.length; i++){
+        if(n[i] != ' '){
+          tols += n[i];
+        }
+      }
+
+      this.dollorInString = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      var temp = ''
+      for(let i=0; i<this.dollorInString.length; i++){
+        if(this.dollorInString[i] != ' '){
+          temp += this.dollorInString[i];
+        }
+      }
+      this.dollorIn = parseFloat(temp);
+      this.dol_convert_Sum = parseFloat(this.dollorIn) * parseFloat(this.dollor_kurs);
+      this.defaultSum = this.cashIn + this.uzcardIn + this.humoIn + this.clickIn + this.onlineIn + 
+      this.paymeIn + this.clickedIn + this.paynetIn + this.uzumIn + this.dol_convert_Sum;
+      this.clw_cl();
+    },
+    funcClick(n){
+      this.discount = parseFloat(this.clickIn) + parseFloat(this.cashIn) + parseFloat(this.uzcardIn) + parseFloat(this.humoIn) + parseFloat(this.onlineIn) + 
+      parseFloat(this.dol_convert_Sum) + parseFloat(this.paymeIn) + parseFloat(this.clickedIn) + parseFloat(this.paynetIn) + parseFloat(this.uzumIn);
+      this.discountSum = parseFloat(this.summa) - parseFloat(this.discount);
+      this.discountSum = parseFloat(this.discountSum.toFixed(2));
 
       console.log('this.discountSum')
       console.log(this.discountSum)
       if(this.discountSum == 0){
       console.log('this.discountSum')
       console.log('this.discountSum')
-
+        this.balance_dollor = 0;
         this.clickIn = 0;
         this.clickInString = ''; 
         n = n[n.length-1];
@@ -915,7 +1010,19 @@ export default {
           temp += this.clickInString[i];
         }
        }
-      this.clickIn = parseFloat(temp);
+      // this.clickIn = parseFloat(temp);
+      this.balance_dollor = parseFloat(temp);
+      if(this.client_info.dollor>0){
+        if(this.client_info.dollor < this.balance_dollor){
+          this.balance_dollor = this.client_info.dollor;
+          this.clickInString = this.client_info.dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+        }
+      }
+      else{
+        this.balance_dollor = 0;
+        this.clickInString = this.balance_dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      }
+      this.clickIn = parseFloat(this.balance_dollor) * parseFloat(this.dollor_kurs);
       this.defaultSum = this.cashIn + this.uzcardIn + this.humoIn + this.clickIn + this.onlineIn + 
       this.paymeIn + this.clickedIn + this.paynetIn + this.uzumIn + this.dol_convert_Sum;
       this.clw_cl();
@@ -955,6 +1062,17 @@ export default {
         }
        }
       this.onlineIn = parseFloat(temp);
+      if(this.client_info.sum>0){
+        if(this.client_info.sum < this.onlineIn){
+          this.onlineIn = this.client_info.sum;
+          this.onlineInString = this.client_info.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+        }
+      }
+      else{
+        this.onlineIn = 0;
+        this.onlineInString = this.onlineIn.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      }
+      
       this.defaultSum = this.cashIn + this.uzcardIn + this.humoIn + this.clickIn + this.onlineIn + 
       this.paymeIn + this.clickedIn + this.paynetIn + this.uzumIn + this.dol_convert_Sum;
       this.clw_cl();
@@ -1082,38 +1200,7 @@ export default {
       this.paymeIn + this.clickedIn + this.paynetIn + this.uzumIn + this.dol_convert_Sum;
       this.clw_cl();
     },
-    funcDollor(n){
-      this.discount = parseFloat(this.clickIn) + parseFloat(this.cashIn) + parseFloat(this.uzcardIn) + parseFloat(this.humoIn) + parseFloat(this.onlineIn) + 
-      parseFloat(this.dol_convert_Sum) + parseFloat(this.paymeIn) + parseFloat(this.clickedIn) + parseFloat(this.paynetIn) + parseFloat(this.uzumIn);
-      this.discountSum = parseFloat(this.summa) - parseFloat(this.discount);
-      this.discountSum = parseFloat(this.discountSum.toFixed(2))
-
-      if(this.discountSum == 0){
-        this.dollorIn = 0;
-        this.dollorInString = ''; 
-        this.dol_convert_Sum = 0;
-        n = n[n.length-1];
-      }
-      var tols = ''
-      for(let i=0; i<n.length; i++){
-        if(n[i] != ' '){
-          tols += n[i];
-        }
-      }
-
-      this.dollorInString = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
-      var temp = ''
-      for(let i=0; i<this.dollorInString.length; i++){
-        if(this.dollorInString[i] != ' '){
-          temp += this.dollorInString[i];
-        }
-      }
-      this.dollorIn = parseFloat(temp);
-      this.dol_convert_Sum = parseFloat(this.dollorIn) * parseFloat(this.dollor_kurs);
-      this.defaultSum = this.cashIn + this.uzcardIn + this.humoIn + this.clickIn + this.onlineIn + 
-      this.paymeIn + this.clickedIn + this.paynetIn + this.uzumIn + this.dol_convert_Sum;
-      this.clw_cl();
-    },
+    
 
 
     // tanlaganda ishlaydigan funksiya
@@ -1382,6 +1469,16 @@ export default {
       this.dol_convert_Sum == this.summa || this.paymeIn == this.summa || this.clickedIn == this.summa || this.paynetIn == this.summa || this.uzumIn == this.summa){
         this.onlineIn = this.summa;
         this.onlineInString = this.onlineIn.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+        if(this.client_info.sum > 0){
+          if(this.client_info.sum < this.onlineIn){
+            this.onlineIn = parseFloat(this.client_info.sum);
+            this.onlineInString = this.onlineIn.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+          }
+        }
+        else{
+          this.onlineIn = 0;
+          this.onlineInString = this.onlineIn.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+        }
         this.cashIn = 0;
         this.cashInString = '0';
         this.uzcardIn = 0;
@@ -1410,6 +1507,17 @@ export default {
         this.onlineIn = parseFloat(this.discountSum.toFixed(2));
         console.log(this.onlineIn)
         this.onlineInString = this.onlineIn.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+
+        if(this.client_info.sum > 0){
+          if(this.client_info.sum < this.onlineIn){
+            this.onlineIn = parseFloat(this.client_info.sum);
+            this.onlineInString = this.onlineIn.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+          }
+        }
+        else{
+          this.onlineIn = 0;
+          this.onlineInString = this.onlineIn.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+        }
       }
       this.defaultSum = this.cashIn + this.uzcardIn + this.humoIn + this.clickIn + this.onlineIn + 
       this.dol_convert_Sum + this.paymeIn + this.clickedIn + this.paynetIn + this.uzumIn;
@@ -1660,8 +1768,26 @@ export default {
       console.log(this.humoIn)
       if(this.cashIn == this.summa || this.uzcardIn == this.summa || this.humoIn == this.summa || this.clickIn == this.summa || this.onlineIn == this.summa ||
       this.dol_convert_Sum == this.summa || this.paymeIn == this.summa || this.clickedIn == this.summa || this.paynetIn == this.summa || this.uzumIn == this.summa){
+        if(this.dollor_kurs){
+          this.balance_dollor = (parseFloat(this.summa)/parseFloat(this.dollor_kurs)).toFixed(1);
+        }
+        else{
+          this.balance_dollor = 0;
+        }
         this.clickIn = this.summa;
-        this.clickInString = this.clickIn.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+        this.clickInString = this.balance_dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+        if(this.client_info.dollor > 0){
+          if(this.client_info.dollor < this.balance_dollor){
+            this.balance_dollor = parseFloat(this.client_info.dollor);
+            this.clickIn = this.balance_dollor * parseFloat(this.dollor_kurs);
+            this.clickInString = this.balance_dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+          }
+        }
+        else{
+          this.balance_dollor = 0;
+          this.clickIn = 0;
+          this.clickInString = this.balance_dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+        }
         this.cashIn = 0;
         this.cashInString = '0';
         this.uzcardIn = 0;
@@ -1688,8 +1814,26 @@ export default {
       }
       else if(this.discountSum > 0){
         this.clickIn = parseFloat(this.discountSum.toFixed(2));
-        console.log(this.clickIn)
-        this.clickInString = this.clickIn.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+        if(this.dollor_kurs){
+          this.balance_dollor = (parseFloat(this.clickIn)/parseFloat(this.dollor_kurs)).toFixed(1);
+        }
+        else{
+          this.balance_dollor = 0;
+        }
+        this.clickInString = new Intl.NumberFormat().format(this.balance_dollor)
+
+        if(this.client_info.dollor > 0){
+          if(this.client_info.dollor < this.balance_dollor){
+            this.balance_dollor = parseFloat(this.client_info.dollor);
+            this.clickIn = this.balance_dollor * parseFloat(this.dollor_kurs);
+            this.clickInString = this.balance_dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+          }
+        }
+        else{
+          this.balance_dollor = 0;
+          this.clickIn = 0;
+          this.clickInString = this.balance_dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+        }
       }
       this.defaultSum = this.cashIn + this.uzcardIn + this.humoIn + this.clickIn + this.onlineIn + 
       this.dol_convert_Sum + this.paymeIn + this.clickedIn + this.paynetIn + this.uzumIn;
@@ -1891,8 +2035,8 @@ export default {
     z-index: 1111;
   }
   .acceptBoxPayed{
-    width:610px;
-    height: 470px;
+    width:660px;
+    max-height: 610px;
     background: rgb(252, 252, 255);
     box-shadow: 3px 2px 5px rgb(129, 129, 129);
     border-radius: 5px;
