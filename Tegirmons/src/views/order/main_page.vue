@@ -153,8 +153,8 @@
                       :class="{'alert-success': order.isClosed}"
                     >
                       <td class="p-2">{{ index+1 }}</td>
-                      <td class="p-2">{{ order.pickUpDate.slice(8,10) }}-{{ order.pickUpDate.slice(5,7) }}-{{ order.pickUpDate.slice(0,4) }}</td>
-                      <td class="p-2">{{ order.client_name }}</td>
+                      <td class="p-2"><span>{{ order.pickUpDate.slice(8,10) }}-{{ order.pickUpDate.slice(5,7) }}-{{ order.pickUpDate.slice(0,4) }}</span></td>
+                      <td class="p-2"><span>{{ order.client_name }}</span></td>
                       <td class="p-2 clickbtn" >
                         <span v-if="order.shafyor_name">{{ order.shafyor_name }}</span>
                         <span v-else class="text-danger" @click="toggleShafyorInfo(order, false)">???</span>
@@ -177,10 +177,10 @@
                           Не оплачено
                         </span>
                       </td>
-                      <td class="p-2">{{ order.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</td>
-                      <td class="p-2">{{ order.dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</td>
+                      <td class="p-2"><span>{{ order.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span></td>
+                      <td class="p-2"><span>{{ order.dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span></td>
                       <td class="p-2" style="cursor:pointer;" 
-                        @click="toggleOrder(index)">{{ order.item_list.length }}  товары
+                        @click="toggleOrder(index)"><span>{{ order.item_list.length }}  товары</span>
                       </td>
                       <td class="p-2" v-if="order.isLoaded" @click="toggleShafyorInfo(order, true)">
                         <span class="paid">
@@ -542,7 +542,7 @@ data(){
         }
       }
       this.payshow = true;
-      this.$root.$refs.order_payed.changingEnter({sum:order.remaining_sum, dollor: order.remaining_usd, order: order});
+      this.$root.$refs.order_payed.changingEnter({sum:order.sum, dollor: order.dollor, order: order});
 
     },
     async closePay(index){

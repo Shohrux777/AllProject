@@ -2,7 +2,8 @@
   <div class="addProductQtyPayed" >
 
     <div class="orderCheckList p-2">
-      <div class="check_item card mb-3 px-3 py-2" v-for="(item, i) in check_list" :key="i" :class="{'alert-warning check_item_after' : !item.isInCashbox}">
+      <div class="check_item card mb-3 px-3 py-2" v-for="(item, i) in check_list" :key="i"
+      :class="{'alert-warning check_item_after' : !item.isInCashbox}">
         <div class="d-flex justify-content-center">
           <small class="summ_title" style="font-size: 13px;">
             ЧЕК №{{item.id}}
@@ -21,7 +22,7 @@
             {{$t('cash')}}
           </small>
           <small class="summ_title">
-            {{item.cash.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+            {{(item.cash + item.real_sum).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
           </small>
         </div>
         <div v-if="item.dollor" class="summ_item_ p-1 d-flex justify-content-between">
@@ -29,9 +30,27 @@
             {{$t('dollor')}}
           </small>
           <small class="summ_title">
-            {{item.dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+            {{(item.dollor + item.profit_summ).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
           </small>
         </div>
+
+        <div v-if="item.sum_balance" class="summ_item_ text-success p-1 d-flex justify-content-between">
+          <small style="font-size: 13px;">
+            Balance UZS
+          </small>
+          <small class="summ_title text-success">
+            {{item.sum_balance.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+          </small>
+        </div>
+        <div v-if="item.dollor_balance" class="summ_item_ text-success p-1 d-flex justify-content-between">
+          <small style="font-size: 13px;">
+            Balance USD
+          </small>
+          <small class="summ_title text-success">
+            {{item.dollor_balance.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+          </small>
+        </div>
+
         <div v-if="item.uz_card" class="summ_item_ p-1 d-flex justify-content-between">
           <small style="font-size: 13px;">
             UzCard
@@ -89,6 +108,41 @@
           </small>
         </div>
 
+        <div v-if="item.real_sum" class="summ_item_ text-secondary p-1 d-flex justify-content-between">
+          <small style="font-size: 13px;">
+            Қайтим нақт
+          </small>
+          <small class="summ_title text-secondary">
+            {{item.real_sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+          </small>
+        </div>
+        <div v-if="item.profit_summ" class="summ_item_ text-secondary p-1 d-flex justify-content-between">
+          <small style="font-size: 13px;">
+            Қайтим доллор
+          </small>
+          <small class="summ_title text-secondary">
+            {{item.profit_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+          </small>
+        </div>
+
+        <div v-if="item.online" class="summ_item_ text-secondary p-1 d-flex justify-content-between">
+          <small style="font-size: 13px;">
+            Қайтим {{' Balance UZS'}}
+          </small>
+          <small class="summ_title text-secondary">
+            {{item.online.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+          </small>
+        </div>
+        
+        <div v-if="item.perchisleniya" class="summ_item_ text-secondary p-1 d-flex justify-content-between">
+          <small style="font-size: 13px;">
+            Қайтим {{' Balance USD'}}
+          </small>
+          <small class="summ_title text-secondary">
+            {{item.perchisleniya.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+          </small>
+        </div>
+
         <div class="summ_item_ p-1 d-flex justify-content-between">
           <small style="font-size: 13px;">
             {{$t('hisob')}}
@@ -112,6 +166,61 @@
         <div class="summ_item_ p-1 d-flex justify-content-end" v-if="!item.isInCashbox">
           <mdb-btn color="success" style="font-size:9px; padding: 6px 0; width:100px;"  @click="getMoneyToCash(item)" class="m-0  mt-1" > {{$t('accept')}}</mdb-btn>
         </div>
+      </div>
+    </div>
+
+    <div class="orderInfoPayment p-2">
+      <div class="card">
+        <div class="text-center mt-2" v-if="order.client">
+          <h6 class="font-weight-bold">
+            {{order.client.fio}}
+          </h6>
+        </div>
+        
+        <div class="mt-0 px-2 border-bottom mb-1">
+          <span style="font-size: 14.5px;" class="ml-2">Общая сумма заказа</span>
+        </div>
+        <div class="mt-0">
+          <div class="container-fluid pb-3">
+            <div class="row px-2">
+              <div class="col-6 pl-0 pr-1">
+                <div class="order_sum dashed_border text-center rounded px-2">
+                  <p class="p-0 m-0 mb-1" style="font-size: 13px;">UZS</p>
+                  <span class="order_sum_text">{{ order.sum.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
+                </div>
+              </div>
+              <div class="col-6 pr-0 pl-1">
+                <div class="order_sum dashed_border rounded text-center">
+                  <p class="p-0 m-0 mb-1" style="font-size: 13px;">USD</p>
+                  <span class="order_sum_text">{{ order.dollor.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-1 px-2 border-bottom mb-1">
+          <span style="font-size: 14.5px;" class="ml-2">Оплаченная сумма заказа</span>
+        </div>
+        <div class="mt-0">
+          <div class="container-fluid pb-2">
+            <div class="row px-2">
+              <div class="col-6 pl-0 pr-1">
+                <div class="order_sum dashed_border text-center rounded px-2">
+                  <p class="p-0 m-0 mb-1" style="font-size: 13px;">UZS</p>
+                  <span class="order_sum_text">{{ payed_sum.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
+                </div>
+              </div>
+              <div class="col-6 pr-0 pl-1">
+                <div class="order_sum dashed_border rounded text-center">
+                  <p class="p-0 m-0 mb-1" style="font-size: 13px;">USD</p>
+                  <span class="order_sum_text">{{ payed_dollor.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -332,21 +441,35 @@
                 <div style="position:relative;">
                   <input type="text" v-model="naqd_returnInString"  v-on:keyup.13 = "payed" @keyup="funcNaqd_return($event.target.value)" v-on:click.capture="naqd_returnNol" @blur="funcAllBlue" ref="cashIn"  
                   class="form-control  border mt-2 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
-                  <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold; " class="testing">
+                  <small v-if="!hisob_status" style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold; " class="testing">
                     Қайтим нақт
                   </small>
+                  <small v-else style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold;" class="testing">
+                    Қайтим {{' Balance UZS'}}
+                  </small> 
                 </div>
               </div>
               <div style="width:45%;" class="pl-4">
                 <div style="position:relative;">
                   <input type="text" v-model="dollor_returnInString " v-on:keyup.13 = "payed" @keyup="funcDollor_return($event.target.value)" v-on:click.capture="dollor_returnNol" @blur="funcAllBlue"  ref="uzcardIn" 
                   class="form-control  border mt-2 text-right pr-2" style="border:none; outline:none; font-weight:bold; height:30px;">
-                  <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold;" class="testing">
+                  <small v-if="!hisob_status" style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold;" class="testing">
                     {{'Қайтим доллор'}}
+                  </small> 
+                  <small v-else style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold;" class="testing">
+                    Қайтим {{' Balance USD'}}
                   </small> 
                 </div>
               </div>
             </div>
+            <div class="w-100 pl-4 mt-1 d-flex"  v-if="parseFloat(defaultSum.toFixed(2)) > summa && !hisob_name">
+                <div class="custom-control custom-switch  pl-5" >
+                  <input v-model="hisob_status" type="checkbox" class="custom-control-input "  id="customSwitch201" checked>
+                  <label class="custom-control-label status-style" for="customSwitch201" style="cursor:pointer;"></label>
+                </div>
+                <span style="font-size: 13.5px; margin-top:2px; cursor: pointer;" class="ml-2" @click="hisob_status = !hisob_status">Klient balancega qaytarish.</span>
+
+              </div>
           </div>
         </div>
       </div>
@@ -403,6 +526,7 @@ export default {
   },
   data() {
     return {
+      loading:false,
       modal_status: false,
       modal_info: '',
       summ_str : '0',
@@ -472,9 +596,12 @@ export default {
       hisob_name: '',
       hisob_id: 0,
       isInCash: true,
+      hisob_status: false,
       note: '',
       check_list: [],
       noactiveCheckQty: 0,
+      payed_sum: 0,
+      payed_dollor: 0,
 
     }
   },
@@ -497,6 +624,7 @@ export default {
     selectOptionHisob(option){
       this.hisob_name = option.name;
       this.hisob_id = option.id;
+      this.hisob_status = true; // balancega qaytaradi
     },
     clw_cl(){
       this.naqd_returnInString = '0';
@@ -507,26 +635,44 @@ export default {
       this.defaultOrtiqchaSum = 0;
     },
     async changingEnter(order_data){
-      this.order_sum =  order_data.sum;
-      this.order_dollor =  order_data.dollor;
-      this.order = order_data.order;
+      console.log('order_data')
+      this.payed_sum = 0;
+      this.payed_dollor = 0;
       this.dollor_kurs = localStorage.dollor_kurs;
       this.dollor_kurs_str = localStorage.dollor_kurs.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
-
-      this.summa_default = order_data.sum + (order_data.dollor * this.dollor_kurs);
+      this.order_sum =  0;
+      this.order_dollor =  0;
+      this.loading = false;
+      this.check_list = [];
+      this.noactiveCheckQty = 0;
+      this.order = order_data.order;
+      const checks = await this.fetchOrderCheck();
+      await this.$nextTick();
+      console.log('checks', checks)
+      if(checks && checks.length > 0){
+        await this.funcNotPaidSumma(order_data.sum,order_data.dollor);
+      }
+      else{
+        this.order_sum =  order_data.sum;
+        this.order_dollor =  order_data.dollor;
+      }
+      console.log('summalar chiqgandagi holati')
+      console.log(this.order_sum)
+      console.log(this.order_dollor)
+      this.summa_default = this.order_sum + (this.order_dollor * this.dollor_kurs);
       this.summa = this.summa_default;
       this.summ_str = this.summa_default.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
 
-      this.cashIn = parseFloat(order_data.sum);
-      this.cashInString = new Intl.NumberFormat().format(order_data.sum);
+      this.cashIn = parseFloat(this.order_sum);
+      this.cashInString = new Intl.NumberFormat().format(this.order_sum);
       console.log('this.summa_default', this.summa_default);
-      if(order_data.dollor){
-        this.dollorIn = order_data.dollor;
+      if(this.order_dollor){
+        this.dollorIn = this.order_dollor;
       }
       else{
         this.dollorIn = 0;
       }
-      this.dol_convert_Sum = parseFloat(order_data.dollor * this.dollor_kurs);
+      this.dol_convert_Sum = parseFloat(this.order_dollor * this.dollor_kurs);
       this.dollorInString = new Intl.NumberFormat().format(this.dollorIn);
       
       this.order_old_sum = 0;
@@ -569,34 +715,96 @@ export default {
 
       this.defaultSum = this.cashIn + this.uzcardIn + this.humoIn + this.clickIn + this.onlineIn + 
       this.paymeIn + this.clickedIn + this.paynetIn + this.uzumIn + this.dol_convert_Sum;
-      this.check_list = [];
-      this.noactiveCheckQty = 0;
+      
       this.hisob_name = '';
       this.hisob_id = 0;
       this.confirm = false;
-      await this.fetchOrderCheck();
+      this.hisob_status = false;
+      this.isInCash = true;
     },
-    async fetchOrderCheck(){
-      try{
+    async fetchOrderCheck() {
+      try {
+        this.loading = true;
         const response = await fetch(this.$store.state.hostname + "/TegirmonOrderCheck/getPaginationOrderId?page=0&size=100&order_id=" + this.order.id);
         const data = await response.json();
-        if(response.status == 201 || response.status == 200)
-        {
-          console.log(data)
-          this.check_list = data.items_list;
-          for(let i=0; i<data.items_list.length; i++){
-            if(data.items_list[i].isInCashbox == false){
-              this.noactiveCheckQty += 1;
-            }
-          }
-          return true;
+        this.loading = false;
+        if (response.ok) {
+          console.log('check_list', data);
+          this.check_list = data.items_list || [];
+          this.noactiveCheckQty = data.items_list.filter(x => !x.isInCashbox).length;
+          return this.check_list; // shu yerda qaytarib qo‘y
         }
-      }
-      catch{
-        // this.client_list = [];
+      } catch (e) {
         this.modal_info = this.$i18n.t('network_ne_connect');
         this.modal_status = true;
       }
+    },
+    async funcNotPaidSumma(sum,dollor){
+      let check_sum = 0;
+      let check_dollor = 0;
+      let check_skidka = 0;
+      console.log('this.check_list', this.check_list)
+      for(let i=0; i<this.check_list.length; i++){
+        let temp_sum = 0;
+        let temp_dollor = 0;
+        temp_sum = this.check_list[i].cash + this.check_list[i].uz_card + this.check_list[i].click + this.check_list[i].humo + 
+        this.check_list[i].payme + this.check_list[i].paynet + this.check_list[i].uzumpay + this.check_list[i].sum_balance - this.check_list[i].online;
+        temp_dollor = this.check_list[i].dollor + this.check_list[i].dollor_balance - this.check_list[i].perchisleniya;
+        check_sum += temp_sum;
+        check_dollor += temp_dollor;
+        check_skidka += this.check_list[i].skidka;
+      }
+
+        let diff_sum = 0;
+        let diff_dollor = 0;
+        let _order_old_sum = 0;
+        let _order_old_dollor = 0;
+        diff_sum = sum - check_sum - check_skidka;
+        diff_dollor = dollor - check_dollor;
+        this.payed_sum = check_sum;
+        this.payed_dollor = check_dollor;
+
+        let val = 0;
+        if(diff_sum>0 && diff_dollor<0){
+          val = (-1 * (diff_dollor * parseFloat(this.dollor_kurs)) - diff_sum);
+          
+          if (val <= 0)
+          {
+              _order_old_dollor = 0;
+              _order_old_sum = -1 * val;
+          }
+          else
+          {
+            _order_old_sum = 0;
+            _order_old_dollor = (-1 * (val / this.dollor_kurs)).toFixed();
+          }
+        }
+        else if(diff_sum<0 && diff_dollor>0){
+          val = (-1 * (diff_sum / this.dollor_kurs)) - diff_dollor;
+            if (val <= 0)
+            {
+                _order_old_sum = 0;
+                _order_old_dollor = (-1 * val).toFixed();
+            }
+            else
+            {
+                _order_old_dollor = 0;
+                _order_old_sum = -1 * (val * this.dollor_kurs);
+            }
+        }
+        else{
+          _order_old_sum = diff_sum;
+          _order_old_dollor = diff_dollor;
+        }
+
+        this.order_sum = parseFloat(_order_old_sum);
+        this.order_dollor = parseFloat(_order_old_dollor);
+        
+        
+
+        console.log('check_sum')
+        console.log(_order_old_sum)
+        console.log(_order_old_dollor)
     },
     async getMoneyToCash(check){
       console.log(check)
@@ -628,7 +836,9 @@ export default {
         this.modal_status = true;
       }
     },
-    async fetchHisobOstatkaSumma(){  // tulovdan keyin qancha ostatka sum va dollor qolayotgani aniqlash
+
+    // tulovdan keyin qancha ostatka sum va dollor qolayotgani aniqlash
+    async fetchHisobOstatkaSumma(){  
       this.order_old_sum = 0;
       this.order_old_dollor = 0;
       let all_sum_money = 0;
@@ -638,6 +848,7 @@ export default {
       all_sum_money = this.cashIn + this.uzcardIn + this.humoIn + this.clickIn + this.onlineIn + 
       this.paymeIn + this.clickedIn + this.paynetIn + this.uzumIn - parseFloat(this.naqd_returnIn);
       all_dollor_money = parseFloat(this.dollorIn) - parseFloat(this.dollor_returnIn);
+
       diff_sum = this.order_sum - all_sum_money;
       diff_dollor = this.order_dollor - all_dollor_money;
       console.log('sum',diff_sum);
@@ -678,10 +889,28 @@ export default {
       console.log(this.order_old_sum)
       console.log(this.defaultSum)
     },
+    
     async payed(){
-      if(this.defaultSum == 0){
-        return;
+      let return_sum = 0;
+      let return_dollor = 0;
+      let return_balance_sum = 0;
+      let return_balance_dollor = 0;
+      if(this.hisob_status == false){
+        return_sum = parseFloat(this.naqd_returnIn);
+        return_dollor = parseFloat(this.dollor_returnIn);
       }
+      else{
+        if(!this.client_info.id){
+          this.$refs.alert.error("Bu klient ro'yxatga olinmagan uning hisobi mavjud emas !");
+          return;
+        }
+        return_balance_sum = parseFloat(this.naqd_returnIn); 
+        return_balance_dollor = parseFloat(this.dollor_returnIn);
+      }
+
+      // bu yerga kurs yozilayabdimi tekshirish kerak dollor aralashgan bulsa
+      // yana nimadir bor edi summa 0 bulsa hech qanday qaytim bulmasa tulov bulmasin
+      
       if(this.isInCash == true && this.note == ''){
         this.note = "To'lov qilindi";
       }
@@ -707,8 +936,8 @@ export default {
           "tegirmonAuthid": localStorage.AuthId,
           "tegirmonOrderClientid": this.client_info.id,
           "summ" : this.defaultSum, // tulanadigan summa sumda
-          "cash": parseFloat(this.cashIn) - parseFloat(this.naqd_returnIn),
-          "dollor": parseFloat(this.dollorIn) - parseFloat(this.dollor_returnIn),
+          "cash": parseFloat(this.cashIn) - parseFloat(return_sum),
+          "dollor": parseFloat(this.dollorIn) - parseFloat(return_dollor),
           "uz_card": parseFloat(this.uzcardIn),
           "click":  parseFloat(this.clickedIn), // click orqali tulov,
           "humo": parseFloat(this.humoIn),
@@ -726,8 +955,6 @@ export default {
 
           "status_name": this.note + " << Optom savdo bo'limi >>",
           "image_url": localStorage.user_name,
-          "real_sum": parseFloat(this.naqd_returnIn), // qaytarilgan naqd
-          "profit_summ": parseFloat(this.dollor_returnIn), // qaytarilgan dollor
 
           "remaining_sum": this.order_old_sum,
           "remaining_usd": this.order_old_dollor,
@@ -736,8 +963,11 @@ export default {
           "sum_balance": parseFloat(this.onlineIn), // client balance sum
           "dollor_balance": parseFloat(this.balance_dollor), //  client balance dollor
 
-          // "online": parseFloat(this.onlineIn), // client balance qaytim
-          // "perchisleniya": parseFloat(this.balance_dollor), //  client balance qaytim
+          "real_sum": parseFloat(return_sum), // qaytarilgan naqd
+          "profit_summ": parseFloat(return_dollor), // qaytarilgan dollor
+
+          "online": parseFloat(return_balance_sum), // client balance qaytim sum
+          "perchisleniya": parseFloat(return_balance_dollor), //  client balance qaytim dollor
 
           // "uz_card": 0,     for skidka uchun ishlataman
         })
@@ -792,7 +1022,7 @@ export default {
 
     // dollor kursini uzgartiri
 
-    funcDolKurs(n){
+    async funcDolKurs(n){
       // this.discount = parseFloat(this.clickIn) + parseFloat(this.cashIn) + parseFloat(this.uzcardIn) + parseFloat(this.humoIn) + parseFloat(this.onlineIn) + 
       // parseFloat(this.dol_convert_Sum) + parseFloat(this.paymeIn) + parseFloat(this.clickedIn) + parseFloat(this.paynetIn) + parseFloat(this.uzumIn);
       // this.discountSum = parseFloat(this.summa) - parseFloat(this.discount);
@@ -822,6 +1052,12 @@ export default {
        }
       this.dollor_kurs = parseFloat(temp);
       localStorage.dollor_kurs = this.dollor_kurs;
+      const checks = await this.fetchOrderCheck();
+      await this.$nextTick();
+      console.log('checks', checks)
+      if(checks && checks.length > 0){
+        await this.funcNotPaidSumma(this.order.sum,this.order.dollor);
+      }
       this.summa_default = this.order_sum + (this.order_dollor * this.dollor_kurs);
       this.summa = this.summa_default;
       this.summ_str = this.summa_default.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
@@ -2036,7 +2272,7 @@ export default {
   }
   .acceptBoxPayed{
     width:660px;
-    max-height: 610px;
+    max-height: 630px;
     background: rgb(252, 252, 255);
     box-shadow: 3px 2px 5px rgb(129, 129, 129);
     border-radius: 5px;
@@ -2051,6 +2287,13 @@ export default {
     background: inherit;
     overflow: hidden;
     overflow-y: scroll;
+  }
+  .orderInfoPayment{
+    position: absolute;
+    top:0;
+    left: 0;
+    width:450px;
+    height: 100vh;
   }
   .bg_dark{
     background: #202020;

@@ -283,6 +283,9 @@ export default {
           "auth_user_updator_id": localStorage.kassa_id,
           "bot_id": this.hisob_id,
           "reserve": this.hisob_name,
+          "hisob_sum": this.rasxod_qty,
+          "hisob_dollor": this.dollor,
+          "cash_or_product": 1, // naqd pul qaytarsa
           "reserve_val_1": sum_ostatka,  // bu qolgan ostatka sumniki
           "reserve_val_2": dollor_ostatka  // bu qolgan ostatka dollorniki
         })

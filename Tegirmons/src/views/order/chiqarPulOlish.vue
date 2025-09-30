@@ -80,6 +80,7 @@
               </div>
             </div>
           </div>
+
           <div class="col-12 mt-3">
             <erpSelectHisob
               :options="allHisob.rows"
@@ -89,6 +90,33 @@
               size="sm"
             />
           </div>
+          <div class="col-12 mt-0 border-bottom">
+            <small>
+              Klient balance ga tushishi!
+            </small>
+          </div>
+          <div class="col-6 mt-2">
+            <input class="m-0 px-2 form-control" v-model="hisob_sum_str" @keyup="funcHisobSum($event.target.value)"
+              @click="select_hisob_sum()" @blur="blur_hisob_sum()"
+             group type="input" validate error="wrong" success="right"
+             style="height:32px; font-size: 13.5px;"/>
+            <small
+              style="position: absolute; top: -7px; left: 20px; font-size: 11px"
+              class="bg-white px-2 py-0"
+              >{{ $t("price") + ' сўм'}}</small>
+          </div>
+          
+          <div class="col-6 mt-2">
+            <input class="m-0 px-2 form-control" v-model="hisob_dollor_str" @keyup="funcHisobDollor($event.target.value)"
+              @click="select_hisob_dollor()" @blur="blur_hisob_dollor()"
+             group type="input" validate error="wrong" success="right"
+             style="height:32px; font-size: 13.5px;"/>
+            <small
+              style="position: absolute; top: -7px; left: 20px; font-size: 11px"
+              class="bg-white px-2 py-0"
+              >{{ $t("price") + ' $'}}</small>
+          </div>
+
           <div class="col-12 mt-3">
             <mdb-input class="m-0 p-0" v-model="note"  outline group type="textarea" validate error="wrong" success="right"/>
             <small
@@ -161,6 +189,14 @@ export default {
 
       hisob_name: '',
       hisob_id: 0,
+
+      hisob_sum: 0,
+      hisob_sum_str: '0',
+      hisob_dollor: 0,
+      hisob_dollor_str: '0',
+      hisob_all_sum: 0,
+      hisob_all_sum_str: '0',
+
     }
   },
   validations: {
@@ -205,6 +241,12 @@ export default {
       this.hisob_name = '';
     },
     async saveRasxod(){
+      console.log(this.all_summ)
+      console.log(this.hisob_all_sum)
+      if(Math.abs(this.all_summ - this.hisob_all_sum) > 100){
+        this.$refs.alert.error('Berilgan pul bilan hisobga tushadigan pul bir xil emas!');
+        return;
+      }
       if(!this.dollor && !this.rasxod_qty){
         this.$refs.alert.error('Summa kiritilmadi!');
         return;
@@ -261,6 +303,8 @@ export default {
           "auth_user_updator_id": localStorage.kassa_id,
           "bot_id": this.hisob_id,
           "reserve": this.hisob_name,
+          "hisob_sum": this.hisob_sum,
+          "hisob_dollor": this.hisob_dollor,
           "reserve_val_1": sum_ostatka,  // bu qolgan ostatka sumniki
           "reserve_val_2": dollor_ostatka  // bu qolgan ostatka dollorniki
         })
@@ -435,21 +479,92 @@ export default {
     select_qty_Input(){
       if(this.rasxod == '0'){
         this.rasxod = null;
+        this.rasxod_qty = 0;
       }
     },
     blur_qty_Input(){
       if(this.rasxod == null || this.rasxod == ''){
         this.rasxod = '0';
+        this.rasxod_qty = 0;
       }
     },
     select_qty_dl(){
       if(this.dollor_string == '0'){
         this.dollor_string = null;
+        this.dollor = 0;
       }
     },
     blur_qty_dl(){
       if(this.dollor_string == null || this.dollor_string == ''){
         this.dollor_string = '0';
+        this.dollor = 0;
+      }
+    },
+    
+    select_hisob_sum(){
+      if(this.hisob_sum_str == '0'){
+        this.hisob_sum_str = null;
+        this.hisob_sum = 0;
+      }
+      let val_dol = 0;
+      val_dol = this.hisob_dollor *  parseFloat(this.dollor_kurs_qty);
+      if(val_dol<this.all_summ){
+        this.hisob_sum = this.all_summ - val_dol;
+        this.hisob_sum_str = this.hisob_sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      }
+      else if(this.hisob_dollor == 0 || this.hisob_dollor == null){
+        this.hisob_dollor = 0;
+        this.hisob_dollor_str  = '0';
+        this.hisob_sum = this.all_summ;
+        this.hisob_sum_str = this.all_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      }
+      if(val_dol == this.all_summ){
+        this.hisob_dollor = 0;
+        this.hisob_dollor_str  = '0';
+        this.hisob_sum = this.all_summ;
+        this.hisob_sum_str = this.hisob_sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      }
+      this.hisob_all_sum = this.hisob_sum + (this.hisob_dollor * parseFloat(this.dollor_kurs_qty));
+
+    },
+
+    select_hisob_dollor(){
+      if(this.hisob_dollor_str == '0'){
+        this.hisob_dollor_str = null;
+        this.hisob_dollor = 0;
+      }
+
+      if(this.hisob_sum<this.all_summ){
+        this.hisob_dollor = ((this.all_summ - this.hisob_sum)/parseFloat(this.dollor_kurs_qty)).toFixed();
+        this.hisob_dollor_str = this.hisob_dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      }
+      else if(this.sum == 0 || this.sum == null){
+        this.hisob_sum = 0;
+        this.hisob_sum_str  = '0';
+        this.hisob_dollor = (this.all_summ/parseFloat(this.dollor_kurs_qty)).toFixed();
+        this.hisob_dollor_str = this.hisob_dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      }
+      this.hisob_all_sum = this.hisob_sum + (this.hisob_dollor * parseFloat(this.dollor_kurs_qty));
+
+      if(this.hisob_sum == this.all_summ){
+        this.hisob_sum = 0;
+        this.hisob_sum_str  = '0';
+        this.hisob_dollor = (this.all_summ/parseFloat(this.dollor_kurs_qty)).toFixed();
+        this.hisob_dollor_str = this.hisob_dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      }
+    },
+
+    blur_hisob_sum(){
+      if(this.hisob_sum_str == null || this.hisob_sum_str == ''){
+        this.hisob_sum_str = '0';
+        this.hisob_sum = 0;
+      }
+    },
+    blur_hisob_dollor(){
+      if(this.hisob_dollor_str == null || this.hisob_dollor_str == ''){
+        this.hisob_dollor_str = '0';
+        this.hisob_dollor = 0;
+
       }
     },
     funcRasxod(n){
@@ -471,11 +586,10 @@ export default {
         }
        }
       this.rasxod_qty = parseFloat(temp);
-      console.log(this.rasxod_qty)
-      console.log('sum ' + this.rasxod_qty)
-      console.log('dollor ' + this.dollor)
-      console.log('kurs ' + this.dollor_kurs_qty)
+      this.hisob_sum = this.rasxod_qty;
+      this.hisob_sum_str = this.rasxod;
       this.all_summ = this.rasxod_qty + (this.dollor * parseFloat(this.dollor_kurs_qty));
+      this.hisob_all_sum = this.hisob_sum + (this.hisob_dollor * parseFloat(this.dollor_kurs_qty));
     },
     funcDollor(n){
       var tols = ''
@@ -496,12 +610,61 @@ export default {
         }
        }
       this.dollor = parseFloat(temp);
-      console.log(this.dollor)
-      console.log('sum ' + this.rasxod_qty)
-      console.log('dollor ' + this.dollor)
-      console.log('kurs ' + this.dollor_kurs_qty)
+      this.hisob_dollor = this.dollor;
+      this.hisob_dollor_str = this.dollor_string;
       this.all_summ = this.rasxod_qty + (this.dollor * parseFloat(this.dollor_kurs_qty));
+      this.hisob_all_sum = this.hisob_sum + (this.hisob_dollor * parseFloat(this.dollor_kurs_qty));
     },
+
+    funcHisobSum(n){
+      var tols = ''
+      for(let i=0; i<n.length; i++){
+        if(n[i] != ' '){
+          tols += n[i];
+        }
+       }
+       if(tols[tols.length-1] != '0' && tols[tols.length-1] != '1' && tols[tols.length-1] != '2' && tols[tols.length-1] != '3' && tols[tols.length-1] != '4' && 
+        tols[tols.length-1] != '5' && tols[tols.length-1] != '6' && tols[tols.length-1] != '7' && tols[tols.length-1] != '8' && tols[tols.length-1] != '9'){
+        tols = tols.slice(0,tols.length-1)
+       }
+       this.hisob_sum_str = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+       var temp = ''
+       for(let i=0; i<this.hisob_sum_str.length; i++){
+        if(this.hisob_sum_str[i] != ' '){
+          temp += this.hisob_sum_str[i];
+        }
+       }
+      this.hisob_sum = parseFloat(temp);
+      this.hisob_all_sum = this.hisob_sum + (this.hisob_dollor * parseFloat(this.dollor_kurs_qty));
+      // this.all_summ = this.rasxod_qty + (this.dollor * parseFloat(this.dollor_kurs_qty));
+    },
+
+    funcHisobDollor(n){
+      var tols = ''
+      for(let i=0; i<n.length; i++){
+        if(n[i] != ' '){
+          tols += n[i];
+        }
+       }
+       if(tols[tols.length-1] != '0' && tols[tols.length-1] != '1' && tols[tols.length-1] != '2' && tols[tols.length-1] != '3' && tols[tols.length-1] != '4' && 
+        tols[tols.length-1] != '5' && tols[tols.length-1] != '6' && tols[tols.length-1] != '7' && tols[tols.length-1] != '8' && tols[tols.length-1] != '9'){
+        tols = tols.slice(0,tols.length-1)
+       }
+       this.hisob_dollor_str = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+       var temp = ''
+       for(let i=0; i<this.hisob_dollor_str.length; i++){
+        if(this.hisob_dollor_str[i] != ' '){
+          temp += this.hisob_dollor_str[i];
+        }
+       }
+      this.hisob_dollor = parseFloat(temp);
+      this.hisob_all_sum = this.hisob_sum + (this.hisob_dollor * parseFloat(this.dollor_kurs_qty));
+    },
+
+
+
+
+
     funcDollorKurs(n){
       var tols = ''
       for(let i=0; i<n.length; i++){
@@ -526,6 +689,7 @@ export default {
       console.log('dollor ' + this.dollor)
       console.log('kurs ' + this.dollor_kurs_qty)
       this.all_summ = this.rasxod_qty + (this.dollor * parseFloat(this.dollor_kurs_qty));
+      this.hisob_all_sum = this.hisob_sum + (this.hisob_dollor * parseFloat(this.dollor_kurs_qty));
     },
     async nbuKurs(){
       try{

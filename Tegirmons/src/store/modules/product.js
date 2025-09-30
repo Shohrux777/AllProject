@@ -5,6 +5,11 @@ export default {
             columns: ['name','price','code','auth_user_updator_id'],
             col: []
         },
+        product_skladId: {
+            rows: [],
+            columns: ['name','price','code','auth_user_updator_id'],
+            col: []
+        },
 
     },
     actions: {
@@ -13,6 +18,12 @@ export default {
             const res_data = await res.json();
             // console.log(ctx.rootState.hostname);
             ctx.commit('update_product_t', res_data);
+        },
+        async fetch_product_skladId(ctx, skladId) {
+            const res = await fetch(ctx.rootState.hostname + '/TegirmonSkladTovar/getProductsBySklad/' + skladId);
+            const res_data = await res.json();
+            // console.log(ctx.rootState.hostname);
+            ctx.commit('update_product_skladId', res_data);
         },
         // async fetch_product_t_column(ctx, id) {
         //     const res = await fetch(ctx.rootState.hostname + '/TexColumnConfigs/getColumnListAsJsonObj?tableName=pos_company&auth_id=' + id);
@@ -25,20 +36,27 @@ export default {
             console.log(data)
             state.product_t.rows = data;
         },
+        update_product_skladId(state, data) {
+            console.log('sklad', data)
+            state.product_skladId.rows = data;
+        },
         product_t_delete_row(state, index) {
             state.product_t.rows.splice(parseInt(index), 1);
         },
-        update_product_t_column(state, data) {
-            state.product_t.col = data;
-            console.log(data)
-                //status true bolgan ustun nomlarini olish uchun
-            state.product_t.columns = data.column_default_obj.filter(obj => { return obj.status === true }).map(({ name }) => name);
-        },
+        // update_product_t_column(state, data) {
+        //     state.product_t.col = data;
+        //     console.log(data)
+        //         //status true bolgan ustun nomlarini olish uchun
+        //     state.product_t.columns = data.column_default_obj.filter(obj => { return obj.status === true }).map(({ name }) => name);
+        // },
 
     },
     getters: {
         all_product_t(state) {
             return state.product_t;
+        },
+        all_product_skladId(state) {
+            return state.product_skladId;
         }
 
     }

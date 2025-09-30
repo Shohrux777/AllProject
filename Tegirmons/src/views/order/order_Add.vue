@@ -149,7 +149,7 @@
                 </th>
                 <th>
                   <lineSelect
-                    :options="all_product_t.rows"
+                    :options="all_product_skladId.rows"
                     :row_index="rowIndex"
                     :searchshow="true"
                     @select="selectproduct"
@@ -308,7 +308,10 @@ export default {
       },
       sklad_name: '',
       sklad_id: 3,
-      client: {},
+      client: {
+        fio: '',
+        id:null,
+      },
     }
   },
   props: {
@@ -351,12 +354,17 @@ export default {
     },
   },
   watch: {
-    // prop butunlay yangilanganda
     client_info: {
-      handler (newVal) {
-        this.client = newVal;
+      handler(newVal) {
+        if (newVal) {
+          // ma'lumot bor
+          this.client = newVal;
+        } else {
+          // null yoki undefined bo‘lsa bo‘sh obyekt
+          this.client = { fio: '', id:null };
+        }
       },
-      deep: true // agar client_info ichidagi maydonlar ham o‘zgarsa
+      deep: true
     }
   },
   async created()
@@ -374,7 +382,13 @@ export default {
       this.shafyor_name = data.shafyor_name;
       this.car_nomer = data.car_nomer;
       this.note = data.note;
-      this.client = data.client;
+       if (data.client) {
+        // ma'lumot bor
+        this.client = data.client;
+      } else {
+        // null yoki undefined bo‘lsa bo‘sh obyekt
+        this.client = { fio: '', id:null };
+      }
       for(let i=0; i<data.item_list.length; i++){
         this.datasource.rows.push({
           tegirmonProductid: 0,
@@ -408,12 +422,12 @@ export default {
     }
   },
   async mounted() {
-    await this.fetch_product_t();
+    await this.fetch_product_skladId(2);
     await this.fetchSklad();
   },
-  computed: mapGetters([ 'allSklad', 'all_product_t',]),
+  computed: mapGetters([ 'allSklad', 'all_product_skladId',]),
   methods:{
-    ...mapActions(['fetchSklad', 'fetch_product_t']),
+    ...mapActions(['fetchSklad', 'fetch_product_skladId']),
     cls_wnd()
     {
       
