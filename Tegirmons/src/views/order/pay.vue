@@ -186,13 +186,13 @@
               <div class="col-6 pl-0 pr-1">
                 <div class="order_sum dashed_border text-center rounded px-2">
                   <p class="p-0 m-0 mb-1" style="font-size: 13px;">UZS</p>
-                  <span class="order_sum_text">{{ order.sum.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
+                  <span class="order_sum_text">{{ (order.sum || 0).toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
                 </div>
               </div>
               <div class="col-6 pr-0 pl-1">
                 <div class="order_sum dashed_border rounded text-center">
                   <p class="p-0 m-0 mb-1" style="font-size: 13px;">USD</p>
-                  <span class="order_sum_text">{{ order.dollor.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
+                  <span class="order_sum_text">{{ (order.dollor || 0).toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
                 </div>
               </div>
             </div>
@@ -387,19 +387,19 @@
                     </small> 
                   </div>
                   <div class="text-right">
-                    <small class="p-0 text-success">{{ client_info.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</small>
+                    <small class="p-0 text-success">{{ (client_info.sum || '').toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</small>
                   </div>
                 </div>
                 <div class="price ml-2"  style="width:45%; position:relative;">
-                  <div style="position:relative;" >
+                  <div style="position:relative;">
                     <input type="text" v-model="clickInString" v-on:keyup.13 = "payed" @keyup="funcClick($event.target.value)" v-on:click.capture="clickNol" @blur="funcAllBlue"  ref="clickIn" 
                     class="form-control  border mt-2 text-right pr-2" style="border:none; outline:none;font-weight:bold; height:30px;" >
                     <small style="position:absolute; top:-16px; left:3px; font-size:11.5px; font-weight:bold;" class="testing">
                       Balance USD
                     </small>
                   </div>
-                  <div class="text-right">
-                    <small class="p-0 text-success">{{ client_info.dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</small>
+                  <div class="text-right" >
+                    <small class="p-0 text-success">{{ (client_info.dollor || '').toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</small>
                   </div>
                 </div>
               </div>
@@ -650,6 +650,8 @@ export default {
       await this.$nextTick();
       console.log('checks', checks)
       if(checks && checks.length > 0){
+        this.dollor_kurs = checks[0].kurs;
+        this.dollor_kurs_str = checks[0].kurs.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
         await this.funcNotPaidSumma(order_data.sum,order_data.dollor);
       }
       else{
@@ -838,7 +840,7 @@ export default {
     },
 
     // tulovdan keyin qancha ostatka sum va dollor qolayotgani aniqlash
-    async fetchHisobOstatkaSumma(){  
+    async fetchHisobOstatkaSumma(){
       this.order_old_sum = 0;
       this.order_old_dollor = 0;
       let all_sum_money = 0;
@@ -908,8 +910,9 @@ export default {
         return_balance_dollor = parseFloat(this.dollor_returnIn);
       }
 
-      // bu yerga kurs yozilayabdimi tekshirish kerak dollor aralashgan bulsa
-      // yana nimadir bor edi summa 0 bulsa hech qanday qaytim bulmasa tulov bulmasin
+      // !!!!!!!!!! bu yerga kurs yozilayabdimi tekshirish kerak dollor aralashgan bulsa
+      // !!!!!!!!!! yana nimadir bor edi summa 0 bulsa hech qanday qaytim bulmasa tulov bulmasin
+      // !!!!!!!!!! qaytim naqd berganda tekshirish kerak agar kassada qaytimga pul yetmasa puling kam deb chiqarsin
       
       if(this.isInCash == true && this.note == ''){
         this.note = "To'lov qilindi";
@@ -942,7 +945,7 @@ export default {
           "click":  parseFloat(this.clickedIn), // click orqali tulov,
           "humo": parseFloat(this.humoIn),
           "payme": parseFloat(this.paymeIn), // paymen orqali tulov
-          "skidka": parseFloat(this.persantage_discount), // skidka 
+          "skidka": parseFloat(this.persantage_discount), // skidka
           "paynet": parseFloat(this.paynetIn), // paynet orqali tulov
           "uzumpay": parseFloat(this.uzumIn), // uzum orqali tulov
           "kurs": parseFloat(this.dollor_kurs),

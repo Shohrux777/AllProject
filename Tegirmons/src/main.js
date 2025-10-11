@@ -50,7 +50,7 @@ import VueQRCodeComponent from 'vue-qrcode-component'
 import JsonExcel from "vue-json-excel";
 import VueTheMask from 'vue-the-mask';
 import ImageModal from "./components/ImageModal.vue";
-
+import "./registerServiceWorker";
 Vue.component("ImageModal", ImageModal);
 
 Vue.prototype.$imageModal = new Vue(ImageModal).$mount();

@@ -143,14 +143,11 @@
                     <!-- <th style="padding: 6px 10px;" class="text-left">{{$t('user_name')}}</th> -->
                   </tr>
                 </thead>
-                
-                <tbody>
-                  <template v-for="(order, index) in order_list">
+                <tbody v-for="(order, index) in order_list" :key="order.id">
                     <!-- Asosiy order qatori -->
                     <tr
-                      :key="order.id"
                       class="cursor-pointer hover:bg-gray-100"
-                      :class="{'alert-success': order.isClosed}"
+                      :class="{'alert-success': order.isClosed, 'alert-warning': order.is_begin}"
                     >
                       <td class="p-2">{{ index+1 }}</td>
                       <td class="p-2"><span>{{ order.pickUpDate.slice(8,10) }}-{{ order.pickUpDate.slice(5,7) }}-{{ order.pickUpDate.slice(0,4) }}</span></td>
@@ -187,14 +184,15 @@
                           Загружен
                         </span>
                       </td>
-                      <td class="p-2 " v-else  @click="toggleShafyorInfo(order, true)">
+                      <td class="p-2 " v-else  @click="toggleShafyorInfo(order, true)" style="position: relative;">
                         <span v-if="order.load_progress>0" class="nopaidprogress">
                           <span class="load_progress_text">{{order.load_progress}} %</span> .
-                          <small class="progress_change " :style="{ width: order.load_progress + '%' }"></small>
+                          <small :class="{'progress_change': !order.is_loading, 'progress_change_warning': order.is_loading}" :style="{ width: order.load_progress + '%' }"></small>
                         </span>
-                        <span v-else class="nopaid" >
+                        <span v-else class="nopaid">
                           Не загружен
                         </span>
+                        <img v-if="order.is_loading" style="position:absolute; top:-4px; left: -50px;" src="../../assets/truck.gif" height="50"  alt="">
                       </td>
                       <td class="p-2" >
                         <div class="order_status">
@@ -225,7 +223,6 @@
                             <tr v-for="item in order.item_list" :key="item.id">
                               <td class="p-2">{{ item.product.name }}</td>
                               <td class="p-2">{{ item.sum_str }}</td>
-                              
                               <td class="p-2">{{ item.qty }}</td>
                               <td class="p-2">{{ item.price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</td>
 
@@ -239,7 +236,6 @@
                         </table>
                       </td>
                     </tr>
-                  </template>
                 </tbody>
               </table>
             </div>
@@ -372,6 +368,7 @@ import order_Add from './order_Add.vue';
 import Loaded_component from './loaded_component.vue';
 import Pay from './pay.vue';
 
+
 export default {
 data(){
     return{
@@ -487,7 +484,7 @@ data(){
     calendar,
     order_Add,
     Loaded_component,
-    Pay
+    Pay,
   },
 //   validations: {
       
@@ -1182,7 +1179,7 @@ data(){
     color:white;
     background: #009563;  
   }
-  
+
 }
 .bg_col_red{
   //border: 1.5px solid #ff504a;
@@ -1235,7 +1232,6 @@ data(){
 }
 .oylik_input_blue{
   color:#006b95;
-  
 }
 .oylik_input:focus{
   border: 1px solid #a5a5a5;
@@ -1256,7 +1252,6 @@ data(){
   margin: 5px 0px;
 }
 
-
 .equal-height {
     display: flex;
     align-items: stretch;
@@ -1270,7 +1265,6 @@ data(){
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   z-index: 1111;
-
 }
 .balance:hover{
   cursor: pointer;
@@ -1369,6 +1363,22 @@ data(){
     60deg,
     #22b653,
     #28cc5f 20px
+  );
+  background-size: 40px 40px;
+  animation: move 3s linear infinite;
+  transition: width 2s ease;
+  z-index: 1;
+  border-radius: 3px;
+}
+.progress_change_warning{
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    60deg,
+    #ffba6c,
+    #f7e580 20px
   );
   background-size: 40px 40px;
   animation: move 3s linear infinite;

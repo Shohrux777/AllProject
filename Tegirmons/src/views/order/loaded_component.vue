@@ -200,15 +200,18 @@
                     <tr v-for="(row,rowIndex) in item.item_list" :key="row.id"
                     :class="{'zero_item': row.stockQty <= 0}">
                       <td> <small >{{rowIndex+1}}</small> </td>
-                      <td> <small >{{row.product.name}}</small> </td>
+                      <td> <small >{{row.product.name}}</small></td>
                       <td> <small >{{row.qty}}</small> </td>
                     </tr>
                   </tbody>
                 </table>
             </div>
             <div class="text-right mt-2">
+              <mdb-btn  class="m-0 mb-1 mr-2" v-if="item.is_begin == false" size="sm" outline="success" style="font-size:9px; height:30px;" @click="acceptCarItems(item)">
+                <i class="fas fa-truck-loading mr-2" style="font-size: 11px;"></i>  Загружено
+              </mdb-btn>
               <mdb-btn  class="m-0 mb-1 "  size="sm" outline="info" style="font-size:9px; height:30px;" @click="printOrderCarItem(item)">
-                  Печат
+                Печат
               </mdb-btn>
             </div>
           </div>
@@ -531,6 +534,9 @@ props: {
               "auth_user_updator_id": loaded_progress.toFixed(),
               "image_url": this.note,
               "item_list": this.order_car_item,
+              "is_begin": false,
+              "user_name": localStorage.user_name,
+              "TegirmonAuthid": localStorage.AuthId,
               "id": this.car_order_id
             })
           };
@@ -652,6 +658,9 @@ props: {
          this.order_car_item[i].qty = this.order_car_item[i].real_qty;
          this.order_car_item[i].qty_str = this.order_car_item[i].real_qty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
       }
+    },
+    async acceptCarItems(order_data){
+      console.log(order_data);
     },
     printOrderCarItem(order_data){
       this.select_order_info = order_data;

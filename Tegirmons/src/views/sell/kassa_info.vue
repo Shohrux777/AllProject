@@ -1,7 +1,9 @@
 <template>
-    <div class="addProductQtyAcceptCash"  v-on:click.self="close">
+    <div  class="addProductQtyAcceptCash"
+      :class="{'openShow': openBox, 'closeShow': !openBox }"
+      v-on:click.self="close">
       <div class="px-0 py-2" >
-        <div class="acceptBoxForTegirmon px-3 py-1 pb-4 text-center">
+        <div class="acceptBoxForTegirmon px-3 py-1 pb-4 text-center" :class="{'acceptBoxForTegirmon': openBox, 'closeBoxForTegirmon': !openBox }">
           <div class="depart_title mb-2 mt-2 border-bottom">
             <div style="height: 44px;" class="d-flex justify-content-between border-bottom align-items-center  ">
               <div class="title w-100 row align-items-center">
@@ -656,6 +658,7 @@
         order_payme_str : 0,
         order_paynet_str : 0,
         order_uzumpay_str : 0,
+        openBox: true,
 
   
       }
@@ -676,6 +679,7 @@
       ...mapMutations([ 'clear_order', 'input_change', 'changeSumma', 'update_zakaz_product_all_list', 'select_savat_page', 'add_savat_page', 'del_savat_page', 'updateCheckId']),
   
       async getAllSumm(kassa_data){
+        this.openBox = true;
         console.log(kassa_data);
         this.kassa_id = kassa_data.id;
         let mtime = new Date().toISOString();
@@ -1182,13 +1186,12 @@
       },
       // Savdo kassaga pul utkazmalar summasi <==
 
-
-
-
-  
-
       close(){
-        this.$emit('close')
+        this.openBox = false;
+        setTimeout(() => {
+          this.$emit('close')
+          this.openBox = true;
+        }, 500);
       },
       clw_cl(){
 
@@ -1231,71 +1234,132 @@
   }
   </script>
   
-  <style lang="scss">
-    .addProductQtyAcceptCash{
-      position: fixed;
-      display: flex;
-      justify-content: center;
-      top:0;
-      left:0;
-      width: 100%;
-      height: 100vh;
-      background: rgba(19, 19, 49, 0.65);
-      z-index: 1111;
-      animation-name: example1;
-      animation-duration: 0.4s;
-    }
-    .acceptBoxForTegirmon{
-      width:70vw;
-      max-height: 100vh;
-      overflow-y: scroll;
-      background: snow;
-      box-shadow: 3px 2px 5px rgb(129, 129, 129);
-      border-radius: 5px;
-      position: relative;
-      animation-name: example;
-      animation-duration: 0.4s;
-    }
-    @keyframes example {
-      0%   { left:0px; top:-100px; opacity: 0;}
+<style lang="scss" scoped>
+.addProductQtyAcceptCash {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(19, 19, 49, 0.65);
+  backdrop-filter: blur(10px); /* 🔹 Orqa fonni blur qiladi */
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 1111;
+}
+.openShow{
+  animation: fadeIn 0.5s ease forwards;
+}
+.closeShow{
+  animation: fadeOut 0.5s ease forwards;
+}
+
+
+.acceptBoxForTegirmon {
+  width: 70vw;
+  max-height: 100vh;
+  overflow-y: auto;
+  background: snow;
+  box-shadow: 3px 2px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  position: relative;
+  transform-origin: bottom right;
+  animation: macOpen 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.closeBoxForTegirmon{
+  width: 70vw;
+  max-height: 100vh;
+  overflow-y: auto;
+  background: snow;
+  box-shadow: 3px 2px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  position: relative;
+  transform-origin: bottom right;
+  animation: macClose 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* 🔹 MacOS uslubidagi chiqish (pastki o‘ngdan markazga kattarish) */
+@keyframes macOpen {
+  0% {
+    transform: scale(0.2) translate(40%, 40%);
+    opacity: 0;
+  }
   
-      100% { left:0px; top:0px; opacity: 1;}
-    }
-    // @keyframes example1 {
-    //   0%   {  opacity: 0;}
-  
-    //   100% {  opacity: 1;}
-    // }
-  
-    .price_all_item .borderSolder{
-      //border: 0.5px dashed #D0D3D8;
-      background-image: linear-gradient( 65.9deg,  rgba(85,228,224,1) 5.5%, rgba(75,68,224,0.74) 54.2%, rgba(64,198,238,1) 55.2%, rgba(177,36,224,1) 98.4% );
-  
-      span{
-        color:#26254a;
-        font-size: 21px;
-        font-weight: 450;
-      }
-      p{
-        color:#ffffff;
-        font-weight:bold;
-        font-size: 23px;
-        margin:0;
-        padding:0;
-      }
-    }
-    .depart_title small{
-      font-style: italic;
-      color: #0600b3;
-      font-weight:bold;
-    }
-    .summ_title{
-      font-size: 15px;
-      font-style: italic;
-      color: #3c3669;
-      font-weight: bold;
-    }
-    .summ_item_{
-      border-bottom: 1px dashed rgb(110, 110, 110);
-    }
-  </style>
+  100% {
+    transform: scale(1) translate(0, 0);
+    opacity: 1;
+  }
+}
+
+/* 🔹 Yopilish effekti uchun (agar ishlatmoqchi bo‘lsang) */
+@keyframes macClose {
+  0% {
+    transform: scale(1) translate(0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.2) translate(40%, 40%);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Qo‘shimcha bezaklar (seniki o‘z holida qoldirildi) */
+.price_all_item .borderSolder {
+  background-image: linear-gradient(
+    65.9deg,
+    rgba(85, 228, 224, 1) 5.5%,
+    rgba(75, 68, 224, 0.74) 54.2%,
+    rgba(64, 198, 238, 1) 55.2%,
+    rgba(177, 36, 224, 1) 98.4%
+  );
+
+  span {
+    color: #26254a;
+    font-size: 21px;
+    font-weight: 450;
+  }
+  p {
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 23px;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.depart_title small {
+  font-style: italic;
+  color: #0600b3;
+  font-weight: bold;
+}
+
+.summ_title {
+  font-size: 15px;
+  font-style: italic;
+  color: #3c3669;
+  font-weight: bold;
+}
+
+.summ_item_ {
+  border-bottom: 1px dashed rgb(110, 110, 110);
+}
+</style>
