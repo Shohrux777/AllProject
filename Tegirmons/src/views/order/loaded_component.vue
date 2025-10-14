@@ -74,7 +74,7 @@
                         scope="row"
                         v-for="(row, rowIndex) in order_car_item"
                         :key="rowIndex"
-              
+                        v-show="row.qty>0"
                       >
                         <th>
                           <i
@@ -311,10 +311,22 @@
           </div>
         </div>
       </div>
-      
     </div>
     <massage_box :hide="modal_status" :detail_info="modal_info"
       :m_text="$t('Failed_to_add')" @to_hide_modal="modal_status= false"/>
+
+      <mdb-modal :show="confirm" @close="confirm = false" size="sm" class="text-center" success>
+        <mdb-modal-header center :close="false">
+          <p class="heading">Yuk mashinaga ortib bo'lindimi ?</p>
+        </mdb-modal-header>
+        <mdb-modal-body>
+          <mdb-icon icon="times" size="4x" class="animated rotateIn"/>
+        </mdb-modal-body>
+        <mdb-modal-footer center>
+          <mdb-btn outline="success" @click="submitLoaded">{{$t('Yes')}}</mdb-btn>
+          <mdb-btn outline="danger" @click="confirm = false">{{$t('No')}}</mdb-btn>
+        </mdb-modal-footer>
+      </mdb-modal>
 
     <Toast ref="message"></Toast>
   </div>
@@ -328,7 +340,8 @@ import {
   mdbTbl,
   mdbTblHead,
   mdbTblBody,
-  mdbCol, mdbRow
+  mdbCol, mdbRow,
+  mdbModal, mdbModalHeader, mdbModalBody, mdbModalFooter
 } from 'mdbvue'
 export default {
     data(){
@@ -337,7 +350,7 @@ export default {
           modal_status: false,
           loading: false,
           print_loaded: false,
-
+          confirm:false,
             shafyor_name: '',
             car_nomer: '',
             phone_number: '',
@@ -359,12 +372,13 @@ export default {
             id: 0,
             active_car_item: -1,
             car_order_id: 0,
+            car_id: 0,
             order_temp_car_order: [],
             select_order_info: {
               shafyor_name: '',
               car_nomer: '',
               phone_number: ''
-            }
+            },
         }
     },
     components:{
@@ -372,7 +386,8 @@ export default {
       mdbTblHead,
       mdbTblBody,
       mdbIcon,
-      mdbCol, mdbRow
+      mdbCol, mdbRow,
+      mdbModal, mdbModalHeader, mdbModalBody, mdbModalFooter
     },
     validations: {
       shafyor_name: {  required },
@@ -403,6 +418,9 @@ props: {
   },
   methods:{
     async fetchMounted(order){
+       this.shafyor_name = '';
+      this.car_nomer = '';
+      this.phone_number = '';
       this.car_order_id = 0;
       this.active_car_item = -1;
       this.loading = true;
@@ -511,6 +529,7 @@ props: {
           this.$refs.message.warning('please_fill')
           return false;
         }
+        this.order_car_item = this.order_car_item.filter(item => item.qty > 0);
         let select_qty_sum = 0;
         select_qty_sum = this.order_car_item.reduce((sum, item) => {
           return sum + (item.qty || 0);
@@ -659,9 +678,36 @@ props: {
          this.order_car_item[i].qty_str = this.order_car_item[i].real_qty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
       }
     },
+    
     async acceptCarItems(order_data){
-      console.log(order_data);
+      this.car_id = order_data.id
+      this.confirm = true;
     },
+    async submitLoaded(){
+      try {
+        const response = await fetch(`${this.$store.state.hostname}/TegirmonOrderCar/${this.car_id}/begin`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json(); // Agar API JSON qaytarsa
+        console.log('Success:', data);
+        this.confirm = false;
+        this.fetchMounted(this.order_info)
+        this.$emit('loaded_finish')
+        // Bu yerda UI ni yangilash yoki xabar ko'rsatish mumkin
+      } catch (error) {
+        console.error('Error:', error);
+        this.confirm = false;
+      }
+    },
+
     printOrderCarItem(order_data){
       this.select_order_info = order_data;
       console.log(order_data);

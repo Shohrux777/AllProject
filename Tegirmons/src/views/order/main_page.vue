@@ -16,7 +16,6 @@
               :label="$t('select_item')"
               />
               <!-- <small style="position:absolute; top:-8px; left:10px; font-size: 11px; color: rgb(62, 62, 139);" class="font-weight-bold px-2 py-0">Поиск клиент</small> -->
-              
             </div>
           </div>
           <!-- <div class="col-3">
@@ -113,129 +112,191 @@
         </div>
         <!-- Asosiy zakazlar va kalendar chiqadi -->
         <div class="main_order">
-          <div class="order_list p-2" v-if="!add_order_status">
-            <div class="p-2 card order_list_display">
-              <div class="mb-2">
-                <div class="order_main_head d-flex">
-                  <span v-for="(item,i) in order_link" :key="i" :class="{'bg-white text-dark': active_link == i}" 
-                    @click="toggleLink(i)">
-                    {{item.name}}
-                    <mdb-badge class="ml-1" style="padding: 3px 8px; font-size: 11px;" pill :style="{ background: item.color + '!important' }">{{item.qty}}</mdb-badge>
-                  </span>
+          <div class="order_list p-1" v-if="!add_order_status">
+            <div  :class="{'order_list_display_notAdd': !user_rasxod_show, 'order_list_display_user': user_rasxod_show}">
+              <div class="p-2 card m-1">
+                <div class="mb-2">
+                  <div class="order_main_head d-flex justify-content-between">
+                    <div>
+                      <span v-for="(item,i) in order_link" :key="i" :class="{'bg-white text-dark': active_link == i}" 
+                        @click="toggleLink(i)">
+                        {{item.name}}
+                        <mdb-badge class="ml-1" style="padding: 3px 8px; font-size: 11px;" pill :style="{ background: item.color + '!important' }">{{item.qty}}</mdb-badge>
+                      </span>
+                    </div>
+                    <div>
+                      <!-- <span @click="show_checks_info = !show_checks_info">
+                        Check
+                      </span> -->
+                      <div class="main_kassa_btn_sml bg_col_info px-4" style="margin-right: 0px;" @click="func_show_checkList">
+                        <small>Платежи</small>
+                      </div>
+                    </div>
+                    
+                  </div>
+                </div>
+                <div :class="{'order_table_max_height': !user_rasxod_show, 'order_table_max_height_user': user_rasxod_show}">
+                  <table class="w-full border w-100 myTableuserSalaryList">
+                    <thead>
+                      <tr class="bg-gray-200 header py-3 info_client_header ">
+                        <th style="padding: 6px 10px;" class="text-left" width="40">№</th>
+                        <th style="padding: 6px 10px;" class="text-left">{{$t('date')}}</th>
+                        <th style="padding: 6px 10px;" class="text-left">{{$t('client_name')}}</th>
+                        <th style="padding: 6px 10px;" class="text-left">{{$t('shafyor_name')}}</th>
+                        <th style="padding: 6px 10px;" class="text-left">{{$t('car_number')}}</th>
+                        <th style="padding: 6px 10px;" class="text-left">Оплата</th>
+                        <th style="padding: 6px 10px;" class="text-left">{{$t('sum')}}</th>
+                        <th style="padding: 6px 10px;" class="text-left">{{$t('dollor')}}</th>
+                        <th style="padding: 6px 10px;" class="text-left">{{$t('items')}}</th>
+                        <th style="padding: 6px 10px;" class="text-left">Загрузка</th>
+                        <th style="padding: 6px 10px;" class="text-left">{{$t('status_')}}</th>
+                        <th style="padding: 6px 10px;" class="text-left" width="90">{{$t('Action')}}</th>
+
+                        <!-- <th style="padding: 6px 10px;" class="text-left">{{$t('user_name')}}</th> -->
+                      </tr>
+                    </thead>
+                    <tbody v-for="(order, index) in order_list" :key="order.id">
+                        <!-- Asosiy order qatori -->
+                        <tr
+                          class="cursor-pointer hover:bg-gray-100"
+                          :class="{'alert-success': order.isClosed, 'alert-warning': order.is_begin}"
+                        >
+                          <td class="p-2">{{ index+1 }}</td>
+                          <td class="p-2"><span>{{ order.pickUpDate.slice(8,10) }}-{{ order.pickUpDate.slice(5,7) }}-{{ order.pickUpDate.slice(0,4) }}</span></td>
+                          <td class="p-2"><span>{{ order.client_name }}</span></td>
+                          <td class="p-2 clickbtn" >
+                            <span v-if="order.shafyor_name">{{ order.shafyor_name }}</span>
+                            <span v-else class="text-danger" @click="toggleShafyorInfo(order, false)">???</span>
+                          </td>
+                          <td class="p-2 clickbtn">
+                            <span v-if=" order.car_nomer" >{{  order.car_nomer }}</span>
+                            <span v-else class="text-danger" @click="toggleShafyorInfo(order, false)">???</span>
+                          </td>
+                          <td class="p-2" v-if="order.isPaid" @click="payOrder(order)">
+                            <span class="paid">
+                              Оплачено
+                            </span>
+                          </td>
+                          <td class="p-2 " v-else  @click="payOrder(order)">
+                            <span v-if="order.pay_progress>0" class="nopaidprogress">
+                              <span class="load_progress_text">{{order.pay_progress}} %</span> .
+                              <small class="progress_change " :style="{ width: order.pay_progress + '%' }"></small>
+                            </span>
+                            <span v-else class="nopaid">
+                              Не оплачено
+                            </span>
+                          </td>
+                          <td class="p-2"><span>{{ order.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span></td>
+                          <td class="p-2"><span>{{ order.dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span></td>
+                          <td class="p-2" style="cursor:pointer;" 
+                            @click="toggleOrder(index)"><span>{{ order.item_list.length }}  товары</span>
+                          </td>
+                          <td class="p-2 " v-if="order.isLoaded && !order.is_loading" @click="toggleShafyorInfo(order, true)">
+                            <span class="paid">
+                              Загружен
+                            </span>
+                          </td>
+                          <td class="p-2 " v-else  @click="toggleShafyorInfo(order, true)" style="position: relative;">
+                            <span v-if="order.load_progress>0" class="nopaidprogress">
+                              <span class="load_progress_text">{{order.load_progress}} %</span> .
+                              <small :class="{'progress_change': !order.is_loading, 'progress_change_warning': order.is_loading}" :style="{ width: order.load_progress + '%' }"></small>
+                            </span>
+                            <span v-else class="nopaid">
+                              Не загружен
+                            </span>
+                            <img v-if="order.is_loading" style="position:absolute; top:-4px; left: -50px;" src="../../assets/truck.gif" height="50"  alt="">
+                          </td>
+                          <td class="p-2">
+                            <div class="order_status">
+                              <span>{{ order.paid_status }}</span>
+                            </div>
+                          </td>
+                          <td class="p-2 text-center">
+                            <i class="fas fa-pen iconPen mask waves-effect  m-0 pr-3" @click="edit_order(order)"></i>
+                            <i class="fa fa-cog iconCog mask waves-effect  m-0 " @click="printReceipt"></i>
+                          </td>
+                        </tr>
+
+                        <!-- Order items qatori -->
+                        <tr v-if="expandedOrder === index" :key="order.id + '-items'">
+                          <td colspan="12" class="px-1">
+                            <table class="w-100  item_table_shadow rounded my-2 px-2">
+                              <thead>
+                                <tr class="bg-gray-100 info_client_header1">
+                                  <th class=" text-left">{{ $t('product') }}</th>
+                                  <th class=" text-left">Оптом цена</th>
+                                  <th class=" text-left">{{$t('qty')}}</th>
+                                  <th class=" text-left">{{$t('price')}}</th>
+                                  <th class=" text-left">{{$t('sum')}}</th>
+                                  <th class=" text-left">Валюта</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr v-for="item in order.item_list" :key="item.id">
+                                  <td class="p-2">{{ item.product.name }}</td>
+                                  <td class="p-2">{{ item.sum_str }}</td>
+                                  <td class="p-2">{{ item.qty }}</td>
+                                  <td class="p-2">{{ item.price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</td>
+
+                                  <td class="p-2">{{ item.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</td>
+                                  <td class="p-2">
+                                    <span v-if="item.price_type == 1">UZS</span>
+                                    <span v-else>USD</span>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
-              <table class="w-full border w-100 myTableuserSalaryList">
+            </div>
+            <div class="user_rasxod_prixod_list p-2 card m-1 mt-2 " v-show="user_rasxod_show">
+              <table class="myTableuserSalaryList">
                 <thead>
-                  <tr class="bg-gray-200 header py-3 info_client_header ">
-                    <th style="padding: 6px 10px;" class="text-left" width="40">№</th>
-                    <th style="padding: 6px 10px;" class="text-left">{{$t('date')}}</th>
-                    <th style="padding: 6px 10px;" class="text-left">{{$t('client_name')}}</th>
-                    <th style="padding: 6px 10px;" class="text-left">{{$t('shafyor_name')}}</th>
-                    <th style="padding: 6px 10px;" class="text-left">{{$t('car_number')}}</th>
-                    <th style="padding: 6px 10px;" class="text-left">Оплата</th>
-                    <th style="padding: 6px 10px;" class="text-left">{{$t('sum')}}</th>
-                    <th style="padding: 6px 10px;" class="text-left">{{$t('dollor')}}</th>
-                    <th style="padding: 6px 10px;" class="text-left">{{$t('items')}}</th>
-                    <th style="padding: 6px 10px;" class="text-left">Загрузка</th>
-                    <th style="padding: 6px 10px;" class="text-left">{{$t('status_')}}</th>
-                    <th style="padding: 6px 10px;" class="text-left" width="90">{{$t('Action')}}</th>
+                  <tr class="header py-3 info_client_header">
+                    <th  width="40" class="text-left">№</th>
+                    <th width="40" >ID</th>
+                    <th>{{$t('client_name')}}</th>
+                    <th>Sum</th>
+                    <th>Dollor</th>
+                    <th>Kurs</th>
+                    <th>{{ $t('status') }}</th>
+                    <th>{{$t('date')}}</th>
+                    <th>{{$t('note')}}</th>
+                    <th>{{ $t('ostatka') }}</th>
+                    <th>{{ $t('ostatka') }} $</th>
+                    <th>Кассир</th>
 
-                    <!-- <th style="padding: 6px 10px;" class="text-left">{{$t('user_name')}}</th> -->
+                    <!-- <th width="80" class="text-center">{{$t('Action')}}</th> -->
                   </tr>
                 </thead>
-                <tbody v-for="(order, index) in order_list" :key="order.id">
-                    <!-- Asosiy order qatori -->
-                    <tr
-                      class="cursor-pointer hover:bg-gray-100"
-                      :class="{'alert-success': order.isClosed, 'alert-warning': order.is_begin}"
-                    >
-                      <td class="p-2">{{ index+1 }}</td>
-                      <td class="p-2"><span>{{ order.pickUpDate.slice(8,10) }}-{{ order.pickUpDate.slice(5,7) }}-{{ order.pickUpDate.slice(0,4) }}</span></td>
-                      <td class="p-2"><span>{{ order.client_name }}</span></td>
-                      <td class="p-2 clickbtn" >
-                        <span v-if="order.shafyor_name">{{ order.shafyor_name }}</span>
-                        <span v-else class="text-danger" @click="toggleShafyorInfo(order, false)">???</span>
-                      </td>
-                      <td class="p-2 clickbtn">
-                        <span v-if=" order.car_nomer" >{{  order.car_nomer }}</span>
-                        <span v-else class="text-danger" @click="toggleShafyorInfo(order, false)">???</span>
-                      </td>
-                      <td class="p-2" v-if="order.isPaid" @click="payOrder(order)">
-                        <span class="paid">
-                          Оплачено
-                        </span>
-                      </td>
-                      <td class="p-2 " v-else  @click="payOrder(order)">
-                        <span v-if="order.pay_progress>0" class="nopaidprogress">
-                          <span class="load_progress_text">{{order.pay_progress}} %</span> .
-                          <small class="progress_change " :style="{ width: order.pay_progress + '%' }"></small>
-                        </span>
-                        <span v-else class="nopaid">
-                          Не оплачено
-                        </span>
-                      </td>
-                      <td class="p-2"><span>{{ order.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span></td>
-                      <td class="p-2"><span>{{ order.dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span></td>
-                      <td class="p-2" style="cursor:pointer;" 
-                        @click="toggleOrder(index)"><span>{{ order.item_list.length }}  товары</span>
-                      </td>
-                      <td class="p-2" v-if="order.isLoaded" @click="toggleShafyorInfo(order, true)">
-                        <span class="paid">
-                          Загружен
-                        </span>
-                      </td>
-                      <td class="p-2 " v-else  @click="toggleShafyorInfo(order, true)" style="position: relative;">
-                        <span v-if="order.load_progress>0" class="nopaidprogress">
-                          <span class="load_progress_text">{{order.load_progress}} %</span> .
-                          <small :class="{'progress_change': !order.is_loading, 'progress_change_warning': order.is_loading}" :style="{ width: order.load_progress + '%' }"></small>
-                        </span>
-                        <span v-else class="nopaid">
-                          Не загружен
-                        </span>
-                        <img v-if="order.is_loading" style="position:absolute; top:-4px; left: -50px;" src="../../assets/truck.gif" height="50"  alt="">
-                      </td>
-                      <td class="p-2" >
-                        <div class="order_status">
-                          <span>{{ order.paid_status }}</span>
-                        </div>
-                      </td>
-                      <td class="p-2 text-center">
-                        <i class="fas fa-pen iconPen mask waves-effect  m-0 pr-3" @click="edit_order(order)"></i>
-                        <i class="fa fa-cog iconCog mask waves-effect  m-0 " @click="printReceipt"></i>
-                      </td>
-                    </tr>
+                <tbody>
+                  <tr v-for="(row,rowIndex) in user_rasxod_prixod_list" :key="rowIndex" @click="selectInvoiceItem(row)"  
+                  :class="{'zero_item': row.reserve_val_1 == 0 && row.reserve_val_2 == 0}" style="cursor: pointer;">
+                    <td> <small >{{rowIndex+1}}</small> </td>
+                    <td> <small >{{row.TegirmonQarzUserId}}</small></td>
+                    <td> <small >{{row.client_name}}</small></td>
+                    <td> <small >{{row.sum_str}}</small></td>
+                    <td> <small >{{row.dollor_string}}</small></td>
+                    <td> <small >{{row.kurs.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small></td>
 
-                    <!-- Order items qatori -->
-                    <tr v-if="expandedOrder === index" :key="order.id + '-items'">
-                      <td colspan="12" class="px-1">
-                        <table class="w-100  item_table_shadow rounded my-2 px-2">
-                          <thead>
-                            <tr class="bg-gray-100 info_client_header1">
-                              <th class=" text-left">{{ $t('product') }}</th>
-                              <th class=" text-left">Оптом цена</th>
-                              <th class=" text-left">{{$t('qty')}}</th>
-                              <th class=" text-left">{{$t('price')}}</th>
-                              <th class=" text-left">{{$t('sum')}}</th>
-                              <th class=" text-left">Валюта</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr v-for="item in order.item_list" :key="item.id">
-                              <td class="p-2">{{ item.product.name }}</td>
-                              <td class="p-2">{{ item.sum_str }}</td>
-                              <td class="p-2">{{ item.qty }}</td>
-                              <td class="p-2">{{ item.price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</td>
+                    <td v-if="row.status_rasxod == 1"> <span class="status_btn_bg px-2 text-white rounded" style="padding: 1px 6px; font-size: 10px;">Получыть </span> </td>  
+                    <td  v-else-if="row.status_rasxod == 0"> <span class="bg-danger px-2 text-white rounded" style="padding: 2px 10px; font-size: 10px;">Расход</span></td>
+                    
+                    <td>
+                      <small v-if="row.created_date">{{row.created_date.slice(8,10) + '-' + row.created_date.slice(5,7) + '-' + row.created_date.slice(0,4)}}</small> 
+                      <small v-if="row.created_date" class="ml-2">{{row.created_date.slice(11,16)}}</small>
+                    </td>
+                    <td> <small >{{row.note}}</small></td>
+                    <td> <small :class="{'text-danger': row.reserve_val_1>0}" >{{row.reserve_val_1.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small></td>
+                    <td> <small :class="{'text-danger': row.reserve_val_2>0}" >{{row.reserve_val_2.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small></td>
 
-                              <td class="p-2">{{ item.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</td>
-                              <td class="p-2">
-                                <span v-if="item.price_type == 1">UZS</span>
-                                <span v-else>USD</span>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
+                    <td> <small >{{row.addiotionala_information}}</small></td>
+
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -253,30 +314,30 @@
               class="card mt-2 ml-2"/>
             <div class="order_products mt-3 ml-2 ">
                 <div class="px-0 userSalaryTable" :class="user_id ? 'userSalaryTableClient' : 'userSalaryTable'">
-                <loader-table v-if="loading"/>
-                <table v-else class="myTableuserSalaryList">
-                  <thead>
-                    <tr class="header py-3 info_client_header">
-                      <th  width="30" class="text-left">№</th>
-                      <th width="150">{{$t('product')}}</th>
-                      <th>{{$t('qty')}}</th>
-                      <th>{{$t('sklad')}}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(row,rowIndex) in order_products_list" :key="rowIndex"
-                    :class="{'zero_item': row.stockQty <= 0}">
-                      <td> <small >{{rowIndex+1}}</small> </td>
-                      <td> <small >{{row.productName}}</small> </td>
-                      <td> <small >{{row.totalQty}} {{ row.unitMeasurmentName }}</small> </td>
-                      <td> 
-                        <small v-if="row.stockQty <= 0">Нет склад</small>
-                        <small v-else-if="row.stockQty < row.totalQty" class="text-danger">{{row.stockQty}} {{ row.unitMeasurmentName }}</small>
-                        <small v-else class="text-success">{{row.stockQty}} {{ row.unitMeasurmentName }}</small>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                  <loader-table v-if="loading"/>
+                  <table v-else class="myTableuserSalaryList bg-white">
+                    <thead>
+                      <tr class="header py-3 info_client_header">
+                        <th width="30" class="text-left">№</th>
+                        <th width="150">{{$t('product')}}</th>
+                        <th>{{$t('qty')}}</th>
+                        <th>{{$t('sklad')}}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(row,rowIndex) in order_products_list" :key="rowIndex"
+                      :class="{'zero_item': row.stockQty <= 0}">
+                        <td> <small >{{rowIndex+1}}</small> </td>
+                        <td> <small >{{row.productName}}</small> </td>
+                        <td> <small >{{row.totalQty}} {{ row.unitMeasurmentName }}</small> </td>
+                        <td>
+                          <small v-if="row.stockQty <= 0">Нет склад</small>
+                          <small v-else-if="row.stockQty < row.totalQty" class="text-danger">{{row.stockQty}} {{ row.unitMeasurmentName }}</small>
+                          <small v-else class="text-success">{{row.stockQty}} {{ row.unitMeasurmentName }}</small>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
               </div>
             </div>
           </div>
@@ -302,7 +363,7 @@
         </template>
       </modal-train>
 
-    <modal-train  :show="rasxod_show" headerbackColor="#fc4640"  titlecolor="black" :title="$t('rasxod')"
+      <modal-train  :show="rasxod_show" headerbackColor="#fc4640"  titlecolor="black" :title="$t('rasxod')"
         @close="rasxod_show = false" width="35%">
         <template v-slot:body>
           <rasxod @close="closeRasxod" :client_info="client_info"  ref="rasxodWorkerSum">
@@ -334,9 +395,18 @@
       <modal-train  :show="show_shafyor_info" headerbackColor="#369387"  titlecolor="black" title="Инфо водителя" 
         @close="show_shafyor_info = false" :width="loaded_width+'%'">
           <template v-slot:body>
-            <Loaded_component  :order_info="select_order" @close="close_loaded" ref="loadedComp" :loaded_status="loaded_status"/>
+            <Loaded_component  :order_info="select_order" @close="close_loaded" @loaded_finish="loaded_finish_refresh" ref="loadedComp" :loaded_status="loaded_status"/>
           </template>
       </modal-train>
+
+      <modal-train  :show="show_checks_info" headerbackColor="#64B0FB"  titlecolor="black" title="Оптовые платежи " 
+        @close="show_checks_info = false" width="70%">
+          <template v-slot:body>
+            <check_info :choosen_day="choosen_day" ref="order_checks_info"/>
+          </template>
+      </modal-train>
+
+
        <pay v-show="payshow" :client_info="pay_client_info" @close="closePay" 
          />
         <!-- @print="printChek()" -->
@@ -367,6 +437,7 @@ import info_rasxod from './rasxod_info.vue'
 import order_Add from './order_Add.vue';
 import Loaded_component from './loaded_component.vue';
 import Pay from './pay.vue';
+import check_info from './check_info.vue';
 
 
 export default {
@@ -385,6 +456,7 @@ data(){
       rasxod_show: false,
       pul_olib_qolish: false,
       user_rasxod_prixod_list: [],
+      user_rasxod_show: false,
 
       client_info_show: false,
       client_info: {},
@@ -465,6 +537,7 @@ data(){
       ],
       payshow: false,
       old_paid_not_deliver_cassa: [],
+      show_checks_info: false,
     }
   },
   components: {
@@ -485,6 +558,7 @@ data(){
     order_Add,
     Loaded_component,
     Pay,
+    check_info,
   },
 //   validations: {
       
@@ -521,6 +595,10 @@ data(){
   methods: {
     ...mapActions(['fetch_user',]),
     ...mapMutations(['check_invoice_zaxira']),
+    func_show_checkList(){
+      this.$refs.order_checks_info.func_mounted();
+      this.show_checks_info = !this.show_checks_info;
+    },
     printReceipt() {
       console.log('printed')
       
@@ -549,6 +627,11 @@ data(){
         await this.fetchOrderPaidNotCassa();
         await this.fetchAllOrderStatusNumber();
       }
+    },
+    async loaded_finish_refresh(){
+        await this.fetchAllOrderList();
+        await this.fetchAllOrderProductsList();
+        await this.fetchAllOrderStatusNumber();
     },
     toggleOrder(index) {
       this.expandedOrder = this.expandedOrder === index ? null : index;
@@ -756,11 +839,13 @@ data(){
       }
     },
     async fetchUserPrixodRasxod(){
+      this.user_rasxod_show = true;
       try{
-        const response = await fetch(this.$store.state.hostname + "/TegirmonQarzUserRasxod/getPaginationUserId?page=0&size=200&userid=" + this.client_info.id);
+        const response = await fetch(this.$store.state.hostname + "/TegirmonOrderClientRasxod/getPaginationUserId?page=0&size=100&userid=" + this.client_info.id);
         const data = await response.json();
         if(response.status == 201 || response.status == 200)
         {
+          console.log('data.items_list user_info', data.items_list)
           this.user_rasxod_prixod_list = data.items_list;
           return true;
         }
@@ -829,10 +914,11 @@ data(){
       if(option.addiotionala_information){
         this.born_date = option.addiotionala_information.slice(8,10) + '-' + option.addiotionala_information.slice(5,7) + '-' + option.addiotionala_information.slice(0,4);
       }
-      // await this.fetchUserPrixodRasxod();
+      await this.fetchUserPrixodRasxod();
       await this.fetchAllOrderList();
       await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
+      
       
     },
     async selectClientPassport(option){
@@ -845,7 +931,7 @@ data(){
       if(option.addiotionala_information){
         this.born_date = option.addiotionala_information.slice(8,10) + '-' + option.addiotionala_information.slice(5,7) + '-' + option.addiotionala_information.slice(0,4);
       }
-      // await this.fetchUserPrixodRasxod();
+      await this.fetchUserPrixodRasxod();
       await this.fetchAllOrderList();
       await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
@@ -863,7 +949,7 @@ data(){
       if(option.addiotionala_information){
         this.born_date = option.addiotionala_information.slice(8,10) + '-' + option.addiotionala_information.slice(5,7) + '-' + option.addiotionala_information.slice(0,4);
       }
-      // await this.fetchUserPrixodRasxod();
+      await this.fetchUserPrixodRasxod();
       await this.fetchAllOrderList();
       await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
@@ -881,11 +967,13 @@ data(){
         this.born_date = option.addiotionala_information.slice(8,10) + '-' + option.addiotionala_information.slice(5,7) + '-' + option.addiotionala_information.slice(0,4);
       }
       this.dolg_user_show = false;
-      // await this.fetchUserPrixodRasxod();
+      await this.fetchUserPrixodRasxod();
       await this.fetchAllOrderList();
       await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
     },
+
+
     async edit_order(order){
       this.order_id = order.id;
       this.add_order_status = true;
@@ -997,20 +1085,23 @@ data(){
   font-size: 13px;
 }
 .userSalaryTable{
-  max-height: 480px;
+  height: 580px;
   overflow: hidden;
   overflow-y: scroll;
   scrollbar-width: none;
-  border-radius: 3px;
+  border-radius: 5px;
   padding-bottom: 5px;
+  background: #fffcf7;
+
   // border: 1px solid #757575;
 }
 .userSalaryTableClient{
-  max-height: 400px;
+  height: 500px;
   overflow: hidden;
   overflow-y: scroll;
   scrollbar-width: none;
-  border-radius: 3px;
+  border-radius: 5px;
+  background: #fffcf7;
   // border: 1px solid #757575;
 }
 .myTableuserSalaryList {
@@ -1018,6 +1109,7 @@ data(){
   table-layout:fixed;
   width: 100%;
   overflow: hidden;
+  overflow-y: scroll;
   // border: 1px solid #ddd;
   font-size: 16px;
   max-height:80px; overflow-x:auto
@@ -1287,6 +1379,29 @@ data(){
   overflow: hidden;
   overflow-y: scroll;
   max-height: calc(100vh - 130px);
+}
+.order_list_display_notAdd{
+  overflow: hidden;
+  height: calc(100vh - 130px);
+}
+.order_list_display_user{
+  overflow: hidden;
+  height: calc(100vh - 530px);
+}
+.order_table_max_height{
+  overflow: hidden;
+  overflow-y: scroll;
+  max-height: calc(100vh - 130px);
+}
+.order_table_max_height_user{
+  overflow: hidden;
+  overflow-y: scroll;
+  max-height: calc(100vh - 600px);
+}
+.user_rasxod_prixod_list{
+  overflow: hidden;
+  overflow-y: scroll;
+  height: 330px;
 }
 .order_main_head{
   border-radius: 5px;

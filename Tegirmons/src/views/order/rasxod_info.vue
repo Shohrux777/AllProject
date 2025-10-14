@@ -11,7 +11,7 @@
         <p class="p-0 m-0 mt-2 " style="font-size: 13px;">{{$t('worker')}}</p>
       </div>
       <div class="col-8 ">
-        <p class="p-0 m-0 mt-2 text-right" style="font-size: 14px;">{{option.worker_name}}</p>
+        <p class="p-0 m-0 mt-2 text-right" style="font-size: 14px;">{{option.client_name}}</p>
       </div>
     </div>
     <div class="row mt-1 border-bottom">

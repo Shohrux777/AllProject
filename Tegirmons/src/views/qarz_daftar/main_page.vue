@@ -146,7 +146,7 @@
             </thead>
             <tbody>
               <tr v-for="(row,rowIndex) in user_rasxod_prixod_list" :key="rowIndex" @click="selectInvoiceItem(row)" 
-              :class="{'zero_item': row.sum == 0 && row.dollor == 0}">
+              :class="{'zero_item': row.reserve_val_1 == 0 && row.reserve_val_2 == 0}">
                 <td> <small >{{rowIndex+1}}</small> </td>
                 <td> <small >{{row.TegirmonQarzUserId}}</small> </td>
                 <td> <small >{{row.worker_name}}</small> </td>

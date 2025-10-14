@@ -20,7 +20,7 @@ export default
   computed:{
      layout(){
         return (this.$route.meta.layout || 'empty') + '-layout'
-    }
+      }
   },
   data ()
   {
@@ -32,7 +32,7 @@ export default
   components:{
     LoginLayout,EmptyLayout,
     MainLayout, NavbarLayout,
-    bigtaroziLayout
+    bigtaroziLayout,
   },
   // methods:{
   //     ...mapActions(['fetchUsers']),

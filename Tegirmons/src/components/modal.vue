@@ -1,5 +1,5 @@
 <template>
-  <teleport to="body">
+  <div to="body">
     <div class="modal_template text-dark" style="z-index:9999999;">
       <transition name="fade" appear>
         <div class="modal-overlay" @click="close" v-if="show"></div>
@@ -44,7 +44,7 @@
         </div>
       </transition>
     </div>
-  </teleport>
+  </div>
 </template>
 
 
