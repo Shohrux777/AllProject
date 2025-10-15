@@ -163,6 +163,14 @@
             {{item.status_name}}
           </small>
         </div>
+        <div class="summ_item_ p-1 d-flex justify-content-between">
+          <small style="font-size: 13px;">
+            {{$t('date')}}
+          </small>
+          <small class="summ_title" style="font-size: 13px;">
+            {{item.create_date}}
+          </small>
+        </div>
         <div class="summ_item_ p-1 d-flex justify-content-end" v-if="!item.isInCashbox">
           <mdb-btn color="success" style="font-size:9px; padding: 6px 0; width:100px;"  @click="getMoneyToCash(item)" class="m-0  mt-1" > {{$t('accept')}}</mdb-btn>
         </div>

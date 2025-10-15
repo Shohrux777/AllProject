@@ -459,7 +459,7 @@
                     {{$t('cash')}}
                   </small>
                   <small class="summ_title">
-                    {{order_cash_str}}
+                    {{order_cash_str.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
                   </small>
                 </div>
               </div>
@@ -469,7 +469,7 @@
                     {{$t('dollor')}}
                   </small>
                   <small class="summ_title">
-                    {{order_dollor_str}} $
+                    {{order_dollor_str.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} $
                   </small>
                 </div>
               </div>
@@ -740,6 +740,7 @@
         await this.main_kassaga_utkazish(this.kassa_id);
 
         await this.savdo_kassaga_utkazish(this.kassa_id);
+
         await this.fetch_order_all_naqd(this.kassa_id);
 
 
@@ -764,8 +765,8 @@
           console.log(res_data)
             if(res.status == 200 || res.status == 201){
               
-              this.order_cash_str = res_data[0].cash.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
-              this.order_dollor_str = res_data[0].dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+              this.order_cash_str = res_data[0].cash;
+              this.order_dollor_str = res_data[0].dollor;
               this.order_summ = res_data[0].summ;
 
               this.order_humo_str = res_data[0].humo;
@@ -777,15 +778,15 @@
               this.order_uzumpay_str = res_data[0].uzumpay;
               
               this.another_summa_order += res_data[0].humo + res_data[0].uz_card + res_data[0].click + 
-              res_data[0].payme + res_data[0].paynet + res_data[0].uzumpay;
+              res_data[0].payme + res_data[0].paynet + res_data[0].uzumpay ;
             }
             // this.qayt_naqd = res_data[0].srogi_otganlar_uchun_rasxod.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
             // this.qayt_dollor = res_data[0].salary.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
             
             // this.sell = res_data[0].for_buy_tovar_rasxod.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')
         }
-        catch{
-          console.log('2')
+        catch(error){
+          console.log('order not hisob', error)
           this.$refs.alert.error("Serverda uzilish bor. Qayta urinib ko'ring !");
           return false;
         }
@@ -820,7 +821,7 @@
               this.another_summa += this.another_summa_order;
             }
         }
-        catch{
+        catch(error){
           console.log('2')
           this.$refs.alert.error("Serverda uzilish bor. Qayta urinib ko'ring !");
           return false;

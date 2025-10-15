@@ -132,7 +132,7 @@ export default {
 }
 
 .slide-enter {
-  opacity: 0;
+  opacity: 0.3;
   transform: translate(60%, 60%) scale(0.2) rotate(2deg);
   filter: blur(8px);
 }

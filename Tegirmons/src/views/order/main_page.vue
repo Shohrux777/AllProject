@@ -76,7 +76,7 @@
           <div class="w-100 p-2">
             <div class="row equal-height px-3" >
               <div class="col-2 p-1 balance" style="position: relative;">
-                <div class="card py-1 pt-2 px-2 alert-success ">
+                <div class="card py-1 pt-2 px-2 main_kassa_poluchit ">
                   <span style="font-size: 13.5px;">Balance UZS</span>
                   <span class="text-right" style="font-size: 19px;">{{client_info.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
                 </div>
@@ -92,9 +92,9 @@
                 </div>
               </div>
               <div class="col-2 p-1 balance">
-                <div class="card py-1 pt-2 px-2 alert-warning">
+                <div class="card py-1 pt-2 px-2 main_kassa_bg">
                   <span style="font-size: 13.5px;">Balance USD</span>
-                  <span class="text-right" style="font-size: 19px;">{{client_info.dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} </span>
+                  <span class="text-right" style="font-size: 19px;">{{client_info.dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}💲</span>
                 </div>
                 <div style="position: absolute; bottom: -50px;" class="balance_btn w-100">
                   <div class="d-flex justify-content-end px-2">
@@ -118,7 +118,7 @@
                 <div class="mb-2">
                   <div class="order_main_head d-flex justify-content-between">
                     <div>
-                      <span v-for="(item,i) in order_link" :key="i" :class="{'bg-white text-dark': active_link == i}" 
+                      <span v-for="(item,i) in order_link" :key="i" :class="{'bg-active_link': active_link == i}" 
                         @click="toggleLink(i)">
                         {{item.name}}
                         <mdb-badge class="ml-1" style="padding: 3px 8px; font-size: 11px;" pill :style="{ background: item.color + '!important' }">{{item.qty}}</mdb-badge>
@@ -128,8 +128,13 @@
                       <!-- <span @click="show_checks_info = !show_checks_info">
                         Check
                       </span> -->
-                      <div class="main_kassa_btn_sml bg_col_info px-4" style="margin-right: 0px;" @click="func_show_checkList">
-                        <small>Платежи</small>
+                      <div class="d-flex">
+                        <div class="main_kassa_btn_sml bg_col_info px-4" style="margin-right: 0px;" @click="func_show_checkList">
+                          <small>🪙 Платежи</small>
+                        </div>
+                        <div class="main_kassa_btn_sml bg_col_blue px-4 ml-2" style="margin-right: 0px;" @click="func_show_cloaded">
+                          <small>🚚 Статистика погрузки</small>
+                        </div>
                       </div>
                     </div>
                     
@@ -207,7 +212,7 @@
                             <img v-if="order.is_loading" style="position:absolute; top:-4px; left: -50px;" src="../../assets/truck.gif" height="50"  alt="">
                           </td>
                           <td class="p-2">
-                            <div class="order_status">
+                            <div class="order_status" :title="order.paid_status">
                               <span>{{ order.paid_status }}</span>
                             </div>
                           </td>
@@ -254,7 +259,7 @@
               </div>
             </div>
             <div class="user_rasxod_prixod_list p-2 card m-1 mt-2 " v-show="user_rasxod_show">
-              <table class="myTableuserSalaryList">
+              <table class="myTableuserSalaryList myTableorderClientInfo">
                 <thead>
                   <tr class="header py-3 info_client_header">
                     <th  width="40" class="text-left">№</th>
@@ -265,7 +270,7 @@
                     <th>Kurs</th>
                     <th>{{ $t('status') }}</th>
                     <th>{{$t('date')}}</th>
-                    <th>{{$t('note')}}</th>
+                    <th width="200">{{$t('note')}}</th>
                     <th>{{ $t('ostatka') }}</th>
                     <th>{{ $t('ostatka') }} $</th>
                     <th>Кассир</th>
@@ -285,12 +290,12 @@
 
                     <td v-if="row.status_rasxod == 1"> <span class="status_btn_bg px-2 text-white rounded" style="padding: 1px 6px; font-size: 10px;">Получыть </span> </td>  
                     <td  v-else-if="row.status_rasxod == 0"> <span class="bg-danger px-2 text-white rounded" style="padding: 2px 10px; font-size: 10px;">Расход</span></td>
-                    
+
                     <td>
                       <small v-if="row.created_date">{{row.created_date.slice(8,10) + '-' + row.created_date.slice(5,7) + '-' + row.created_date.slice(0,4)}}</small> 
                       <small v-if="row.created_date" class="ml-2">{{row.created_date.slice(11,16)}}</small>
                     </td>
-                    <td> <small >{{row.note}}</small></td>
+                    <td class="truncate-text" :title="row.note"> <small  >{{row.note}}</small></td>
                     <td> <small :class="{'text-danger': row.reserve_val_1>0}" >{{row.reserve_val_1.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small></td>
                     <td> <small :class="{'text-danger': row.reserve_val_2>0}" >{{row.reserve_val_2.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small></td>
 
@@ -353,7 +358,7 @@
       <webcam  v-show="showPhoto" @getPhotosub="takePhoto"/>
 
       <!-- <hr class="mt-4 mb-3 gradint"/> -->
-        <!-- <loaderFixed v-if="loading"/> -->
+      <!-- <loaderFixed v-if="loading"/> -->
     </div>
      <modal-train  :show="dolg_user_show" headerbackColor="#369387"  titlecolor="black" title="Добавить клиент" 
         @close="dolg_user_show = false" width="75%">
@@ -406,9 +411,16 @@
           </template>
       </modal-train>
 
+      <modal-train  :show="show_load_info" headerbackColor="#64B0FB"  titlecolor="black" title="🚚 Статистика погрузки" 
+        @close="show_load_info = false" width="70%">
+          <template v-slot:body>
+            <load_info :choosen_day="choosen_day" ref="order_load_info"/>
+          </template>
+      </modal-train>
+
 
        <pay v-show="payshow" :client_info="pay_client_info" @close="closePay" 
-         />
+        />
         <!-- @print="printChek()" -->
       
       <Toast ref="message"></Toast>
@@ -438,6 +450,7 @@ import order_Add from './order_Add.vue';
 import Loaded_component from './loaded_component.vue';
 import Pay from './pay.vue';
 import check_info from './check_info.vue';
+import load_info from './load_info.vue';
 
 
 export default {
@@ -538,6 +551,8 @@ data(){
       payshow: false,
       old_paid_not_deliver_cassa: [],
       show_checks_info: false,
+      show_load_info: false,
+
     }
   },
   components: {
@@ -559,6 +574,7 @@ data(){
     Loaded_component,
     Pay,
     check_info,
+    load_info
   },
 //   validations: {
       
@@ -598,6 +614,10 @@ data(){
     func_show_checkList(){
       this.$refs.order_checks_info.func_mounted();
       this.show_checks_info = !this.show_checks_info;
+    },
+    func_show_cloaded(){
+      this.$refs.order_load_info.func_mounted();
+      this.show_load_info = !this.show_load_info;
     },
     printReceipt() {
       console.log('printed')
@@ -1085,23 +1105,24 @@ data(){
   font-size: 13px;
 }
 .userSalaryTable{
-  height: 580px;
+  min-height: calc(100vh - 700px);
+  max-height: calc(100vh - 450px);
   overflow: hidden;
   overflow-y: scroll;
   scrollbar-width: none;
   border-radius: 5px;
   padding-bottom: 5px;
-  background: #fffcf7;
+  background: #f7fcff;
 
   // border: 1px solid #757575;
 }
 .userSalaryTableClient{
-  height: 500px;
+  height: calc(100vh - 530px);
   overflow: hidden;
   overflow-y: scroll;
   scrollbar-width: none;
   border-radius: 5px;
-  background: #fffcf7;
+  background: #f7fcff;
   // border: 1px solid #757575;
 }
 .myTableuserSalaryList {
@@ -1134,7 +1155,11 @@ data(){
   padding: 5px 10px;
 
 }
-
+.myTableorderClientInfo td {
+  text-align: left;
+  padding: 6px 10px;
+  // border-right: 1px solid rgb(219, 219, 219);
+}
 .myTableuserSalaryList tr {
   border-bottom: 1px solid rgb(219, 219, 219);
   &:hover{
@@ -1401,12 +1426,12 @@ data(){
 .user_rasxod_prixod_list{
   overflow: hidden;
   overflow-y: scroll;
-  height: 330px;
+  height: 320px;
 }
 .order_main_head{
   border-radius: 5px;
   padding: 3px;
-  background: #e7e7e7;
+  background: #a3cfeb;
   display: inline-block;
   span{
     color: #3a4b52;
@@ -1415,10 +1440,24 @@ data(){
     display: inline-block;
     font-size: 13px;
     padding: 5px 13px;
+    margin-left: 4px;
+
+    background: rgb(255, 255, 255);
     &:hover{
-      background: white;
+        background-image: radial-gradient( circle 502px at 2.7% 23.7%,  rgb(198, 129, 255) 0%, rgb(91, 255, 228) 99.6% ) !important;
+      color: white !important;
     }
   }
+}
+.bg-active_link{
+  background-image: radial-gradient( circle 502px at 2.7% 23.7%,  rgb(172, 73, 253) 0%, rgba(33,250,214,1) 99.6% ) !important;
+  color: white !important;
+}
+.main_kassa_bg{
+  background-image: linear-gradient( 90deg,  rgba(255,157,129,1) 24.3%, rgb(255, 110, 78) 78.3% );
+}
+.main_kassa_poluchit{
+  background-image: linear-gradient( 90deg,  rgb(117, 207, 165) 24.3%, rgb(93, 236, 177) 78.3% );
 }
 .paid{
   width: 90%;
@@ -1528,10 +1567,18 @@ data(){
   white-space: nowrap;      /* yangi qatorga tushmasin */
   overflow: hidden;         /* tashqarisini yashir */
   text-overflow: ellipsis;  /* uch nuqta qo'y */
+  cursor: pointer;
 }
 .order_products{
   border-radius: 3px;
   width: 350px;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.truncate-text {
+  max-width: 200px;       /* Matn sig‘adigan kenglik */
+  white-space: nowrap;     /* Bir qator bo‘lib tursin */
+  overflow: hidden;        /* Sig‘magan qismi yashiring */
+  text-overflow: ellipsis; /* … chiqsin */
+  cursor: pointer;
 }
 </style>
