@@ -443,7 +443,7 @@
   
           <div class="mainSellSumms container-fluid">
             <div class="row">
-              <div class="col-4 px-1">
+              <!-- <div class="col-4 px-1">
                 <div class="summ_item_ p-2 d-flex justify-content-between">
                   <small style="font-size: 13px;">
                     Oбщий савдо суммаси
@@ -452,14 +452,14 @@
                     {{order_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
                   </small>
                 </div>
-              </div>
+              </div> -->
               <div class="col-4 px-1">
                 <div class="summ_item_ p-2 d-flex justify-content-between">
                   <small style="font-size: 13px;">
                     {{$t('cash')}}
                   </small>
                   <small class="summ_title">
-                    {{order_cash_str.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                    {{(order_cash_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
                   </small>
                 </div>
               </div>
@@ -469,7 +469,7 @@
                     {{$t('dollor')}}
                   </small>
                   <small class="summ_title">
-                    {{order_dollor_str.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} $
+                    {{(order_dollor_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} $
                   </small>
                 </div>
               </div>
@@ -479,7 +479,7 @@
                     UzCard
                   </small>
                   <small class="summ_title">
-                    {{order_uz_card_str.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                    {{(order_uz_card_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
                   </small>
                 </div>
               </div>
@@ -489,7 +489,7 @@
                     Humo
                   </small>
                   <small class="summ_title">
-                    {{order_humo_str.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                    {{(order_humo_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
                   </small>
                 </div>
               </div>
@@ -500,7 +500,7 @@
                     Payme
                   </small>
                   <small class="summ_title">
-                    {{order_payme_str.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                    {{(order_payme_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
                   </small>
                 </div>
               </div>
@@ -510,7 +510,7 @@
                     Click
                   </small>
                   <small class="summ_title">
-                    {{order_click_str.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                    {{(order_click_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
                   </small>
                 </div>
               </div>
@@ -520,7 +520,7 @@
                     Paynet
                   </small>
                   <small class="summ_title">
-                    {{order_paynet_str.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                    {{(order_paynet_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
                   </small>
                 </div>
               </div>
@@ -530,7 +530,7 @@
                     UzumPay
                   </small>
                   <small class="summ_title">
-                    {{order_uzumpay_str.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                    {{(order_uzumpay_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
                   </small>
                 </div>
               </div>
@@ -541,7 +541,7 @@
                     {{$t('skidka')}}
                   </small>
                   <small class="summ_title">
-                    {{order_skidka_str.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                    {{(order_skidka_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
                   </small>
                 </div>
               </div>
@@ -672,7 +672,6 @@
     },
     computed:{
       ...mapGetters(['allOrderList', 'get_all_summa', 'get_m_categoryIdProduct', 'get_zakaz_product_all_list','get_page_savat', 'get_product_qty', 'AllSummString']),
-  
     }, 
     methods: {
       ...mapActions([  'fetchCategoryIdProduct', 'fetchProductSearchByName']),
@@ -757,7 +756,6 @@
         this.another_summa_order = 0;
         let b_data = this.Start_time + 'T00:00:35.000Z';
         let e_data = this.End_time + 'T23:59:59.000Z';
-
         try{
           const res = await fetch(this.$store.state.hostname + '/TegirmonOrderCheck/getKassaCurrentRealTegirmonOrderKassaIdNotHisob?begin_date=' +  b_data + '&end_date=' + e_data + '&kassa_id=' + kassa_id);
           const res_data = await res.json();
@@ -1229,6 +1227,18 @@
         this.all_total_summa = 0;
         this.all_cash_summa = 0;
         this.all_dollor_summa = 0;
+        this.order_cash_str  = 0;
+        this.order_dollor_str  = 0;
+        this.order_summ  = 0;
+        this.order_humo_str  = 0;
+        this.order_uz_card_str  = 0;
+        this.order_click_str  = 0;
+        this.order_skidka_str  = 0;
+        this.order_payme_str  = 0;
+        this.order_paynet_str  = 0;
+        this.order_uzumpay_str  = 0;
+        this.openBox = true;
+        
       },
       
     },

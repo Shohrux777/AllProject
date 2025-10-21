@@ -54,7 +54,7 @@
                   <small>Список должников</small>
                 </div>
               </div> -->
-              <div style="width:130px" class="mr-2" @click="add_order_status = !add_order_status; order_id = 0;">
+              <div style="width:130px" class="mr-2" @click="openOrderAdd">
                 <div class="main_kassa_btn m-0 bg_col_blue">
                   <small>Добавить заказ</small>
                 </div>
@@ -75,37 +75,57 @@
         <div class=" px-2" v-if="client_info.fio">
           <div class="w-100 p-2">
             <div class="row equal-height px-3" >
-              <div class="col-2 p-1 balance" style="position: relative;">
-                <div class="card py-1 pt-2 px-2 main_kassa_poluchit ">
+              <div class="col-2 p-1 " >
+                <div class="card py-1 pt-2 px-2 main_kassa_poluchit balance" >
                   <span style="font-size: 13.5px;">Balance UZS</span>
                   <span class="text-right" style="font-size: 19px;">{{client_info.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
-                </div>
-                <div style="position: absolute; bottom: -50px;" class="balance_btn w-100">
-                  <div class="d-flex justify-content-end px-2">
-                    <div class="main_kassa_btn_sml bg_col_blue" @click="pul_olib_qolish = !pul_olib_qolish">
-                      <small>Получать деньги</small>
-                    </div>
-                    <div class="main_kassa_btn_sml bg_col_red px-4" @click="rasxod_show = !rasxod_show">
-                      <small>Расходъ</small>
+                  <div  class="balance_btn w-100">
+                    <div class="d-flex justify-content-end px-2">
+                      <div class="main_kassa_btn_sml bg_col_blue" @click="pul_olib_qolish = !pul_olib_qolish">
+                        <small>Получать деньги</small>
+                      </div>
+                      <div class="main_kassa_btn_sml bg_col_red px-4" @click="rasxod_show = !rasxod_show">
+                        <small>Расходъ</small>
+                      </div>
                     </div>
                   </div>
                 </div>
+                
               </div>
-              <div class="col-2 p-1 balance">
-                <div class="card py-1 pt-2 px-2 main_kassa_bg">
+              
+              <div class="col-2 p-1 ">
+                <div class="card py-1 pt-2 px-2 main_kassa_bg balance">
                   <span style="font-size: 13.5px;">Balance USD</span>
                   <span class="text-right" style="font-size: 19px;">{{client_info.dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}💲</span>
-                </div>
-                <div style="position: absolute; bottom: -50px;" class="balance_btn w-100">
-                  <div class="d-flex justify-content-end px-2">
-                    <div class="main_kassa_btn_sml bg_col_blue" @click="pul_olib_qolish = !pul_olib_qolish">
-                      <small>Получать деньги</small>
-                    </div>
-                    <div class="main_kassa_btn_sml bg_col_red px-4" @click="rasxod_show = !rasxod_show">
-                      <small>Расходъ</small>
+                  
+                  <div  class="balance_btn w-100">
+                    <div class="d-flex justify-content-end px-2">
+                      <div class="main_kassa_btn_sml bg_col_blue" @click="pul_olib_qolish = !pul_olib_qolish">
+                        <small>Получать деньги</small>
+                      </div>
+                      <div class="main_kassa_btn_sml bg_col_red px-4" @click="rasxod_show = !rasxod_show">
+                        <small>Расходъ</small>
+                      </div>
                     </div>
                   </div>
                 </div>
+                
+              </div>
+
+              <div class="col-2 p-1 " v-for="(item, index) in clientProducts" :key="index" >
+                <div class="card py-1 pt-2 px-2 main_kassa_bg balance" :style="{'background': item.product.shitrix_code}">
+                  <span style="font-size: 13.5px;">{{item.product.name}}</span>
+                  <span class="text-right" style="font-size: 19px;">{{item.qty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} {{ item.product.unitMeasurment.name }}</span>
+                  
+                  <div class="balance_btn w-100">
+                    <div class="d-flex justify-content-end px-2">
+                      <div class="main_kassa_btn_sml bg_col_blue" @click="sendZaxiraProduct(item)">
+                        <small>↩️ Передать из захира</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
               </div>
             </div>
           </div>
@@ -141,14 +161,13 @@
                   </div>
                 </div>
                 <div :class="{'order_table_max_height': !user_rasxod_show, 'order_table_max_height_user': user_rasxod_show}">
-                  <table class="w-full border w-100 myTableuserSalaryList">
+                  <table class="w-full border w-100 myTableuserSalaryList ">
                     <thead>
                       <tr class="bg-gray-200 header py-3 info_client_header ">
                         <th style="padding: 6px 10px;" class="text-left" width="40">№</th>
                         <th style="padding: 6px 10px;" class="text-left">{{$t('date')}}</th>
                         <th style="padding: 6px 10px;" class="text-left">{{$t('client_name')}}</th>
-                        <th style="padding: 6px 10px;" class="text-left">{{$t('shafyor_name')}}</th>
-                        <th style="padding: 6px 10px;" class="text-left">{{$t('car_number')}}</th>
+                        <th style="padding: 6px 10px;" class="text-left">{{$t('name')}}</th>
                         <th style="padding: 6px 10px;" class="text-left">Оплата</th>
                         <th style="padding: 6px 10px;" class="text-left">{{$t('sum')}}</th>
                         <th style="padding: 6px 10px;" class="text-left">{{$t('dollor')}}</th>
@@ -171,12 +190,12 @@
                           <td class="p-2"><span>{{ order.client_name }}</span></td>
                           <td class="p-2 clickbtn" >
                             <span v-if="order.shafyor_name">{{ order.shafyor_name }}</span>
-                            <span v-else class="text-danger" @click="toggleShafyorInfo(order, false)">???</span>
+                            <span v-else class="text-danger" >???</span>
                           </td>
-                          <td class="p-2 clickbtn">
+                          <!-- <td class="p-2 clickbtn">
                             <span v-if=" order.car_nomer" >{{  order.car_nomer }}</span>
                             <span v-else class="text-danger" @click="toggleShafyorInfo(order, false)">???</span>
-                          </td>
+                          </td> -->
                           <td class="p-2" v-if="order.isPaid" @click="payOrder(order)">
                             <span class="paid">
                               Оплачено
@@ -212,19 +231,30 @@
                             <img v-if="order.is_loading" style="position:absolute; top:-4px; left: -50px;" src="../../assets/truck.gif" height="50"  alt="">
                           </td>
                           <td class="p-2">
-                            <div class="order_status" :title="order.paid_status">
+                            <div class="order_status" :title="'Примечание:' + order.note + '(' + order.paid_status + ')'">
                               <span>{{ order.paid_status }}</span>
                             </div>
                           </td>
-                          <td class="p-2 text-center">
-                            <i class="fas fa-pen iconPen mask waves-effect  m-0 pr-3" @click="edit_order(order)"></i>
-                            <i class="fa fa-cog iconCog mask waves-effect  m-0 " @click="printReceipt"></i>
+                          <td class="p-2 text-center d-flex" style="position: relative !important;">
+                            <i class="fas fa-pen iconPen mask waves-effect  m-0 mr-3" @click="edit_order(order)"></i>
+                            <i class="fa fa-trash iconCog mask waves-effect  m-0 mr-3" @click="delete_order(order)"></i>
+                            <i class="fa fa-cog iconCog mask waves-effect m-0" :class="{ 'fa-spin': activeMenu === index }"
+                               @click.stop="toggleMenu(index)">
+                            </i>
+                            <ul class="dropdown-menu"
+                              :class="{'dropdown-menu1': (activeMenu == order_list.length-1 
+                              || activeMenu == order_list.length-2) && order_list.length>3}"
+                              v-if="activeMenu === index"  ref="menu">
+                              <li @click="add_order_tozaxira(order)">📦 Получить из захира</li>
+                              <li @click="edit_order(order)">📝 Tahrirlash</li>
+                              <li @click="delete_order(order)">🗑️ O‘chirish</li>
+                            </ul>
                           </td>
                         </tr>
 
                         <!-- Order items qatori -->
                         <tr v-if="expandedOrder === index" :key="order.id + '-items'">
-                          <td colspan="12" class="px-1">
+                          <td colspan="11" class="px-1">
                             <table class="w-100  item_table_shadow rounded my-2 px-2">
                               <thead>
                                 <tr class="bg-gray-100 info_client_header1">
@@ -306,11 +336,15 @@
               </table>
             </div>
           </div>
+          <!--  -->
+          
           <div class="order_add order_list p-2" v-else>
             <div class="p-2 card order_list_display">
-              <order_Add :client_info="client_info" :id="order_id" @close="closeOrderAdd" :choosen_day="choosen_day"/>
+              <order_Add :client_info="client_info" :id="order_id" @close="closeOrderAdd" @updateClient="order_updateClient"
+                :choosen_day="choosen_day" :product="selectZaxiraProduct" />
             </div>
           </div>
+
           <div class="order_calendar">
             <calendar @choose_day="handleChooseDay1" 
               :client_info="client_info" 
@@ -428,13 +462,39 @@
     <massage_box :hide="modal_status" :detail_info="modal_info"
     :m_text="$t('Failed_to_add')" @to_hide_modal="modal_status= false"/>
     <Alert ref="alert"></Alert>
+      <mdb-modal :show="show_delete_order" @close="show_delete_order = false" size="sm" class="text-center" danger>
+        <mdb-modal-header center :close="false">
+          <p class="heading">Удалить заказ?</p>
+        </mdb-modal-header>
+        <mdb-modal-body>
+          <mdb-icon icon="times" size="4x" class="animated rotateIn"/>
+        </mdb-modal-body>
+        <mdb-modal-footer center>
+          <mdb-btn outline="success" @click="accept_delete">{{$t('Yes')}}</mdb-btn>
+          <mdb-btn outline="danger" @click="show_delete_order = false">{{$t('No')}}</mdb-btn>
+        </mdb-modal-footer>
+      </mdb-modal>
+      <mdb-modal :show="show_send_zaxira" @close="show_send_zaxira = false" size="sm" class="text-center" success>
+        <mdb-modal-header center :close="false">
+          <p class="heading">Получить из захира?</p>
+        </mdb-modal-header>
+        <mdb-modal-body>
+          <mdb-icon icon="times" size="4x" class="animated rotateIn"/>
+        </mdb-modal-body>
+        <mdb-modal-footer center>
+          <mdb-btn outline="success" @click="accept_send_zaxira">{{$t('Yes')}}</mdb-btn>
+          <mdb-btn outline="danger" @click="show_send_zaxira = false">{{$t('No')}}</mdb-btn>
+        </mdb-modal-footer>
+      </mdb-modal>
   </div>
 </template>
 
 <script>
 import calendar from './calendar.vue';
 import webcam from '../webcam/webcam_Add.vue'
-import { mdbInput, mdbIcon,  mdbBtn, mdbBadge } from "mdbvue"
+import { mdbInput, mdbIcon,  mdbBtn, mdbBadge,
+  mdbModal, mdbModalHeader, mdbModalBody, mdbModalFooter
+ } from "mdbvue"
 // import { required } from 'vuelidate/lib/validators';
 import {mapActions,mapGetters, mapMutations} from 'vuex';
 import erpSelect from "../../components/erpSelectFioSearch.vue";
@@ -451,7 +511,6 @@ import Loaded_component from './loaded_component.vue';
 import Pay from './pay.vue';
 import check_info from './check_info.vue';
 import load_info from './load_info.vue';
-
 
 export default {
 data(){
@@ -552,6 +611,11 @@ data(){
       old_paid_not_deliver_cassa: [],
       show_checks_info: false,
       show_load_info: false,
+      show_delete_order:false,
+      activeMenu: -1,
+      show_send_zaxira: false,
+      clientProducts: [],
+      selectZaxiraProduct: null,
 
     }
   },
@@ -574,7 +638,8 @@ data(){
     Loaded_component,
     Pay,
     check_info,
-    load_info
+    load_info,
+    mdbModal, mdbModalHeader, mdbModalBody, mdbModalFooter
   },
 //   validations: {
       
@@ -601,16 +666,38 @@ data(){
       if(localStorage.order_page == 5){
         this.order_list = this.old_paid_not_deliver_cassa;
       }
+      document.addEventListener('click', this.handleClickOutside)
       // let today = new Date();
       // this.select_month = today.toISOString().slice(0, 10);
     },
-   computed: {...mapGetters(['get_user_list',]),
+    computed: {...mapGetters(['get_user_list',]),
+    beforeDestroy() {
+      document.removeEventListener('click', this.handleClickOutside)
+    }
     
    },
     
   methods: {
     ...mapActions(['fetch_user',]),
     ...mapMutations(['check_invoice_zaxira']),
+    async sendZaxiraProduct(zaxira_product){
+      console.log(zaxira_product);
+      this.add_order_status = true;
+      this.order_id = 0;
+      this.selectZaxiraProduct = zaxira_product;
+    },
+    toggleMenu(index) {
+      console.log(index)
+      this.activeMenu = this.activeMenu === index ? null : index;
+      console.log(this.activeMenu)
+    },
+    handleClickOutside(event) {
+      // Agar menyu ichiga bosilmagan bo‘lsa — yopamiz
+      const menus = this.$refs.menu
+      if (!event.target.closest('.dropdown-menu') && !event.target.classList.contains('iconCog')) {
+        this.activeMenu = null
+      }
+    },
     func_show_checkList(){
       this.$refs.order_checks_info.func_mounted();
       this.show_checks_info = !this.show_checks_info;
@@ -661,6 +748,13 @@ data(){
       await this.fetchAllOrderList();
       await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
+      this.selectZaxiraProduct = null;
+      await this.getClientProducts();
+    },
+    async openOrderAdd(){
+      this.add_order_status = !this.add_order_status;
+      this.order_id = 0;
+      this.selectZaxiraProduct = null;
     },
     async toggleShafyorInfo(order, status){
       this.select_order = order;
@@ -938,7 +1032,7 @@ data(){
       await this.fetchAllOrderList();
       await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
-      
+      await this.getClientProducts();
       
     },
     async selectClientPassport(option){
@@ -955,7 +1049,7 @@ data(){
       await this.fetchAllOrderList();
       await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
-
+      await this.getClientProducts();
 
     },
     async selectClientBorn(option){
@@ -973,6 +1067,7 @@ data(){
       await this.fetchAllOrderList();
       await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
+      await this.getClientProducts();
 
     },
     // 
@@ -991,12 +1086,141 @@ data(){
       await this.fetchAllOrderList();
       await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
+      await this.getClientProducts();
+    },
+
+    // orderni update qilganda klient tanlanmagan bulsa ushani uchib beradi
+
+    async order_updateClient(option){
+      this.client_info = option;
+      this.user_name = option.fio;
+      this.user_id = option.id;
+      this.passport_number= option.passport_number;
+      this.phone_number= option.phone_number;
+
+      if(option.addiotionala_information){
+        this.born_date = option.addiotionala_information.slice(8,10) + '-' + option.addiotionala_information.slice(5,7) + '-' + option.addiotionala_information.slice(0,4);
+      }
+      this.dolg_user_show = false;
+      await this.getClientProducts();
+    },
+    async add_order_tozaxira(order){
+      console.log(order)
+      // this.show_send_zaxira = true; // bu joyni uchirib tagini ochish kerak
+      // this.order_id = order.id;
+      if(order.isPaid || order.pay_progress == 100){
+        this.show_send_zaxira = true;
+        this.order_id = order.id;
+      }
+      else{
+        this.$refs.alert.error("Bu zakaz uchun to'liq to'lov qilinmagan !");
+      }
+    },
+    async accept_send_zaxira(){
+      console.log(this.order_id);
+      try {
+        // 🔹 API manzilingizni keraklicha o‘zgartiring
+        const response = await fetch(this.$store.state.hostname + '/TegirmonOrder/save-to-client-reserve', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(this.order_id),
+        });
+
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error(errText || 'Server xatosi');
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+          this.$refs.message.success('Added_successfully')
+        } else {
+          this.$refs.message.error('Xatolik: ' + (data.message || 'Saqlanmadi'))
+        }
+      } catch (err) {
+        console.error('Xatolik:', err);
+        this.$refs.message.error('Server bilan bog‘lanishda muammo: ' + err.message)
+      } finally {
+        this.activeMenu = null; // menyuni yopish
+        this.show_send_zaxira = false;
+        await this.fetchAllOrderList();
+        await this.fetchAllOrderStatusNumber();
+        await this.fetchAllOrderProductsList();
+        await this.getClientProducts();
+      }
+    },
+
+    async getClientProducts() {
+      try {
+        // 🔹 Backend API manzili
+        const response = await fetch(
+          this.$store.state.hostname + '/TegirmonOrderClientProductProduct/getClientProducts?client_id=' + this.user_id,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        if (!response.ok) {
+          const errText = await response.text();
+          this.clientProducts = [];
+          throw new Error(errText || 'Server xatosi');
+        }
+
+        // 🔹 Backenddan kelgan JSON javobni o‘qish
+        const data = await response.json();
+
+        // 🔹 Ma’lumotni tekshirish
+        if (Array.isArray(data) && data.length > 0) {
+          this.clientProducts = data; // masalan, jadvalda ko‘rsatish uchun
+          this.$refs.message.success('Mahsulotlar yuklandi');
+        } else {
+          this.clientProducts = [];
+          this.$refs.message.warning('Bu client uchun mahsulot topilmadi');
+        }
+      } catch (err) {
+        console.error('Xatolik:', err);
+        this.clientProducts = [];
+        // this.$refs.message.error('Server bilan bog‘lanishda muammo: ' + err.message);
+      }
     },
 
 
     async edit_order(order){
       this.order_id = order.id;
       this.add_order_status = true;
+      this.selectZaxiraProduct = null;
+    },
+    async delete_order(order){
+      if(order.load_progress == 0 && order.pay_progress == 0){
+        this.order_id = order.id;
+        this.show_delete_order = true;
+      }
+      else{
+        this.$refs.alert.error("Bu zakaz to'lov qilgan yoki yuk ortilgan!");
+      }
+    },
+
+    async accept_delete(){
+       const requestOptions = {
+            method : "delete",
+          };
+          const response = await fetch(this.$store.state.hostname + "/TegirmonOrder/" + this.order_id, requestOptions);
+          const data = await response.text();
+
+          if(response.status == 201 || response.status == 200)
+          {
+            this.$refs.message.success('Successfully_removed')
+          }
+          else{
+            this.modal_info = data;
+            this.modal_status = true;
+          }
     },
 
 
@@ -1126,12 +1350,10 @@ data(){
   // border: 1px solid #757575;
 }
 .myTableuserSalaryList {
-  /* border-collapse: collapse; */
   table-layout:fixed;
   width: 100%;
   overflow: hidden;
   overflow-y: scroll;
-  // border: 1px solid #ddd;
   font-size: 16px;
   max-height:80px; overflow-x:auto
 }
@@ -1374,20 +1596,59 @@ data(){
     align-items: stretch;
 }
 .balance_btn{
-  display: none;
-  background: #eeeeee;
+  position: absolute;
+  bottom: -50px;
+  left: 0;
+  background: rgba(32, 32, 32, 0.7);
   height: 50px;
-  padding-top: 7px;
+  padding-top: 10px;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   z-index: 1111;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+              rgba(0, 0, 0, 0.12) 0px -12px 30px,
+              rgba(0, 0, 0, 0.12) 0px 4px 6px,
+              rgba(0, 0, 0, 0.17) 0px 12px 13px,
+              rgba(0, 0, 0, 0.09) 0px -3px 5px;
+
+  opacity: 0;
+  max-height: 0;
+  transform: translateY(15px);
+  pointer-events: none;
+  transition: all 0.3s ease;
 }
-.balance:hover{
+
+// .balance_btn::before {
+//   content: "";
+//   position: absolute;
+//   inset: 0;
+//   backdrop-filter: blur(1px);
+//   -webkit-backdrop-filter: blur(1px);
+//   z-index: 1;
+
+//   opacity: 0;                 /* boshida ko‘rinmas */
+//   transition: opacity 0.3s ease; 
+// }
+
+// .balance:hover .balance_btn::before {
+//   opacity: 1;                /* hover bo‘lganda sekin chiqadi */
+// }
+
+.balance_btn > * {
+  position: relative;
+  z-index: 2;
+}
+
+.balance:hover {
   cursor: pointer;
-  .balance_btn{
-    display: inline-block;
-  }
+}
+
+.balance:hover .balance_btn{
+  opacity: 1;
+  max-height: 100px; /* yetarli bir qiymat */
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .main_order{
@@ -1417,16 +1678,18 @@ data(){
   overflow: hidden;
   overflow-y: scroll;
   max-height: calc(100vh - 130px);
+  min-height: 260px;
 }
 .order_table_max_height_user{
   overflow: hidden;
   overflow-y: scroll;
   max-height: calc(100vh - 600px);
+  min-height: 260px;
 }
 .user_rasxod_prixod_list{
   overflow: hidden;
   overflow-y: scroll;
-  height: 320px;
+  height: 325px;
 }
 .order_main_head{
   border-radius: 5px;
@@ -1553,10 +1816,13 @@ data(){
   border-radius: 10px;
 }
 .iconCog{
-  color: #828288;
+  color: #939399;
+  font-size: 11.5px;
 }
 .iconPen{
-  color: #828288;
+  color: #939399;
+  font-size: 11.5px;
+
 }
 .clickbtn{
   cursor: pointer;
@@ -1581,4 +1847,73 @@ data(){
   text-overflow: ellipsis; /* … chiqsin */
   cursor: pointer;
 }
+.dropdown-menu,
+.dropdown-menu1 {
+  position: absolute !important;
+  display: block;
+  background: rgb(255, 255, 255);
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 5px 6px 12px rgba(0,0,0,0.15);
+  z-index: 999999 !important;
+  min-width: 120px;
+  padding: 4px 0;
+}
+
+.dropdown-menu {
+  top: 28px !important;
+  left: -85px;
+}
+.dropdown-menu1 {
+  top: -105px !important;
+  left: -85px;
+}
+
+.dropdown-menu::before {
+  content: "";
+  position: absolute;
+  top: -6px; /* menyu ustidan chiqadi */
+  right: 12px; /* ⚙️ icon qayerda joylashganiga qarab sozlanadi */
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  transform: rotate(45deg);
+  box-shadow: -2px -2px 3px rgba(0,0,0,0.05);
+  z-index: 9999;
+}
+/* 🔹 Tepasidagi kichik uch (pointer) */
+.dropdown-menu1::before {
+  content: "";
+  position: absolute !important;
+  top: 94px; /* menyu ustidan chiqadi */
+  right: 12px; /* ⚙️ icon qayerda joylashganiga qarab sozlanadi */
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border-bottom: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-top: 0px solid #ffffff;
+  border-left: 0px solid #ffffff;
+  transform: rotate(45deg);
+  box-shadow: -2px -2px 3px rgba(0,0,0,0.05);
+  z-index: 9999;
+}
+.dropdown-menu li {
+  list-style: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 12px;
+  // border-bottom: 1px solid #f3f3f3;
+}
+
+.dropdown-menu li:hover {
+  background: #9bc6ff;
+}
+.bottom_menu{
+  padding-bottom: 60px !important;
+}
+
 </style>

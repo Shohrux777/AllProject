@@ -441,6 +441,118 @@
                 </div>
               </div>
             </div>
+            <div class="depart_title text-center border-bottom">
+              <small>OPTOM SAVDO BO'LIMI</small>
+            </div>
+    
+            <div class="mainSellSumms container-fluid">
+              <div class="row">
+                <!-- <div class="col-4 px-1">
+                  <div class="summ_item_ p-2 d-flex justify-content-between">
+                    <small style="font-size: 13px;">
+                      Oбщий савдо суммаси
+                    </small>
+                    <small class="summ_title">
+                      {{order_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                    </small>
+                  </div>
+                </div> -->
+                <div class="col-4 px-1">
+                  <div class="summ_item_ p-2 d-flex justify-content-between">
+                    <small style="font-size: 13px;">
+                      {{$t('cash')}}
+                    </small>
+                    <small class="summ_title">
+                      {{(order_cash_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                    </small>
+                  </div>
+                </div>
+                <div class="col-4 px-1">
+                  <div class="summ_item_ p-2 d-flex justify-content-between">
+                    <small style="font-size: 13px;">
+                      {{$t('dollor')}}
+                    </small>
+                    <small class="summ_title">
+                      {{(order_dollor_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} $
+                    </small>
+                  </div>
+                </div>
+                <div class="col-4 px-1">
+                  <div class="summ_item_ p-2 d-flex justify-content-between">
+                    <small style="font-size: 13px;">
+                      UzCard
+                    </small>
+                    <small class="summ_title">
+                      {{(order_uz_card_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                    </small>
+                  </div>
+                </div>
+                <div class="col-4 px-1">
+                  <div class="summ_item_ p-2 d-flex justify-content-between">
+                    <small style="font-size: 13px;">
+                      Humo
+                    </small>
+                    <small class="summ_title">
+                      {{(order_humo_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                    </small>
+                  </div>
+                </div>
+                
+                <div class="col-4 px-1">
+                  <div class="summ_item_ p-2 d-flex justify-content-between">
+                    <small style="font-size: 13px;">
+                      Payme
+                    </small>
+                    <small class="summ_title">
+                      {{(order_payme_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                    </small>
+                  </div>
+                </div>
+                <div class="col-4 px-1">
+                  <div class="summ_item_ p-2 d-flex justify-content-between">
+                    <small style="font-size: 13px;">
+                      Click
+                    </small>
+                    <small class="summ_title">
+                      {{(order_click_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                    </small>
+                  </div>
+                </div>
+                <div class="col-4 px-1">
+                  <div class="summ_item_ p-2 d-flex justify-content-between">
+                    <small style="font-size: 13px;">
+                      Paynet
+                    </small>
+                    <small class="summ_title">
+                      {{(order_paynet_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                    </small>
+                  </div>
+                </div>
+                <div class="col-4 px-1">
+                  <div class="summ_item_ p-2 d-flex justify-content-between">
+                    <small style="font-size: 13px;">
+                      UzumPay
+                    </small>
+                    <small class="summ_title">
+                      {{(order_uzumpay_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                    </small>
+                  </div>
+                </div>
+                
+                <div class="col-4 px-1">
+                  <div class="summ_item_ p-2 d-flex justify-content-between">
+                    <small style="font-size: 13px;">
+                      {{$t('skidka')}}
+                    </small>
+                    <small class="summ_title">
+                      {{(order_skidka_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
           </div>
   
           
@@ -588,6 +700,18 @@
         poluchit_productdan_olingan_dollor: 0,
 
         asosiy_kassa_status: false,
+
+        order_cash_str : 0,
+        order_dollor_str : 0,
+        order_summ : 0,
+        order_humo_str : 0,
+        order_uz_card_str : 0,
+        order_click_str : 0,
+        order_skidka_str : 0,
+        order_payme_str : 0,
+        order_paynet_str : 0,
+        order_uzumpay_str : 0,
+        openBox: true,
   
       }
     },
@@ -630,6 +754,11 @@
         await this.main_kassaga_utkazish();
 
         await this.savdo_kassaga_utkazish();
+
+        await this.fetch_order_all_naqd(this.kassa_id);
+
+
+        await this.fetch_order_all_summa_online(this.kassa_id);
     },
     computed:{
       ...mapGetters(['allOrderList', 'get_all_summa', 
@@ -704,6 +833,11 @@
         await this.main_kassaga_utkazish();
 
         await this.savdo_kassaga_utkazish();
+
+        await this.fetch_order_all_naqd();
+
+
+        await this.fetch_order_all_summa_online();
       },
 
 
@@ -755,6 +889,84 @@
           }
       },
       // Vaqt oraligida boshidagi obshey summani hisoblash yani tanlangan boshidagi kundi chiqaradi <==
+
+
+       async fetch_order_all_naqd(){
+        this.order_summ = 0;
+        this.another_summa_order = 0;
+        let b_data = this.Start_time + 'T00:00:35.000Z';
+        let e_data = this.End_time + 'T23:59:59.000Z';
+
+        try{
+          const res = await fetch(this.$store.state.hostname + '/TegirmonOrderCheck/getKassaCurrentRealTegirmonOrderAllKassaNotHisob?begin_date=' +  b_data + '&end_date=' + e_data);
+          const res_data = await res.json();
+          console.log('res_data order check hammasi online uchun data')
+          console.log(res_data)
+            if(res.status == 200 || res.status == 201){
+              
+              this.order_cash_str = res_data[0].cash;
+              this.order_dollor_str = res_data[0].dollor;
+              this.order_summ = res_data[0].summ;
+
+              this.order_humo_str = res_data[0].humo;
+              this.order_uz_card_str = res_data[0].uz_card;
+              this.order_click_str = res_data[0].click;
+              this.order_skidka_str = res_data[0].skidka;
+              this.order_payme_str = res_data[0].payme;
+              this.order_paynet_str = res_data[0].paynet;
+              this.order_uzumpay_str = res_data[0].uzumpay;
+              
+              this.another_summa_order += res_data[0].humo + res_data[0].uz_card + res_data[0].click + 
+              res_data[0].payme + res_data[0].paynet + res_data[0].uzumpay ;
+            }
+            // this.qayt_naqd = res_data[0].srogi_otganlar_uchun_rasxod.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+            // this.qayt_dollor = res_data[0].salary.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+            
+            // this.sell = res_data[0].for_buy_tovar_rasxod.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')
+        }
+        catch(error){
+          console.log('order not hisob', error)
+          this.$refs.alert.error("Serverda uzilish bor. Qayta urinib ko'ring !");
+          return false;
+        }
+      },
+
+      async fetch_order_all_summa_online(){
+        
+        let b_data = this.Start_time + 'T00:00:35.000Z';
+        let e_data = this.End_time + 'T23:59:59.000Z';
+
+        try{
+          const res = await fetch(this.$store.state.hostname + '/TegirmonOrderCheck/getKassaCurrentRealTegirmonOrderAllKassa?begin_date=' +  b_data + '&end_date=' + e_data);
+          const res_data = await res.json();
+          console.log('res_data order check hammasi online uchun data')
+          console.log(res_data)
+            if(res.status == 200 || res.status == 201){
+              this.order_humo_str += res_data[0].humo;
+              this.order_uz_card_str += res_data[0].uz_card;
+              this.order_click_str += res_data[0].click;
+              this.order_skidka_str += res_data[0].skidka;
+              this.order_payme_str += res_data[0].payme;
+              this.order_paynet_str += res_data[0].paynet;
+              this.order_uzumpay_str += res_data[0].uzumpay;
+
+              let temp = 0;
+              temp += res_data[0].humo + res_data[0].uz_card + res_data[0].click + 
+              res_data[0].payme + res_data[0].paynet + res_data[0].uzumpay
+
+              this.another_summa_order += temp;
+              this.order_summ += temp;
+
+              this.another_summa += this.another_summa_order;
+            }
+        }
+        catch(error){
+          console.log('2')
+          this.$refs.alert.error("Serverda uzilish bor. Qayta urinib ko'ring !");
+          return false;
+        }
+      },
+
 
       // sotuv bulimida sotuv summasi ==>
       async getallCassaSumm(){

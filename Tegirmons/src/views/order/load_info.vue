@@ -89,7 +89,16 @@
 export default {
   data(){
     return{
-      total: {},
+      total: {
+        "totalQty": 0,
+        "totalKg": 0,
+        "loadedQty": 0,
+        "loadedKg": 0,
+        "loadingQty": 0,
+        "loadingKg": 0,
+        "remainingQty": 0,
+        "remainingKg": 0
+      },
       order_load_list: [],
     }
   },

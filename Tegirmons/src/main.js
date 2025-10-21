@@ -72,6 +72,7 @@ Vue.component('loader', loader)
 Vue.component('block', block)
 Vue.component('loaderTable', loaderTable)
 Vue.component('loaderFixed', loaderFixed)
+
 // import qz from 'qz-tray'
 
 // Vue.prototype.$qz = qz

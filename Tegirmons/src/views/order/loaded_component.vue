@@ -6,8 +6,8 @@
         <div class="w-100 px-3 card">
           <div class="row">
             <div class="col-12 mt-3">
-                <input class="m-0 form-control"
-                style="height:32px; font-size: 13px;" v-model="shafyor_name" 
+                <input class="m-0 form-control" 
+                style="height:32px; font-size: 13px; text-transform: uppercase;" v-model="shafyor_name" 
                 type="text" validate error="wrong" success="right"/>
               <small
                 style="position: absolute; top: -11px; left: 20px; font-size: 11px;"
@@ -19,8 +19,8 @@
               </small>
             </div>
             <div class="col-12 mt-3">
-                <input class="m-0 form-control" v-mask="'##A###AA'" placeholder="01A123AA"
-                style="height:32px; font-size: 13px;" v-model="car_nomer" 
+                <input class="m-0 form-control"  placeholder="01A123AA"
+                style="height:32px; font-size: 13px; text-transform: uppercase;" v-model="car_nomer"
                 type="text" validate error="wrong" success="right"/>
               <small
                 style="position: absolute; top: -11px; left: 20px; font-size: 11px;"
@@ -41,6 +41,19 @@
                 >{{ $t("phone_number") }}</small
               >
               <small class="invalid-text mt-0" style="margin-left:5px; "  v-if="$v.phone_number.$dirty && !$v.phone_number.required" >
+                {{$t('name_invalid_text')}}
+              </small>
+            </div>
+            <div class="col-12 mt-3">
+                <input class="m-0 form-control"  v-model="kara"
+                style="height:32px; font-size: 13px; text-transform: uppercase;"
+                type="text" validate error="wrong" success="right"/>
+              <small
+                style="position: absolute; top: -11px; left: 20px; font-size: 11px;"
+                class="bg-white px-2 py-0"
+                >{{ $t("kara") }}</small
+              >
+              <small class="invalid-text mt-0" style="margin-left:5px; "  v-if="$v.kara.$dirty && !$v.kara.required" >
                 {{$t('name_invalid_text')}}
               </small>
             </div>
@@ -74,7 +87,7 @@
                         scope="row"
                         v-for="(row, rowIndex) in order_car_item"
                         :key="rowIndex"
-                        v-show="row.qty>0"
+                        
                       >
                         <th>
                           <i
@@ -152,40 +165,50 @@
       </div>
       <div v-if="loaded_status" class="col-6 active_car">
         <div class="pb-3">
-          <div class="ortilgan_mashina mb-3 p-2" v-for="(item,i) in car_order_list" :key="i" 
+          <div class="ortilgan_mashina container-fluid mb-3 p-2" v-for="(item,i) in car_order_list" :key="i"
           
-          :class="{'alert-info': active_car_item == i}">
-            <div class="row p-2" @click="select_car_order(item,i)" >
-              <div class="col-4 mt-2 mb-1 px-2">
-                  <input class="m-0 form-control"
-                  style="height:28px; font-size: 13px;" disabled v-model="item.shafyor_name" 
-                  type="text" validate error="wrong" success="right"/>
-                <small
-                  style="position: absolute; top: -11px; left: 20px; font-size: 11px;"
-                  class="bg-white px-2 py-0"
-                  >{{ $t("shafyor_name") }}</small
-                >
+          :class="{'update_car_active': active_car_item == i, 'ortilgan_active': item.is_begin}">
+            <div class="row m-0 mb-2 border rounded" @click="select_car_order(item,i)" >
+              <div class="col-12  mb-0 px-2">
+                <span style="color:#313335; font-size: 12.5px;">
+                  👨‍✈️ {{ $t("shafyor_name") }}:
+                </span>
+                <span style="color: #686A6E; font-size: 12.5px;">{{ item.shafyor_name }}</span>
               </div>
-              <div class="col-4 mt-2 mb-1 px-2">
-                  <input class="m-0 form-control" disabled v-mask="'##A###AA'" placeholder="01A123AA"
-                  style="height:28px; font-size: 13px;" v-model="item.car_nomer" 
-                  type="text" validate error="wrong" success="right"/>
-                <small
-                  style="position: absolute; top: -11px; left: 20px; font-size: 11px;"
-                  class="bg-white px-2 py-0"
-                  >{{ $t("car_number") }}</small
-                >
+              
+              <div class="col-6  mb-0 px-2">
+                <span style="color:#313335; font-size: 12.5px;">
+                  🚗 Номер машины:
+                </span>
+                <span style="color: #686A6E; font-size: 12.5px;">{{ item.car_nomer }}</span>
               </div>
-              <div class="col-4 mt-2 mb-1 px-2">
-                  <input class="m-0 form-control" disabled v-mask="'(##) ###-##-##'" v-model="item.phone_number" placeholder="(##) ###-##-##"
-                  style="height:28px; font-size: 13px;"
-                  type="text" validate error="wrong" success="right"/>
-                <small
-                  style="position: absolute; top: -11px; left: 20px; font-size: 11px;"
-                  class="bg-white px-2 py-0"
-                  >{{ $t("phone_number") }}</small
-                >
+              <div class="col-6  mb-0 px-2">
+                <span style="color:#313335; font-size: 12.5px;">
+                  📞 Телефон:
+                </span>
+                <span style="color: #686A6E; font-size: 12.5px;">{{ item.phone_number }}</span>
               </div>
+
+              <div class="col-12  mb-0 px-2">
+                <span style="color:#313335; font-size: 12.5px;">
+                  🧑‍💻 Oператор погрузки:
+                </span>
+                <span style="color: #686A6E; font-size: 12.5px;">{{ item.user_name }}</span>
+              </div>
+
+              <div class="col-6  mb-0 px-2">
+                <span style="color:#313335; font-size: 12.5px;">
+                  🏗️ Карачи:
+                </span>
+                <span style="color: #686A6E; font-size: 12.5px;">{{ item.image_url }}</span>
+              </div>
+              <div class="col-6  mb-0 px-2">
+                <span style="color:#313335; font-size: 12.5px;">
+                  ⏰ {{ $t("date") }}:
+                </span>
+                <span style="color: #686A6E; font-size: 12.5px;">{{ item.create_date.slice(8,10) }}-{{ item.create_date.slice(5,7) }}-{{ item.create_date.slice(0,4) }}  {{ item.create_date.slice(11,16) }} </span>
+              </div>
+              
             </div >
             <div v-if="item.item_list.length>0" @click="select_car_order(item,i)" >
               <table class="myTableuserSalaryList">
@@ -198,7 +221,7 @@
                   </thead>
                   <tbody>
                     <tr v-for="(row,rowIndex) in item.item_list" :key="row.id"
-                    :class="{'zero_item': row.stockQty <= 0}">
+                    :class="{'zero_item': row.stockQty <= 0,}" :style="`background: ${row.product.shitrix_code}`">
                       <td> <small >{{rowIndex+1}}</small> </td>
                       <td> <small >{{row.product.name}}</small></td>
                       <td> <small >{{row.qty}}</small> </td>
@@ -224,10 +247,9 @@
           <div class="header">
             <!-- <div class="form-no">Form No:</div> -->
             <div>
-              <h2>ООО «OQQO'RG'ON TEGIRMON»</h2>
+              <h2 class="m-0 p-0 mt-3" style="font-size: 40px; font-weight: bold;"> НАКЛАДНАЯ  № {{ order_info.id }}</h2>
               <div class="company-info">
-                <p> 📍 Таш. обл., Аккурганский р-н, Дустлик КФЙ</p>
-                <p> 📦 Заказ № {{ order_info.id }}</p>
+                
               </div>
             </div>
 
@@ -298,15 +320,23 @@
                   <td>{{item.qty}} {{ item.product.unitMeasurment.name }}</td>
                   <td>{{(item.qty * item.product.real_qty).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} кг</td>
                 </tr>
-                
+                <tr>
+                  
+                  <td colspan="2">Oбщий</td>
+                  <td></td>
+                  <td>{{ all_qty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} шт</td>
+                  <td>{{all_massa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} кг</td>
+                </tr>
               </tbody>
             </table>
           </div>
 
-          <div class="footer">
+          <div class="footer mt-2">
             <div class="truck">🚚</div>
             <div class="signature">
-              Кассир: {{order_info.user_name}} <br>
+              Принял заказ: {{order_info.user_name}} <br>
+              <span v-if="order_info.kassir_name">Кассир: {{order_info.kassir_name}} <br></span> 
+              Oператор погрузки: {{order_info.load_name}} <br>
             </div>
           </div>
         </div>
@@ -354,7 +384,7 @@ export default {
             shafyor_name: '',
             car_nomer: '',
             phone_number: '',
-            note: '',
+            kara: '',
             order_product_qty: 0,
             car_product_qty: 0,
             car_order_list: [],
@@ -379,6 +409,8 @@ export default {
               car_nomer: '',
               phone_number: ''
             },
+            all_massa: 0,
+            all_qty:0,
         }
     },
     components:{
@@ -393,6 +425,7 @@ export default {
       shafyor_name: {  required },
       car_nomer: {  required },
       phone_number: {  required },
+      kara: {  required },
       order_car_item: {
         $each: {
           qty: {  required },
@@ -419,6 +452,7 @@ props: {
   methods:{
     async fetchMounted(order){
        this.shafyor_name = '';
+       this.kara = '';
       this.car_nomer = '';
       this.phone_number = '';
       this.car_order_id = 0;
@@ -503,6 +537,7 @@ props: {
       this.shafyor_name = car_order.shafyor_name;
       this.car_nomer = car_order.car_nomer;
       this.phone_number = car_order.phone_number;
+      this.kara =car_order.image_url;
       let select_car_qty = 0;
       this.active_car_item = index;
       this.car_order_id = car_order.id;
@@ -545,13 +580,13 @@ props: {
             headers: { "Content-Type" : "application/json" },
             body: JSON.stringify({
               // "tegirmonProductid" : this.product_id,
-              "shafyor_name": this.shafyor_name,
+              "shafyor_name": this.shafyor_name ? this.shafyor_name.toUpperCase() : '',
               "car_nomer": this.car_nomer,
               "phone_number": this.phone_number,
               "tegirmonOrderid": this.order_info.id,
               "auth_user_creator_id": localStorage.AuthId,
               "auth_user_updator_id": loaded_progress.toFixed(),
-              "image_url": this.note,
+              "image_url": this.kara ? this.kara.toUpperCase() : '',
               "item_list": this.order_car_item,
               "is_begin": false,
               "user_name": localStorage.user_name,
@@ -606,7 +641,7 @@ props: {
               "phone_number": this.phone_number,
               "tegirmonOrderid": this.order_info.id,
               "auth_user_creator_id": localStorage.AuthId,
-              "image_url": this.note,
+              "image_url": this.kara,
             })
           };
           try{
@@ -709,7 +744,22 @@ props: {
     },
 
     printOrderCarItem(order_data){
+      this.all_massa = 0;
+      this.all_qty = 0;
       this.select_order_info = order_data;
+      if (!order_data.item_list) {
+        this.all_qty = 0;
+        this.all_massa = 0;
+      }
+      else{
+        this.all_qty = order_data.item_list.reduce((sum, item) => {
+          return sum + (Number(item.qty) || 0);
+        }, 0);
+        this.all_massa = order_data.item_list.reduce((sum, item) => {
+          return sum + (Number(item.qty * item.product.real_qty) || 0);
+        }, 0);
+      }
+      
       console.log(order_data);
       console.log(this.order_info)
       this.$nextTick(() => {
@@ -840,9 +890,15 @@ input::placeholder {
   border-radius: 7px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
   &:hover{
-    background: #ebebeb;
+    background: #dbf6fd;
     cursor: pointer;
   }
+}
+.ortilgan_active{
+  background: #9cccd8;
+}
+.update_car_active{
+  background: #c8d2ff;
 }
 .print_loaded{
   position: fixed;

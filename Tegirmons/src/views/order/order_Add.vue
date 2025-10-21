@@ -4,9 +4,9 @@
     <div class="px-3">
       <h6 class="m-0 text-primary" style="font-style: italic; font-size: 15px;">Добавить заказ <span v-if="id>0">№ {{ id }}</span></h6>
     </div>
-    <div class="changing_add px-3 pt-3 pb-2">
-      <div class="row mb-3">
-        <div class="col-3">
+    <div class="changing_add px-3 pt-2 pb-2 ">
+      <div class="row  alert-info pt-3 pb-2 mb-2 rounded">
+        <div class="col-3"> 
           <input class="m-0 form-control" disabled
             style="height:32px; font-size: 13px;" :value="client.fio" 
             type="text" validate error="wrong" success="right"/>
@@ -18,15 +18,15 @@
         </div>
         <div class="col-3">
           <input class="m-0 form-control"
-            style="height:32px; font-size: 13px;" v-model="shafyor_name" 
+            style="height:32px; font-size: 13px;" v-model="shafyor_name"
             type="text" validate error="wrong" success="right"/>
           <small
             style="position: absolute; top: -11px; left: 20px; font-size: 11px;"
             class="bg-white px-2 py-0"
-            >{{ $t("shafyor_name") }}</small
+            >{{ $t("name") }}</small
           >
         </div>
-        <div class="col-3">
+        <!-- <div class="col-3">
           <input class="m-0 form-control" v-mask="'##A###AA'" placeholder="01A123AA"
             style="height:32px; font-size: 13px;" v-model="car_nomer" 
             type="text" validate error="wrong" success="right"/>
@@ -34,6 +34,14 @@
             style="position: absolute; top: -11px; left: 20px; font-size: 11px;"
             class="bg-white px-2 py-0"
             >{{ $t("car_number") }}</small
+          >
+        </div> -->
+        <div class="col-3">
+            <input class="m-0 form-control"  style="height:32px; font-size: 13px;" v-model="note" size="md"  outline  group type="text" validate error="wrong" success="right"/>
+          <small
+            style="position: absolute; top: -11px; left: 20px; font-size: 11px"
+            class="bg-white px-2 py-0"
+            >{{ $t("note") }}</small
           >
         </div>
         <div class="col-3">
@@ -61,14 +69,6 @@
             style="position: absolute; top: -11px; left: 20px; font-size: 11px;"
             class="bg-white px-2 py-0"
             >{{ $t("dollor") }}</small
-          >
-        </div>
-        <div class="col-3 mt-3">
-            <input class="m-0 form-control"  style="height:32px; font-size: 13px;" v-model="note" size="md"  outline  group type="text" validate error="wrong" success="right"/>
-          <small
-            style="position: absolute; top: -11px; left: 20px; font-size: 11px"
-            class="bg-white px-2 py-0"
-            >{{ $t("note") }}</small
           >
         </div>
       </div>
@@ -131,10 +131,11 @@
                 scope="row"
                 v-for="(row, rowIndex) in datasource.rows"
                 :key="rowIndex"
+                :class="{'alert-success': row.zaxira}"
       
               >
                 <th>
-                  <i
+                  <i v-if="id == 0 || (id>0 && row.zaxira == false)"
                     class="
                       fas
                       fa-trash
@@ -147,14 +148,13 @@
                     @click="deleteRow(rowIndex)"
                   ></i>
                 </th>
-                <th>
+                <th :class="{'applied': row.zaxira}">
                   <lineSelect
                     :options="all_product_skladId.rows"
                     :row_index="rowIndex"
                     :searchshow="true"
                     @select="selectproduct"
                     :selected="row.product_name"
-                  
                     :label="$t('product')"
                   />
                   <small
@@ -175,7 +175,7 @@
                   </small>
                 </th>
 
-                <th>
+                <th :class="{'applied': row.zaxira}">
                   <lineSelect
                     :options="row.price_list"
                     :row_index="rowIndex"
@@ -187,7 +187,7 @@
                   />
                 </th>
 
-                <th>
+                <th style="position: relative;"> 
                   <input
                     v-model="row.qty_str"
                     type="text"
@@ -208,8 +208,34 @@
                   >
                     {{ $t("minValue") }}
                   </small>
+                  <small 
+                  class="invalid-text"
+                    style="
+                      margin: 0;
+                      margin-top: 26px;
+                      position: relative;
+                    "
+                    v-else-if="$v.datasource.rows.$each[rowIndex].qty.$dirty &&
+                    !$v.datasource.rows.$each[rowIndex].qty.minValue">
+                    Миқдор 1 дан кам бўлмаслиги керак!
+                  </small>
+                  <small 
+                  class=" text-right"
+                    style="
+                      margin: 0;
+                      bottom: 16px;
+                      right: 15px;
+                      font-size: 13px;
+                      color:red;
+                      position: absolute;
+                      cursor:pointer;
+                    "
+                    @click="clientZaxiraAllQty(rowIndex)"
+                    v-if="row.zaxira">
+                    ⬆️ {{row.all_qty}}
+                  </small>
                 </th>
-                <th style="position: relative;">
+                <th style="position: relative;" :class="{'applied': row.zaxira}">
                   <input
                     v-model="row.price_str"
                     @input="changePrice($event.target.value,rowIndex)"
@@ -267,7 +293,7 @@ import { mdbInput, mdbRow, mdbCol, mdbIcon, mdbBtn,  mdbTbl,
   mdbDropdown,
   mdbDropdownItem,
   mdbDropdownMenu,} from "mdbvue"
-import { required } from 'vuelidate/lib/validators'
+import { required, minValue  } from 'vuelidate/lib/validators'
 import lineSelect from "../../components/lineSelect.vue";
 import {mapActions,mapGetters} from 'vuex'
 // import { all } from "core-js/fn/promise";
@@ -312,6 +338,8 @@ export default {
         fio: '',
         id:null,
       },
+      client_zaxira_list: [],
+      order_data:{},
     }
   },
   props: {
@@ -323,6 +351,13 @@ export default {
           fio: '',
           id:null,
         }
+      }
+    },
+    product:
+    {
+      type: Object,
+      default(){
+        return {}
       }
     },
     choosen_day: {
@@ -347,7 +382,7 @@ export default {
     datasource: {
       rows: {
         $each: {
-          qty: {  required },
+          qty: {  required, minValue: minValue(1) },
           product_name: { required },
         },
       },
@@ -356,6 +391,23 @@ export default {
   watch: {
     client_info: {
       handler(newVal) {
+        // ✅ client_info o'zgargan payt zaxira bo'lgan product borligini tekshiramiz
+        if (this.datasource.rows.length){
+          if (this.datasource.rows.some(r => r.zaxira === true)) {
+            if(this.client.id == newVal.id){
+              console.log("salom bir biriga teng");
+            }
+            else{
+              this.$emit('close');
+            }
+          }
+          else{
+            if((this.order_data.isPaid || this.order_data.pay_progress > 0) && newVal.id != this.client.id){
+              this.$emit('close');
+            }
+          }
+        }
+
         if (newVal) {
           // ma'lumot bor
           this.client = newVal;
@@ -364,7 +416,16 @@ export default {
           this.client = { fio: '', id:null };
         }
       },
-      deep: true
+      deep: true,
+    },
+    product: {
+      handler(newVal) {
+        // yangi product keldi — shu yerda reaksiya qilasiz
+        console.log("Yangi product:", newVal);
+        this.add_zaxira_product(newVal)
+      },
+      deep: true,
+      immediate: true
     }
   },
   async created()
@@ -376,19 +437,22 @@ export default {
       const data = await res.json();
       console.log('data invoice_malumot');
       console.log(data);
+      this.order_data = data;
       this.user_name = data.user_name;
       this.all_sum = data.sum;
       this.all_dollor = data.dollor;
       this.shafyor_name = data.shafyor_name;
       this.car_nomer = data.car_nomer;
       this.note = data.note;
-       if (data.client) {
-        // ma'lumot bor
+      if (data.client) {
         this.client = data.client;
+        await this.fetchClientZaxiraList(data.tegirmonOrderClientid);
+        this.$emit('updateClient', this.client)
       } else {
         // null yoki undefined bo‘lsa bo‘sh obyekt
         this.client = { fio: '', id:null };
       }
+
       for(let i=0; i<data.item_list.length; i++){
         this.datasource.rows.push({
           tegirmonProductid: 0,
@@ -404,6 +468,10 @@ export default {
           sum:0,
           id: 0,
           auth_user_updator_id: localStorage.AuthId,
+          new_qty: 0,
+          old_qty: 0,
+          all_qty: 0,
+          zaxira: false,
         });
         this.datasource.rows[i].tegirmonProductid = data.item_list[i].tegirmonProductid;
         this.datasource.rows[i].product_name = data.item_list[i].product.name;
@@ -411,12 +479,21 @@ export default {
         this.datasource.rows[i].qty_str = data.item_list[i].qty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
         this.datasource.rows[i].sum = data.item_list[i].sum;
 
-        
         this.datasource.rows[i].price = data.item_list[i].price;
         this.datasource.rows[i].price_str = data.item_list[i].price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
         this.datasource.rows[i].price_type = data.item_list[i].price_type;
         this.datasource.rows[i].price_qty = data.item_list[i].price_qty;
-        this.datasource.rows[i].sum_str = data.item_list[i].sum_str;  
+        this.datasource.rows[i].sum_str = data.item_list[i].sum_str;
+        this.datasource.rows[i].zaxira = data.item_list[i].zaxira;
+        if(this.datasource.rows[i].zaxira){
+          this.datasource.rows[i].old_qty = data.item_list[i].qty;
+          for(let j=0; j<this.client_zaxira_list.length; j++){
+            if(this.client_zaxira_list[j].tegirmonProductid == data.item_list[i].tegirmonProductid){
+              this.datasource.rows[i].all_qty = data.item_list[i].qty + this.client_zaxira_list[j].qty;
+
+            }
+          }
+        }
       }
       console.log(this.datasource.rows)
     }
@@ -432,6 +509,74 @@ export default {
     {
       
     },
+    async fetchClientZaxiraList(client_id){
+      try {
+        // 🔹 Backend API manzili
+        const response = await fetch(
+          this.$store.state.hostname + '/TegirmonOrderClientProductProduct/getClientProducts?client_id=' + client_id,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        if (!response.ok) {
+          const errText = await response.text();
+          this.client_zaxira_list = [];
+          throw new Error(errText || 'Server xatosi');
+        }
+
+        // 🔹 Backenddan kelgan JSON javobni o‘qish
+        const data = await response.json();
+        console.log('mahsulotlar', data)
+        // 🔹 Ma’lumotni tekshirish
+        if (Array.isArray(data) && data.length > 0) {
+          this.client_zaxira_list = data; // masalan, jadvalda ko‘rsatish uchun
+          this.$refs.message.success('Mahsulotlar yuklandi');
+        } else {
+          this.client_zaxira_list = [];
+          this.$refs.message.warning('Bu client uchun mahsulot topilmadi');
+        }
+      } catch (err) {
+        console.error('Xatolik:', err);
+        this.client_zaxira_list = [];
+        // this.$refs.message.error('Server bilan bog‘lanishda muammo: ' + err.message);
+      }
+    },
+    add_zaxira_product(product){
+      console.log('product', product);
+      for(let i=0; i<this.datasource.rows.length; i++){
+        if(this.datasource.rows[i].zaxira == true && this.datasource.rows[i].tegirmonProductid == product.tegirmonProductid){
+          this.$refs.message.warning('Bu mahsulot bor. Faqat sonini uzgartira olasiz')
+          return;
+        }
+      }
+      if(product != null){
+        this.datasource.rows.unshift({
+          tegirmonProductid: product.tegirmonProductid,
+          product_name: product.product.name,
+          qty: 0,
+          qty_str: '0',
+          price: 0,
+          price_str: '0',
+          price_type: 0,
+          price_qty: 1,
+          price_list: [],
+          sum_str: '', // bu optim price nomi
+          sum:0,
+          id: 0,
+          auth_user_updator_id: localStorage.AuthId,
+          new_qty: 0,
+          old_qty: 0,
+          all_qty: product.qty,
+          zaxira: true,
+        });
+      }
+      
+    },
+
     selectproduct(option) {
       console.log(option);
       this.datasource.rows[option.row].product_name = option.data.name;
@@ -476,6 +621,10 @@ export default {
         sum:0,
         id: 0,
         auth_user_updator_id: localStorage.AuthId,
+        new_qty: 0,
+        old_qty: 0,
+        all_qty: 0,
+        zaxira: false,
       });
       console.log(this.datasource)
     },
@@ -495,6 +644,7 @@ export default {
     
 
     save_data :  async function(){
+      // console.log(this.datasource.rows); return;
         if(this.$v.$invalid )
         {
           this.$v.$touch();
@@ -582,7 +732,20 @@ export default {
         this.datasource.rows[i].qty = 0;
        }
        else{
-        this.datasource.rows[i].qty = parseFloat(temp);
+        if(this.datasource.rows[i].zaxira == true){
+          if(parseFloat(temp)> this.datasource.rows[i].all_qty){
+            this.datasource.rows[i].qty = this.datasource.rows[i].all_qty;
+            this.datasource.rows[i].qty_str = this.datasource.rows[i].qty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+          }
+          else{
+            this.datasource.rows[i].qty = parseFloat(temp);
+            this.datasource.rows[i].qty_str = this.datasource.rows[i].qty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+          }
+          this.datasource.rows[i].new_qty = this.datasource.rows[i].qty - this.datasource.rows[i].old_qty;
+        }
+        else{
+          this.datasource.rows[i].qty = parseFloat(temp);
+        }
        }
       this.datasource.rows[i].sum = ((parseFloat(this.datasource.rows[i].qty) * parseFloat(this.datasource.rows[i].price)) / parseFloat(this.datasource.rows[i].price_qty)).toFixed()
       this.all_sum = 0;
@@ -595,7 +758,13 @@ export default {
           this.all_dollor += parseFloat(this.datasource.rows[j].sum);
         }
       }
-      
+    },
+    clientZaxiraAllQty(i){
+      if(this.datasource.rows[i].zaxira == true){
+          this.datasource.rows[i].qty = this.datasource.rows[i].all_qty;
+          this.datasource.rows[i].qty_str = this.datasource.rows[i].qty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+          this.datasource.rows[i].new_qty = this.datasource.rows[i].qty - this.datasource.rows[i].old_qty;
+        }
     },
     button_qty(i){
       if(this.datasource.rows[i].qty_str == '0'){

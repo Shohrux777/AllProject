@@ -1,7 +1,7 @@
 <template>
-    <div class="addProductQtyAcceptCash"  v-on:click.self="close">
+    <div class="addProductQtyAcceptCash"  v-on:click.self="close" :class="{'openShow': openBox, 'closeShow': !openBox }">
       <div class="px-0 py-2" >
-        <div class="acceptBoxForTegirmon px-3 py-1 pb-4 text-center">
+        <div class="acceptBoxForTegirmon px-3 py-1 pb-4 text-center" :class="{'acceptBoxForTegirmon': openBox, 'closeBoxForTegirmon': !openBox }">
           <div class="depart_title mb-2 mt-2 border-bottom">
             <div style="height: 44px;" class="d-flex justify-content-between border-bottom align-items-center  ">
               <div class="title w-100 row align-items-center">
@@ -433,6 +433,118 @@
               </div>
             </div>
           </div>
+
+
+          <div class="depart_title text-center border-bottom">
+            <small>OPTOM SAVDO BO'LIMI</small>
+          </div>
+  
+          <div class="mainSellSumms container-fluid">
+            <div class="row">
+              <!-- <div class="col-4 px-1">
+                <div class="summ_item_ p-2 d-flex justify-content-between">
+                  <small style="font-size: 13px;">
+                    Oбщий савдо суммаси
+                  </small>
+                  <small class="summ_title">
+                    {{order_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                  </small>
+                </div>
+              </div> -->
+              <div class="col-4 px-1">
+                <div class="summ_item_ p-2 d-flex justify-content-between">
+                  <small style="font-size: 13px;">
+                    {{$t('cash')}}
+                  </small>
+                  <small class="summ_title">
+                    {{(order_cash_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                  </small>
+                </div>
+              </div>
+              <div class="col-4 px-1">
+                <div class="summ_item_ p-2 d-flex justify-content-between">
+                  <small style="font-size: 13px;">
+                    {{$t('dollor')}}
+                  </small>
+                  <small class="summ_title">
+                    {{(order_dollor_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} $
+                  </small>
+                </div>
+              </div>
+              <div class="col-4 px-1">
+                <div class="summ_item_ p-2 d-flex justify-content-between">
+                  <small style="font-size: 13px;">
+                    UzCard
+                  </small>
+                  <small class="summ_title">
+                    {{(order_uz_card_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                  </small>
+                </div>
+              </div>
+              <div class="col-4 px-1">
+                <div class="summ_item_ p-2 d-flex justify-content-between">
+                  <small style="font-size: 13px;">
+                    Humo
+                  </small>
+                  <small class="summ_title">
+                    {{(order_humo_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                  </small>
+                </div>
+              </div>
+              
+              <div class="col-4 px-1">
+                <div class="summ_item_ p-2 d-flex justify-content-between">
+                  <small style="font-size: 13px;">
+                    Payme
+                  </small>
+                  <small class="summ_title">
+                    {{(order_payme_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                  </small>
+                </div>
+              </div>
+              <div class="col-4 px-1">
+                <div class="summ_item_ p-2 d-flex justify-content-between">
+                  <small style="font-size: 13px;">
+                    Click
+                  </small>
+                  <small class="summ_title">
+                    {{(order_click_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                  </small>
+                </div>
+              </div>
+              <div class="col-4 px-1">
+                <div class="summ_item_ p-2 d-flex justify-content-between">
+                  <small style="font-size: 13px;">
+                    Paynet
+                  </small>
+                  <small class="summ_title">
+                    {{(order_paynet_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                  </small>
+                </div>
+              </div>
+              <div class="col-4 px-1">
+                <div class="summ_item_ p-2 d-flex justify-content-between">
+                  <small style="font-size: 13px;">
+                    UzumPay
+                  </small>
+                  <small class="summ_title">
+                    {{(order_uzumpay_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                  </small>
+                </div>
+              </div>
+              
+              <div class="col-4 px-1">
+                <div class="summ_item_ p-2 d-flex justify-content-between">
+                  <small style="font-size: 13px;">
+                    {{$t('skidka')}}
+                  </small>
+                  <small class="summ_title">
+                    {{(order_skidka_str || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
   
           
         </div>
@@ -532,6 +644,19 @@
         poluchit_productdan_hisobga: 0,
         poluchit_productdan_olingan_naqd: 0,
         poluchit_productdan_olingan_dollor: 0,
+
+        order_cash_str : 0,
+        order_dollor_str : 0,
+        order_summ : 0,
+        order_humo_str : 0,
+        order_uz_card_str : 0,
+        order_click_str : 0,
+        order_skidka_str : 0,
+        order_payme_str : 0,
+        order_paynet_str : 0,
+        order_uzumpay_str : 0,
+        openBox: true,
+
       }
     },
    
@@ -551,7 +676,7 @@
   
       async getAllSumm(kassa_data){
         this.clw_cl();
-
+        this.openBox = true;
         console.log(kassa_data);
         this.kassa_id = kassa_data.kassa_id;
         // let mtime = new Date().toISOString();
@@ -580,6 +705,10 @@
         await this.main_kassaga_utkazish(this.kassa_id);
 
         await this.savdo_kassaga_utkazish(this.kassa_id);
+        await this.fetch_order_all_naqd(this.kassa_id);
+
+
+        await this.fetch_order_all_summa_online(this.kassa_id);
       },
 
 
@@ -607,8 +736,88 @@
         await this.main_kassaga_utkazish(this.kassa_id);
 
         await this.savdo_kassaga_utkazish(this.kassa_id);
+        await this.fetch_order_all_naqd(this.kassa_id);
+
+
+        await this.fetch_order_all_summa_online(this.kassa_id);
       },
 
+
+       async fetch_order_all_naqd(kassa_id){
+        this.order_summ = 0;
+        this.another_summa_order = 0;
+        let b_data = this.Start_time + 'T00:00:35.000Z';
+        let e_data = this.End_time + 'T23:59:59.000Z';
+
+        try{
+          const res = await fetch(this.$store.state.hostname + '/TegirmonOrderCheck/getKassaCurrentRealTegirmonOrderKassaIdNotHisob?begin_date=' +  b_data + '&end_date=' + e_data + '&kassa_id=' + kassa_id);
+          const res_data = await res.json();
+          console.log('res_data order check hammasi online uchun data')
+          console.log(res_data)
+            if(res.status == 200 || res.status == 201){
+              
+              this.order_cash_str = res_data[0].cash;
+              this.order_dollor_str = res_data[0].dollor;
+              this.order_summ = res_data[0].summ;
+
+              this.order_humo_str = res_data[0].humo;
+              this.order_uz_card_str = res_data[0].uz_card;
+              this.order_click_str = res_data[0].click;
+              this.order_skidka_str = res_data[0].skidka;
+              this.order_payme_str = res_data[0].payme;
+              this.order_paynet_str = res_data[0].paynet;
+              this.order_uzumpay_str = res_data[0].uzumpay;
+              
+              this.another_summa_order += res_data[0].humo + res_data[0].uz_card + res_data[0].click + 
+              res_data[0].payme + res_data[0].paynet + res_data[0].uzumpay ;
+            }
+            // this.qayt_naqd = res_data[0].srogi_otganlar_uchun_rasxod.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+            // this.qayt_dollor = res_data[0].salary.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+            
+            // this.sell = res_data[0].for_buy_tovar_rasxod.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')
+        }
+        catch(error){
+          console.log('order not hisob', error)
+          this.$refs.alert.error("Serverda uzilish bor. Qayta urinib ko'ring !");
+          return false;
+        }
+      },
+
+      async fetch_order_all_summa_online(kassa_id){
+        
+        let b_data = this.Start_time + 'T00:00:35.000Z';
+        let e_data = this.End_time + 'T23:59:59.000Z';
+
+        try{
+          const res = await fetch(this.$store.state.hostname + '/TegirmonOrderCheck/getKassaCurrentRealTegirmonOrderKassaId?begin_date=' +  b_data + '&end_date=' + e_data + '&kassa_id=' + kassa_id);
+          const res_data = await res.json();
+          console.log('res_data order check hammasi online uchun data')
+          console.log(res_data)
+            if(res.status == 200 || res.status == 201){
+              this.order_humo_str += res_data[0].humo;
+              this.order_uz_card_str += res_data[0].uz_card;
+              this.order_click_str += res_data[0].click;
+              this.order_skidka_str += res_data[0].skidka;
+              this.order_payme_str += res_data[0].payme;
+              this.order_paynet_str += res_data[0].paynet;
+              this.order_uzumpay_str += res_data[0].uzumpay;
+
+              let temp = 0;
+              temp += res_data[0].humo + res_data[0].uz_card + res_data[0].click + 
+              res_data[0].payme + res_data[0].paynet + res_data[0].uzumpay
+
+              this.another_summa_order += temp;
+              this.order_summ += temp;
+
+              this.another_summa += this.another_summa_order;
+            }
+        }
+        catch(error){
+          console.log('2')
+          this.$refs.alert.error("Serverda uzilish bor. Qayta urinib ko'ring !");
+          return false;
+        }
+      },
 
 
       // Bugungi kun hamma summasi ==>
@@ -964,7 +1173,11 @@
   
 
       close(){
-        this.$emit('close')
+        this.openBox = false;
+        setTimeout(() => {
+          this.$emit('close')
+          this.openBox = true;
+        }, 500);
       },
       clw_cl(){
         this.poluchit_productdan_olingan_naqd = 0;
@@ -1002,77 +1215,149 @@
         this.all_total_summa = 0;
         this.all_cash_summa = 0;
         this.all_dollor_summa = 0;
+        this.order_cash_str  = 0;
+        this.order_dollor_str  = 0;
+        this.order_summ  = 0;
+        this.order_humo_str  = 0;
+        this.order_uz_card_str  = 0;
+        this.order_click_str  = 0;
+        this.order_skidka_str  = 0;
+        this.order_payme_str  = 0;
+        this.order_paynet_str  = 0;
+        this.order_uzumpay_str  = 0;
+        this.openBox = true;
       },
       
     },
   }
   </script>
   
-  <style lang="scss">
-    .addProductQtyAcceptCash{
-      position: fixed;
-      display: flex;
-      justify-content: center;
-      top:0;
-      left:0;
-      width: 100%;
-      height: 100vh;
-      background: rgba(19, 19, 49, 0.65);
-      z-index: 1111;
-      animation-name: example1;
-      animation-duration: 0.4s;
-    }
-    .acceptBoxForTegirmon{
-      width:70vw;
-      max-height: 100vh;
-      overflow-y: scroll;
-      background: snow;
-      box-shadow: 3px 2px 5px rgb(129, 129, 129);
-      border-radius: 5px;
-      position: relative;
-      animation-name: example;
-      animation-duration: 0.4s;
-    }
-    @keyframes example {
-      0%   { left:0px; top:-100px; opacity: 0;}
+ <style lang="scss" scoped>
+.addProductQtyAcceptCash {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(19, 19, 49, 0.65);
+  backdrop-filter: blur(10px); /* 🔹 Orqa fonni blur qiladi */
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 1111;
+}
+.openShow{
+  animation: fadeIn 0.5s ease forwards;
+}
+.closeShow{
+  animation: fadeOut 0.5s ease forwards;
+}
+
+
+.acceptBoxForTegirmon {
+  width: 70vw;
+  max-height: 100vh;
+  overflow-y: auto;
+  background: snow;
+  box-shadow: 3px 2px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  position: relative;
+  transform-origin: bottom right;
+  animation: macOpen 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.closeBoxForTegirmon{
+  width: 70vw;
+  max-height: 100vh;
+  overflow-y: auto;
+  background: snow;
+  box-shadow: 3px 2px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  position: relative;
+  transform-origin: bottom right;
+  animation: macClose 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* 🔹 MacOS uslubidagi chiqish (pastki o‘ngdan markazga kattarish) */
+@keyframes macOpen {
+  0% {
+    transform: scale(0.2) translate(40%, 40%);
+    opacity: 0;
+  }
   
-      100% { left:0px; top:0px; opacity: 1;}
-    }
-    // @keyframes example1 {
-    //   0%   {  opacity: 0;}
-  
-    //   100% {  opacity: 1;}
-    // }
-  
-    .price_all_item .borderSolder{
-      //border: 0.5px dashed #D0D3D8;
-      background-image: linear-gradient( 65.9deg,  rgba(85,228,224,1) 5.5%, rgba(75,68,224,0.74) 54.2%, rgba(64,198,238,1) 55.2%, rgba(177,36,224,1) 98.4% );
-  
-      span{
-        color:#26254a;
-        font-size: 21px;
-        font-weight: 450;
-      }
-      p{
-        color:#ffffff;
-        font-weight:bold;
-        font-size: 23px;
-        margin:0;
-        padding:0;
-      }
-    }
-    .depart_title small{
-      font-style: italic;
-      color: #0600b3;
-      font-weight:bold;
-    }
-    .summ_title{
-      font-size: 15px;
-      font-style: italic;
-      color: #3c3669;
-      font-weight: bold;
-    }
-    .summ_item_{
-      border-bottom: 1px dashed rgb(110, 110, 110);
-    }
-  </style>
+  100% {
+    transform: scale(1) translate(0, 0);
+    opacity: 1;
+  }
+}
+
+/* 🔹 Yopilish effekti uchun (agar ishlatmoqchi bo‘lsang) */
+@keyframes macClose {
+  0% {
+    transform: scale(1) translate(0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.2) translate(40%, 40%);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Qo‘shimcha bezaklar (seniki o‘z holida qoldirildi) */
+.price_all_item .borderSolder {
+  background-image: linear-gradient(
+    65.9deg,
+    rgba(85, 228, 224, 1) 5.5%,
+    rgba(75, 68, 224, 0.74) 54.2%,
+    rgba(64, 198, 238, 1) 55.2%,
+    rgba(177, 36, 224, 1) 98.4%
+  );
+
+  span {
+    color: #26254a;
+    font-size: 21px;
+    font-weight: 450;
+  }
+  p {
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 23px;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.depart_title small {
+  font-style: italic;
+  color: #0600b3;
+  font-weight: bold;
+}
+
+.summ_title {
+  font-size: 15px;
+  font-style: italic;
+  color: #3c3669;
+  font-weight: bold;
+}
+
+.summ_item_ {
+  border-bottom: 1px dashed rgb(110, 110, 110);
+}
+</style>

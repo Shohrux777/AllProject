@@ -630,7 +630,7 @@ export default {
             console.log(this.ruyxat_id)
             console.log(this.invoice_id)
             await this.save_item_index_changed(this.rowIndex, this.product_list[this.rowIndex].changeProduct);
-            this.$refs.message.success('Added_successfully')
+            this.$refs.message.success('Added_')
             // return true;
           }
           else{

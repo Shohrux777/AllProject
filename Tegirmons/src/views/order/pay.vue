@@ -1,182 +1,190 @@
 <template>
   <div class="addProductQtyPayed" >
+    <transition name="slide-down">
+      <div class="orderCheckList p-2" v-if="check_list.length">
+        <div class="check_item card mb-3 px-3 py-2" v-for="(item, i) in check_list" :key="i"
+        :class="{'alert-warning check_item_after' : !item.isInCashbox}">
+          <div class="d-flex justify-content-center">
+            <small class="summ_title" style="font-size: 13px;">
+              ЧЕК №{{item.id}}
+            </small>
+          </div>
+          <div class="summ_item_ p-1 d-flex justify-content-between">
+            <small style="font-size: 13px;">
+              Oбщий тулов суммаси
+            </small>
+            <small class="summ_title ">
+              {{item.summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+            </small>
+          </div>
+          <div v-if="item.cash" class="summ_item_ p-1 d-flex justify-content-between">
+            <small style="font-size: 13px;">
+              {{$t('cash')}}
+            </small>
+            <small class="summ_title">
+              {{(item.cash + item.real_sum).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+            </small>
+          </div>
+          <div v-if="item.dollor" class="summ_item_ p-1 d-flex justify-content-between">
+            <small style="font-size: 13px;">
+              {{$t('dollor')}}
+            </small>
+            <small class="summ_title">
+              {{(item.dollor + item.profit_summ).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+            </small>
+          </div>
 
-    <div class="orderCheckList p-2">
-      <div class="check_item card mb-3 px-3 py-2" v-for="(item, i) in check_list" :key="i"
-      :class="{'alert-warning check_item_after' : !item.isInCashbox}">
-        <div class="d-flex justify-content-center">
-          <small class="summ_title" style="font-size: 13px;">
-            ЧЕК №{{item.id}}
-          </small>
-        </div>
-        <div class="summ_item_ p-1 d-flex justify-content-between">
-          <small style="font-size: 13px;">
-            Oбщий тулов суммаси
-          </small>
-          <small class="summ_title">
-            {{item.summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
-          </small>
-        </div>
-        <div v-if="item.cash" class="summ_item_ p-1 d-flex justify-content-between">
-          <small style="font-size: 13px;">
-            {{$t('cash')}}
-          </small>
-          <small class="summ_title">
-            {{(item.cash + item.real_sum).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
-          </small>
-        </div>
-        <div v-if="item.dollor" class="summ_item_ p-1 d-flex justify-content-between">
-          <small style="font-size: 13px;">
-            {{$t('dollor')}}
-          </small>
-          <small class="summ_title">
-            {{(item.dollor + item.profit_summ).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
-          </small>
-        </div>
+          <div v-if="item.sum_balance" class="summ_item_ text-success p-1 d-flex justify-content-between">
+            <small style="font-size: 13px;">
+              Balance UZS
+            </small>
+            <small class="summ_title text-success">
+              {{item.sum_balance.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+            </small>
+          </div>
+          <div v-if="item.dollor_balance" class="summ_item_ text-success p-1 d-flex justify-content-between">
+            <small style="font-size: 13px;">
+              Balance USD
+            </small>
+            <small class="summ_title text-success">
+              {{item.dollor_balance.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+            </small>
+          </div>
 
-        <div v-if="item.sum_balance" class="summ_item_ text-success p-1 d-flex justify-content-between">
-          <small style="font-size: 13px;">
-            Balance UZS
-          </small>
-          <small class="summ_title text-success">
-            {{item.sum_balance.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
-          </small>
-        </div>
-        <div v-if="item.dollor_balance" class="summ_item_ text-success p-1 d-flex justify-content-between">
-          <small style="font-size: 13px;">
-            Balance USD
-          </small>
-          <small class="summ_title text-success">
-            {{item.dollor_balance.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
-          </small>
-        </div>
+          <div v-if="item.uz_card" class="summ_item_ p-1 d-flex justify-content-between">
+            <small style="font-size: 13px;">
+              UzCard
+            </small>
+            <small class="summ_title">
+              {{item.uz_card.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+            </small>
+          </div>
+          <div v-if="item.humo" class="summ_item_ p-1 d-flex justify-content-between">
+            <small style="font-size: 13px;">
+              Humo
+            </small>
+            <small class="summ_title">
+              {{item.humo.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+            </small>
+          </div>
+          <div v-if="item.payme" class="summ_item_ p-1 d-flex justify-content-between">
+            <small style="font-size: 13px;">
+              Payme
+            </small>
+            <small class="summ_title">
+              {{item.payme.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+            </small>
+          </div>
+          <div v-if="item.click" class="summ_item_ p-1 d-flex justify-content-between">
+            <small style="font-size: 13px;">
+              Click
+            </small>
+            <small class="summ_title">
+              {{item.click.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+            </small>
+          </div>
+          <div v-if="item.paynet" class="summ_item_ p-1 d-flex justify-content-between">
+            <small style="font-size: 13px;">
+              Paynet
+            </small>
+            <small class="summ_title">
+              {{item.paynet.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+            </small>
+          </div>
+          <div v-if="item.uzumpay" class="summ_item_ p-1 d-flex justify-content-between">
+            <small style="font-size: 13px;">
+              UzumPay
+            </small>
+            <small class="summ_title">
+              {{item.uzumpay.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+            </small>
+          </div>
+          <div v-if="item.skidka" class="summ_item_ text-warning p-1 d-flex justify-content-between">
+            <small style="font-size: 13px;">
+              {{$t('skidka')}}
+            </small>
+            <small class="summ_title text-warning">
+              {{item.skidka.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+            </small>
+          </div>
 
-        <div v-if="item.uz_card" class="summ_item_ p-1 d-flex justify-content-between">
-          <small style="font-size: 13px;">
-            UzCard
-          </small>
-          <small class="summ_title">
-            {{item.uz_card.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
-          </small>
-        </div>
-        <div v-if="item.humo" class="summ_item_ p-1 d-flex justify-content-between">
-          <small style="font-size: 13px;">
-            Humo
-          </small>
-          <small class="summ_title">
-            {{item.humo.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
-          </small>
-        </div>
-        <div v-if="item.payme" class="summ_item_ p-1 d-flex justify-content-between">
-          <small style="font-size: 13px;">
-            Payme
-          </small>
-          <small class="summ_title">
-            {{item.payme.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
-          </small>
-        </div>
-        <div v-if="item.click" class="summ_item_ p-1 d-flex justify-content-between">
-          <small style="font-size: 13px;">
-            Click
-          </small>
-          <small class="summ_title">
-            {{item.click.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
-          </small>
-        </div>
-        <div v-if="item.paynet" class="summ_item_ p-1 d-flex justify-content-between">
-          <small style="font-size: 13px;">
-            Paynet
-          </small>
-          <small class="summ_title">
-            {{item.paynet.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
-          </small>
-        </div>
-        <div v-if="item.uzumpay" class="summ_item_ p-1 d-flex justify-content-between">
-          <small style="font-size: 13px;">
-            UzumPay
-          </small>
-          <small class="summ_title">
-            {{item.uzumpay.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
-          </small>
-        </div>
-        <div v-if="item.skidka" class="summ_item_ text-warning p-1 d-flex justify-content-between">
-          <small style="font-size: 13px;">
-            {{$t('skidka')}}
-          </small>
-          <small class="summ_title text-warning">
-            {{item.skidka.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
-          </small>
-        </div>
+          <div v-if="item.real_sum" class="summ_item_ text-secondary p-1 d-flex justify-content-between">
+            <small style="font-size: 13px;">
+              Қайтим нақт
+            </small>
+            <small class="summ_title text-secondary">
+              {{item.real_sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+            </small>
+          </div>
+          <div v-if="item.profit_summ" class="summ_item_ text-secondary p-1 d-flex justify-content-between">
+            <small style="font-size: 13px;">
+              Қайтим доллор
+            </small>
+            <small class="summ_title text-secondary">
+              {{item.profit_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+            </small>
+          </div>
 
-        <div v-if="item.real_sum" class="summ_item_ text-secondary p-1 d-flex justify-content-between">
-          <small style="font-size: 13px;">
-            Қайтим нақт
-          </small>
-          <small class="summ_title text-secondary">
-            {{item.real_sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
-          </small>
-        </div>
-        <div v-if="item.profit_summ" class="summ_item_ text-secondary p-1 d-flex justify-content-between">
-          <small style="font-size: 13px;">
-            Қайтим доллор
-          </small>
-          <small class="summ_title text-secondary">
-            {{item.profit_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
-          </small>
-        </div>
+          <div v-if="item.online" class="summ_item_ text-secondary p-1 d-flex justify-content-between">
+            <small style="font-size: 13px;">
+              Қайтим {{' Balance UZS'}}
+            </small>
+            <small class="summ_title text-secondary">
+              {{item.online.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+            </small>
+          </div>
+          
+          <div v-if="item.perchisleniya" class="summ_item_ text-secondary p-1 d-flex justify-content-between">
+            <small style="font-size: 13px;">
+              Қайтим {{' Balance USD'}}
+            </small>
+            <small class="summ_title text-secondary">
+              {{item.perchisleniya.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+            </small>
+          </div>
 
-        <div v-if="item.online" class="summ_item_ text-secondary p-1 d-flex justify-content-between">
-          <small style="font-size: 13px;">
-            Қайтим {{' Balance UZS'}}
-          </small>
-          <small class="summ_title text-secondary">
-            {{item.online.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
-          </small>
-        </div>
-        
-        <div v-if="item.perchisleniya" class="summ_item_ text-secondary p-1 d-flex justify-content-between">
-          <small style="font-size: 13px;">
-            Қайтим {{' Balance USD'}}
-          </small>
-          <small class="summ_title text-secondary">
-            {{item.perchisleniya.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
-          </small>
-        </div>
-
-        <div class="summ_item_ p-1 d-flex justify-content-between">
-          <small style="font-size: 13px;">
-            {{$t('hisob')}}
-          </small>
-          <small class="summ_title" v-if="item.hisob_id" style="font-size: 13px;">
-            {{item.hisob_name}}
-          </small>
-          <small class="summ_title" v-else style="font-size: 13px;">
-            Касса
-          </small>
-        </div>
-        
-        <div class="summ_item_ p-1 d-flex justify-content-between">
-          <small style="font-size: 13px;">
-            {{$t('note')}}
-          </small>
-          <small class="summ_title" style="font-size: 13px;">
-            {{item.status_name}}
-          </small>
-        </div>
-        <div class="summ_item_ p-1 d-flex justify-content-between">
-          <small style="font-size: 13px;">
-            {{$t('date')}}
-          </small>
-          <small class="summ_title" style="font-size: 13px;">
-            {{item.create_date}}
-          </small>
-        </div>
-        <div class="summ_item_ p-1 d-flex justify-content-end" v-if="!item.isInCashbox">
-          <mdb-btn color="success" style="font-size:9px; padding: 6px 0; width:100px;"  @click="getMoneyToCash(item)" class="m-0  mt-1" > {{$t('accept')}}</mdb-btn>
+          <div class="summ_item_ p-1 d-flex justify-content-between">
+            <small style="font-size: 13px;">
+              {{$t('hisob')}}
+            </small>
+            <small class="summ_title" v-if="item.hisob_id" style="font-size: 13px;">
+              {{item.hisob_name}}
+            </small>
+            <small class="summ_title" v-else style="font-size: 13px;">
+              Касса
+            </small>
+          </div>
+          
+          <div class="summ_item_ p-1 d-flex justify-content-between">
+            <small style="font-size: 13px;">
+              {{$t('note')}}
+            </small>
+            <small class="summ_title" style="font-size: 13px;">
+              {{item.status_name}}
+            </small>
+          </div>
+          <div class="summ_item_ p-1 d-flex justify-content-between">
+            <small style="font-size: 13px;">
+              Кассир
+            </small>
+            <small class="summ_title" style="font-size: 13px;">
+              {{item.image_url}}
+            </small>
+          </div>
+          <div class="summ_item_ p-1 d-flex justify-content-between">
+            <small style="font-size: 13px;">
+              {{$t('date')}}
+            </small>
+            <small class="summ_title" style="font-size: 13px;">
+              {{item.create_date}}
+            </small>
+          </div>
+          <div class="summ_item_ p-1 d-flex justify-content-end" v-if="!item.isInCashbox">
+            <mdb-btn color="success" style="font-size:9px; padding: 6px 0; width:100px;"  @click="getMoneyToCash(item)" class="m-0  mt-1" > {{$t('accept')}}</mdb-btn>
+          </div>
         </div>
       </div>
-    </div>
-
+    </transition>
     <div class="orderInfoPayment p-2">
       <div class="card">
         <div class="text-center mt-2" v-if="order.client">
@@ -189,18 +197,18 @@
           <span style="font-size: 14.5px;" class="ml-2">Общая сумма заказа</span>
         </div>
         <div class="mt-0">
-          <div class="container-fluid pb-3">
+          <div class="container-fluid pb-3 ">
             <div class="row px-2">
-              <div class="col-6 pl-0 pr-1">
-                <div class="order_sum dashed_border text-center rounded px-2">
+              <div class="col-6 pl-0 pr-1 ">
+                <div class="order_sum dashed_border text-center rounded px-2 main_kassa_bg">
                   <p class="p-0 m-0 mb-1" style="font-size: 13px;">UZS</p>
-                  <span class="order_sum_text">{{ (order.sum || 0).toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
+                  <span class="order_sum_text text-white">{{ (order.sum || 0).toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
                 </div>
               </div>
-              <div class="col-6 pr-0 pl-1">
-                <div class="order_sum dashed_border rounded text-center">
+              <div class="col-6 pr-0 pl-1 ">
+                <div class="order_sum dashed_border rounded text-center main_kassa_bg">
                   <p class="p-0 m-0 mb-1" style="font-size: 13px;">USD</p>
-                  <span class="order_sum_text">{{ (order.dollor || 0).toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
+                  <span class="order_sum_text text-white">{{ (order.dollor || 0).toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
                 </div>
               </div>
             </div>
@@ -214,15 +222,15 @@
           <div class="container-fluid pb-2">
             <div class="row px-2">
               <div class="col-6 pl-0 pr-1">
-                <div class="order_sum dashed_border text-center rounded px-2">
+                <div class="order_sum dashed_border text-center main_kassa_poluchit rounded px-2">
                   <p class="p-0 m-0 mb-1" style="font-size: 13px;">UZS</p>
-                  <span class="order_sum_text">{{ payed_sum.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
+                  <span class="order_sum_text text-white">{{ payed_sum.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
                 </div>
               </div>
               <div class="col-6 pr-0 pl-1">
-                <div class="order_sum dashed_border rounded text-center">
+                <div class="order_sum dashed_border rounded text-center main_kassa_poluchit">
                   <p class="p-0 m-0 mb-1" style="font-size: 13px;">USD</p>
-                  <span class="order_sum_text">{{ payed_dollor.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
+                  <span class="order_sum_text text-white">{{ payed_dollor.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
                 </div>
               </div>
             </div>
@@ -244,15 +252,15 @@
         <div class="container-fluid pb-3">
           <div class="row ">
             <div class="col-6 pl-0 pr-1">
-              <div class="order_sum dashed_border rounded px-2">
-                <p class="p-0 m-0 mb-1" style="font-size: 13px;">UZS</p>
-                <span class="order_sum_text">{{ order_sum.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
+              <div class="order_sum dashed_border main_kassa_balance rounded px-2">
+                <p class="p-0 m-0 mb-1 text-white" style="font-size: 13px;">UZS</p>
+                <span class="order_sum_text text-white">{{ order_sum.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
               </div>
             </div>
             <div class="col-6 pr-0 pl-1">
-              <div class="order_sum dashed_border rounded">
-                <p class="p-0 m-0 mb-1" style="font-size: 13px;">USD</p>
-                <span class="order_sum_text">{{ order_dollor.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
+              <div class="order_sum dashed_border main_kassa_balance rounded">
+                <p class="p-0 m-0 mb-1 text-white" style="font-size: 13px;">USD</p>
+                <span class="order_sum_text text-white">{{ order_dollor.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
               </div>
             </div>
           </div>
@@ -432,7 +440,7 @@
             </div>
 
             <div style="width:100%; position:relative;" class="pl-4 mt-2 pb-0 mb-2 ">
-              <div class="ml-0 px-2 py-1 border-bottom border-top" 
+              <div class="ml-0 px-2 py-1 border-bottom border-top"
                 :class="{'alert-success': parseFloat(defaultSum.toFixed(2)) > summa, 'alert-danger': parseFloat(defaultSum.toFixed(2)) < summa}">
                 <div class="d-flex justify-content-between mt-0" style="font-size:13.5px;">
                   <span v-if="parseFloat(defaultSum.toFixed(2)) > summa" class="text-success"> Больше денег </span>
@@ -623,10 +631,10 @@ export default {
   computed:{
     ...mapGetters(['allOrderList', 'get_skidka_summ', 'get_all_summa', 
     'get_m_categoryIdProduct', 'get_zakaz_product_all_list','get_page_savat', 
-    'get_product_qty', 'AllSummString','user_kassa_list', 'allHisob','hisob_info']),
+    'get_product_qty', 'AllSummString','user_kassa_list', 'allHisob','hisob_info', 'user_kassa_info']),
   },
   methods: {
-    ...mapActions([  'fetchCategoryIdProduct', 'fetchProductSearchByName', 'fetchKassa_userId', ,'fetchHisob', 'fetchHisob_info']),
+    ...mapActions([  'fetchCategoryIdProduct', 'fetchProductSearchByName', 'fetchKassa_userId', ,'fetchHisob', 'fetchHisob_info', 'fetchKassa_info']),
     ...mapMutations([ 'clear_order', 'input_change', 'changeSumma', 'update_zakaz_product_all_list', 'select_savat_page', 'add_savat_page', 'del_savat_page', 
       'updateCheckId', 'change_all_summa_skidka']),
     selectOptionHisob(option){
@@ -781,7 +789,7 @@ export default {
           if (val <= 0)
           {
               _order_old_dollor = 0;
-              _order_old_sum = -1 * val;
+              _order_old_sum = (-1 * val).toFixed();
           }
           else
           {
@@ -799,7 +807,7 @@ export default {
             else
             {
                 _order_old_dollor = 0;
-                _order_old_sum = -1 * (val * this.dollor_kurs);
+                _order_old_sum = (-1 * (val * this.dollor_kurs)).toFixed();
             }
         }
         else{
@@ -810,8 +818,6 @@ export default {
         this.order_sum = parseFloat(_order_old_sum);
         this.order_dollor = parseFloat(_order_old_dollor);
         
-        
-
         console.log('check_sum')
         console.log(_order_old_sum)
         console.log(_order_old_dollor)
@@ -910,17 +916,20 @@ export default {
         return_dollor = parseFloat(this.dollor_returnIn);
       }
       else{
-        if(!this.client_info.id){
+        if((!this.client_info.id) && (this.naqd_returnIn>0 || this.dollor_returnIn>0)){
           this.$refs.alert.error("Bu klient ro'yxatga olinmagan uning hisobi mavjud emas !");
           return;
         }
         return_balance_sum = parseFloat(this.naqd_returnIn); 
         return_balance_dollor = parseFloat(this.dollor_returnIn);
       }
-
-      // !!!!!!!!!! bu yerga kurs yozilayabdimi tekshirish kerak dollor aralashgan bulsa
       // !!!!!!!!!! yana nimadir bor edi summa 0 bulsa hech qanday qaytim bulmasa tulov bulmasin
-      // !!!!!!!!!! qaytim naqd berganda tekshirish kerak agar kassada qaytimga pul yetmasa puling kam deb chiqarsin
+      if(this.defaultSum == 0 && this.naqd_returnIn == 0 && this.dollor_returnIn == 0)
+      {
+        return;
+      }
+      
+      // !!!!!!!!!! bu yerga kurs yozilayabdimi tekshirish kerak dollor aralashgan bulsa
       
       if(this.isInCash == true && this.note == ''){
         this.note = "To'lov qilindi";
@@ -938,6 +947,20 @@ export default {
         localStorage.kassa_id = 0;
         localStorage.kassa_num = 0;
         return;
+      }
+
+      // !!!!!!!!!! qaytim naqd berganda tekshirish kerak agar kassada qaytimga pul yetmasa puling kam deb chiqarsin
+      if(return_sum || return_dollor){
+        await this.fetchKassa_info(localStorage.kassa_id);
+          if(return_dollor>this.user_kassa_info.dollor){
+            this.$refs.alert.error('Kassada Dollor yetarli emas !');
+            return;
+
+          }
+          else if(return_sum>this.user_kassa_info.cash){
+            this.$refs.alert.error('Kassada Naqd pul yetarli emas !');
+            return;
+          }
       }
       try{
       const requestOptions = {
@@ -2350,5 +2373,45 @@ export default {
 @keyframes badge-blink {
   0%, 100% { opacity: 1; transform: scale(1); }
   50%      { opacity: 0.15; transform: scale(0.85); }
+}
+.slide-down-enter-active,
+.slide-down-leave-active {
+  transition: all 1s ease;
+}
+
+.slide-down-enter {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.slide-down-enter-to {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.slide-down-leave {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.slide-down-leave-to {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+.main_kassa_poluchit{
+  background-image: linear-gradient( 90deg,  rgb(117, 207, 165) 24.3%, rgb(93, 236, 177) 78.3% );
+}
+.main_kassa_bg{
+  //background-image: radial-gradient( circle farthest-corner at 10% 20%,  rgba(239,87,87,0.74) 0%, rgba(245,123,13,0.74) 90.2% );
+  background-image: linear-gradient( 90deg,  rgba(255,157,129,1) 24.3%, rgb(255, 110, 78) 78.3% );
+}
+.main_kassa_warning{
+  background-image: linear-gradient( 90deg,  rgb(219, 193, 119) 24.3%, rgb(255, 177, 88) 78.3% );
+}
+.main_kassa_balance{
+  background-image: linear-gradient( 90deg,  rgb(255, 110, 110) 24.3%, rgb(236, 93, 129) 78.3% );
+}
+.hisob_bg{
+  background-image: radial-gradient( circle 502px at 2.7% 23.7%,  rgba(142,5,254,1) 0%, rgba(33,250,214,1) 99.6% );
 }
 </style>

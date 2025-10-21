@@ -263,7 +263,7 @@
     "changeWithoutReg": "Изменить продукт отчет",
     "millUndo": "Расходы тароз",
     "accepted": "Принятый",
-    "all": "Oбщей ",
+    "all": "Oбщий ",
     "status": "Остатка статус",
     "btn": "Бтн",
     "zaxiraList": "Захира лист",
@@ -360,5 +360,6 @@
     "new_rasxod": "Новый расходъ",
     "contragent_info": "Инфо контрагент ",
     "price_list": "Оптом цена",
-    "items": "Tовары"
+    "items": "Tовары",
+    "kara": "Карачи"
 }
