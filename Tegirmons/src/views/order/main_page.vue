@@ -112,7 +112,7 @@
                 
               </div>
 
-              <div class="col-2 p-1 " v-for="(item, index) in clientProducts" :key="index" >
+              <div class="col-2 p-1 " v-for="(item, index) in clientProducts" :key="index" v-show="item.qty>0">
                 <div class="card py-1 pt-2 px-2 main_kassa_bg balance" :style="{'background': item.product.shitrix_code}">
                   <span style="font-size: 13.5px;">{{item.product.name}}</span>
                   <span class="text-right" style="font-size: 19px;">{{item.qty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} {{ item.product.unitMeasurment.name }}</span>
@@ -164,7 +164,7 @@
                   <table class="w-full border w-100 myTableuserSalaryList ">
                     <thead>
                       <tr class="bg-gray-200 header py-3 info_client_header ">
-                        <th style="padding: 6px 10px;" class="text-left" width="40">№</th>
+                        <th style="padding: 6px 10px;" class="text-left" width="50">№</th>
                         <th style="padding: 6px 10px;" class="text-left">{{$t('date')}}</th>
                         <th style="padding: 6px 10px;" class="text-left">{{$t('client_name')}}</th>
                         <th style="padding: 6px 10px;" class="text-left">{{$t('name')}}</th>
@@ -181,21 +181,28 @@
                     </thead>
                     <tbody v-for="(order, index) in order_list" :key="order.id">
                         <!-- Asosiy order qatori -->
-                        <tr
-                          class="cursor-pointer hover:bg-gray-100"
-                          :class="{'alert-success': order.isClosed, 'alert-warning': order.is_begin}"
+                        <tr 
+                          class=" hover:bg-gray-100" style="cursor:pointer;"
+                          :class="{'alert-success': order.isClosed, 'alert-warning': order.is_begin, 'alert-warning': order.is_loading}"
                         >
-                          <td class="p-2">{{ index+1 }}</td>
-                          <td class="p-2"><span>{{ order.pickUpDate.slice(8,10) }}-{{ order.pickUpDate.slice(5,7) }}-{{ order.pickUpDate.slice(0,4) }}</span></td>
-                          <td class="p-2"><span>{{ order.client_name }}</span></td>
-                          <td class="p-2 clickbtn" >
+                          <td @click="funcShowOrderInfo(order)" class="p-2 d-flex">{{ index+1 }}
+                            <div class="k-icon" title="KEPAK" 
+                            v-if="order.item_list.some(x => x.product && x.product.name && x.product.name.toLowerCase().includes('kepak'))"
+                            >
+                              <span>K</span>
+                            </div>
+                          </td>
+                          <td @click="funcShowOrderInfo(order)" class="p-2"><span>{{ order.pickUpDate.slice(8,10) }}-{{ order.pickUpDate.slice(5,7) }}-{{ order.pickUpDate.slice(0,4) }}</span></td>
+                          <td @click="funcShowOrderInfo(order)" class="p-2">
+                            <span
+                            >{{ order.client_name }}</span>
+                          </td>
+                          
+                          <td class="p-2 clickbtn" @click="funcShowOrderInfo(order)"
+                          >
                             <span v-if="order.shafyor_name">{{ order.shafyor_name }}</span>
                             <span v-else class="text-danger" >???</span>
                           </td>
-                          <!-- <td class="p-2 clickbtn">
-                            <span v-if=" order.car_nomer" >{{  order.car_nomer }}</span>
-                            <span v-else class="text-danger" @click="toggleShafyorInfo(order, false)">???</span>
-                          </td> -->
                           <td class="p-2" v-if="order.isPaid" @click="payOrder(order)">
                             <span class="paid">
                               Оплачено
@@ -210,8 +217,8 @@
                               Не оплачено
                             </span>
                           </td>
-                          <td class="p-2"><span>{{ order.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span></td>
-                          <td class="p-2"><span>{{ order.dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span></td>
+                          <td @click="funcShowOrderInfo(order)" class="p-2"><span>{{ order.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span></td>
+                          <td @click="funcShowOrderInfo(order)" class="p-2"><span>{{ order.dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span></td>
                           <td class="p-2" style="cursor:pointer;" 
                             @click="toggleOrder(index)"><span>{{ order.item_list.length }}  товары</span>
                           </td>
@@ -230,8 +237,8 @@
                             </span>
                             <img v-if="order.is_loading" style="position:absolute; top:-4px; left: -50px;" src="../../assets/truck.gif" height="50"  alt="">
                           </td>
-                          <td class="p-2">
-                            <div class="order_status" :title="'Примечание:' + order.note + '(' + order.paid_status + ')'">
+                          <td class="p-2" @click="funcShowOrderInfo(order)">
+                            <div class="order_status" :title="'Примечание: ' + order.note + '(' + order.paid_status + ')'">
                               <span>{{ order.paid_status }}</span>
                             </div>
                           </td>
@@ -304,7 +311,6 @@
                     <th>{{ $t('ostatka') }}</th>
                     <th>{{ $t('ostatka') }} $</th>
                     <th>Кассир</th>
-
                     <!-- <th width="80" class="text-center">{{$t('Action')}}</th> -->
                   </tr>
                 </thead>
@@ -442,13 +448,20 @@
         @close="show_checks_info = false" width="70%">
           <template v-slot:body>
             <check_info :choosen_day="choosen_day" ref="order_checks_info"/>
-          </template>
+          </template>ы
       </modal-train>
 
       <modal-train  :show="show_load_info" headerbackColor="#64B0FB"  titlecolor="black" title="🚚 Статистика погрузки" 
         @close="show_load_info = false" width="70%">
           <template v-slot:body>
             <load_info :choosen_day="choosen_day" ref="order_load_info"/>
+          </template>
+      </modal-train>
+
+      <modal-train  :show="show_order_info" headerbackColor="#64B0FB"  titlecolor="black" title="📦 Полная информация о заказе" 
+        @close="show_order_info = false" width="70%">
+          <template v-slot:body>
+            <order_info :order_id="order_id" ref="order_full_info"/>
           </template>
       </modal-train>
 
@@ -511,6 +524,7 @@ import Loaded_component from './loaded_component.vue';
 import Pay from './pay.vue';
 import check_info from './check_info.vue';
 import load_info from './load_info.vue';
+import order_info from './order_info.vue';
 
 export default {
 data(){
@@ -616,6 +630,7 @@ data(){
       show_send_zaxira: false,
       clientProducts: [],
       selectZaxiraProduct: null,
+      show_order_info: false,
 
     }
   },
@@ -639,6 +654,7 @@ data(){
     Pay,
     check_info,
     load_info,
+    order_info,
     mdbModal, mdbModalHeader, mdbModalBody, mdbModalFooter
   },
 //   validations: {
@@ -680,6 +696,11 @@ data(){
   methods: {
     ...mapActions(['fetch_user',]),
     ...mapMutations(['check_invoice_zaxira']),
+    async funcShowOrderInfo(order){
+      console.log(order)
+      this.$refs.order_full_info.fetchMounted(order);
+      this.show_order_info = true;
+    },
     async sendZaxiraProduct(zaxira_product){
       console.log(zaxira_product);
       this.add_order_status = true;
@@ -733,6 +754,10 @@ data(){
         await this.fetchAllOrderList();
         await this.fetchOrderPaidNotCassa();
         await this.fetchAllOrderStatusNumber();
+        if(this.client_info.id){
+          await this.fetchUserBalanceUpdate(this.client_info.id);
+          await this.fetchUserPrixodRasxod();
+        }
       }
     },
     async loaded_finish_refresh(){
@@ -743,8 +768,36 @@ data(){
     toggleOrder(index) {
       this.expandedOrder = this.expandedOrder === index ? null : index;
     },
+    async fetchUserBalanceUpdate(client_id){
+      try{
+          const response = await fetch(this.$store.state.hostname + "/TegirmonOrderClient/" + client_id);
+          if(response.status == 201 || response.status == 200)
+          {
+            const data = await response.json();
+            this.client_info = data;
+            return true;
+          }
+          else{
+            const data = await response.text();
+            this.modal_info = data;
+            this.modal_status = true;
+            return false;
+          }
+        }
+        catch{
+          this.client_list = [];
+          this.modal_info = this.$i18n.t('network_ne_connect');
+          this.modal_status = true;
+        }
+    },
     async closeOrderAdd(){
       this.add_order_status = !this.add_order_status;
+      this.client_info = {
+        id: null,
+        fio:'',
+      }
+      this.user_name = '';
+      this.user_id = 0;
       await this.fetchAllOrderList();
       await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
@@ -987,12 +1040,12 @@ data(){
     async closeRasxod(data){
       this.client_info = data;
       this.rasxod_show = !this.rasxod_show;
-      // await this.fetchUserPrixodRasxod();
+      await this.fetchUserPrixodRasxod();
     },
     async closePulChiqish(data){
       this.client_info = data;
       this.pul_olib_qolish = !this.pul_olib_qolish;
-      // await this.fetchUserPrixodRasxod();
+      await this.fetchUserPrixodRasxod();
 
     },
     async fetchClient(){
@@ -1197,7 +1250,7 @@ data(){
       this.selectZaxiraProduct = null;
     },
     async delete_order(order){
-      if(order.load_progress == 0 && order.pay_progress == 0){
+      if(order.pay_progress == 0){
         this.order_id = order.id;
         this.show_delete_order = true;
       }
@@ -1677,7 +1730,7 @@ data(){
 .order_table_max_height{
   overflow: hidden;
   overflow-y: scroll;
-  max-height: calc(100vh - 130px);
+  max-height: calc(100vh - 200px);
   min-height: 260px;
 }
 .order_table_max_height_user{
@@ -1915,5 +1968,22 @@ data(){
 .bottom_menu{
   padding-bottom: 60px !important;
 }
+.k-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-top:-3px;
+  margin-right: 4px;
+  cursor:pointer;
+}
 
+.k-icon span {
+  position: absolute;
+  font-weight: 700;
+  font-size: 15px;
+  color: #ff0505;
+}
 </style>

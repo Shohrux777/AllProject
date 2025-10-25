@@ -260,7 +260,7 @@
             <div class="col-6 pr-0 pl-1">
               <div class="order_sum dashed_border main_kassa_balance rounded">
                 <p class="p-0 m-0 mb-1 text-white" style="font-size: 13px;">USD</p>
-                <span class="order_sum_text text-white">{{ order_dollor.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
+                <span class="order_sum_text text-white">{{ order_dollor.toFixed(2).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
               </div>
             </div>
           </div>
@@ -489,6 +489,7 @@
           </div>
         </div>
       </div>
+      
     </div>
     
     <massage_box :hide="modal_status" :detail_info="modal_info"
@@ -679,7 +680,8 @@ export default {
       console.log(this.order_dollor)
       this.summa_default = this.order_sum + (this.order_dollor * this.dollor_kurs);
       this.summa = this.summa_default;
-      this.summ_str = this.summa_default.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      this.summa = parseFloat(this.summa.toFixed())
+      this.summ_str = this.summa_default.toFixed().toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
 
       this.cashIn = parseFloat(this.order_sum);
       this.cashInString = new Intl.NumberFormat().format(this.order_sum);
@@ -794,7 +796,7 @@ export default {
           else
           {
             _order_old_sum = 0;
-            _order_old_dollor = (-1 * (val / this.dollor_kurs)).toFixed();
+            _order_old_dollor = (-1 * (val / this.dollor_kurs));
           }
         }
         else if(diff_sum<0 && diff_dollor>0){
@@ -802,7 +804,7 @@ export default {
             if (val <= 0)
             {
                 _order_old_sum = 0;
-                _order_old_dollor = (-1 * val).toFixed();
+                _order_old_dollor = (-1 * val);
             }
             else
             {
@@ -825,12 +827,27 @@ export default {
     async getMoneyToCash(check){
       console.log(check)
       this.select_check = check;
-      this.confirm = true;
+      // kassaga biriktirilganmi yuqmi tekshirish
+      await this.fetchKassa_userId(localStorage.user_id);
+      if(this.user_kassa_list.length){
+        localStorage.kassa_id = this.user_kassa_list[0].id;
+        localStorage.kassa_num = this.user_kassa_list[0].num_1;
+        this.confirm = true;
+      }
+      else{
+        this.$refs.alert.error('Bu foydalanuvchi kassaga biriktirilmagan, unda savdo qilish huquqi yuq !');
+        localStorage.kassa_id = 0;
+        localStorage.kassa_num = 0;
+        return;
+      }
       console.log('pulni qabul qilinganini bildiradi')
     },
     async promise(){
       this.select_check.isInCashbox = true;
       this.select_check.salary = this.noactiveCheckQty;
+      this.select_check.tegirmonAuthid = localStorage.AuthId;
+      this.select_check.image_url = localStorage.user_name;
+      this.select_check.kassa_id = localStorage.kassa_id;
       console.log(this.select_check)
       try{
         const response = await fetch(`${this.$store.state.hostname}/TegirmonOrderCheck/${this.select_check.id}`, {
@@ -862,7 +879,7 @@ export default {
       let diff_sum = 0;
       let diff_dollor = 0;
       all_sum_money = this.cashIn + this.uzcardIn + this.humoIn + this.clickIn + this.onlineIn + 
-      this.paymeIn + this.clickedIn + this.paynetIn + this.uzumIn - parseFloat(this.naqd_returnIn);
+      this.paymeIn + this.clickedIn + this.paynetIn + this.uzumIn - parseFloat(this.naqd_returnIn) + parseFloat(this.persantage_discount);
       all_dollor_money = parseFloat(this.dollorIn) - parseFloat(this.dollor_returnIn);
 
       diff_sum = this.order_sum - all_sum_money;
@@ -1478,6 +1495,7 @@ export default {
       this.discount = parseFloat(this.cashIn) + parseFloat(this.clickIn) + parseFloat(this.uzcardIn) + parseFloat(this.humoIn) + parseFloat(this.onlineIn) + parseFloat(this.dol_convert_Sum) + 
       parseFloat(this.paymeIn) + parseFloat(this.clickedIn) + parseFloat(this.paynetIn) + parseFloat(this.uzumIn); 
       this.discountSum = parseFloat(this.summa_default) - parseFloat(this.discount);
+      this.discountSum = parseFloat(this.discountSum.toFixed())
 
       if(this.cashIn == this.summa || this.uzcardIn == this.summa || this.humoIn == this.summa || this.clickIn == this.summa || this.onlineIn == this.summa || 
       this.dol_convert_Sum == this.summa || this.paymeIn == this.summa || this.clickedIn == this.summa || this.paynetIn == this.summa || this.uzumIn == this.summa 
@@ -1515,6 +1533,7 @@ export default {
         this.persantage_discountString = this.persantage_discount.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
         this.persantage_discount_diff = parseFloat(this.persantage_discount) - parseFloat(this.persantage_discount_default);
         this.summa = parseFloat(this.summa_default) - parseFloat(this.persantage_discount_diff)
+        this.summa = parseFloat(this.summa.toFixed())
         this.summ_str = this.summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
       }
 
@@ -1532,6 +1551,7 @@ export default {
         this.persantage_discount = 0;
         this.persantage_discount_diff = parseFloat(this.persantage_discount) - parseFloat(this.persantage_discount_default);
         this.summa = parseFloat(this.summa_default) + parseFloat(this.persantage_discount_default);
+        this.summa = parseFloat(this.summa.toFixed())
         this.summ_str = this.summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
       }
 
@@ -1575,6 +1595,7 @@ export default {
         this.persantage_discount = parseFloat(temp);
        }
       this.summa = parseFloat(this.summa_default) + parseFloat(this.persantage_discount_default) - parseFloat(this.persantage_discount);
+      this.summa = parseFloat(this.summa.toFixed());
       this.summ_str = this.summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
       this.persantage_discount_diff = parseFloat(this.persantage_discount) - parseFloat(this.persantage_discount_default);
       this.defaultSum = this.cashIn + this.uzcardIn + this.humoIn + this.clickIn + this.onlineIn + 
@@ -1593,7 +1614,7 @@ export default {
     getNol(){
       this.discount = parseFloat(this.clickIn) + parseFloat(this.uzcardIn) + parseFloat(this.humoIn) + parseFloat(this.onlineIn) + parseFloat(this.dol_convert_Sum) + 
       parseFloat(this.paymeIn) + parseFloat(this.clickedIn) + parseFloat(this.paynetIn) + parseFloat(this.uzumIn)
-      this.discountSum = parseFloat(this.summa) - parseFloat(this.discount)
+      this.discountSum = parseFloat(this.summa) - parseFloat(this.discount);
 
       if(this.cashIn == this.summa || this.uzcardIn == this.summa || this.humoIn == this.summa || this.clickIn == this.summa || this.onlineIn == this.summa || 
       this.dol_convert_Sum == this.summa || this.paymeIn == this.summa || this.clickedIn == this.summa || this.paynetIn == this.summa || this.uzumIn == this.summa

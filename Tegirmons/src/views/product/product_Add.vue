@@ -30,7 +30,7 @@
             <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('price')}}</p>
           </mdb-col>
           <mdb-col col="5">
-            <mdb-input class="m-0 p-0" v-model="price" size="md" outline  group type="number" validate error="wrong" success="right"/>
+            <input class="m-0 p-0 form-control px-3" v-model="price_str" type="text" @keyup="funcPrice($event.target.value)" />
             <!-- <small class="invalid-text pt-4" style="margin-left:5px; "  v-if="$v.price.$dirty && !$v.price.required" >
               {{$t('name_invalid_text')}}
             </small>
@@ -81,12 +81,12 @@
                   >
                 </div>
                 <div class="col-4 px-1">
-                  <mdb-input
-                    class="m-0 p-0"
-                    v-model="item.price"
-                    size="sm"
-                    outline
-                    type="number"
+                  <input
+                    class="m-0 p-0 form-control px-2"
+                    v-model="item.price_str"
+                    @keyup="funcItemPrice($event.target.value, i)"
+                    style="height: 26px; font-size: 12px;"
+                    type="text"
                   />
                   <small
                     style="position: absolute; top: -10px; left: 10px; font-size: 11px"
@@ -268,6 +268,7 @@ export default {
       id: this.$route.params.id,
       name: '',
       price: '',
+      price_str: '',
       alert_danger: false,
       PicShow: true,
       base64: '',
@@ -285,6 +286,7 @@ export default {
           name: '',
           qty: null,
           price: null,
+          price_str: '',
           type: 1,
           measure_str: 'UZS',
           status_uzs: true,
@@ -329,6 +331,7 @@ export default {
         console.log(data)
         this.name = data.name,
         this.price = data.price,
+        this.price_str = data.price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 '),
         this.measurment_id = data.tegirmonUnitMeasurmentid,
         this.measurment_name = data.measurment_name,
         this.image = this.$store.state.server_ip +  data.image_base_64,
@@ -344,6 +347,7 @@ export default {
               name: data.productPrices[i].name,
               qty: data.productPrices[i].qty,
               price: data.productPrices[i].price,
+              price_str: data.productPrices[i].price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 '),
               type: data.productPrices[i].type,
               measure_str: data.productPrices[i].measure_str,
               id: 0,
@@ -558,6 +562,46 @@ export default {
           }
         }
       },
+    funcPrice(n){
+      var tols = ''
+      for(let i=0; i<n.length; i++){
+        if(n[i] != ' '){
+          tols += n[i];
+        }
+       }
+       if(tols[tols.length-1] != '0' && tols[tols.length-1] != '1' && tols[tols.length-1] != '2' && tols[tols.length-1] != '3' && tols[tols.length-1] != '4' && 
+        tols[tols.length-1] != '5' && tols[tols.length-1] != '6' && tols[tols.length-1] != '7' && tols[tols.length-1] != '8' && tols[tols.length-1] != '9' && tols[tols.length-1] != '.'){
+        tols = tols.slice(0,tols.length-1)
+       }
+       this.price_str = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+       var temp = ''
+       for(let i=0; i<this.price_str.length; i++){
+        if(this.price_str[i] != ' '){
+          temp += this.price_str[i];
+        }
+       }
+      this.price = parseFloat(temp);
+    },
+    funcItemPrice(n,k){
+      var tols = ''
+      for(let i=0; i<n.length; i++){
+        if(n[i] != ' '){
+          tols += n[i];
+        }
+       }
+       if(tols[tols.length-1] != '0' && tols[tols.length-1] != '1' && tols[tols.length-1] != '2' && tols[tols.length-1] != '3' && tols[tols.length-1] != '4' && 
+        tols[tols.length-1] != '5' && tols[tols.length-1] != '6' && tols[tols.length-1] != '7' && tols[tols.length-1] != '8' && tols[tols.length-1] != '9' && tols[tols.length-1] != '.'){
+        tols = tols.slice(0,tols.length-1)
+       }
+       this.productPrices[k].price_str = tols.replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+       var temp = ''
+       for(let i=0; i<this.productPrices[k].price_str.length; i++){
+        if(this.productPrices[k].price_str[i] != ' '){
+          temp += this.productPrices[k].price_str[i];
+        }
+       }
+      this.productPrices[k].price = parseFloat(temp);
+    }
   }
 }
 </script>

@@ -93,7 +93,7 @@
         </div>
         
         <div class="d_table">
-          <mdb-tbl class="fixed-column">
+          <mdb-tbl class="fixed-column" style="min-height: 260px;">
             <mdb-tbl-head class="m-0 p-0">
               <tr>
                 <td></td>

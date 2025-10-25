@@ -412,7 +412,7 @@ export default {
   background-image: linear-gradient( 90deg,  rgb(219, 193, 119) 24.3%, rgb(255, 177, 88) 78.3% );
 }
 .main_kassa_balance{
-  background-image: linear-gradient( 90deg,  rgb(255, 110, 110) 24.3%, rgb(236, 93, 129) 78.3% );
+  background-image: linear-gradient( 90deg,  rgb(250, 99, 237) 24.3%, rgb(193, 72, 218) 78.3% );
 
 }
 .main_kassa_poluchit{

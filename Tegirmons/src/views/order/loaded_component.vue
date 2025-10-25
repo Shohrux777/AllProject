@@ -276,7 +276,10 @@
                   </tr>
                 </table>
                 <table class="customer-info" v-else>
-                  <tr>
+                  <tr v-if="order_info.shafyor_name">
+                    <td>Ф.И.О</td><td>:</td><td>{{order_info.shafyor_name}}</td>
+                  </tr>
+                  <tr v-else>
                     <td>Ф.И.О</td><td>:</td><td>________________________</td>
                   </tr>
                   <tr>

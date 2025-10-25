@@ -239,6 +239,10 @@ export default {
       this.showPhoto = false;
       this.hisob_id = 0;
       this.hisob_name = '';
+      this.hisob_sum = 0;
+      this.hisob_sum_str = '0';
+      this.hisob_dollor = 0;
+      this.hisob_dollor_str = '0';
     },
     async saveRasxod(){
       console.log(this.all_summ)
