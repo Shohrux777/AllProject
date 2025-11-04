@@ -258,7 +258,7 @@ export default {
   methods: {
     ...mapActions([  'fetchCategoryIdProduct', 'fetchProductSearchByName', 'fetchKassa_userId']),
     ...mapMutations([ 'clear_order', 'input_change', 'changeSumma', 'update_zakaz_product_all_list', 'select_savat_page', 'add_savat_page', 'del_savat_page', 
-      'updateCheckId', 'change_all_summa_skidka']),
+      'updateCheckId', 'change_all_summa_skidka', 'update_check_type']),
     clw_cl(){
       this.naqd_returnInString = '0';
       this.naqd_returnIn = 0;
@@ -391,6 +391,23 @@ export default {
       });
       console.log('orderList')
       console.log(orderList)
+      let check_temp = {
+        "card": parseFloat(this.uzcardIn),
+        "cash": parseFloat(this.cashIn) - parseFloat(this.naqd_returnIn),
+        "dolg": parseFloat(this.clickIn),
+        "online": parseFloat(this.onlineIn),
+        "humo": parseFloat(this.humoIn),
+        "profit_summ": parseFloat(this.persantage_discount),
+        "real_sum": parseFloat(this.dollorIn) - parseFloat(this.dollor_returnIn), // berilgan dollor qaytarilgandan ayirilgani
+        "uz_card": parseFloat(this.paymeIn), // paymen orqali tulov
+        "perchisleniya": parseFloat(this.clickedIn), // click orqali tulov
+        "creadit_payed": parseFloat(this.paynetIn), // paynet orqali tulov
+        "rasxod": parseFloat(this.uzumIn), // uzum orqali tulov
+        "salary": parseFloat(this.dollor_returnIn), // qaytarilgan dollor
+        "srogi_otganlar_uchun_rasxod": parseFloat(this.naqd_returnIn), // qaytarilgan naqd
+      }
+      this.update_check_type(check_temp);
+
       const requestOptions = {
         method : "POST",
         headers: { "Content-Type" : "application/json" },

@@ -54,6 +54,11 @@
                   <small>Список должников</small>
                 </div>
               </div> -->
+              <div style="width:130px" class="mr-2" @click="infoClient" v-if="user_id">
+                <div class="main_kassa_btn m-0 bg_col_info">
+                  <small>Инфо клиента</small>
+                </div>
+              </div>
               <div style="width:130px" class="mr-2" @click="openOrderAdd">
                 <div class="main_kassa_btn m-0 bg_col_blue">
                   <small>Добавить заказ</small>
@@ -277,7 +282,7 @@
                                 <tr v-for="item in order.item_list" :key="item.id">
                                   <td class="p-2">{{ item.product.name }}</td>
                                   <td class="p-2">{{ item.sum_str }}</td>
-                                  <td class="p-2">{{ item.qty }}</td>
+                                  <td class="p-2">{{ item.qty }} {{ item.product.unitMeasurment.name }}</td>
                                   <td class="p-2">{{ item.price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</td>
 
                                   <td class="p-2">{{ item.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</td>
@@ -285,6 +290,13 @@
                                     <span v-if="item.price_type == 1">UZS</span>
                                     <span v-else>USD</span>
                                   </td>
+                                </tr>
+                                <tr class="alert-secondary">
+                                  <td class="p-2" colspan="2">Общий</td>
+                                  <td class="p-2">{{ order.item_list.reduce((total, item) => total + Number(item.qty || 0), 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} шт</td>
+                                  <td class="p-2">{{ order.item_list.reduce((total, item) => total + Number(item.qty * item.product.real_qty || 0), 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')  }} кг</td>
+                                  <td class="p-2" colspan="2"></td>
+                                  
                                 </tr>
                               </tbody>
                             </table>
@@ -465,6 +477,13 @@
           </template>
       </modal-train>
 
+      <modal-train  :show="show_client_info" headerbackColor="#64B0FB"  titlecolor="black" title=" Полная информация о клиент" 
+        @close="show_client_info = false" width="70%">
+          <template v-slot:body>
+            <client_info  ref="client_full_info"/>
+          </template>
+      </modal-train>
+
 
        <pay v-show="payshow" :client_info="pay_client_info" @close="closePay" 
         />
@@ -525,6 +544,7 @@ import Pay from './pay.vue';
 import check_info from './check_info.vue';
 import load_info from './load_info.vue';
 import order_info from './order_info.vue';
+import client_info from './client_info.vue';
 
 export default {
 data(){
@@ -631,7 +651,7 @@ data(){
       clientProducts: [],
       selectZaxiraProduct: null,
       show_order_info: false,
-
+      show_client_info: false,
     }
   },
   components: {
@@ -655,6 +675,7 @@ data(){
     check_info,
     load_info,
     order_info,
+    client_info,
     mdbModal, mdbModalHeader, mdbModalBody, mdbModalFooter
   },
 //   validations: {
@@ -1070,6 +1091,10 @@ data(){
         this.modal_status = true;
       }
     },
+    async infoClient(){
+      this.show_client_info = true;
+      this.$refs.client_full_info.fetchMounted(this.user_id);
+    },
     async selectOptionUser(option){
       console.log(option)
       this.client_info = option;
@@ -1086,6 +1111,7 @@ data(){
       await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
       await this.getClientProducts();
+      
       
     },
     async selectClientPassport(option){

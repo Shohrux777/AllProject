@@ -27,7 +27,12 @@ export default {
   computed: {
     chartData() {
       return {
-        labels: this.products.map(p => p.product_name),
+        labels: this.products.map(p => {
+          if (!p.product_kg || p.product_kg <= 0) return p.product_name;
+
+          const formattedQty = new Intl.NumberFormat('ru-RU').format(p.product_kg);
+          return `${p.product_name} (${formattedQty} кг)`;
+        }),
         datasets: [
           {
             label: "Sotilgan miqdor",

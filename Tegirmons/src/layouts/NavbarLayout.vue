@@ -127,8 +127,15 @@
                 this.option[10].status = false;
               }
               else{
-                this.option[9].status = true;
+                this.option[10].status = true;
               }
+              if(data.num_3 == 0){
+                this.option[11].status = false;
+              }
+              else{
+                this.option[11].status = true;
+              }
+
 
           }
       }

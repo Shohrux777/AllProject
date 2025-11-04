@@ -298,6 +298,9 @@
                   <tr>
                     <td>Телефон</td><td>:</td><td>{{select_order_info.phone_number}}</td>
                   </tr>
+                  <tr>
+                    <td>{{ $t("kara") }}</td><td>:</td><td>{{select_order_info.image_url}}</td>
+                  </tr>
                 </table>
               </div>
             </div>
@@ -312,6 +315,7 @@
                   <th>{{$t('product')}}</th>
                   <th>{{$t('kg_ves')}}</th> 
                   <th>{{$t('qty')}}</th> 
+                  <th  width="50"></th>
                   <th>{{$t('all')}}</th> 
                 </tr>
               </thead>
@@ -321,6 +325,7 @@
                   <td>{{item.product.name}}</td>
                   <td>{{item.product.real_qty}} кг</td>
                   <td>{{item.qty}} {{ item.product.unitMeasurment.name }}</td>
+                  <td></td>
                   <td>{{(item.qty * item.product.real_qty).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} кг</td>
                 </tr>
                 <tr>
@@ -328,6 +333,7 @@
                   <td colspan="2">Oбщий</td>
                   <td></td>
                   <td>{{ all_qty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} шт</td>
+                  <td></td>
                   <td>{{all_massa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} кг</td>
                 </tr>
               </tbody>
@@ -1019,5 +1025,11 @@ input::placeholder {
   color: #c62828;            /* Qizil matn */
   border-color: #e24545;     /* Qizil ramka */
   background-color: #ffd4d8; /* Qizil fon (pastel) */
+}
+.ortilgan_active{
+  background: #9cccd8;
+}
+.update_car_active{
+  background: #c8d2ff;
 }
 </style>

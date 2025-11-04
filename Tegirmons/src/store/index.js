@@ -30,6 +30,7 @@ import dashboard from '../store/modules/dashboard'
 import salary from '../store/modules/salary'
 import smena from '../store/modules/smena'
 import depart from '../store/modules/depart'
+import productCategory from '../store/modules/productCategory'
 
 Vue.use(Vuex)
 
@@ -116,6 +117,7 @@ export default new Vuex.Store({
         dashboard,
         salary,
         smena,
-        depart
+        depart,
+        productCategory
     }
 })

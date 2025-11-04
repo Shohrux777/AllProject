@@ -18,7 +18,11 @@
             </small>
           </div>
           <div v-if="item.cash" class="summ_item_ p-1 d-flex justify-content-between">
-            <small style="font-size: 13px;">
+
+            <small style="font-size: 13px;" v-if="item.hisob_id">
+              Перечисления
+            </small>
+            <small style="font-size: 13px;" v-else>
               {{$t('cash')}}
             </small>
             <small class="summ_title">
@@ -844,7 +848,7 @@ export default {
     },
     async promise(){
       this.select_check.isInCashbox = true;
-      this.select_check.salary = this.noactiveCheckQty;
+      this.select_check.salary = parseInt(this.noactiveCheckQty);
       this.select_check.tegirmonAuthid = localStorage.AuthId;
       this.select_check.image_url = localStorage.user_name;
       this.select_check.kassa_id = localStorage.kassa_id;
@@ -1009,7 +1013,7 @@ export default {
 
           "remaining_sum": this.order_old_sum,
           "remaining_usd": this.order_old_dollor,
-          "salary": this.noactiveCheckQty,
+          "salary": parseInt(this.noactiveCheckQty),
 
           "sum_balance": parseFloat(this.onlineIn), // client balance sum
           "dollor_balance": parseFloat(this.balance_dollor), //  client balance dollor
@@ -1019,6 +1023,7 @@ export default {
 
           "online": parseFloat(return_balance_sum), // client balance qaytim sum
           "perchisleniya": parseFloat(return_balance_dollor), //  client balance qaytim dollor
+          "client_name": this.client_info?.id ? this.client_info.fio : this.order?.shafyor_name,
 
           // "uz_card": 0,     for skidka uchun ishlataman
         })

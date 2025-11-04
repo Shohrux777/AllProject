@@ -287,7 +287,7 @@ data(){
         this.loading = false;
         if(response.status == 201 || response.status == 200)
         {
-          console.log(data)
+          console.log('productsss',data);
           this.topProducts = data;
           this.$refs.message.success('Added_successfully')
           return true;

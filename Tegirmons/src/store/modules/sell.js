@@ -15,6 +15,7 @@ export default {
         ],
         CheckId: 0,
         page_savat: 0,
+        check_type: {},
 
 
     },
@@ -22,6 +23,10 @@ export default {
 
     },
     mutations: {
+        update_check_type(state, data){
+            state.check_type = data;
+            console.log('state.check_type', state.check_type)
+        },
         update_zakaz_product_all_list(state) {
             var emptyArr = []
             state.zakaz_product_all_list.push(emptyArr)
@@ -241,6 +246,9 @@ export default {
         },
         CheckId(state){
             return state.CheckId;
+        },
+        get_check_type(state){
+            return state.check_type;
         }
 
 

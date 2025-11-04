@@ -2,7 +2,7 @@
   <div class="check_info p-2">
     <div class="header">
         <div class="border-bottom text-center pb-1">
-            <span style="color:#8697BA; font-style: italic; font-size: 14px;" class="bg-primary text-white px-3 py-1 rounded"> {{ choosen_day }}  kundagi tushgan zakazlar soni 🚚💨
+            <span style="color:#8697BA; font-style: italic; font-size: 14px;" class="bg-primary text-white px-3 py-1 rounded"> {{ choosen_day }}  kundagi tushgan zakazlar miqdori 🚚💨
             </span>
         </div>
         <div class="d-flex justify-content-start mt-2 mb-2">
@@ -17,7 +17,7 @@
             </div>
             <div class="main_kassa_hisoblar ml-3 main_kassa_poluchit" >
                 <small>
-                  ✅ Погружено 
+                  ✅ Погружено
                 </small>
                 <p class="summ_title">
                     {{total.loadedQty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} шт
@@ -43,6 +43,19 @@
                 </p>
             </div>
         </div>
+        <div class="d-flex justify-content-start mt-2 mb-2">
+            <div class="main_kassa_hisoblar main_kassa_bg " :class="{'ml-3': index != 0}" 
+              v-for="(item , index) in order_category_list" :key="index" :style="`background: ${item.color} !important`"
+              v-show="item.auth_user_creator_id>0 || index == 0">
+                <small>
+                  {{item.name}}
+                </small>
+                <p class="summ_titled">
+                    {{item.auth_user_creator_id.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} шт
+                      ⮕ {{item.auth_user_updator_id.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} кг
+                </p>
+            </div>
+        </div>
     </div>
     <div class="check_list mt-1">
         <table class="w-100  myTableuserSalaryList rounded my-2 px-2">
@@ -56,29 +69,29 @@
                     <th class=" text-left">Идёт погрузка... ⏳</th>
 
                     <th class=" text-left">Осталось погрузить</th>
-
+                    <th width="120"  class=" text-left">{{$t('category')}}</th>
 
                 </tr>
             </thead>
             <tbody>
-            <tr v-for="item in order_load_list" :key="item.id" :style="`background: ${item.product.shitrix_code}`">
-                    <td class="p-2" ><span v-if="item.productId">{{ item.productName }}</span></td>
-                    <td class="p-2"><span>{{ item.totalQty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} {{ item.unit }}</span>
-                      <span>
-                        ➡️ {{ (item.totalQty * item.product.real_qty).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} кг
-                      </span>
-                    </td>
-                    
-                    <td class="p-2"><span>{{ item.loadedQty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} {{ item.unit }}</span>
-                      ➡️ {{ (item.loadedQty * item.product.real_qty).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} кг</td>
-                    
-                    <td class="p-2"><span>{{ item.loadingQty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} {{ item.unit }}</span>
-                      ➡️ {{ (item.loadingQty * item.product.real_qty).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} кг</td>
+              <tr v-for="item in order_load_list" :key="item.id" :style="`background: ${item.product.shitrix_code}`">
+                  <td class="p-2" ><span v-if="item.productId">{{ item.productName }}</span></td>
+                  <td class="p-2"><span>{{ item.totalQty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} {{ item.unit }}</span>
+                    <span>
+                      ➡️ {{ (item.totalQty * item.product.real_qty).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} кг
+                    </span>
+                  </td>
+                  
+                  <td class="p-2"><span>{{ item.loadedQty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} {{ item.unit }}</span>
+                    ➡️ {{ (item.loadedQty * item.product.real_qty).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} кг</td>
+                  
+                  <td class="p-2"><span>{{ item.loadingQty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} {{ item.unit }}</span>
+                    ➡️ {{ (item.loadingQty * item.product.real_qty).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} кг</td>
 
-                    <td class="p-2"><span>{{ item.remainingQty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} {{ item.unit }}</span>
-                      ➡️ {{ (item.remainingQty * item.product.real_qty).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} кг</td>
-                    
-                </tr>
+                  <td class="p-2"><span>{{ item.remainingQty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} {{ item.unit }}</span>
+                    ➡️ {{ (item.remainingQty * item.product.real_qty).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} кг</td>
+                  <td class="p-2" ><span style="font-size: 10px; ">{{ item.product.print_name }}</span></td>
+              </tr>
             </tbody>
         </table>
     </div>
@@ -86,6 +99,8 @@
 </template>
 
 <script>
+import {mapActions, mapGetters} from 'vuex'
+
 export default {
   data(){
     return{
@@ -100,6 +115,7 @@ export default {
         "remainingKg": 0
       },
       order_load_list: [],
+      order_category_list: [],
     }
   },
   props: {
@@ -122,11 +138,29 @@ export default {
   //   await this.fetch_order_all_naqd();
   //   await this.fetch_order_all_summa_online();
   // },
+   computed: mapGetters(['allcategory']),
   methods:{
+    ...mapActions(['fetchcategory', ]),
     async func_mounted(){
       this.clw_cw()
       await this.fetch_get_order_items_summary();
       await this.fetch_get_order_items_summary_total();
+      await this.fetchcategory();
+      console.log(this.allcategory);
+      this.order_category_list = this.allcategory.rows;
+      for(let i=0; i<this.order_category_list.length; i++){
+        let qty = 0;
+        let qty_kg = 0;
+        for(let j=0; j< this.order_load_list.length; j++){
+          if(this.order_category_list[i].id == this.order_load_list[j].product.bot_id){
+            qty += this.order_load_list[j].loadedQty;
+            qty_kg += (this.order_load_list[j].loadedQty * this.order_load_list[j].product.real_qty);
+          }
+        }
+        this.order_category_list[i].auth_user_creator_id = qty;
+        this.order_category_list[i].auth_user_updator_id = qty_kg;
+      }
+      console.log(this.order_category_list)
 
     },
     
@@ -204,6 +238,14 @@ export default {
   .summ_title{
     color:#ffffff;
     font-size: 18px;
+    text-align: right;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+    margin-top: 5px;
+  }
+  .summ_titled{
+    color:#ffffff;
+    font-size: 16px;
     text-align: right;
     padding-bottom: 0px;
     margin-bottom: 0px;

@@ -141,6 +141,14 @@
                 <label  style="cursor:pointer;" class="custom-control-label " for="number18"></label>
             </div>
         </div>
+        <div 
+            class="access_item d-flex justify-content-between py-2 border-bottom">
+            <span>Оптом савдо</span>
+            <div class="custom-control custom-switch">
+                <input v-model="access_item.optom" type="checkbox" class="custom-control-input " id="number20" checked>
+                <label  style="cursor:pointer;" class="custom-control-label " for="number20"></label>
+            </div>
+        </div>
         <div class="d-flex justify-content-end mt-4">
             <mdb-btn color="success" style="font-size: 10.5px"
             @click="saveAccess"
@@ -180,6 +188,7 @@ export default {
                 kassa_setting: false,
                 hisoblar: false,
                 debt: false,
+                optom: false,
                 sklad: false,
             },
             id: 0,
@@ -219,6 +228,9 @@ export default {
                 if(data.num_2 > 0){
                     this.access_item.sklad = true;
                 }
+                if(data.num_3 > 0){
+                    this.access_item.optom = true;
+                }
                 this.id = data.id;
             }
         }
@@ -242,11 +254,15 @@ export default {
         async saveAccess() {
             let num_1 = 0;
             let num_2 = 0;
+            let num_3 = 0;
             if(this.access_item.debt == true){
                 num_1 = 1;
             }
             if(this.access_item.sklad == true){
                 num_2 = 1;
+            }
+            if(this.access_item.optom == true){
+                num_3 = 1;
             }
             const requestOptions = {
                 method : "POST",
@@ -269,6 +285,7 @@ export default {
                     "status_5": this.access_item.hisoblar,
                     "num_1": num_1,
                     "num_2": num_2,
+                    "num_3": num_3,
                     "tegirmonUserid": this.user_id,
                     "id" : this.id,
                 })

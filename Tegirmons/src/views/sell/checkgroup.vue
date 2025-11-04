@@ -24,6 +24,12 @@
             <strong style="font-size: 13px; font-weight:bold;" class="paymentCheckPrint">{{get_all_check[0].date.slice(8,10) + '-' + get_all_check[0].date.slice(5,7) + '-' + get_all_check[0].date.slice(0,4)}} <strong class="ml-1">{{get_all_check[0].date.slice(11,16)}}</strong></strong>
           </div>
         </div>
+        <div style="margin: 5px 0px;">
+          <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between;  margin-top:3px;">
+            <strong style="font-size:13px; font-weight:bold;" class="paymentCheckPrint">Номер машины </strong>
+            <strong style="font-size: 15px; font-weight:bold;" class="paymentCheckPrint">{{ car_nomer }}</strong>
+          </div>
+        </div>
       </div>
       <div class="client_all_info" v-for="(item, index) in get_all_check" :key="index" style=" border-bottom: 1px dashed black;" v-show="item.sell.sell_price>0  || item.changeProduct.length>0">
         <div class="infoList infoHeader">
@@ -128,6 +134,12 @@ export default {
       kassir : localStorage.user_name,
       dateTime: new Date().toLocaleDateString(),
       time: new Date().toLocaleTimeString(),
+    }
+  },
+  props:{
+    car_nomer:{
+      type: String,
+      default: '',
     }
   },
   async mounted(){

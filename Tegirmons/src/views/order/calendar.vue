@@ -1,11 +1,11 @@
 <template>
   <div style="width: 350px;">
     <div class="calendar-controls">
-        <select v-model="selectedYear" @change="refreshCalendar">
+        <select v-model="selectedYear" @change="refreshCalendar(1)">
             <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
         </select>
 
-        <select v-model="selectedMonth" @change="refreshCalendar">
+        <select v-model="selectedMonth" @change="refreshCalendar(1)">
             <option v-for="month in months" :key="month.value" :value="month.value">
             {{ month.name }}
             </option>
@@ -27,6 +27,7 @@
                     'working': day.count>0 && day.last_day == false,
                     'last_working': day.count>0 && day.last_day == true,
                     'other-month': day.isOtherMonth,
+                    'other-months': day.isOtherMonth && day.count>0,
                     'today': day.isToday,
                     'select_date': day.isSelect
                     }">
@@ -118,7 +119,7 @@ export default {
     },
     async fetchAllOrderList(){
       try{
-        console.log(this.choosen_day)
+        console.log('this.choosen_day', this.choosen_day)
         console.log(this.client_info)
         let client_id = 0;
         if(this.client_info.id){
@@ -168,7 +169,15 @@ export default {
       this.workdays = await res.json();
       this.generateCalendar();
     },
-    async refreshCalendar() {
+    async refreshCalendar(i) {
+      if(i==1){
+        const year = this.selectedYear;
+        const month = String(this.selectedMonth + 1).padStart(2, '0');
+        const day = '01';
+
+         this.choosen_day = `${year}-${month}-${day}`;
+      }
+      console.log(this.choosen_day)
           await this.fetchAllOrderList();
           // this.generateCalendar(this.selectedYear, this.selectedMonth);
     },
@@ -232,7 +241,7 @@ export default {
     // fetch('/api/user-list')
     //   .then(res => res.json())
     //   .then(data => (this.users = data));
-    this.refreshCalendar();
+    this.refreshCalendar(0);
   }
 };
 </script>
@@ -279,8 +288,12 @@ tr:hover{
   font-weight: 600 !important;
 }
 .other-month {
-  color: #aaa; /* ochroq ko‘rinish uchun */
+  color: #949494; /* ochroq ko‘rinish uchun */
   background-color: #f9f9f9; /* yoki faqat rangni o‘zgartiring */
+}
+.other-months{
+  color: #6d6d6d; /* ochroq ko‘rinish uchun */
+  background-color: #fdfcea;
 }
 .calendar-controls{
   width: 100%;

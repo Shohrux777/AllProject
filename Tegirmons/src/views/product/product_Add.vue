@@ -164,6 +164,20 @@
 
         <mdb-row class="mt-4">
           <mdb-col col="3">
+            <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('category')}}</p>
+          </mdb-col>
+          <mdb-col col="5" style="position: relative;">
+              <erpSelect
+                :options="allcategory.rows"  
+                @select="selectOptionCategory"
+                :selected="category_name"
+                :label="$t('category')"
+              />
+          </mdb-col>
+        </mdb-row>
+
+        <mdb-row class="mt-4">
+          <mdb-col col="3">
             <p class="p-0 m-0 mt-2" style="font-size: 14px;">KG</p>
           </mdb-col>
           <mdb-col col="5">
@@ -281,6 +295,8 @@ export default {
       uzs_status: false,
       number: 0,
       numkg:0,
+      category_name: '',
+      category_id: null,
       productPrices: [
         {
           name: '',
@@ -340,6 +356,8 @@ export default {
         this.status = data.inv_accepted_status;
         this.color = data.shitrix_code;
         this.number = data.auth_user_updator_id;
+        this.category_id = data.bot_id;
+        this.category_name = data.print_name;
         if(data.productPrices.length>0){
           this.productPrices = [];
           for(let i=0; i<data.productPrices.length; i++){
@@ -379,13 +397,14 @@ export default {
       }
 
     },
-    mounted(){
-      this.fetchMeasurment();
+    async mounted(){
+      await this.fetchMeasurment();
+      await this.fetchcategory();
     },
-    computed: mapGetters(['allMeasurment']),
+    computed: mapGetters(['allMeasurment', 'allcategory']),
 
   methods:{
-    ...mapActions(['fetchMeasurment']),
+    ...mapActions(['fetchMeasurment', 'fetchcategory']),
     async addProductPrice(){
       let temp = {
         name: '',
@@ -433,6 +452,10 @@ export default {
     selectOption(option){
       this.measurment_name = option.name
       this.measurment_id = option.id
+    },
+    selectOptionCategory(option){
+      this.category_name = option.name
+      this.category_id = option.id
     },
     delImage(){
       this.base64 = ''
@@ -512,6 +535,8 @@ export default {
                 "auth_user_updator_id": this.number,
                 "productPrices": this.productPrices,
                 "real_qty": this.numkg,
+                "print_name": this.category_name,
+                "bot_id": this.category_id,
                 // "adddress": this.address,
                 // "image_url": this.image_url,
                 "id" : this.id,

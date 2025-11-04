@@ -208,7 +208,7 @@
         </div>
         <div class="d-flex" v-on:click.capture="focusBarcode">
           <div class="w-50">
-            <!-- <div class="text-center mt-1 linkMain" style="padding: 9.2px 0;" @click="checkShow">
+            <!-- <div class="text-center mt-1 linkMain" style="padding: 9.2px 0;" @click="List">
               <span class="m-0 p-0 " >{{$t('check')}} </span>
             </div> -->
             <div class="text-center mt-1  linkMain" style="padding: 9.2px 0;" @click="paymePay">
@@ -231,8 +231,8 @@
                 <img src="../../assets/uzum.png" style="width:38%;" alt="">
               </div>
             </div>
-            <div class="text-center linkMain" style="padding: 9.2px 0; margin-top: 2px;">
-              <span class="m-0 p-0 " >...</span>
+            <div class="text-center linkMain" style="padding: 9.2px 0; margin-top: 2px;" @click="openChecks">
+              <span class="m-0 p-0" style="font-weight: bold;" >ЧЕК</span>
             </div>
             <div class="text-center linkMain" style="padding: 9.2px 0; margin-top: 2px;">
               <span class="m-0 p-0">...</span>
@@ -365,7 +365,6 @@
 
     <kassa_info v-show="closeCash" ref="kassa_info_ref"  @close="closeKassa" />
 
-    <checkshow v-if="checkshow" @close="checkShow"/>
 
     <modal-train  :show="send_kassa_status" headerbackColor="info"  titlecolor="black" title="Savdo kassaga pul o'tkazish" 
       @close="send_kassa_status = false" width="30%">
@@ -386,11 +385,17 @@
           <fromKassaToKassa @close="from_kassa_to_kassa_sts = false" ref="fromKassaToKassa_ref" />
         </template>
     </modal-train>
+    <modal-train  :show="checkShowList" headerbackColor="#3b678b"  titlecolor="white" title="To'lov qog'ozlari" 
+      @close="checkShowList = false" width="70%">
+        <template v-slot:body>
+          <checkList  ref="checkListInfo"/>
+        </template>
+    </modal-train>
    <massage_box :hide="modal_status" :detail_info="modal_info"
       :m_text="$t('Failed_to_delete')" @to_hide_modal = "modal_status= false"/>
 
     <Toast ref="message"></Toast>
-    <Alert ref="alert"></Alert> 
+    <Alert ref="alert"></Alert>
 
 </div>
     
@@ -402,9 +407,10 @@
 import fromKassaToKassa from './fromKassaToKassa.vue'
 import sendMainKassa from './sendMainKassa.vue';
 import check from './check'
+import checkList from './checkList'
 import rasxod from './rasxod'
 import chiqarPulOlish from './chiqarPulOlish'
-import checkshow from './checkshow'
+// import List from './List'
 import {mapActions, mapGetters, mapMutations} from 'vuex'
 import {
   mdbIcon,
@@ -417,14 +423,15 @@ export default {
   components: {
     mdbIcon,
     mdbBtn,mdbInput,
-    check,checkshow,
+    check,
     Pay,
     kassa_info, 
     rasxod,
     chiqarPulOlish,
     sendMainKassa,
     kassa_add_user_setting,
-    fromKassaToKassa
+    fromKassaToKassa,
+    checkList
   },
   data() {
     return {
@@ -433,7 +440,6 @@ export default {
       colors: ['#ff5733', '#33ff83', '#ac33ff', '#339fff', '#ff3393', '#ffe933', '#9033ff'],
       kassir: localStorage.user_name,
       closeCash: false,
-      checkshow: false,
       kassa_setting_show: true,
       from_kassa_to_kassa_sts: false,
 
@@ -480,6 +486,7 @@ export default {
       pul_olib_qolish: false,
       choosenQty: 0,
       adminStatus: localStorage.AccessType,
+      checkShowList: false,
 
     }
   },
@@ -1145,6 +1152,10 @@ export default {
         this.payshow = true;
         this.$root.$refs.payed.changingEnter(10);
       },
+      async openChecks(){
+        this.checkShowList = true;
+        this.$refs.checkListInfo.fetchMounted();
+      },
       async funcKassaInfo(){
         this.closeCash = true;
         await this.fetchKassa_userId(localStorage.user_id);
@@ -1170,8 +1181,8 @@ export default {
     // <-- Pul qaytarish Return mone  end-->
 
 
-    checkShow(){
-      this.checkshow = !this.checkshow;
+    List(){
+      this.List = !this.List;
       this.$nextTick(function () {
         this.$refs.barcode.focus();
         this.barcode = '';
@@ -1533,8 +1544,9 @@ export default {
   }
 
   .linkMain{
-    border-bottom: 1px solid rgb(74, 87, 95);
-    border-top: 1px solid rgb(74, 87, 95);
+    // border-bottom: 1px solid rgb(74, 87, 95);
+    // border-top: 1px solid rgb(74, 87, 95);
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 1px;
     color:rgb(64, 66, 64);
     cursor:pointer;
     font-size: 13.5px;

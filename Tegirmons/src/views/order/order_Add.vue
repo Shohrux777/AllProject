@@ -6,9 +6,9 @@
     </div>
     <div class="changing_add px-3 pt-2 pb-2 ">
       <div class="row  alert-info pt-3 pb-2 mb-2 rounded">
-        <div class="col-3"> 
+        <div class="col-3">
           <input class="m-0 form-control" disabled
-            style="height:32px; font-size: 13px;" :value="client.fio" 
+            style="height:32px; font-size: 13px;" :value="client.fio"
             type="text" validate error="wrong" success="right"/>
           <small
             style="position: absolute; top: -11px; left: 20px; font-size: 11px;"
@@ -340,6 +340,10 @@ export default {
       },
       client_zaxira_list: [],
       order_data:{},
+      load_name: '',
+      loadedAt: new Date(),
+      kassir_name: '',
+      paidAt: new Date(),
     }
   },
   props: {
@@ -444,6 +448,10 @@ export default {
       this.shafyor_name = data.shafyor_name;
       this.car_nomer = data.car_nomer;
       this.note = data.note;
+      this.load_name =  data.load_name;
+      this.loadedAt =  data.loadedAt;
+      this.kassir_name =  data.kassir_name;
+      this.paidAt =  data.paidAt;
       if (data.client) {
         this.client = data.client;
         await this.fetchClientZaxiraList(data.tegirmonOrderClientid);
@@ -669,7 +677,11 @@ export default {
               "item_list": this.datasource.rows,
               "tegirmonSkladid": this.sklad_id,
               "pickUpDate": this.choosen_day + 'T10:00:00',
-              "paid_status": "Zakaz yaratildi",
+              "paid_status": this.id == 0 ? "Zakaz yaratildi" : "Zakaz o'zgartirildi",
+              "load_name": this.load_name,
+              "loadedAt": this.loadedAt,
+              "kassir_name": this.kassir_name,
+              "paidAt": this.paidAt,
               "id" : this.id,
               "tegirmonAuthid": localStorage.AuthId
             })

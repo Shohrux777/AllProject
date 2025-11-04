@@ -160,6 +160,8 @@
               { title: "department", icon: 'box', url: '/department', view: false, color: '#c4cbcb', down_list:[] },
               { title: "contragent", icon: 'bell', url: '/contragent', view: false, color: '#c4cbcb', down_list:[] },
               { title: "district", icon: 'crutch', url: '/district', view: false, color: '#c4cbcb', down_list:[] },
+              { title: "category", icon: 'landmark', url: '/category', view: false, color: '#c4cbcb', down_list:[] },
+
             ] },
             { title: "face_control", icon: 'users', url: '', view: false, color: '#c4cbcb', down_list:[
               { title: "Dashboard", url: '/dashboard', dview: false, color: '#c4cbcb', down_list:[] },

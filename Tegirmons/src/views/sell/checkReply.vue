@@ -1,5 +1,5 @@
 <template>
-  <div class="checkPrint paymentCheckPrintCheck" style="z-index: 1000;">
+  <div class="checkPrint paymentCheckPrintCheck" style="z-index: 1000;" id="print_load">
     <div  id="printForm"  class="ckeck_main_sell  border" style="width:96%; height: 100%;">
       <div  style="text-align:center; margin: 10px 0; padding: 5px 7px; font-size:12px;">
         <h6 style="font-size:13.5px; font-weight:bold;" class="paymentCheckPrintCheck">ООО «OQQO'RG'ON TEGIRMON» 
@@ -30,11 +30,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item,i) in get_zakaz_product_all_list[get_page_savat]" :key="i" style="border-bottom: 0.5px solid #CED4DA;">
-              <td class="paymentCheckPrintCheck" style="font-weight:bold; text-align: left; font-size:12px;">{{item.name}}</td>
+            <tr v-for="(item,i) in check_data.payments" :key="i" style="border-bottom: 0.5px solid #CED4DA;">
+              <td class="paymentCheckPrintCheck" style="font-weight:bold; text-align: left; font-size:12px;">{{item.product.name}}</td>
               <td class="paymentCheckPrintCheck" style="font-weight:bold; text-align: left; font-size:12px;">{{item.qty}}</td>
-              <td class="paymentCheckPrintCheck" style="font-weight:bold; text-align: left; font-size:12px;">{{item.real_sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</td>
-              <td class="paymentCheckPrintCheck" style="font-weight:bold; text-align: right; font-size:12px;">{{item.summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</td>
+              <td class="paymentCheckPrintCheck" style="font-weight:bold; text-align: left; font-size:12px;">{{item.product.price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</td>
+              <td class="paymentCheckPrintCheck" style="font-weight:bold; text-align: right; font-size:12px;">{{item.summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</td>
             </tr>
           </tbody>
         </table>
@@ -47,128 +47,130 @@
       <div style="margin: 5px 0px;">
         <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between;  margin-top:3px;">
           <strong style="font-size:12px; font-weight:bold;" class="paymentCheckPrintCheck">{{$t('total')}} </strong>
-          <strong style="font-size: 12px; font-weight:bold;" class="paymentCheckPrintCheck">{{(get_all_summa[get_page_savat] || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</strong>
+          <strong style="font-size: 12px; font-weight:bold;" class="paymentCheckPrintCheck">{{(check_data.summ || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</strong>
         </div>
       </div>
+
       <div style="border-bottom: 1px dashed black;">
         <!-- ******************************************************************************************** -->
       </div>
 
-      <div v-if="get_check_type.cash" class=" d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
+      <div v-if="check_data.cash" class=" d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
         <strong style="font-size: 12px; font-weight:bold;">
           {{$t('cash')}}
         </strong>
         <strong style="font-size: 12px; font-weight:bold;" class="paymentCheckPrintCheck">
-          {{(get_check_type.cash + get_check_type.srogi_otganlar_uchun_rasxod).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+          {{(check_data.cash + check_data.srogi_otganlar_uchun_rasxod).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
         </strong>
       </div>
-      <div v-if="get_check_type.real_sum" class=" d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
+      <div v-if="check_data.real_sum" class=" d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
         <strong style="font-size: 12px; font-weight:bold;">
           {{$t('dollor')}}
         </strong>
         <strong style="font-size: 12px; font-weight:bold;" class="paymentCheckPrintCheck">
-          {{(get_check_type.real_sum + get_check_type.salary).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+          {{(check_data.real_sum + check_data.salary).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
         </strong>
       </div>
 
-      <div v-if="get_check_type.card" class=" d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
+      
+
+      <div v-if="check_data.card" class=" d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
         <strong style="font-size: 12px; font-weight:bold;">
           UzCard
         </strong>
         <strong style="font-size: 12px; font-weight:bold;" class="paymentCheckPrintCheck">
-          {{get_check_type.card.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+          {{check_data.card.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
         </strong>
       </div>
-      <div v-if="get_check_type.humo" class=" d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
+      <div v-if="check_data.humo" class=" d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
         <strong style="font-size: 12px; font-weight:bold;">
           Humo
         </strong>
         <strong style="font-size: 12px; font-weight:bold;" class="paymentCheckPrintCheck">
-          {{get_check_type.humo.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+          {{check_data.humo.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
         </strong>
       </div>
-      <div v-if="get_check_type.uz_card" class=" d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
+      <div v-if="check_data.uz_card" class=" d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
         <strong style="font-size: 12px; font-weight:bold;">
           Payme
         </strong>
         <strong style="font-size: 12px; font-weight:bold;" class="paymentCheckPrintCheck">
-          {{get_check_type.uz_card.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+          {{check_data.uz_card.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
         </strong>
       </div>
-      <div v-if="get_check_type.perchisleniya" class=" d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
+      <div v-if="check_data.perchisleniya" class=" d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
         <strong style="font-size: 12px; font-weight:bold;">
           Click
         </strong>
         <strong style="font-size: 12px; font-weight:bold;" class="paymentCheckPrintCheck">
-          {{get_check_type.perchisleniya.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+          {{check_data.perchisleniya.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
         </strong>
       </div>
-      <div v-if="get_check_type.creadit_payed" class=" d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
+      <div v-if="check_data.creadit_payed" class=" d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
         <strong style="font-size: 12px; font-weight:bold;">
           Paynet
         </strong>
         <strong style="font-size: 12px; font-weight:bold;" class="paymentCheckPrintCheck">
-          {{get_check_type.creadit_payed.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+          {{check_data.creadit_payed.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
         </strong>
       </div>
-      <div v-if="get_check_type.rasxod" class=" d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
+      <div v-if="check_data.rasxod" class=" d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
         <strong style="font-size: 12px; font-weight:bold;">
           UzumPay
         </strong>
         <strong style="font-size: 12px; font-weight:bold;" class="paymentCheckPrintCheck">
-          {{get_check_type.rasxod.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+          {{check_data.rasxod.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
         </strong>
       </div>
-      <div v-if="get_check_type.online" class=" d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
+      <div v-if="check_data.online" class=" d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
         <strong style="font-size: 12px; font-weight:bold;">
           Перечисления
         </strong>
         <strong style="font-size: 12px; font-weight:bold;" class="paymentCheckPrintCheck">
-          {{get_check_type.online.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+          {{check_data.online.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
         </strong>
       </div>
-      <div v-if="get_check_type.dolg" class=" d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
+      <div v-if="check_data.dolg" class=" d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
         <strong style="font-size: 12px; font-weight:bold;">
           Пластикка ўтказма
         </strong>
         <strong style="font-size: 12px; font-weight:bold;" class="paymentCheckPrintCheck">
-          {{get_check_type.dolg.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+          {{check_data.dolg.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
         </strong>
       </div>
-      <div v-if="get_check_type.profit_summ" class=" text-warning d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
+      <div v-if="check_data.profit_summ" class=" text-warning d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
         <strong style="font-size: 12px; font-weight:bold;">
           {{$t('skidka')}}
         </strong>
         <strong style="font-size: 12px; font-weight:bold;" class="paymentCheckPrintCheck text-warning">
-          {{get_check_type.profit_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+          {{check_data.profit_summ.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
         </strong>
       </div>
 
-      <div v-if="get_check_type.srogi_otganlar_uchun_rasxod" class=" text-danger d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
+      <div v-if="check_data.srogi_otganlar_uchun_rasxod" class=" text-danger d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
         <strong style="font-size: 12px; font-weight:bold;" >
           Қайтим нақт
         </strong>
         <strong style="font-size: 12px; font-weight:bold;" class="paymentCheckPrintCheck  text-danger">
-          {{get_check_type.srogi_otganlar_uchun_rasxod.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+          {{check_data.srogi_otganlar_uchun_rasxod.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
         </strong>
       </div>
-      <div v-if="get_check_type.salary" class=" text-danger d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
+      <div v-if="check_data.salary" class=" text-danger d-flex justify-content-between"  style="border-bottom: 0.5px solid #CED4DA;">
         <strong style="font-size: 12px; font-weight:bold;">
           Қайтим доллор
         </strong>
         <strong style="font-size: 12px; font-weight:bold;" class="paymentCheckPrintCheck text-danger text-danger">
-          {{get_check_type.salary.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
+          {{check_data.salary.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}
         </strong>
       </div>
 
       <div style="border-bottom: 1px dashed black;">
         <!-- ******************************************************************************************** -->
       </div>
-
       <div style="margin: 5px 0px;">
         <div  style=" display:flex; flex-wrap: wrap; justify-content: space-between;  margin-top:3px;">
           <strong style="font-size: 13px; font-weight:bold;" class="paymentCheckPrintCheck">Итого к оплате: </strong>
-          <strong style="font-size: 13px; font-weight:bold;" class="paymentCheckPrintCheck">{{(get_all_summa[get_page_savat] || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</strong>
+          <strong style="font-size: 13px; font-weight:bold;" class="paymentCheckPrintCheck">{{(check_data.summ || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</strong>
         </div>
       </div>
       <div style="border-bottom: 1px dashed black;">
@@ -210,27 +212,76 @@ export default {
       kassir : localStorage.user_name,
       dateTime: new Date().toLocaleDateString(),
       time: new Date().toLocaleTimeString(),
+      check_data: {},
     }
   },
   mounted(){
-    window.print();
-    this.$emit('close');
-    this.clear_order();
-      // Printjs({
-      //   printable: "printForm", //Id to print content 
-      //   type: "html",
-      //   targetStyles: ['*'],
-      //   ignoreElements:['no-print','bc','gb']
-      // });
-    // window.onload = function() { window.print(); window.close();}
     
   },
   created() {
     this.$root.$refs.check = this;
   },
-  computed: mapGetters(['get_zakaz_product_all_list','get_page_savat', 'get_all_summa','get_page_savat', 'CheckId', 'get_check_type']),
+  computed: mapGetters(['get_zakaz_product_all_list','get_page_savat', 'get_all_summa','get_page_savat', 'CheckId']),
   methods: {
    ...mapMutations(['clear_order']),
+   async printMounted(data){
+    this.check_data = data;
+    this.kassir = data.image_base_64;
+    this.dateTime = data.create_date.slice(8,10) + '-' + data.create_date.slice(5,7) + '-' + data.create_date.slice(0,4);
+    this.time = data.create_date.slice(11,16);
+    console.log('this.check_data',this.check_data)
+    this.$nextTick(() => {
+      this.printDiv();
+    });
+   },
+   printDiv() {
+      
+        let divContents = document.getElementById("print_load").innerHTML;
+
+        // CSS fayllarini olish
+        let styles = "";
+        document.querySelectorAll('link[rel="stylesheet"], style').forEach((node) => {
+          styles += node.outerHTML;
+        });
+
+        // Yangi oynani ochish
+        let printWindow = window.open("", "", "height=800,width=1000");
+
+        let html =
+          '<html>' +
+          '<head>' +
+          '<title>Chop etish</title>' +
+          styles +
+          '<style>' +
+          /* A4 format + ichki margin */
+          '@page { size: A4; margin: 1mm; }' +
+
+          /* print paytida layoutni cheklash */
+          '@media print {' +
+          '  html, body { width: 210mm; height: 297mm; margin: 0 0; }' +
+          '  #print-container { width: 100%; max-width: 190mm; margin: 0 0; }' +
+          '  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }' +
+          '}' +
+          '</style>' +
+          '</head>' +
+          '<body>' +
+          '<div id="print-container">' +
+          divContents +
+          '</div>' +
+          '<script>window.onafterprint = function() { window.close(); }<\/script>' +
+          '</body>' +
+          '</html>';
+
+        printWindow.document.open();
+        printWindow.document.write(html);
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(() => {
+          printWindow.print();
+        }, 700);
+      
+        
+    }
   }
 }
 </script>

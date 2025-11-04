@@ -26,6 +26,20 @@ const routes = [{
             import ('../views/company/company_Add.vue')
     },
     {
+        path: '/category',
+        name: 'category',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/category/category.vue')
+    },
+    {
+        path: '/category_add/:id',
+        name: 'category_add',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/category/category_Add.vue')
+    },
+    {
         path: '/door',
         name: 'door',
         meta: { layout: 'main' },

@@ -1,6 +1,6 @@
 <template>
  <div class="mainShowGroup pt-0 px-1">
-    <checkgroup v-if="checkShow" @close="closeAllGroup"/>
+    <checkgroup v-if="checkShow" @close="closeAllGroup" :car_nomer="group_data.car_number"/>
     <div v-else class="groupList">
       <div class="header_group rounded  px-2 mb-1 py-1">
         <div class="row container-fluid">
