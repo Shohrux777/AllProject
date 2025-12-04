@@ -1017,6 +1017,11 @@
   border-bottom: 1px solid rgb(240, 240, 240);
 }
 
+.mainKassaTable tr {
+  &:hover{
+    background: #afd1fd !important;
+  }
+}
 .delIcon{
   color: rgb(251, 70, 70);
   font-size: 13px;

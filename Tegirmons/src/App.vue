@@ -44,7 +44,7 @@ export default
       console.log(from)
       console.log(to)
       console.clear()
-      if(from.name == 'showGroupDetail_accept' || (from.name == 'groupsAccepted' && to.name == 'showGroupDetail_accept')){
+      if(from.name == 'showGroupDetail_accept' || (from.name == 'groupsAccepted' && to.name == 'showGroupDetail_accept' )){
         console.log('bunda ishlamasligi kerak buladi')
       }
       else{

@@ -1,36 +1,39 @@
 <template>
-<div class="px-3">
-  <div class="border-bottom ">
-    <router-link to="/client">
-        <h5 class="m-0 ml-3 d-flex" style="padding: 16px 0px">
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left mr-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2.5" stroke="#007BFF" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-            <polyline points="15 6 9 12 15 18" />
-          </svg>
-          {{$t('Add_client')}}</h5>
+<div class="client-add-page px-3">
+  <!-- Header -->
+  <div class="client-add-header-card d-flex align-items-center">
+    <router-link to="/client" class="d-flex align-items-center client-add-back-link">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left mr-2" width="22" height="22" viewBox="0 0 24 24" stroke-width="2.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <polyline points="15 6 9 12 15 18" />
+      </svg>
+      <h5 class="m-0 client-add-header-title">
+        {{$t('Add_client')}}
+      </h5>
     </router-link>
   </div>
-  <div class="row mt-4">
-    <div class="col-8">
-      <div class="add_davernis p-4">
-        <mdb-row>
+
+  <div class="row mt-3">
+    <div class="col-12 col-lg-8">
+      <div class="card client-add-form-card p-3 p-md-4">
+        <mdb-row class="align-items-center mb-2">
           <mdb-col col="4">
-            <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('fio')}}</p>
+            <p class="form-label mb-0">{{$t('fio')}}</p>
           </mdb-col>
           <mdb-col col="8">
-            <mdb-input class="m-0 p-0" v-model="name" @input="SearchClientNamePass($event)" size="md"  outline  group type="text" validate error="wrong" success="right"/>
-            <small class="invalid-text pt-4" style="margin-left:5px; "  v-if="$v.name.$dirty && !$v.name.required" >
+            <mdb-input class="m-0" v-model="name" @input="SearchClientNamePass($event)" size="md"  outline  group type="text" validate error="wrong" success="right"/>
+            <small class="invalid-text mt-1 ml-1" v-if="$v.name.$dirty && !$v.name.required">
               {{$t('name_invalid_text')}}
             </small>
           </mdb-col>
         </mdb-row>
 
-        <mdb-row class="mt-3">
+        <mdb-row class="align-items-center mb-2 mt-3">
           <mdb-col col="4">
-            <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('phone_number')}}</p>
+            <p class="form-label mb-0">{{$t('phone_number')}}</p>
           </mdb-col>
           <mdb-col col="8">
-            <mdb-input class="m-0 p-0" v-model="phone_number" @input="SearchClientNamePass($event)" size="md" outline  group type="text" validate error="wrong" success="right"/>
+            <mdb-input class="m-0" v-model="phone_number" @input="SearchClientNamePass($event)" size="md" outline  group type="text" validate error="wrong" success="right"/>
             <!-- <small class="invalid-text pt-4" style="margin-left:5px; "  v-if="$v.phone_number.$dirty && !$v.phone_number.required" >
               {{$t('name_invalid_text')}}
             </small> -->
@@ -39,36 +42,36 @@
             </small> -->
           </mdb-col>
         </mdb-row>
-        <mdb-row class="mt-3">
+        <mdb-row class="align-items-center mb-2 mt-3">
           <mdb-col col="4">
-            <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('passport_number')}}</p>
+            <p class="form-label mb-0">{{$t('passport_number')}}</p>
           </mdb-col>
           <mdb-col col="8">
-            <mdb-input class="m-0 p-0" v-model="passport_number" @input="SearchClientNamePass($event)" size="md" outline  group type="text" validate error="wrong" success="right"/>
-            <small class="invalid-text pt-4" style="margin-left:5px; "  v-if="$v.passport_number.$dirty && !$v.passport_number.required" >
+            <mdb-input class="m-0" v-model="passport_number" @input="SearchClientNamePass($event)" size="md" outline  group type="text" validate error="wrong" success="right"/>
+            <small class="invalid-text mt-1 ml-1" v-if="$v.passport_number.$dirty && !$v.passport_number.required">
               {{$t('name_invalid_text')}}
             </small>
           </mdb-col>
         </mdb-row>
-        <mdb-row class="mt-3">
+        <mdb-row class="align-items-center mb-2 mt-3">
           <mdb-col col="4">
-            <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('address')}}</p>
+            <p class="form-label mb-0">{{$t('address')}}</p>
           </mdb-col>
           <mdb-col col="8">
-            <mdb-input class="m-0 p-0" v-model="address" size="md" outline  group type="text" validate error="wrong" success="right"/>
+            <mdb-input class="m-0" v-model="address" size="md" outline  group type="text" validate error="wrong" success="right"/>
           </mdb-col>
         </mdb-row>
-        <mdb-row class="mt-3">
+        <mdb-row class="align-items-center mb-2 mt-3">
           <mdb-col col="4">
-            <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('born_date')}}</p>
+            <p class="form-label mb-0">{{$t('born_date')}}</p>
           </mdb-col>
           <mdb-col col="8">
-            <mdb-input class="m-0 p-0" v-model="born_date" size="md" outline  group type="date" validate error="wrong" success="right"/>
+            <mdb-input class="m-0" v-model="born_date" size="md" outline  group type="date" validate error="wrong" success="right"/>
           </mdb-col>
         </mdb-row>
-        <mdb-row class="mt-3">
+        <mdb-row class="align-items-center mb-2 mt-3">
           <mdb-col col="4">
-            <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('client_group')}}</p>
+            <p class="form-label mb-0">{{$t('client_group')}}</p>
           </mdb-col>
           <mdb-col col="8">
              <erpSelect
@@ -79,9 +82,9 @@
             />
           </mdb-col>
         </mdb-row>
-        <mdb-row class="mt-3">
+        <mdb-row class="align-items-start mb-2 mt-3">
           <mdb-col col="4">
-            <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('picture')}}</p>
+            <p class="form-label mb-0">{{$t('picture')}}</p>
           </mdb-col>
           <mdb-col col="8" style="position: relative;">
             <div class="d-flex justify-content-start align-items-center">
@@ -101,32 +104,30 @@
                 <img :src="hostname + photo_url" v-if="photo_url" v-show="!PicShow" style="height: 150px;" class="img-fluid img-thumbnail img-responsive shadow" alt="">
             </div>
             <input hidden  id="inputFileToLoad" @change="previewFile()" accept="image/png, image/gif, image/jpeg" type="file" ref="file_Img" class="shadow text-right ml-2"  />
-              <div class="d-flex">
+              <div class="d-flex mt-2">
                 <label @click="scanerFile" class="download">
                   <span>Изображение паспорта</span>
                 </label>
-                  
-                  <label @click="showPhoto = true" class="download ml-2">
-                    <span>{{$t('photo')}}</span>  
-                  </label>
-                  
+                <label @click="showPhoto = true" class="download ml-2">
+                  <span>{{$t('photo')}}</span>  
+                </label>
               </div>
 
 
 
           </mdb-col>
         </mdb-row>
-        <mdb-row class="mt-3">
+        <mdb-row class="align-items-start mb-2 mt-3">
             <mdb-col col="4">
-              <p class="p-0 m-0 mt-2" style="font-size: 14px;">{{$t('note')}}</p>
+              <p class="form-label mb-0">{{$t('note')}}</p>
             </mdb-col>
             <mdb-col col="8">
-              <mdb-input class="m-0 p-0" v-model="note" @input="SearchClientNote($event)" size="md" outline group type="textarea" validate error="wrong" success="right"/>
+              <mdb-input class="m-0" v-model="note" @input="SearchClientNote($event)" size="md" outline group type="textarea" validate error="wrong" success="right"/>
             </mdb-col>
           </mdb-row>
-          <mdb-row class="mt-3">
+          <mdb-row class="align-items-center mb-2 mt-3">
             <mdb-col col="4">
-              <p class="p-0 m-0 mt-2 text-danger" style="font-size: 14px;">{{$t('oshibka')}}</p>
+              <p class="form-label mb-0 text-danger">{{$t('oshibka')}}</p>
             </mdb-col>
             <mdb-col col="8">
               <input
@@ -138,30 +139,27 @@
               <!-- <mdb-input class="m-0 p-0" v-model="oshibka"  size="sm" outline group type="checkbox" validate error="wrong" success="right"/> -->
             </mdb-col>
           </mdb-row>
-          <div class=" bg-white" style="position:sticky; bottom:0px;">
+          <div class="client-add-footer bg-white" style="position:sticky; bottom:0px;">
             <div class="blue-gradient">
-              <hr class="mt-5 "/>
+              <hr class="mt-4 mb-2"/>
             </div>
-            <mdb-row class="mt-4 ">
-              <mdb-col col="12">
-                <div class="mt-2 text-right">
-                  <!-- <mdb-btn color="primary" v-if="client_id" @click="next_data" style="font-size: 10.5px"
-                    p="r4 l4 t2 b2">
-                  <mdb-icon  />Продолжить</mdb-btn> -->
-                  <mdb-btn color="success"  @click="save_data" style="font-size: 10.5px"
-                    p="r4 l4 t2 b2">
-                  <mdb-icon  />{{$t('add')}}</mdb-btn>
-                </div>
-              </mdb-col>
-            </mdb-row>
+            <div class="d-flex justify-content-end mt-1 mb-1">
+              <mdb-btn class="client-add-primary-btn" @click="save_data" p="r4 l4 t2 b2">
+                <mdb-icon  />{{$t('add')}}
+              </mdb-btn>
+            </div>
           </div>
           
           <webcam  v-if="showPhoto" @getPhotosub="takePhoto"/>
         <Toast ref="message"></Toast>
       </div>
     </div>
-    <div class="col-4">
-      <div class="user_illSendPatient py-1 border-bottom  px-3" v-show="id==0">
+    <div class="col-12 col-lg-4 mt-3 mt-lg-0">
+      <div class="card client-add-list-card py-1 border-0 px-3" v-show="id==0">
+        <div class="px-2 pt-2 pb-1">
+          <p class="m-0" style="font-size: 13px; font-weight: 600;">{{$t('client')}}</p>
+        </div>
+        <div class="user_illSendPatient px-1">
         <div  v-for="(item,i) in client_list.rows" :key="i" class="item px-3" 
           @click="getBemorId(i,item)" :class="{'activeUser' : active_bemor == i }">
           <div>
@@ -177,6 +175,7 @@
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   </div>
@@ -647,17 +646,72 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.client-add-page {
+  padding: 8px 10px 14px 10px;
+  background: #ffffff;
+  min-height: 100%;
+}
+
+.client-add-header-card {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background-image: linear-gradient(90deg, #64b0fb 0%, #7fd4ff 50%, #b5e3ff 100%);
+  box-shadow: rgba(15, 35, 52, 0.25) 0px 8px 20px -12px;
+}
+
+.client-add-back-link {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.client-add-back-link:hover {
+  text-decoration: none;
+}
+
+.client-add-header-title {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.client-add-form-card {
+  border-radius: 10px;
+  border: none;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+              rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+}
+
+.client-add-list-card {
+  border-radius: 10px;
+  border: none;
+  box-shadow: rgba(60, 64, 67, 0.25) 0px 1px 2px 0px,
+              rgba(60, 64, 67, 0.1) 0px 1px 3px 1px;
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #455a64;
+}
+
+.invalid-text {
+  font-size: 11px;
+  color: #e53935;
+}
+
 .download{
-  width: 35%;
+  width: 45%;
   height: 33px;
   border: 0.5px solid #4285F4;
-  border-radius: 4px;
-  margin-top: 7px;
+  border-radius: 6px;
+  margin-top: 4px;
   display: flex;
   align-items: center;
-  color: gray; 
+  color: #1e88e5; 
   font-size: 13px;
   cursor:pointer;
+  background: #e3f2fd;
+  font-weight: 500;
 }
 .download span{
     margin-left: 10px;
@@ -711,5 +765,20 @@ export default {
   background-color: rgb(179, 230, 255);
   transform: translate(6px, 0px);
   transition: all 0.1s ease-in-out;
+}
+
+.client-add-primary-btn {
+  font-size: 11px !important;
+  padding: 4px 14px !important;
+  border-radius: 16px;
+  background-image: linear-gradient(90deg, #43a047 0%, #66bb6a 100%) !important;
+  color: #ffffff !important;
+  border: none;
+  box-shadow: 0 2px 6px rgba(67, 160, 71, 0.4);
+}
+
+.client-add-primary-btn:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 3px 8px rgba(67, 160, 71, 0.55);
 }
 </style>

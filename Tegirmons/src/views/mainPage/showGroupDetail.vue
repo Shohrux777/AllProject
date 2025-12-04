@@ -7,7 +7,7 @@
           <div class="col-3">
             <div class="d-flex  align-items-center">
               <small style="font-size: 12px;">Имя водителя: </small>
-              <small style="font-size: 12px;" class="ml-4 font-weight-bold">{{group_data.shafyor_name}}</small>
+              <small style="font-size: 12px;" class="ml-4 font-weight-bold">{{group_data.shafyor_name}} ( Тел: {{ group_data.reverced_str }}  )</small>
             </div>
           </div>
           <div class="col-3">
@@ -110,14 +110,26 @@
                   >Остатка масса</small
                 >
             </div>
-            <div class="col-6 mt-1">
-              <mdb-input class="m-0 p-0" v-model="item.note" size="sm" outline group type="text" validate error="wrong" success="right"/>
+            <div class="col-4 mt-1">
+              <mdb-input class="m-0 p-0 bg-white" v-model="item.note" size="sm" outline group type="text" validate error="wrong" success="right"/>
               <small
                 style="position: absolute; top: -10px; left: 20px; font-size: 11px"
                 class="bg-white font-weight-bold px-2 py-0"
                 >{{ $t("reason") }}</small>
             </div>
-            <div class="col-6 mt-1">
+            <div class="col-2 mt-1">
+              <mdb-input class="m-0 p-0 bg-white" v-model="item.phone_number" size="sm" outline group type="text" validate error="wrong" success="right"/>
+              <small
+                style="position: absolute; top: -10px; left: 20px; font-size: 11px"
+                class="bg-white font-weight-bold px-2 py-0"
+                >{{ $t("phone_number") }}</small>
+            </div>
+            <div class="col-1 mt-0">
+              <div class="photo d-flex " v-if="item.image_url" style="margin-top:-3px;">
+                <img :src="hostname + item.image_url" width="60" alt="" @click="$imageModal.open(hostname + item.image_url)" class="shadow border rounded">
+              </div>
+            </div>
+            <div class="col-5 mt-1">
               <div class="text-right">
                 <mdb-btn  :disabled="(item.qty - (item.check_qty + item.zaxira_qty)) < 1" @click="sendZaxira(item,indexRow)" color="success" m="r2" style="font-size: 8.5px"
                   p="r4 l4 t2 b2"> <mdb-icon fas class="mr-1"  icon="share-square"></mdb-icon>  {{$t('zaxira')}}
@@ -149,6 +161,30 @@
                   <td> <span >{{item.product_name}}</span>  </td>
                   <td> <span >{{(item.invoice_note).toFixed(1)}}</span> <span>кг</span></td>
                   <td> <span >{{item.summ}}</span> <span>сум</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Sotilgan mahsulot -->
+
+          <!-- Sotilgan mahsulot -->
+          <div class="text-center" v-if="item.zaxira_extra_amount>0">
+            <span style="font-size: 12px;"> Yetishmagan qismi pul bilan qoplandi </span>
+          </div>
+          <div class="" v-if="item.zaxira_extra_amount>0">
+            <table class="myTablegroupList">
+              <thead>
+                <tr class="header py-3" style="background: #aaffff;">
+                  <th  width="40" class="text-left">№</th>
+                  <th>{{$t('name')}}</th>
+                  <th>{{$t('summ')}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td> <span >{{1}}</span> </td>
+                  <td> <span >Общий</span>  </td>
+                  <td> <span >{{item.zaxira_extra_amount}}</span> <span>сум</span></td>
                 </tr>
               </tbody>
             </table>
@@ -249,6 +285,9 @@
             </changeProduct>
           </template>
       </modal-train>
+      <pay v-show="payshow"  @close="closePay"
+      :summaString="(all_sum_zaxira || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')"
+      :summa_default="(all_sum_zaxira || 0)" @closePayed="closePayed" :changeProduct="changeProductTarozi" :check_id="check_id"/>
       <massage_box :hide="modal_status" :detail_info="modal_info"
         :m_text="$t('Failed_to_add')" @to_hide_modal="modal_status= false"/>
 
@@ -265,13 +304,17 @@ import erpSelectFio from "../../components/erpSelectFioSearchRow.vue";
 import erpSelect from "../../components/erpSelectRow.vue";
 import {mapActions,mapGetters, mapMutations} from 'vuex'
 import {mdbInput, mdbRow, mdbCol, mdbBtn, mdbIcon} from 'mdbvue'
+import pay from './pay.vue'
+
 export default {
   components: {
     erpSelect,mdbInput,erpSelectFio,checkgroup,
-     mdbRow, mdbCol, mdbBtn,mdbIcon,changeProduct
+     mdbRow, mdbCol, mdbBtn,mdbIcon,changeProduct, pay
   },
   data() {
     return {
+      hostname: this.$store.state.server_ip,
+
       id: this.$route.params.id,
       modal_info: '',
       modal_status: false,
@@ -287,6 +330,11 @@ export default {
       invoice_list: [],
       change_unit_qty: 0,
       group_data: {},
+      component_data: {},
+      check_id: 0,
+      all_sum_zaxira: 0,
+      changeProductTarozi: [],
+      payshow: false,
     }
   },
   async created()
@@ -370,7 +418,14 @@ export default {
           kassir: '',
           date: '',
           kassa_id: -1,
+          phone_number: '',
+          image_url: '',
+          zaxira_extra_amount: 0,
+          kassa_check_id: 0,
         }
+        info.zaxira_extra_amount = data[i].invoice.zaxira_extra_amount;
+        info.kassa_check_id = data[i].invoice.kassa_check_id;
+
         if(data[i].invoice.note == null || data[i].invoice.note == ''){
           info.invoice_note = 0;
         }
@@ -380,8 +435,10 @@ export default {
         if(data[i].invoice.kassa_id){
           info.kassa_id = data[i].invoice.kassa_id;
         } 
+
         info.date = data[i].invoice.updated_date_time;
         info.group_note = data[i].note;
+        
         info.group_detail_id = data[i].id;
         info.ruyxat_id = data[i].TegirmonTortilganBugdoyRoyxatiid;
         info.invoice_id = data[i].TegirmonInvoiceid;
@@ -400,7 +457,12 @@ export default {
           info.details_name = data[i].name;
           info.details_array = data[i].name.split(",");
         }
-        
+        if(data[i].royxati.phone_number){
+          info.phone_number = data[i].royxati.phone_number;
+        }
+        if(data[i].royxati.image_url){
+          info.image_url = data[i].royxati.image_url;
+        }
         info.product_id = data[i].royxati.TegirmonProductid;
         info.product_name = data[i].royxati.product.name;
         info.product_price = data[i].royxati.product.price;
@@ -445,9 +507,11 @@ export default {
                 real_qty: data.item_list[j].real_qty,
                 summ: data.item_list[j].sum,
                 color: data.item_list[j].product.shitrix_code,
-                id: data.item_list[j].id
+
+                id: data.item_list[j].id,
               }
               info.check_qty += parseFloat((data.item_list[j].qty/data.item_list[j].real_sum).toFixed(1))
+              info.check_qty -= parseFloat((data.item_list[j].enough_qty/data.item_list[j].real_sum).toFixed(1))
               info.changeProduct.push(rpoTP);
             }
           }
@@ -488,7 +552,6 @@ export default {
       console.log('this.invoice_list')
       console.log(this.invoice_list)
     },
-
     selectOptionUser(option) {
       this.invoice_list[option.row].client_name = option.data.fio;
       this.invoice_list[option.row].client_id = option.data.id;
@@ -507,10 +570,42 @@ export default {
       this.itemForChange.qty = this.itemForChange.qty.toString();
     },
 
+    async closePay(){
+      this.payshow = false;
+    },
+    async closePayed(check){
+      console.log('check',check);
+      this.check_id = check.id;
+      this.payshow = false;
+      // this.product_qty = 0;
+      await this.saveInvoceChangeProduct(this.component_data);
+    },
+
     async GetChangeProduct(option){
       console.log('option test nima kelayabdi ekan')
       console.log(option)
-      
+      console.log('all_sum_zaxira', this.all_sum_zaxira);
+      this.invoice_list[option.index].zaxira_extra_amount = option.all_sum_zaxira;
+      this.changeProductTarozi = option.data;
+      this.all_sum_zaxira = option.all_sum_zaxira;
+      this.check_id = this.invoice_list[option.index].kassa_check_id;
+
+      this.component_data = option;
+      this.change_pro = false;
+
+      if(option.all_sum_zaxira > 0){
+         this.$nextTick(function () {
+            this.payshow = true;
+            this.$root.$refs.payedZaxira.changingEnter(1);
+          })
+      }
+      else{
+        // bunga ham agar invoice da check_id bor bulsa uchirib kassrdan ayirish kerak
+        await this.saveInvoceChangeProduct(option);
+      }
+    },
+
+    async saveInvoceChangeProduct(option){
       this.change_unit_qty = 0;
       let summ_all = 0;
       let item_list_change = [];
@@ -526,6 +621,8 @@ export default {
             real_qty: option.data[i].real_qty,
             sum: option.data[i].summ,
             real_sum: option.data[i].persantage,
+            for_money: option.data[i].sum_status,
+            enough_qty : option.data[i].enoughQty,
             id: option.data[i].id,
             auth_user_creator_id: localStorage.AuthId,
           }
@@ -575,6 +672,8 @@ export default {
           "user_name": localStorage.user_name,
           "image_str_url": skidkaItem,
           "kassa_id": localStorage.kassa_id,
+          "kassa_check_id": this.check_id,
+          "zaxira_extra_amount": this.invoice_list[this.rowIndex].zaxira_extra_amount,
           "tegirmonSkladid": 1,
         })
       };
@@ -649,7 +748,6 @@ export default {
       }
 
       await this.updateFull();
-
     },
 
     async updateFull(){
@@ -772,6 +870,7 @@ export default {
           "note": this.group_data.note,
           "real_qty": this.group_data.real_qty,
           'qabul_qilgan_user_name': this.group_data.qabul_qilgan_user_name,
+          'reverced_str': this.group_data.reverced_str,
           'name': localStorage.user_name,
           "id": this.group_data.id
         })

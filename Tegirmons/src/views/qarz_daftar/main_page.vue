@@ -42,13 +42,18 @@
           <div class="col-3">
             <div class="d-flex justify-content-end">
               <div  @click="refresh_skudUser" class="mr-2">
-                <div class="main_kassa_btn m-0 bg_col_info" >
+                <div class="main_kassa_btn m-0 bg_col_info">
                   <i style="font-size: 12px;" class="fas fa-redo"></i>
                 </div>
               </div>
               <div  @click="show_user_list" class="mr-2">
                 <div class="main_kassa_btn m-0 bg_col_info">
                   <small>Список должников</small>
+                </div>
+              </div>
+              <div  @click="add_dolg_tip" class="mr-2" v-if="user_name">
+                <div class="main_kassa_btn m-0 bg_col_green">
+                  💰
                 </div>
               </div>
               <div style="width:170px" @click="add_user_dolg">
@@ -66,10 +71,12 @@
         <div class="d-flex justify-content-between px-2">
             <div class="w-100 p-2">
                 <div class="row equal-height">
-                  <div class="col-5" >
-                    <div class="card" v-if="client_info.fio" :class="{'alert-danger': client_info.sum>0 || client_info.dollor>0, 'alert-success': client_info.sum<0 || client_info.dollor<0}">
-                      <div class="d-flex w-100">
-                        <div class="user_img" v-if="client_info.image_url">
+                  <div class="col-4" >
+                    <div class="card" style="cursor: pointer;" 
+                      v-if="client_info.fio" 
+                      :class="{'alert-danger': client_info.sum>0 || client_info.dollor>0, 'alert-success': client_info.sum<0 || client_info.dollor<0}">
+                      <div class="d-flex w-100" @click="qarz_type_id = 0;">
+                        <div class="user_img" >
                           <img :src="hostname + client_info.image_url" alt="" @click="$imageModal.open(hostname + client_info.image_url)">
                         </div>
                         <div class="user_info_selected pt-4 px-3">
@@ -104,6 +111,44 @@
                     </div>
                   <!-- v-if="oylik_data.reserved_value>1" -->
                   </div>
+
+                  <div class="col-4" style="cursor:pointer" v-for="(item,i) in client_qarz_type_list" :key="i">
+                    <div class="card"  :class="{'alert-danger': item.sum>0 || item.dollor>0, 'alert-success': item.sum<0 || item.dollor<0}"
+                      @click="select_qarz_type(item)">
+                      <div class="d-flex w-100">
+                        <div class="user_img" >
+                          <img :src="hostname + item.image_url" alt="" @click="$imageModal.open(hostname + item.image_url)">
+                        </div>
+                        <div class="user_info_selected pt-4 px-3">
+                          <h5 class="font-weight-bold" style="font-size: 14.5px;">{{item.name}}</h5>
+                          <p class="m-0 pt-1"><span class=" pr-1">ID:</span>  {{item.id}}</p>
+                          <p class="m-0"><span class=" pr-1">{{ $t('note') }}:</span>  {{item.note}}</p>
+                        </div>
+                      </div>
+                      <div class="ishlagan_puli d-flex align-items-center justify-content-between py-2 px-5 " style="border-top: 1px solid grey">
+                          <h5 class="font-weight-bold m-0" style="font-size: 17px;">Долг :</h5>
+                          <h5  class="font-weight-bold ml-3 m-0" style="font-size: 25px; color: brown;">{{ item.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')  }} сўм</h5>
+                          <h5  class="font-weight-bold ml-3 m-0" style="font-size: 25px; color: brown;">{{item.dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} $</h5>
+                      </div>
+                      <div class="ishlagan_puli d-flex align-items-center py-1 px-4" :class="{'alert-warning': qarz_type_id == item.id}" style="border-top: 1px solid grey">
+                          <!-- <mdb-btn color="success" class="py-2 px-3" style="font-size: 10px;">
+                            <i class="fas fa-download"></i>
+                            Приход
+                          </mdb-btn>
+                          <mdb-btn color="danger" class="py-2 px-3" style="font-size: 10px;">
+                            <i class="fas fa-share-square"></i>
+                            Расход
+                          </mdb-btn> -->
+                          <div class="main_kassa_btn bg_col_blue" @click="poluchit_type(item)">
+                            <small>Получать деньги</small>
+                          </div>
+                          <div class="main_kassa_btn bg_col_red px-4" @click="rasxod_type(item)">
+                            <small>Расходъ</small>
+                          </div>
+                      </div>
+                    </div>
+                  <!-- v-if="oylik_data.reserved_value>1" -->
+                  </div>
                   <!-- <camera/> -->
 
 
@@ -123,7 +168,7 @@
       <hr class="mt-4 mb-3 gradint"/>
         <!-- <loaderFixed v-if="loading"/> -->
       <div>
-        <div class="px-0 userSalaryTable">
+        <div class="px-0 userSalaryTable" v-if="qarz_type_id == 0">
           <loader-table v-if="loading"/>
           <table v-else class="myTableuserSalaryList mt-2">
             <thead>
@@ -162,8 +207,56 @@
                   <small v-if="row.created_date" class="ml-2">{{row.created_date.slice(11,16)}}</small>
                 </td>
                 <td> <small >{{row.note}}</small></td>
-                <td> <small :class="{'text-danger': row.reserve_val_1>0}" >{{row.reserve_val_1.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small></td>
-                <td> <small :class="{'text-danger': row.reserve_val_2>0}" >{{row.reserve_val_2.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small></td>
+                <td> <small :class="{'text-danger': row.reserve_val_1>0, 'text-success': row.reserve_val_1<0}" >{{row.reserve_val_1.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small></td>
+                <td> <small :class="{'text-danger': row.reserve_val_2>0, 'text-success': row.reserve_val_1<0}" >{{row.reserve_val_2.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small></td>
+
+                <td> <small >{{row.addiotionala_information}}</small></td>
+
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="px-0 userSalaryTable" v-else>
+          <loader-table v-if="loading"/>
+          <table v-else class="myTableuserSalaryList mt-2">
+            <thead>
+              <tr class="header py-3 info_client_header">
+                <th  width="40" class="text-left">№</th>
+                <th width="40" >ID</th>
+                <th>{{$t('client_name')}}</th>
+                <th>Sum</th>
+                <th>Dollor</th>
+                <th>Kurs</th>
+                <th>{{ $t('status') }}</th>
+                <th>{{$t('date')}}</th>
+                <th>{{$t('note')}}</th>
+                <th>{{ $t('ostatka') }}</th>
+                <th>{{ $t('ostatka') }} $</th>
+                <th>Кассир</th>
+
+                <!-- <th width="80" class="text-center">{{$t('Action')}}</th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row,rowIndex) in client_qarz_type_list_details" :key="rowIndex" @click="selectInvoiceItem(row)" 
+              :class="{'zero_item': row.reserve_val_1 == 0 && row.reserve_val_2 == 0}">
+                <td> <small >{{rowIndex+1}}</small> </td>
+                <td> <small >{{row.TegirmonQarzUserId}}</small> </td>
+                <td> <small >{{row.worker_name}}</small> </td>
+                <td> <small >{{row.sum_str}}</small></td>
+                <td> <small >{{row.dollor_string}}</small></td>
+                <td> <small >{{row.kurs.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small></td>
+
+                <td v-if="row.status_rasxod == 1"> <span class="status_btn_bg px-2 text-white rounded" style="padding: 1px 6px; font-size: 10px;">Получыть </span> </td>  
+                <td  v-else-if="row.status_rasxod == 0"> <span class="bg-danger px-2 text-white rounded" style="padding: 2px 10px; font-size: 10px;">Расход</span></td>
+                
+                <td>
+                  <small v-if="row.created_date">{{row.created_date.slice(8,10) + '-' + row.created_date.slice(5,7) + '-' + row.created_date.slice(0,4)}}</small> 
+                  <small v-if="row.created_date" class="ml-2">{{row.created_date.slice(11,16)}}</small>
+                </td>
+                <td> <small >{{row.note}}</small></td>
+                <td> <small :class="{'text-danger': row.reserve_val_1>0, 'text-success': row.reserve_val_1<0}" >{{row.reserve_val_1.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small></td>
+                <td> <small :class="{'text-danger': row.reserve_val_2>0, 'text-success': row.reserve_val_1<0}" >{{row.reserve_val_2.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small></td>
 
                 <td> <small >{{row.addiotionala_information}}</small></td>
 
@@ -210,6 +303,33 @@
             </info_rasxod>
           </template>
       </modal-train>
+
+
+
+      <!-- Yangi tulov turi qushiladi qushimcha balance  -->
+
+      <modal-train  :show="show_dolg_tip" headerbackColor="#4ab1ff"  titlecolor="black" title="Добавить Долг" 
+        @close="show_dolg_tip = false" width="40%">
+          <template v-slot:body>
+            <add_dolg_type  ref="" :client_info="client_info" @close_data="closeDolgType">
+            </add_dolg_type>
+          </template>
+      </modal-train>
+
+      <modal-train  :show="rasxod_show_type" headerbackColor="#fc4640"  titlecolor="black" :title="$t('rasxod')" 
+        @close="rasxod_show_type = false" width="35%">
+        <template v-slot:body>
+          <rasxodType @close="closeRasxodType" :client_info="client_info" :qarz_type="qarz_type" >
+          </rasxodType>
+        </template>
+      </modal-train>
+      <modal-train  :show="pul_olib_qolish_type" headerbackColor="#009587"  titlecolor="black" :title="$t('pul_olish')" 
+        @close="pul_olib_qolish_type = false" width="35%">
+          <template v-slot:body>
+            <chiqarPulOlishType @close="closePulChiqishType" :client_info="client_info" :qarz_type="qarz_type" >
+            </chiqarPulOlishType>
+          </template>
+      </modal-train>
       
       <Toast ref="message"></Toast>
 
@@ -232,7 +352,9 @@ import rasxod from './rasxod.vue'
 import chiqarPulOlish from './chiqarPulOlish.vue'
 import user_list from './user_list.vue'
 import info_rasxod from './rasxod_info.vue'
-
+import add_dolg_type from './add_dolg_type.vue';
+import rasxodType from './rasxodType.vue'
+import chiqarPulOlishType from './chiqarPulOlishType.vue'
 export default {
 data(){
     return{
@@ -246,6 +368,8 @@ data(){
       dolg_user_show: false,
       client_list: [],
       rasxod_show: false,
+      rasxod_show_type: false,
+      pul_olib_qolish_type: false,
       pul_olib_qolish: false,
       user_rasxod_prixod_list: [],
 
@@ -272,13 +396,17 @@ data(){
 
       usercheck_in_out: [],
       user_oylik_info: [],
-
+      client_qarz_type_list: [],
+      client_qarz_type_list_details: [],
     
       oshibka_client: 0,
       
       show_debt_info: false,
       debt_info: {},
       rasxod_color: '#64B0FB',
+      show_dolg_tip: false,
+      qarz_type_id: 0,
+      qarz_type: {},
     }
   },
   components: {
@@ -293,7 +421,10 @@ data(){
     rasxod,
     chiqarPulOlish,
     user_list,
-    info_rasxod
+    info_rasxod,
+    add_dolg_type,
+    chiqarPulOlishType,
+    rasxodType
   },
 //   validations: {
       
@@ -304,13 +435,96 @@ data(){
       // let today = new Date();
       // this.select_month = today.toISOString().slice(0, 10);
     },
-   computed: {...mapGetters(['get_user_list',]),
-    
-   },
+   computed: {...mapGetters(['get_user_list',])},
     
   methods: {
     ...mapActions(['fetch_user',]),
     ...mapMutations(['check_invoice_zaxira']),
+    async poluchit_type(data_type){
+      console.log(data_type);
+      this.qarz_type_id = data_type.id;
+      this.qarz_type = data_type;
+      this.pul_olib_qolish_type = true;
+    },
+    async rasxod_type(data_type){
+      console.log(data_type);
+      this.qarz_type_id = data_type.id;
+      this.qarz_type = data_type;
+      this.rasxod_show_type = true;
+    },
+    async select_qarz_type(data_type){
+      this.qarz_type_id = data_type.id;
+      this.qarz_type = data_type;
+      await this.fetchDolgTypeListDetails();
+    },
+    async closeRasxodType(){
+      this.rasxod_show_type = false;
+      await this.fetchDolgTypeList();
+      await this.fetchDolgTypeListDetails();
+      console.log('hiy')
+    },
+    async closePulChiqishType(){
+      console.log('hiy')
+      this.pul_olib_qolish_type = false;
+      await this.fetchDolgTypeList();
+      await this.fetchDolgTypeListDetails();
+    },
+
+
+
+
+    async add_dolg_tip(){
+      this.show_dolg_tip = true;
+    },
+    async closeDolgType(){
+      this.show_dolg_tip = false;
+      await this.fetchDolgTypeList();
+    },
+
+    async fetchDolgTypeList(){
+      try{
+        const response = await fetch(this.$store.state.hostname + "/TegirmonQarzUserType/getPaginationQarzType?page=0&size=100&user_id=" + this.client_info.id);
+        const data = await response.json();
+        if(response.status == 201 || response.status == 200)
+        {
+          console.log('qarz list type',data)
+          this.client_qarz_type_list = data.items_list;
+          return true;
+        }
+        else{
+          this.modal_info = data;
+          this.modal_status = true;
+          return false;
+        }
+      }
+      catch{
+        this.client_list = [];
+        this.modal_info = this.$i18n.t('network_ne_connect');
+        this.modal_status = true;
+      }
+    },
+    async fetchDolgTypeListDetails(){
+      try{
+        const response = await fetch(this.$store.state.hostname + "/TegirmonQarzUserRasxodType/getPaginationUserTypeId?page=0&size=100&userid=" + this.qarz_type_id);
+        const data = await response.json();
+        if(response.status == 201 || response.status == 200)
+        {
+          console.log('qarz list type',data)
+          this.client_qarz_type_list_details = data.items_list;
+          return true;
+        }
+        else{
+          this.modal_info = data;
+          this.modal_status = true;
+          return false;
+        }
+      }
+      catch{
+        this.client_list = [];
+        this.modal_info = this.$i18n.t('network_ne_connect');
+        this.modal_status = true;
+      }
+    },
     // xodimni olgan yoki bergan pullarini kurish
     async selectInvoiceItem(data){
       this.show_debt_info = true;
@@ -400,14 +614,18 @@ data(){
       this.$refs.addQarzUser.MountedFunc();
     },
     async closeRasxod(data){
+      this.qarz_type_id = 0;
       this.client_info = data;
       this.rasxod_show = !this.rasxod_show;
       await this.fetchUserPrixodRasxod();
+
     },
     async closePulChiqish(data){
+      this.qarz_type_id = 0;
       this.client_info = data;
       this.pul_olib_qolish = !this.pul_olib_qolish;
       await this.fetchUserPrixodRasxod();
+      
 
     },
 
@@ -420,6 +638,8 @@ data(){
         this.born_date = option.addiotionala_information.slice(8,10) + '-' + option.addiotionala_information.slice(5,7) + '-' + option.addiotionala_information.slice(0,4);
       }
       await this.fetchUserPrixodRasxod();
+      await this.fetchDolgTypeList();
+      this.qarz_type_id = 0;
     },
     async selectClientPassport(option){
       console.log(option)
@@ -430,6 +650,9 @@ data(){
         this.born_date = option.addiotionala_information.slice(8,10) + '-' + option.addiotionala_information.slice(5,7) + '-' + option.addiotionala_information.slice(0,4);
       }
       await this.fetchUserPrixodRasxod();
+      await this.fetchDolgTypeList();
+      this.qarz_type_id = 0;
+
 
     },
     async selectClientBorn(option){
@@ -442,6 +665,9 @@ data(){
         this.born_date = option.addiotionala_information.slice(8,10) + '-' + option.addiotionala_information.slice(5,7) + '-' + option.addiotionala_information.slice(0,4);
       }
       await this.fetchUserPrixodRasxod();
+      await this.fetchDolgTypeList();
+      this.qarz_type_id = 0;
+
 
     },
     // 
@@ -454,6 +680,10 @@ data(){
       }
       this.dolg_user_show = false;
       await this.fetchUserPrixodRasxod();
+      await this.fetchDolgTypeList();
+      this.qarz_type_id = 0;
+
+
     },
 
 

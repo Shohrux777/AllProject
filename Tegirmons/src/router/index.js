@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
+import store from "@/store";
 
 Vue.use(VueRouter)
 
@@ -38,6 +38,20 @@ const routes = [{
         meta: { layout: 'main' },
         component: () =>
             import ('../views/category/category_Add.vue')
+    },
+    {
+        path: '/dolg_user',
+        name: 'dolg_user',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/qarz_daftar/dolg_user.vue')
+    },
+    {
+        path: '/dolg_user_add/:id',
+        name: 'dolg_user_add',
+        meta: { layout: 'main' },
+        component: () =>
+            import ('../views/qarz_daftar/dolg_user_Add.vue')
     },
     {
         path: '/door',
@@ -708,34 +722,63 @@ const router = new VueRouter({
     routes
 })
 
-router.beforeEach((to, from, next) => {
-    if (to.path != '/') {
-        if (localStorage.Login != '') {
-            // if (localStorage.AccessType == 1) {
-            //     if (to.path == '/rasxod' || to.path == '/getProduct_report' || to.path == '/zaxiraSend'
-            //      || to.path == '/changeWithoutReg' || to.path == '/millUndo' || to.path == '/zaxiraList' ) {
-            //         next('/zaxiraniAlmashtirish')
-            //     }
-            // } else 
-            if (localStorage.AccessType == 0) {
-                next()
-            } else if (localStorage.AccessType == 2) {
-                if (to.path == '/sell' || to.path == '/zaxiraniAlmashtirish' || to.path == '/product' || to.path == '/zaxiraList') {
-                    next('/tarozi')
-                }
-            }
-             else {
-                next()
-            }
-
-            next()
-
-        } else {
-            next('/')
-        }
-    } else {
-        next()
+router.beforeEach(async (to, from, next) => {
+  try {
+    console.log("Router malumot status haqida");
+    
+    const response = await fetch(store.state.hostname + "/TegirmonClose/1");
+    if (!response.ok) {
+      // agar backend ishlamasa yoki 404
+      return next();
     }
-})
+
+    const data = await response.json();
+
+    const isMaintenance = data.status; // status true/false
+    console.log("Router malumot status haqida", data.status);
+
+    const allowed = ["/" ,"/tarozi", "/sell", "/product", "/user", "/user_salary", "/zaxiraniAlmashtirish"];
+
+    if (isMaintenance && !allowed.includes(to.path)) {
+      // status true bo‘lsa va foydalanuvchi maintenance yoki login sahifada emas → redirect
+      return next("/tarozi");
+    } else {
+      return next();
+    }
+  } catch (err) {
+    console.error("Router fetch xatolik:", err);
+    return next();
+  }
+});
+
+// router.beforeEach((to, from, next) => {
+//     if (to.path != '/') {
+//         if (localStorage.Login != '') {
+//             // if (localStorage.AccessType == 1) {
+//             //     if (to.path == '/rasxod' || to.path == '/getProduct_report' || to.path == '/zaxiraSend'
+//             //      || to.path == '/changeWithoutReg' || to.path == '/millUndo' || to.path == '/zaxiraList' ) {
+//             //         next('/zaxiraniAlmashtirish')
+//             //     }
+//             // } else 
+//             if (localStorage.AccessType == 0) {
+//                 next()
+//             } else if (localStorage.AccessType == 2) {
+//                 if (to.path == '/sell' || to.path == '/zaxiraniAlmashtirish' || to.path == '/product' || to.path == '/zaxiraList') {
+//                     next('/tarozi')
+//                 }
+//             }
+//              else {
+//                 next()
+//             }
+
+//             next()
+
+//         } else {
+//             next('/')
+//         }
+//     } else {
+//         next()
+//     }
+// })
 
 export default router

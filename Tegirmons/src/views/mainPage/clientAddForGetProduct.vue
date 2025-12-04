@@ -2,14 +2,14 @@
   <div >
     <div class="getProduct mx-3 mt-4">
       <div
-        v-show="datarows.length > 0"
-        class="AddClient pt-2 pb-2 px-2 mt-4 rounded"
-        style="border: 0.1px solid green; position: relative"
+        v-show="datarows.length > 0 "
+        class="AddClient pt-2 pb-2 px-2 mt-4 rounded "
+        style="border: 0.1px solid green; position: relative "
       >
         <div class="row pb-2 mt-3" v-for="(item, i) in datarows" :key="i" style="position:relative;">
           <svg xmlns="http://www.w3.org/2000/svg" @click="datarows.splice(i,1)"
-            style="position:absolute; top:-22px; right:10px; cursor:pointer;" 
-            class="icon icon-tabler icon-tabler-x" width="20" height="20" viewBox="0 0 24 24" 
+            style="position:absolute; top:-22px; right:10px; cursor:pointer;"
+            class="icon icon-tabler icon-tabler-x" width="20" height="20" viewBox="0 0 24 24"
             stroke-width="1.5" stroke="#ff2825" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
             <line x1="18" y1="6" x2="6" y2="18" />

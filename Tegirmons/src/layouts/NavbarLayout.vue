@@ -78,6 +78,7 @@
         this.$router.push('/');
       }
       await this.fetchUserAccess(localStorage.user_id);
+      await this.update_close_page();
       for (let j = 0; j < this.option.length; j++) {
         if(this.option[j].url == this.$route.fullPath){
           this.option[j].active = true;
@@ -86,6 +87,37 @@
       }
     },
     methods: {
+      async update_close_page(){
+        try{
+        this.loading = true;
+        const response = await fetch(this.$store.state.hostname + "/TegirmonClose/1");
+        const data = await response.json();
+        console.log('test uchun edi', response)
+
+        this.loading = false;
+        if(response.status == 201 || response.status == 200)
+        {
+          console.log('test uchun', data)
+          if(data.status ==  true){
+            this.option[0].status = false
+              this.option[3].status = false
+              this.option[4].status = false
+              this.option[6].status = false
+              this.option[7].status = false
+              this.option[9].status = false;
+              this.option[10].status = false;
+              this.option[11].status = false;
+              this.option[11].status = false;
+          }
+          return true;
+        }
+        }
+        catch{
+            this.loading = false;
+            this.modal_info = this.$i18n.t('network_ne_connect'); 
+            this.modal_status = true;
+        }
+      },
       selectActive(k){
         // this.block_user_nav = false;
         this.option[k].active = true;

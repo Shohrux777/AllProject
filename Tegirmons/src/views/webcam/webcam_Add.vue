@@ -119,7 +119,11 @@ export default {
 				});
     },
 
-
+      funcAutoOpen(){
+        console.log('bunga kirdi')
+        this.isCameraOpen = true;
+        this.createCameraElement();
+      },
       toggleCamera() {
       if(this.isCameraOpen) {
         this.isCameraOpen = false;

@@ -32,7 +32,7 @@
           <div class="col-3">
             <input-search-phone KeyName="fio"  @select="selectClientPassport"  :selected="phone_number"
               url="/TegirmonOrderClient/getPaginationSearchByFioOrPassportSerailNumberOrHomeOrMobilePhoneNumber?page=0&size=100&fio_or_serial_number="
-              ref="search_client" placeholder="(99) ###-##-##"  style="height:32px;">
+              ref="search_client" placeholder="(99) ###-##-##"  style="height:32px;"> 
             </input-search-phone>
           </div>
   
@@ -65,7 +65,7 @@
                 </div>
               </div>
               <div style="width:150px" @click="add_user_dolg">
-                <div class="main_kassa_btn m-0 bg_col_green" >
+                <div class="main_kassa_btn m-0 bg_col_green">
                   <small>Добавить клиент</small>
                 </div>
               </div>
@@ -138,15 +138,15 @@
         <!-- Asosiy zakazlar va kalendar chiqadi -->
         <div class="main_order">
           <div class="order_list p-1" v-if="!add_order_status">
-            <div  :class="{'order_list_display_notAdd': !user_rasxod_show, 'order_list_display_user': user_rasxod_show}">
+            <div  :class="{'order_list_display_notAdd': !user_rasxod_show, 'order_list_display_user': user_rasxod_show, 'order_display_search_table': search_check_show}">
               <div class="p-2 card m-1">
                 <div class="mb-2">
-                  <div class="order_main_head d-flex justify-content-between">
-                    <div>
+                  <div class="order_main_head d-flex justify-content-between flex-wrap align-items-center">
+                    <div class="my-1">
                       <span v-for="(item,i) in order_link" :key="i" :class="{'bg-active_link': active_link == i}" 
                         @click="toggleLink(i)">
                         {{item.name}}
-                        <mdb-badge class="ml-1" style="padding: 3px 8px; font-size: 11px;" pill :style="{ background: item.color + '!important' }">{{item.qty}}</mdb-badge>
+                        <mdb-badge class="ml-1" style="padding: 3px 8px; font-size: 10px;" pill :style="{ background: item.color + '!important' }">{{item.qty}}</mdb-badge>
                       </span>
                     </div>
                     <div>
@@ -154,10 +154,26 @@
                         Check
                       </span> -->
                       <div class="d-flex">
-                        <div class="main_kassa_btn_sml bg_col_info px-4" style="margin-right: 0px;" @click="func_show_checkList">
+                        <div class="main_kassa_btn_search bg_col_dark_yel ml-1" style="margin-right: 0px; position: relative;">
+                          <small  style="font-size: 15px;" class="px-3" @click="func_search_check">🔍</small>
+                          <div style="position:absolute; top: 32px; left: -10px;" class="p-2 card bg-white rounded" v-if="search_check_show">
+                            <input class="m-0 form-control"
+                              placeholder="To'lovni qidirish !"
+                              v-model="search_check"
+                              @keyup.enter="searchAllOrderRasxod"
+                              @keyup="searchAllOrderRasxod"
+                              ref="searchInputOrder"
+                              style="height:30px; width: 300px; font-size: 13px;" 
+                            />
+                          </div>
+                        </div>
+                        <div v-if="optom_statis_show" class="main_kassa_btn_sml bg_col_dark_blue  px-4 ml-1" style="margin-right: 0px;" @click="func_order_statistik">
+                          <small>📈 Статистика</small>
+                        </div>
+                        <div v-if="optom_pay_show" class="main_kassa_btn_sml bg_col_info px-4 ml-2" style="margin-right: 0px;" @click="func_show_checkList">
                           <small>🪙 Платежи</small>
                         </div>
-                        <div class="main_kassa_btn_sml bg_col_blue px-4 ml-2" style="margin-right: 0px;" @click="func_show_cloaded">
+                        <div v-if="optom_load_show" class="main_kassa_btn_sml bg_col_blue px-4 ml-2" style="margin-right: 0px;" @click="func_show_cloaded">
                           <small>🚚 Статистика погрузки</small>
                         </div>
                       </div>
@@ -165,7 +181,7 @@
                     
                   </div>
                 </div>
-                <div :class="{'order_table_max_height': !user_rasxod_show, 'order_table_max_height_user': user_rasxod_show}">
+                <div :class="{'order_table_max_height': !user_rasxod_show, 'order_table_max_height_user': user_rasxod_show, 'order_table_search_table': search_check_show}">
                   <table class="w-full border w-100 myTableuserSalaryList ">
                     <thead>
                       <tr class="bg-gray-200 header py-3 info_client_header ">
@@ -188,7 +204,8 @@
                         <!-- Asosiy order qatori -->
                         <tr 
                           class=" hover:bg-gray-100" style="cursor:pointer;"
-                          :class="{'alert-success': order.isClosed, 'alert-warning': order.is_begin, 'alert-warning': order.is_loading}"
+                          :class="{'alert-success': order.isClosed, 'alert-warning': order.is_begin,
+                           'alert-warning': order.is_loading, 'zaxira_paid_way': order.is_save_client}"
                         >
                           <td @click="funcShowOrderInfo(order)" class="p-2 d-flex">{{ index+1 }}
                             <div class="k-icon" title="KEPAK" 
@@ -227,12 +244,12 @@
                           <td class="p-2" style="cursor:pointer;" 
                             @click="toggleOrder(index)"><span>{{ order.item_list.length }}  товары</span>
                           </td>
-                          <td class="p-2 " v-if="order.isLoaded && !order.is_loading" @click="toggleShafyorInfo(order, true)">
+                          <td class="p-2" :class="{'applied': order.is_save_client}" v-if="order.isLoaded && !order.is_loading" @click="toggleShafyorInfo(order, true)">
                             <span class="paid">
                               Загружен
                             </span>
                           </td>
-                          <td class="p-2 " v-else  @click="toggleShafyorInfo(order, true)" style="position: relative;">
+                          <td class="p-2" :class="{'applied': order.is_save_client}" v-else  @click="toggleShafyorInfo(order, true)" style="position: relative;">
                             <span v-if="order.load_progress>0" class="nopaidprogress">
                               <span class="load_progress_text">{{order.load_progress}} %</span> .
                               <small :class="{'progress_change': !order.is_loading, 'progress_change_warning': order.is_loading}" :style="{ width: order.load_progress + '%' }"></small>
@@ -247,7 +264,7 @@
                               <span>{{ order.paid_status }}</span>
                             </div>
                           </td>
-                          <td class="p-2 text-center d-flex" style="position: relative !important;">
+                          <td class="p-2 text-center d-flex" style="position: relative !important;" :class="{'applied': order.is_save_client}">
                             <i class="fas fa-pen iconPen mask waves-effect  m-0 mr-3" @click="edit_order(order)"></i>
                             <i class="fa fa-trash iconCog mask waves-effect  m-0 mr-3" @click="delete_order(order)"></i>
                             <i class="fa fa-cog iconCog mask waves-effect m-0" :class="{ 'fa-spin': activeMenu === index }"
@@ -307,12 +324,12 @@
                 </div>
               </div>
             </div>
-            <div class="user_rasxod_prixod_list p-2 card m-1 mt-2 " v-show="user_rasxod_show">
+            <div class="user_rasxod_prixod_list p-2 card m-1 mt-2 " v-show="user_rasxod_show || search_check_show">
               <table class="myTableuserSalaryList myTableorderClientInfo">
                 <thead>
                   <tr class="header py-3 info_client_header">
                     <th  width="40" class="text-left">№</th>
-                    <th width="40" >ID</th>
+                    <th width="40">ID</th>
                     <th>{{$t('client_name')}}</th>
                     <th>Sum</th>
                     <th>Dollor</th>
@@ -483,6 +500,12 @@
             <client_info  ref="client_full_info"/>
           </template>
       </modal-train>
+      <modal-train  :show="show_order_dashboard" headerbackColor="#64B0FB"  titlecolor="black" title="Панель управления оптовыми продажами завода" 
+        @close="show_order_dashboard = false" width="90%">
+          <template v-slot:body>
+            <order_dashboard  ref="order_dashboard_ref"/>
+          </template>
+      </modal-train>
 
 
        <pay v-show="payshow" :client_info="pay_client_info" @close="closePay" 
@@ -518,6 +541,8 @@
           <mdb-btn outline="danger" @click="show_send_zaxira = false">{{$t('No')}}</mdb-btn>
         </mdb-modal-footer>
       </mdb-modal>
+    <block ref="blocked"></block>
+
   </div>
 </template>
 
@@ -545,7 +570,7 @@ import check_info from './check_info.vue';
 import load_info from './load_info.vue';
 import order_info from './order_info.vue';
 import client_info from './client_info.vue';
-
+import order_dashboard from './order_dashboard.vue'
 export default {
 data(){
     return{
@@ -556,6 +581,7 @@ data(){
       loading_table: false,
       showUserList: false,
       show_shafyor_info: false,
+      show_order_dashboard: false,
 
       dolg_user_show: false,
       client_list: [],
@@ -652,6 +678,13 @@ data(){
       selectZaxiraProduct: null,
       show_order_info: false,
       show_client_info: false,
+      search_check: '',
+      search_check_show: false,
+
+      optom_statis_show: true,
+      optom_pay_show: true,
+      optom_load_show: true,
+      
     }
   },
   components: {
@@ -676,17 +709,20 @@ data(){
     load_info,
     order_info,
     client_info,
+    order_dashboard,
     mdbModal, mdbModalHeader, mdbModalBody, mdbModalFooter
   },
 //   validations: {
       
 //     },
     async mounted() {
+      await this.fetchUserAccess(localStorage.user_id);
+
       await this.fetchOldDayNotClosed();
       await this.fetchOrderPaidNotCassa();
       await this.fetchClient();
       let time1 = new Date();
-      this.choosen_day = time1.toISOString().slice(0,10); 
+      this.choosen_day = time1.toISOString().slice(0,10);
       await this.fetchAllOrderList();
       await this.fetchAllOrderStatusNumber();
       await this.fetchAllOrderProductsList();
@@ -717,6 +753,92 @@ data(){
   methods: {
     ...mapActions(['fetch_user',]),
     ...mapMutations(['check_invoice_zaxira']),
+
+    async fetchUserAccess(id){
+      try{
+          const res = await fetch(this.$store.state.hostname + '/TegirmonUserAccess/getTegirmonUserAccessUserId?user_id=' + id);
+          const data = await res.json();
+          console.log('this is by id')
+          if(res.status == 200 || res.status == 201){
+              this.optom_statis_show = data.optom_statis;
+              this.optom_pay_show = data.optom_pay;
+              this.optom_load_show = data.optom_load;
+              if(data.num_3 == 0){
+                this.$refs.blocked.show_block();
+              }
+
+          }
+      }
+      catch(error){
+        console.log(error)
+      }
+    },
+
+    async func_search_check(){
+      this.search_check_show = !this.search_check_show;
+      if(this.search_check_show == false){
+        await this.fetchAllOrderList();
+        // this.user_rasxod_show = false;
+      }
+      else{
+        // this.user_rasxod_show = true;
+        this.$nextTick(() => {
+        this.$refs.searchInputOrder.focus();
+      });
+      }
+    },
+    async searchAllOrderRasxod(){
+      if(this.search_check != ''){
+        await this.searchPayment();
+        await this.searchRasxod();
+      }
+    },
+    async searchPayment(){
+      console.log('poisk')
+      try{
+        const response = await fetch(this.$store.state.hostname + "/TegirmonOrderCheck/search?text=" + this.search_check);
+        const data = await response.json();
+        console.log('data_list search',data)
+        if(response.status == 201 || response.status == 200)
+        {
+          this.order_list = data;
+          return true;
+        }
+        else{
+          this.modal_info = data;
+          this.modal_status = true;
+          return false;
+        }
+      }
+      catch{
+        // this.client_list = [];
+        this.modal_info = this.$i18n.t('network_ne_connect');
+        this.modal_status = true;
+      }
+    },
+    async searchRasxod(){
+      console.log('poisk')
+      try{
+        const response = await fetch(this.$store.state.hostname + "/TegirmonOrderClientRasxod/search?text=" + this.search_check);
+        const data = await response.json();
+        console.log('data_list search',data)
+        if(response.status == 201 || response.status == 200)
+        {
+          this.user_rasxod_prixod_list = data;
+          return true;
+        }
+        else{
+          this.modal_info = data;
+          this.modal_status = true;
+          return false;
+        }
+      }
+      catch{
+        // this.client_list = [];
+        this.modal_info = this.$i18n.t('network_ne_connect');
+        this.modal_status = true;
+      }
+    },
     async funcShowOrderInfo(order){
       console.log(order)
       this.$refs.order_full_info.fetchMounted(order);
@@ -739,6 +861,11 @@ data(){
       if (!event.target.closest('.dropdown-menu') && !event.target.classList.contains('iconCog')) {
         this.activeMenu = null
       }
+    },
+    async func_order_statistik(){
+      this.show_order_dashboard = true;
+      this.$refs.order_dashboard_ref.refresh();
+
     },
     func_show_checkList(){
       this.$refs.order_checks_info.func_mounted();
@@ -880,7 +1007,13 @@ data(){
         console.log('data_list order',data)
         if(response.status == 201 || response.status == 200)
         {
+          
           this.order_list = data;
+          if(localStorage.order_page == 0 && this.user_id == 0){
+            for(let i=0; i<this.old_paid_not_deliver_cassa.length; i++){
+              this.order_list.unshift(this.old_paid_not_deliver_cassa[i]);
+            }
+          }
           return true;
         }
         else{
@@ -1578,6 +1711,19 @@ data(){
     font-size: 12px;
   }
 }
+.main_kassa_btn_search{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 7px;
+  margin-top: 0px;
+  small{
+    font-size: 12px;
+  }
+}
 .bg_col_blue{
   //border: 1.5px solid #009587;
   background: #009587;   
@@ -1585,9 +1731,32 @@ data(){
 
   &:hover{
     color:white;
-    background: #009587;  
+    background: #00776b;  
   }
 }
+
+.bg_col_dark_blue{
+  //border: 1.5px solid #009587;
+  background: #5f7fd8;   
+  color:white;
+
+  &:hover{
+    color:white;
+    background: #1936b8;  
+  }
+}
+
+.bg_col_dark_yel{
+  //border: 1.5px solid #009587;
+  background: #f38282;   
+  color:white;
+
+  &:hover{
+    color:white;
+    background: #e66161;  
+  }
+}
+
 .bg_col_green{
   //border: 1.5px solid #009587;
   background: #03b15f;   
@@ -1616,7 +1785,7 @@ data(){
 
   &:hover{
     color:white;
-    background: #4ab1ff;  
+    background: #1994f1;  
   }
 }
 .status_btn_bg{
@@ -1753,6 +1922,10 @@ data(){
   overflow: hidden;
   height: calc(100vh - 530px);
 }
+.order_display_search_table{
+  overflow: hidden;
+  height: calc(100vh - 445px);
+}
 .order_table_max_height{
   overflow: hidden;
   overflow-y: scroll;
@@ -1764,6 +1937,12 @@ data(){
   overflow-y: scroll;
   max-height: calc(100vh - 600px);
   min-height: 260px;
+}
+.order_table_search_table{
+  overflow: hidden;
+  overflow-y: scroll;
+  max-height: calc(100vh - 530px);
+  min-height: 320px !important;
 }
 .user_rasxod_prixod_list{
   overflow: hidden;
@@ -1780,8 +1959,8 @@ data(){
     border-radius: 5px;
     cursor: pointer;
     display: inline-block;
-    font-size: 13px;
-    padding: 5px 13px;
+    font-size: 12.5px;
+    padding: 5px 7px;
     margin-left: 4px;
 
     background: rgb(255, 255, 255);
@@ -2011,5 +2190,8 @@ data(){
   font-weight: 700;
   font-size: 15px;
   color: #ff0505;
+}
+.zaxira_paid_way{
+  background: #e8c1ff;
 }
 </style>

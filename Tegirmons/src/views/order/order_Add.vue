@@ -486,7 +486,6 @@ export default {
         this.datasource.rows[i].qty = data.item_list[i].qty;
         this.datasource.rows[i].qty_str = data.item_list[i].qty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
         this.datasource.rows[i].sum = data.item_list[i].sum;
-
         this.datasource.rows[i].price = data.item_list[i].price;
         this.datasource.rows[i].price_str = data.item_list[i].price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
         this.datasource.rows[i].price_type = data.item_list[i].price_type;
@@ -759,7 +758,7 @@ export default {
           this.datasource.rows[i].qty = parseFloat(temp);
         }
        }
-      this.datasource.rows[i].sum = ((parseFloat(this.datasource.rows[i].qty) * parseFloat(this.datasource.rows[i].price)) / parseFloat(this.datasource.rows[i].price_qty)).toFixed()
+      this.datasource.rows[i].sum = ((parseFloat(this.datasource.rows[i].qty) * parseFloat(this.datasource.rows[i].price)) / parseFloat(this.datasource.rows[i].price_qty)).toFixed(1)
       this.all_sum = 0;
       this.all_dollor = 0;
       for(let j=0; j<this.datasource.rows.length; j++){
@@ -809,7 +808,7 @@ export default {
        else{
         this.datasource.rows[i].price = parseFloat(temp);
        }
-      this.datasource.rows[i].sum = ((parseFloat(this.datasource.rows[i].qty) * parseFloat(this.datasource.rows[i].price)) / parseFloat(this.datasource.rows[i].price_qty)).toFixed()
+      this.datasource.rows[i].sum = ((parseFloat(this.datasource.rows[i].qty) * parseFloat(this.datasource.rows[i].price)) / parseFloat(this.datasource.rows[i].price_qty)).toFixed(1)
       this.all_sum = 0;
       this.all_dollor = 0;
       for(let j=0; j<this.datasource.rows.length; j++){

@@ -5,7 +5,28 @@
          <h5 class="m-0 ml-4 d-flex" style="padding: 15px 0px; font-size: 20px;">
             {{$t('buy')}}</h5>
       </router-link>
-      <div>
+      <div class="d-flex">
+        <div style="width:250px; margin-top: 16px; position: relative;" class="mr-4"> 
+          <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -10px; color: #757575;">
+            {{$t('start_time')}}
+          </small>
+          <mdb-input type="date" size="sm" @change="changeDate" class="m-0 p-0" v-model="Start_time" outline/>
+        </div>
+        <div style="width:250px; margin-top: 16px; position: relative;" class="mr-4"> 
+          <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -10px; color: #757575;">
+            {{$t('end_time')}}
+          </small>
+          <mdb-input type="date" size="sm" @change="changeDate" class="m-0 p-0" v-model="End_time" outline/>
+        </div>
+        <div style="width:250px; margin-top: 14px;" class="mr-5">
+          <erpSelectSklad
+            :options="allSklad.rows"
+            @select="selectOptionSklad"
+            :selected="sklad_name"
+            :label="$t('sklad')"
+            size="sm"
+          />
+        </div>
         <router-link to="/rasxod_add/0">
             <mdb-btn class=" mt-3" m="r2" color="danger" size="sm" p="r4 l4 t2 b2" style="font-size: 8px;">
               <mdb-icon icon="plus" class="mr-2"/>{{$t('rasxod')}}
@@ -109,14 +130,20 @@
 <script>
 import {
   mdbIcon,
+  mdbInput,
   mdbBtn,
   mdbBadge
 } from "mdbvue";
+import erpSelectSklad from "../../components/erpSelect.vue";
+import {mapActions,mapGetters} from 'vuex'
+
 export default {
   components: {
     mdbIcon,
     mdbBtn,
-    mdbBadge
+    mdbBadge,
+    mdbInput,
+    erpSelectSklad
   },
   data(){
     return{
@@ -124,15 +151,37 @@ export default {
       m_buy: [],
       invoice_item_list: [],
       active_index: -1,
-      invoice_data: {}
+      invoice_data: {},
+      sklad_name: '',
+      sklad_id: 0,
+      Start_time: null,
+      End_time: null,
+
     }
   },
   async mounted(){
+    let time1 = new Date();
+    this.Start_time = time1.toISOString().slice(0,10);
+    this.End_time = time1.toISOString().slice(0,10);
+    console.log(this.Start_time);
+    await this.fetchSklad();
     await this.refresh();
   },
+  computed: mapGetters(['allSklad']),
   methods:{
+    ...mapActions([ 'fetchSklad']),
+    async selectOptionSklad(option){
+       console.log(option);
+      this.sklad_name = option.name;
+      this.sklad_id = option.id;
+      await this.refresh();
+    },
+    async changeDate(){
+      await this.refresh();
+
+    },
     async refresh(){
-        const res = await fetch(this.$store.state.hostname + '/TegirmonInvoice/getPaginationBugdoyPrixodQilinganTovarlarListiVaqtsz?page=0&size=100');
+        const res = await fetch(this.$store.state.hostname + '/TegirmonInvoice/getPaginationBugdoyPrixodQilinganTovarlarListiVaqtsz?page=0&size=1000&date_from=' + this.Start_time + '&date_to=' + this.End_time + '&sklad_id=' + this.sklad_id);
         const res_data = await res.json();
         // await this.update_column();
         console.log(res_data);

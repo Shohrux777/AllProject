@@ -149,7 +149,7 @@
                   <mdb-btn color="primary" v-if="client_id" @click="next_data" style="font-size: 10.5px"
                     p="r4 l4 t2 b2">
                   <mdb-icon  />Продолжить</mdb-btn>
-                  <mdb-btn color="success"  @click="save_data" style="font-size: 10.5px"
+                  <mdb-btn color="success" v-if="!client_id"  @click="save_data" style="font-size: 10.5px"
                     p="r4 l4 t2 b2">
                   <mdb-icon  />{{$t('add')}}</mdb-btn>
                 </div>
@@ -359,9 +359,9 @@ export default {
     },
 
     async next_data(){
-      await this.save_data();
+      // await this.save_data();
       this.id = 0;
-      // this.$emit('close_data', this.client_data)
+      this.$emit('close_data', this.client_data)
     },
 
     async fetchClient(){

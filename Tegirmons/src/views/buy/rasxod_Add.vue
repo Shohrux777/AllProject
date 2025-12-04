@@ -382,7 +382,7 @@ export default {
         tegirmonProductid: 0,
         product_name: "",
         qty: 0,
-        qty_str: '0',
+        qty_str: '',
         price: 0,
         sum:0,
         id: 0,

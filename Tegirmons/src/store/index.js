@@ -31,15 +31,14 @@ import salary from '../store/modules/salary'
 import smena from '../store/modules/smena'
 import depart from '../store/modules/depart'
 import productCategory from '../store/modules/productCategory'
-
 Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        // hostname:  'https://192.168.68.170:5006/api',
-        // server_ip: 'https://192.168.68.170:5006/',
-        hostname: 'https://localhost:5006/api',
-        server_ip: 'https://localhost:5006/',
+        hostname:  'https://192.168.68.170:5006/api',
+        server_ip: 'https://192.168.68.170:5006/',
+        // hostname: 'https://localhost:5006/api',
+        // server_ip: 'https://localhost:5006/',
         // deviceId: '',
         alert: false,
         pagination: {

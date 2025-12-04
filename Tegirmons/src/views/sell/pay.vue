@@ -242,7 +242,11 @@ export default {
     summa_default:{
       type: Number,
       default: 0
-    }
+    }, 
+    check_id: {
+      type: Number,
+      default: 0
+    },
   },
   created() {
     this.$root.$refs.payed = this;
@@ -267,8 +271,8 @@ export default {
       this.dollor_returnSumm = 0;
       this.defaultOrtiqchaSum = 0;
     },
-    changingEnter(paytype){
-
+    async changingEnter(paytype){
+    
     this.$nextTick(function () {
       this.$refs.enterSumma.focus();
       this.enterSumma = '';
@@ -363,6 +367,67 @@ export default {
         this.uzumIn = parseFloat(this.summa)
         this.uzumInString = new Intl.NumberFormat().format(this.summa)
       }
+      if(this.check_id>0){
+        try{
+          const res = await fetch(this.$store.state.hostname + '/TegirmonCheck/' + this.check_id);
+          const data = await res.json();
+          if(res.status == 200 || res.status == 201 ){
+            console.log('check date')
+            console.log(data)
+              this.cashIn = parseFloat(data.cash || 0)
+              this.cashInString = new Intl.NumberFormat().format(data.cash || 0)
+              this.uzcardIn = parseFloat(data.card || 0)
+              this.uzcardInString = new Intl.NumberFormat().format(data.card || 0)
+              this.humoIn = parseFloat(data.humo || 0)
+              this.humoInString = new Intl.NumberFormat().format(data.humo || 0)
+              this.clickIn = parseFloat(data.dolg || 0)
+              this.clickInString = new Intl.NumberFormat().format(data.dolg || 0)
+              this.onlineIn = parseFloat(data.online || 0)
+              this.onlineInString = new Intl.NumberFormat().format(data.online || 0)
+
+              this.dollorIn = parseFloat(data.real_sum || 0)
+              this.dollorInString = new Intl.NumberFormat().format(data.real_sum || 0)
+              this.dol_convert_Sum = (parseFloat(data.real_sum) * parseFloat(data.image_url)) || 0;
+
+              this.paymeIn = parseFloat(data.creadit_payed || 0)
+              this.paymeInString = new Intl.NumberFormat().format(data.creadit_payed || 0)
+
+              this.clickedIn = parseFloat(data.perchisleniya || 0)
+              this.clickedInString = new Intl.NumberFormat().format(data.perchisleniya || 0)
+
+              this.paynetIn = parseFloat(data.creadit_payed || 0)
+              this.paynetInString = new Intl.NumberFormat().format(data.creadit_payed || 0)
+
+              this.uzumIn = parseFloat(data.rasxod || 0)
+              this.uzumInString = new Intl.NumberFormat().format(data.rasxod || 0)
+
+              this.persantage_discount = parseFloat(data.profit_summ || 0);
+              this.persantage_discountString = (data.profit_summ || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+              this.persantage_discount_default = parseFloat(data.profit_summ || 0);
+              this.persantage_discount_diff = 0;
+
+              this.summa = parseFloat(this.summa - this.persantage_discount);
+              this.summ_str = new Intl.NumberFormat().format(this.summa || 0);
+
+              this.defaultSum = this.cashIn + this.uzcardIn + this.humoIn + this.clickIn + this.onlineIn + 
+              this.paymeIn + this.clickedIn + this.paynetIn + this.uzumIn + this.dol_convert_Sum;
+
+              this.discount = parseFloat(this.clickIn) + parseFloat(this.cashIn) + parseFloat(this.uzcardIn) + parseFloat(this.humoIn) + parseFloat(this.onlineIn) + 
+              parseFloat(this.dol_convert_Sum) + parseFloat(this.paymeIn) + parseFloat(this.clickedIn) + parseFloat(this.paynetIn) + parseFloat(this.uzumIn);
+              
+              console.log('this.summa', this.summa);
+              console.log('this.discount', this.discount);
+              
+              this.discountSum = parseFloat(this.summa) - parseFloat(this.discount);
+              this.defaultOrtiqchaSum = this.naqd_returnIn + this.dollor_returnSumm;
+              console.log('this.discountSum', this.discountSum);
+          }
+        }
+        catch(error){
+          console.log(error)
+        }
+      }
+
     },
 
     async payed(){
@@ -431,7 +496,8 @@ export default {
           "auth_user_updator_id": localStorage.kassa_id,
           "payments": orderList,
           "auth_user_creator_id": 1,
-          "image_base_64": localStorage.user_name
+          "image_base_64": localStorage.user_name,
+          "id": this.check_id,
           // "uz_card": 0,     for skidka uchun ishlataman
         })
       };

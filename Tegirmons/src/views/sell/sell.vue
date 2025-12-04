@@ -11,7 +11,18 @@
           </router-link>
       </div>
       
-      <div class="d-flex">
+      <div class="d-flex" v-if="!hidden_page">
+        <!-- <div class="main_kassa_btn_sml bg_col_blue px-4 ml-2" style="margin-right: 0px;" @click="func_show_cloaded">
+          <small>🚚 Статистика погрузки</small>
+        </div> -->
+        
+        <mdb-btn  @click="func_show_cloaded"  class=" py-1 px-3 bg_col_blue" style="font-size:9px;">
+          🚚 Статистика погрузки
+        </mdb-btn>
+        <mdb-btn @click="sklad_from_show = !sklad_from_show"  class="bg_kassa_to_kassa py-1 px-3" style="font-size:9px;">
+          <mdb-icon style="font-size:9px;" icon="share-square" class="m-0 p-0 mr-1" />
+          Skladdan skladga
+        </mdb-btn>
         <mdb-btn @click="$router.push('/savdo_all_kassa_info')" v-if="kassa_setting_show" color="indigo py-1 px-3" style="font-size:9px;">
           <mdb-icon style="font-size:9px;" icon="calendar" class="m-0 p-0 mr-1" />
           Sotuv kassa
@@ -50,32 +61,33 @@
         </div>
       </div>
     </div>
-    <div class="allPage w-100" >
-      <div class="tablePageLeft">
-        <div class="tableAndBtn" style="position: relative;">
-          <div class="myTablesforSaleNew border py-0 px-0" v-on:click.capture="focusBarcode">
-            <div class="tableProduct ">
-              <table  class="myTablesforSaleNew" >
+    <div class="allPagese w-100" >
+      <div class="tablePageLefts">
+        <div class="tableAndBtnss" style="position: relative;">
+          <div class="myTablesforSaleNewSellB border py-0 px-0" v-on:click.capture="focusBarcode">
+            <div class="tableProductsss">
+              <table  class="myTablesforSaleNewSellB">
                 <thead>
-                  <tr  class="header">
+                  <tr  class=""  :class="{'bg-warning': check_id}"> 
                   <th style="width: 40px;">№</th>
                   <th style="width: 300px;">{{$t('product')}}</th>
                   <th>{{$t('soni')}}</th>
-                  <th>{{$t('unit_qty')}}</th>
+                  <!-- <th>{{$t('unit_qty')}}</th> -->
                   <th>{{$t('price')}}</th>
-                  <th>{{$t('expired_date')}}</th>
+                  <th>{{$t('ID')}}</th>
                   <th class=" pl-3">{{$t('total')}}</th>
                   <th style="width: 40px;">{{$t('')}}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(item,i) in get_zakaz_product_all_list[get_page_savat]" :key="i" class="backlight searchBarcodeHover">
+                  <tr v-for="(item,i) in get_zakaz_product_all_list[get_page_savat]" :key="i" class="backlight searchBarcodeHoverS">
                     <td>{{i+1}}</td>
                     <td>{{item.name}}</td>
-                    <td><input type="number" disabled v-model="item.qty" @input="updateQty(i)" class="form-control form-control-sm" style="border:none; outline:none;font-weight:bold;" ></td>
-                    <td><input type="number" disabled v-model="item.qty_in_pack" @input="updateQty(i)"  class="form-control form-control-sm" style="border:none; outline:none; font-weight:bold;" > </td>
+                    <td style="font-weight: bold;">{{item.qty}}</td>
+                    <!-- <td><input type="number" disabled v-model="item.qty" @input="updateQty(i)" class="form-control form-control-sm" style="border:none; outline:none;font-weight:bold;" ></td> -->
+                    <!-- <td><input type="number" disabled v-model="item.qty_in_pack" @input="updateQty(i)"  class="form-control form-control-sm" style="border:none; outline:none; font-weight:bold;" > </td> -->
                     <td>{{item.real_sumString}}</td>
-                    <td>{{item.expired_date}}</td>
+                    <td>{{item.check_id}}</td>
                     <td class=" pl-3">{{item.summString}}</td>
                     <td><div @click="deleteProduct(item, i)">
                       <mdb-icon icon="trash" class="text-danger"  />
@@ -90,7 +102,7 @@
                 <div v-for="(page,i) in get_zakaz_product_all_list" :key="i" :class="{'bg-warning': savatActive == i,'text-white': savatActive == i, 'bg-white': savatActive != i}"
                     class=" m-0 p-1 border" @click="select_savat(i)" style="width:100px; position:relative; cursor:pointer">
                   <span style="font-size: 13px; padding-left:3px;">{{$t('savat')}} {{i+1}}</span>
-                  <div style="position: absolute; top:-6px; right:0; cursor:pointer;" @click="del_savat(i)" class="">
+                  <div style="position: absolute; top:-6px; right:0; cursor:pointer;" @click="del_savat(i)">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="12" height="12" viewBox="0 0 24 24" stroke-width="3.0" stroke="#ff2825" fill="none" stroke-linecap="round" stroke-linejoin="round">
                       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                       <line x1="18" y1="6" x2="6" y2="18" />
@@ -260,6 +272,11 @@
             <div class="text-center linkMainRasxod" style="padding: 9.2px 0; margin-top: 2px;" @click="rasxodClick">
               <span class="m-0 p-0">{{$t('rasxod')}}</span>
             </div>
+
+            <div class="text-center linkMainRasxod bg_col_ichki mt-2" style="padding: 9.2px 0; margin-top: 2px;" @click="give_product_show = !give_product_show">
+              <span class="m-0 p-0">Ichki mahsulot berish</span>
+            </div>
+
           </div>
         </div>
       </div>
@@ -293,8 +310,9 @@
         </div>
         <div class="reportproduct  mt-3 border d-flex pl-3"  style="position:relative;">
           <h4 class="font-weight-bold p-0 m-0 my-1">
-            <span v-if="adminStatus == 0">{{dataAccept.ostatka_qty}}</span>
-            <span v-else><span v-show="dataAccept.inv == false">{{dataAccept.ostatka_qty}}</span></span>
+            <span>________</span> 
+            <!-- <span v-if="adminStatus == 0">{{dataAccept.ostatka_qty}}</span>
+            <span v-else><span v-show="dataAccept.inv == false">{{dataAccept.ostatka_qty}}</span></span> -->
           </h4>
             <small style="position:absolute; top:-16px; left:3px; font-size: 12px;">
               {{$t('reportproduct')}}
@@ -360,8 +378,8 @@
       </template>
   </modal-train>
   <pay v-show="payshow"  @close="closePay" 
-    :summaString="AllSummString[get_page_savat]" 
-    :summa_default="get_all_summa[get_page_savat]" @print="printChek()"/>
+    :summaString="(get_all_summa[get_page_savat] || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')" 
+    :summa_default="(get_all_summa[get_page_savat] || 0)" @print="printChek()" :check_id="check_id"/>
 
     <kassa_info v-show="closeCash" ref="kassa_info_ref"  @close="closeKassa" />
 
@@ -388,9 +406,30 @@
     <modal-train  :show="checkShowList" headerbackColor="#3b678b"  titlecolor="white" title="To'lov qog'ozlari" 
       @close="checkShowList = false" width="70%">
         <template v-slot:body>
-          <checkList  ref="checkListInfo"/>
+          <checkList  ref="checkListInfo" @close="closeClient_list"/>
         </template>
     </modal-train>
+    <modal-train  :show="show_load_info" headerbackColor="#64B0FB"  titlecolor="black" title="🚚 Статистика погрузки" 
+      @close="show_load_info = false" width="70%">
+        <template v-slot:body>
+          <check_sell_product_info :choosen_day="choosen_day" ref="sell_load_info"/>
+        </template>
+    </modal-train>
+
+    <modal-train  :show="give_product_show" headerbackColor="#64B0FB"  titlecolor="black" title="👩‍🍳 OSHXONAGA MAHSULOT BERISH" 
+      @close="give_product_show = false" width="70%">
+        <template v-slot:body>
+          <give_product :item_list="get_zakaz_product_all_list[get_page_savat]" @close="give_product_show = false" @close_pay = "given_close"/>
+        </template>
+    </modal-train>
+
+    <modal-train  :show="sklad_from_show" headerbackColor="#64B0FB"  titlecolor="black" title="Sladdan skladga mahsulot o'tkazish" 
+      @close="sklad_from_show = false" width="70%">
+        <template v-slot:body>
+          <sklad_from_sklad @close="sklad_from_show = false"/>
+        </template>
+    </modal-train>
+
    <massage_box :hide="modal_status" :detail_info="modal_info"
       :m_text="$t('Failed_to_delete')" @to_hide_modal = "modal_status= false"/>
 
@@ -404,23 +443,29 @@
 
 
 <script>
+import sklad_from_sklad from './sklad_from_sklad.vue'
 import fromKassaToKassa from './fromKassaToKassa.vue'
 import sendMainKassa from './sendMainKassa.vue';
 import check from './check'
 import checkList from './checkList'
 import rasxod from './rasxod'
 import chiqarPulOlish from './chiqarPulOlish'
+import check_sell_product_info from './check_sell_product_info'
+import give_product from './give_product.vue'
 // import List from './List'
 import {mapActions, mapGetters, mapMutations} from 'vuex'
 import {
   mdbIcon,
-  mdbBtn,mdbInput
+  mdbBtn,mdbInput, 
 } from "mdbvue";
 import Pay from './pay.vue';
 import kassa_info from './kassa_info.vue';
 import kassa_add_user_setting from './kassa_add_user_setting.vue';
+import Give_product from './give_product.vue';
 export default {
   components: {
+    give_product,
+    sklad_from_sklad,
     mdbIcon,
     mdbBtn,mdbInput,
     check,
@@ -431,7 +476,9 @@ export default {
     sendMainKassa,
     kassa_add_user_setting,
     fromKassaToKassa,
-    checkList
+    checkList,
+    check_sell_product_info,
+    Give_product
   },
   data() {
     return {
@@ -442,7 +489,8 @@ export default {
       closeCash: false,
       kassa_setting_show: true,
       from_kassa_to_kassa_sts: false,
-
+      give_product_show: false,
+      
       send_kassa_status: false,
       kassa_info_show: false,
 
@@ -487,7 +535,11 @@ export default {
       choosenQty: 0,
       adminStatus: localStorage.AccessType,
       checkShowList: false,
-
+      check_id: 0,
+      show_load_info:false, // bu bugun sotuv bulimidan chiqib ketgan mahsulot informatsiyasini ochib beradi
+      choosen_day: '',
+      sklad_from_show: false,
+      hidden_page: false,
     }
   },
  
@@ -499,8 +551,10 @@ export default {
     }
   },
   async mounted(){
+    await this.update_close_page();
     await this.fetchUserAccess(localStorage.user_id);
-
+      let time1 = new Date();
+      this.choosen_day = time1.toISOString().slice(0,10); 
     // var number = 123456789.23
     // var num = new Intl.NumberFormat().format(number)
     // console.log(num)
@@ -544,7 +598,44 @@ export default {
   methods: {
     ...mapActions([ 'fetchProduct', 'fetchCategoryAllProduct', 'fetchCategoryIdProduct', 
     'fetchProductSearchByName', 'fetchKassa_userId']),
-    ...mapMutations([ 'add_product_order', 'minus_product', 'plus_product', 'del_product', 'clear_order', 'input_change', 'changeSumma', 'update_zakaz_product_all_list', 'select_savat_page', 'add_savat_page', 'del_savat_page']),
+    ...mapMutations([ 'add_product_order', 'minus_product', 'plus_product', 'del_product', 'clear_order', 'input_change', 
+    'changeSumma', 'update_zakaz_product_all_list', 'select_savat_page', 'add_savat_page', 'del_savat_page', 'clear_zakaz_list']),
+    async given_close(){
+      this.give_product_show = false;
+      this.$refs.message.success('Added_successfully')
+      this.clear_zakaz_list(this.get_page_savat)
+      // this.$nextTick(function () {})
+    },
+    async update_close_page(){
+      console.log('uploadga kirayabdimi bu uzi')
+      try{
+      this.loading = true;
+      const response = await fetch(this.$store.state.hostname + "/TegirmonClose/1");
+      const data = await response.json();
+      console.log('test uchun edi', response)
+
+      this.loading = false;
+      if(response.status == 201 || response.status == 200)
+      {
+        if(data.status ==  true){
+          this.hidden_page = true;
+        }
+        return true;
+      }
+      }
+      catch{
+          this.loading = false;
+          this.modal_info = this.$i18n.t('network_ne_connect'); 
+          this.modal_status = true;
+      }},
+    func_show_cloaded(){
+      this.$refs.sell_load_info.func_mounted();
+      this.show_load_info = !this.show_load_info;
+    },
+    async closeClient_list(check_id){
+      this.checkShowList = false;
+      this.check_id = check_id;
+    },
     async fetchUserAccess(id){
       try{
           const res = await fetch(this.$store.state.hostname + '/TegirmonUserAccess/getTegirmonUserAccessUserId?user_id=' + id);
@@ -620,7 +711,6 @@ export default {
       }
       catch{
         this.$refs.message.error('not_found')
-      
       }
     },
     rasxodClick(){
@@ -630,7 +720,6 @@ export default {
     pulOlibQolishChiqarNarsa(){
       this.pul_olib_qolish = true;
       this.$refs.prixodWorkerSum.clw_rw();
-
     },
     funcCurrency(n){
       console.log(n)
@@ -817,8 +906,9 @@ export default {
 
     // <--  Checkni chiqarish start-->
     printChek(){
+      this.check_id = 0;
       this.check_show = true;
-      this.searchBarcodeData = []
+      this.searchBarcodeData = [];
     },
     closedChek(){
       this.check_show=false;
@@ -937,13 +1027,13 @@ export default {
         }
       },
       async clickBarcodeData(data){
-        // console.log(data)
-        // console.log('mansdnasdas dasjhdjashdasdas dajsdh')
+        console.log(data)
+        console.log('mansdnasdas dasjhdas dajsdh')
         var chooseQty = 0;
         // var chooseUnit = 0;
         console.log(this.get_zakaz_product_all_list[this.get_page_savat])
         for(let i=0; i<this.get_zakaz_product_all_list[this.get_page_savat].length;i++){
-          if(this.get_zakaz_product_all_list[this.get_page_savat][i].invoiceItemId == data.id){
+          if(this.get_zakaz_product_all_list[this.get_page_savat][i].invoiceItemId == data.Product.id){
             chooseQty = this.get_zakaz_product_all_list[this.get_page_savat][i].qty;
             // chooseUnit = this.get_zakaz_product_all_list[this.get_page_savat][i].qty_in_pack;
           }
@@ -956,10 +1046,9 @@ export default {
            this.acceptQty_str = '';
         })
 
-
         this.dataAccept.inv= data.Product.inv_accepted_status;
         this.dataAccept.name = data.Product.name;
-        this.dataAccept.invoice = data.id;
+        this.dataAccept.invoice = data.Product.id;
         this.dataAccept.id = data.Product.id;
         this.dataAccept.manifacturer_name = data.Product.code;
         this.dataAccept.ostatka_qty = (parseFloat(data.real_qty)-chooseQty).toFixed(2);
@@ -973,6 +1062,7 @@ export default {
         this.dataAccept.price = 0;
         this.persantage_discount = data.Product.price;
         this.unitPrice = new Intl.NumberFormat().format(this.dataAccept.saledPrice)
+        this.dataAccept.check_id = 0;
       },
 
       // oynani yopish
@@ -1035,6 +1125,7 @@ export default {
           }
           else{
             this.showAccept = false;
+            console.log(this.dataAccept, 'this.dataAccept')
             this.add_product_order(this.dataAccept)
             this.$nextTick(function () {
               this.$refs.barcode.focus();
@@ -1153,8 +1244,18 @@ export default {
         this.$root.$refs.payed.changingEnter(10);
       },
       async openChecks(){
-        this.checkShowList = true;
-        this.$refs.checkListInfo.fetchMounted();
+        await this.fetchKassa_userId(localStorage.user_id);
+        if(this.user_kassa_list.length || localStorage.AccessType == 0){
+          this.checkShowList = true;
+          this.$refs.checkListInfo.fetchMounted();
+        }
+        else{
+          this.$refs.alert.error('Bu foydalanuvchi kassaga biriktirilmagan, unda savdo qilish huquqi yuq !');
+          localStorage.kassa_id = 0;
+          localStorage.kassa_num = 0;
+          return;
+        }
+        
       },
       async funcKassaInfo(){
         this.closeCash = true;
@@ -1211,7 +1312,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 ::-webkit-scrollbar {
   width: 5px;
 
@@ -1233,27 +1334,27 @@ export default {
   background: #555;
 }
 
-  .allPage{
+  .allPagese{
     width: 100%;
     display: flex;
     height: 95vh;
-    .tablePageLeft{
+    .tablePageLefts{
       width: 100%;
       
-      .tableAndBtn{
+      .tableAndBtnss{
         width:100%;
         display:flex;
         
         // overflow: hidden;
         
-        .myTablesforSaleNew{
+        .myTablesforSaleNewSellB{
           width: 100%;
             height: 41vh;
             overflow-y:scroll;
-          .tableProducts{
+          .tableProductssss{
             
             padding-bottom:40px;
-             .myTablesforSaleNew { 
+             .myTablesforSaleNewSellB { 
                 
                 /* border-collapse: collapse; */
                 table-layout:fixed;
@@ -1263,28 +1364,24 @@ export default {
                 font-size: 18px;
                 max-height:80px; overflow-x:auto
               }
-              .myTablesforSaleNew thead{
+              .myTablesforSaleNewSellB thead{
                 background:#0e0d0d; 
               }
-              .myTablesforSaleNew th{
+              .myTablesforSaleNewSellB th{
                 font-weight: 600;
                 color:#5a5858; 
                 font-size:12px;
               }
-              .myTablesforSaleNew td{
+              .myTablesforSaleNewSellB td{
                 font-size:13px;
               }
-              .myTablesforSaleNew th, .myTablesforSaleNew td {
+              .myTablesforSaleNewSellB th, .myTablesforSaleNewSellB td {
                 text-align: left;
                 padding: 1px;
               }
 
-              .myTablesforSaleNew tr {
+              .myTablesforSaleNewSellB tr {
                 border-bottom: 1px solid rgb(240, 240, 240);
-              }
-
-              .myTablesforSaleNew tr.header, .myTablesforSaleNew tr:hover {
-                // background-color: #f1f1f1;
               }
             .delIcon{
               color: rgb(251, 70, 70);
@@ -1312,9 +1409,9 @@ export default {
           height: 48vh;
           overflow-y: scroll;
 
-          .tableProducts{
+          .tableProductssss{
             
-            .myTablesforSaleNew { 
+            .myTablesforSaleNewSellB { 
               
               /* border-collapse: collapse; */
               table-layout:fixed;
@@ -1324,27 +1421,27 @@ export default {
               font-size: 18px;
               max-height:80px; overflow-x:auto
             }
-            .myTablesforSaleNew th{
+            .myTablesforSaleNewSellB th{
               font-weight: 600;
-              color:#5a5858; 
+              color:#ffffff; 
               font-size:12px;
             }
-            .myTablesforSaleNew td{
+            .myTablesforSaleNewSellB td{
               font-size:13px;
             }
-            .myTablesforSaleNew th, .myTablesforSaleNew td {
+            .myTablesforSaleNewSellB th, .myTablesforSaleNewSellB td {
               text-align: left;
               padding: 1px;
             }
 
-            .myTablesforSaleNew tr {
+            .myTablesforSaleNewSellB tr {
               border-bottom: 1px solid rgb(240, 240, 240);
             }
 
-            .myTablesforSaleNew tr.header, .myTablesforSaleNew tr:hover {
+            .myTablesforSaleNewSellB tr.header, .myTablesforSaleNewSellB tr:hover {
               // background-color: #f1f1f1;
             }
-            .myTablesforSaleNew thead{
+            .myTablesforSaleNewSellB thead{
                 background:#c5eeea; 
               }
             .delIcon{
@@ -1421,11 +1518,11 @@ export default {
     }
     
   }
-  .tableProduct{
+  .tableProductsss{
     // overflow-y: scroll;
     overflow-y: hidden;
     max-height: 79vh;
-    .myTablesforSaleNew { 
+    .myTablesforSaleNewSellB { 
       
       /* border-collapse: collapse; */
       table-layout:fixed;
@@ -1435,36 +1532,46 @@ export default {
       font-size: 18px;
       max-height:80px; overflow-x:auto
     }
-    .myTablesforSaleNew th{
+    .myTablesforSaleNewSellB th{
       font-weight: 600;
       color:#5a5858; 
       font-size:12px;
     }
-    .myTablesforSaleNew td{
+    .myTablesforSaleNewSellB td{
       font-size:13px;
     }
-    .myTablesforSaleNew th, .myTablesforSaleNew td {
+    .myTablesforSaleNewSellB th, .myTablesforSaleNewSellB td {
       text-align: left;
       padding: 5px;
     }
 
-    .myTablesforSaleNew tr {
+    .myTablesforSaleNewSellB tr {
       border-bottom: 1px solid rgb(240, 240, 240);
     }
 
-    .myTablesforSaleNew tr.header, .myTablesforSaleNew tr:hover {
+    .myTablesforSaleNewSellB tr.header, .myTablesforSaleNewSellB tr:hover {
       // background-color: #f1f1f1;
     }
-    .myTablesforSaleNew thead{
-      background:#c5eeea; 
+    .myTablesforSaleNewSellB thead{
+      background:#49afbd; 
+      
+    }
+    .myTablesforSaleNewSellB thead th{
+      color:rgb(224, 224, 224) !important;
+    }
+    .myTablesforSaleNewSellB tbody tr{
+      background: #98ddcc;
+    }
+    .myTablesforSaleNewSellB thead tr:hover{
+      background:#49afbd !important; 
     }
     .delIcon{
       color: rgb(251, 70, 70);
       font-size: 13px;
     }
   }
-  .searchBarcodeHover:hover{
-    background: seagreen;
+  .searchBarcodeHoverS:hover{
+    background: rgb(145, 184, 171) !important;
     color:seashell;
     cursor: pointer;
   }
@@ -1606,4 +1713,25 @@ export default {
     color:#303030;
     font-size: 14.5px;
   }
+ 
+.bg_col_blue{
+  //border: 1.5px solid #009587;
+  background: #009587;   
+  color:white;
+
+  &:hover{
+    color:white;
+    background: #00776b;  
+  }
+}
+.bg_col_ichki{
+  //border: 1.5px solid #009587;
+ background: linear-gradient(45deg, #5ea0d6, #3d96df);
+  color:white;
+
+  &:hover{
+    color:white;
+    background: linear-gradient(45deg, #3181c2, #2f75ad);
+  }
+}
 </style>

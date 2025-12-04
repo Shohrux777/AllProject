@@ -70,7 +70,7 @@ import {
   mdbBtn,
 } from "mdbvue";
 import {mapActions, mapGetters, mapMutations} from 'vuex'
-import anyTable from "../../components/erpTable"
+import anyTable from "../../components/erpTable.vue"
 export default {
   data(){
     return {

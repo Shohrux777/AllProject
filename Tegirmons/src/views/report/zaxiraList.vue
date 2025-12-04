@@ -1,19 +1,20 @@
 <template>
-  <div class="bg-white" style="position:absolute;">
+  <div class="bg-white zaxira_list" style="position:absolute;">
     <div class="p-4" >
       <div class="bg-white p-4 mb-5 pt-4 shadow" style="border-radius:5px; position:relative;">
         <form @submit.prevent="submit">
-          <div  class="d-flex justify-content-between align-items-center bg-header-all_qty">
+          <div  class="d-flex justify-content-between align-items-center ">
             <div class="title w-100 row align-items-center">
-               <div class="col-3 w-100 mb-2 mt-2" v-for="(item, index) in all_qty_product" :key="index">
-                  <div class="d-flex justify-content-between border_all_qty" v-show="item.qty>1">
-                    <h6 class="mb-1 p-0">{{item.name}}</h6>
-                    <p class="mb-1 p-0">{{item.qty.toFixed(1)}}</p>
+               <div class="col-3 px-2 w-100 mb-2 mt-1" v-for="(item, index) in all_qty_product" :key="index" v-show="item.qty>0" @click="selectProductZaxiraList(item)">
+                <div class="card p-2 all_zaxira_item">
+                  <div class=" border_all_qty " v-show="item.qty>1">
+                    <p style="font-size: 14px;" class="mb-0 p-0">{{item.name}}</p>
+                    <p class="mb-1 p-0 text-right">{{(item.qty.toFixed(1) || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</p>
                   </div>
+                </div>
+                  
                </div>
             </div>
-            
-            
           </div>
           <div class="row mt-2 border-bottom">
               <div class="col-5">
@@ -198,7 +199,7 @@
       async apply(){
         try{
           this.loading = true;
-          const response = await fetch(this.$store.state.hostname + "/TegirmonClientOstatkas/getPagination?page=0&size=10000");
+          const response = await fetch(this.$store.state.hostname + "/TegirmonClientOstatkas/getPagination?page=0&size=1000000");
           this.loading = false;
           if(response.status == 201 || response.status == 200)
           {
@@ -207,6 +208,33 @@
 
             this.get_payment_list = data.items_list;
              
+            // this.$refs.message.success('Added_successfully')
+            return true;
+          }
+          else{
+            const data = await response.text();
+            this.modal_info = data;
+            this.modal_status = true;
+            return false;
+          }
+        }
+        catch{
+          this.loading = false;
+          this.modal_info = this.$i18n.t('network_ne_connect'); 
+          this.modal_status = true;
+        }
+      },
+      async selectProductZaxiraList(product_zaxira_item){
+        console.log(product_zaxira_item.tegirmonProductid);
+        try{
+          this.loading = true;
+          const response = await fetch(this.$store.state.hostname + "/TegirmonClientOstatkas/getPaginationProductId?page=0&size=100000000&product_id=" + product_zaxira_item.tegirmonProductid);
+          this.loading = false;
+          if(response.status == 201 || response.status == 200)
+          {
+            const data = await response.json();
+            console.log(data ,  'sadasd data open')
+            this.get_payment_list = data.items_list;
             // this.$refs.message.success('Added_successfully')
             return true;
           }
@@ -255,8 +283,12 @@
   };
 </script>
 
-<style lang="scss">
-
+<style lang="scss" scoped>
+.zaxira_list{
+  overflow: hidden;
+  overflow-y: scroll;
+  height: 99vh;
+}
 
 .add{
   position: fixed;
@@ -342,5 +374,13 @@
 }
 .border_all_qty{
   border-bottom: 1px solid orange;
+}
+.all_zaxira_item{
+  background-image: radial-gradient( circle farthest-corner at 10% 20%,  rgb(255, 224, 194) 0%, rgb(253, 205, 187) 90.1% ) ;
+}
+.all_zaxira_item:hover{
+  cursor: pointer;
+  background-image: radial-gradient( circle farthest-corner at 10% 20%,  rgb(200, 220, 230) 0%, rgb(196, 223, 228) 90.1% ) !important;
+
 }
 </style>

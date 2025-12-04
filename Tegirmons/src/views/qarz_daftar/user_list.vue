@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white p-3">
-    <div class="d-flex justify-content-end">
+    <div class="d-flex justify-content-end" v-if="user_report_list.length ">
        <mdb-btn  color="info py-2 px-3 m-0" style="font-size:9px;" @click="printDiv">
           Печат
         </mdb-btn>

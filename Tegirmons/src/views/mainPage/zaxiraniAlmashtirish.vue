@@ -5,32 +5,37 @@
     <checkZaxiraInvoice v-else-if="show_check_zaxira_invoice" @close="show_check_zaxira_invoice = false"/>
     <div v-else class="getProduct">
       <div class="container-fluid">
-        <div class="row px-3 py-2 d-flex align-items-center main_header_bg_new" :class="{'bg_red_color': oshibka_client == 1}">
+        <div class="row px-3 py-2 d-flex align-items-center " 
+        :class="[
+          {'bg_red_color': oshibka_client == 1},
+          invoice_id == 0 ? 'main_header_bg_new' : 'bg-warning'
+        ]"
+      >
           <div class="col-3">
             <div class="">
               <erpSelect
-              :options="allClient.rows"
-              @select="selectOptionUser"
-              :selected="user_name"
-              size="sm"
-              class="bg-white"
-              style="margin-top:8px;"
-              url="/TegirmonClient/getPaginationSearchByFioOrPassportSerailNumberOrHomeOrMobilePhoneNumber?page=0&size=100&fio_or_serial_number="
-              :label="$t('select_item')"
+                :options="allClient.rows"
+                @select="selectOptionUser"
+                :selected="user_name"
+                size="sm"
+                class="bg-white"
+                style="margin-top:8px;"
+                url="/TegirmonClient/getPaginationSearchByFioOrPassportSerailNumberOrHomeOrMobilePhoneNumber?page=0&size=100&fio_or_serial_number="
+                :label="$t('select_item')"
               />
               <small style="position:absolute; top:-8px; left:10px; font-size: 11px; color: rgb(62, 62, 139);" class="font-weight-bold px-2 py-0">Поиск клиент</small>
-              <small v-if="$v.user_name.$dirty && user_id == null" class="invalid-text mt-0 ml-2" >
+              <small v-if="$v.user_name.$dirty && user_id == null" class="invalid-text mt-0 ml-2">
                 {{$t('select_item')}}
               </small>
             </div>
           </div>
-  
-  
+
           <!-- <div class="col-3">
             <mdb-input class="m-0 p-0" v-model="passport_number" size="md"  outline  group type="text" validate error="wrong" success="right"/>
             <small style="position:absolute; top:-7px; left:20px; font-size: 11px;" class="bg-white px-2 py-0">{{$t('passport_number')}}</small>
         
           </div> -->
+          
           <div class="col-3">
             <input-search  @select="selectClientPassport" :label="$t('passport_number')" :selected="passport_number"
               url="/TegirmonClient/getPaginationSearchByFioOrPassportSerailNumberOrHomeOrMobilePhoneNumber?page=0&size=100&fio_or_serial_number="
@@ -83,7 +88,10 @@
           
         </div>
       </div>
-
+      <div v-if="all_sum_zaxira>0" class="pay_for_money card p-3"> 
+        <small class="text-primary">Оплата за лишний товар</small>
+        <span class="mt-2">К оплате:  {{ all_sum_zaxira.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} UZS</span>
+      </div>
       <div class="davernistTable" v-if="davernost_list.length>0" :class="{'bg_red_color': oshibka_client == 1}">
         <table class="myTablezaxiradanAlmashtrish mt-2">
             <thead>
@@ -117,7 +125,7 @@
 
                 <!-- <td> <span>{{row.address}}</span> </td> -->
 
-                <!-- <td> <span >{{row.lessons_cout}}</span> </td> -->  
+                <!-- <td> <span >{{row.lessons_cout}}</span> </td> -->
               </tr>
             </tbody>
           </table>
@@ -131,8 +139,8 @@
                 <h6 class="pro_name_color text-left ml-3">{{item.client.fio}}</h6>
                 <div class="d-flex justify-content-between align-items-center">
                   <h6 class="pro_name_color text-left ml-3 mt-2">{{item.product.name}}</h6>
-                  <h4 class="mt-2" v-if="item.real_qty">{{item.real_qty.toFixed(1).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} <small>{{item.product.unitMeasurment.name}}</small></h4>
-                  <h4 class="mt-2" v-else>{{item.real_qty.toFixed(1)}} <small>{{item.product.unitMeasurment.name}}</small></h4>
+                  <h4 class="mt-2" v-if="item.real_qty && hidden_page == false">{{item.real_qty.toFixed(1).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} <small>{{item.product.unitMeasurment.name}}</small></h4>
+                  <h4 class="mt-2" v-else-if="hidden_page == false">{{item.real_qty.toFixed(1)}} <small>{{item.product.unitMeasurment.name}}</small></h4>
                 </div>
               </div>
             </div>
@@ -196,16 +204,17 @@
         </div>
 
         <div class="container-fluid" v-if="!product_status">
-          <div class="row px-0 pb-3 main_change_page mt-3" v-if="showObyom" :class="{'bg_danger': product_real_qty_fix<-1}">
+        <!-- :class="{'bg_danger': product_real_qty_fix<-1}"  -->
+          <div class="row px-0 pb-3 main_change_page mt-3" v-if="showObyom" :class="{'bg_danger': enoughStatus}">
             <div class="px-2 w-100 main_change_header shadow">
-              <div class="row w-100 " >
+              <div class="row w-100">
                 <div class="col-4 mt-3">
                   <mdb-input class="m-0 p-0 bg-white rounded" disabled v-model="product_name" size="md"   outline  group type="text" validate error="wrong" success="right"/>
                       <small style="position:absolute; top:-17px; left:10px; font-size: 11px;" class="font-weight-bold px-2 py-0">{{$t('product')}}</small>
                 </div>
-                <div class="col-4 mt-3">
-                  <mdb-input class="m-0 p-0 bg-white rounded" disabled v-model="product_real_qty_fix" size="md"   outline  group type="text" validate error="wrong" success="right"/>
-                      <small style="position:absolute; top:-17px; left:10px; font-size: 11px;" class="font-weight-bold px-2 py-0">{{$t('kg_ves')}}</small>
+                <div class="col-4 mt-3" v-if="!hidden_page">
+                <mdb-input class="m-0 p-0 bg-white rounded" disabled v-model="product_real_qty_fix" size="md"   outline  group type="text" validate error="wrong" success="right"/>
+                  <small style="position:absolute; top:-17px; left:10px; font-size: 11px;" class="font-weight-bold px-2 py-0">{{$t('kg_ves')}}</small>
                 </div>
                 <div class="col-4 mt-3">
                   <mdb-input class="m-0 p-0 bg-white rounded"  v-model="note" size="md" :rows="rowsNum"  outline  group type="textarea" validate error="wrong" success="right"/>
@@ -223,15 +232,21 @@
                     <div style="height:40px; overflow: hidden; ">
                       <h6 class="pro_name_color text-left ml-3">{{item.product_name}}</h6>
                     </div>
-                    <h6 class="pro_name_color text-left ml-3">{{item._real.toFixed(1)}}</h6>
+                    <!-- <h6 class="pro_name_color text-left ml-3">{{item._real.toFixed(1)}}</h6> -->
+                    <h6 class="pro_name_color text-left ml-3" style="cursor: pointer;" @click="changeEnoughSum(index)">
+                      <span v-if="item.sum_status">💵</span>
+                      <span v-else>🧮</span>
+                      <!-- ✅💰 -->
+                    </h6>
                   </div>
-                  <h4 class="mb-2">{{item.qty}} <small>{{item.measure}}</small></h4>
+
+                  <h4 class="mb-2"><span v-if="item.enoughQty != 0">{{item.enoughQty.toFixed(1)}} || </span> {{item.qty}} <small>{{item.measure}}</small></h4>
                 </div>
                 <div class="clickItem border-top mt-2 mx-2">
-                  <div class="mt-2">
+                  <div style="margin-top: 12px;">
                     <div style="position: relative;">
-                      <mdb-input class="m-0 p-0" v-model="item.real_qty" size="md" @input="changeRealQty(index)" @blur="blurchangeRealQty(index)" @click="enterchangeRealQty(index)" outline  group type="text" validate error="wrong" success="right"/>
-                      <small style="position:absolute; top:-7px; left:10px; font-size: 11px;" class="bg-white px-2 py-0">{{$t('kg_ves')}}</small>
+                      <mdb-input class="m-0 p-0" v-model="item.real_qty" size="md" @input="changeRealQty(index)" @blur="blurchangeRealQty(index)" @click="enterchangeRealQty(index)" :class="{'bg-warning rounded my-colored-input': item.real_qty>0}" outline  group type="text" validate error="wrong" success="right"/>
+                      <small style="position:absolute; top:-14px; left:0px; font-size: 11px; background: inherit !important; " class=" px-2 py-0">{{$t('kg_ves')}}</small>
                     </div>
                   </div>
                 </div>
@@ -270,11 +285,11 @@
               <div class="row w-100 " >
                 <div class="col-4 mt-3">
                   <mdb-input class="m-0 p-0 bg-white rounded" disabled v-model="product_name" size="md"   outline  group type="text" validate error="wrong" success="right"/>
-                      <small style="position:absolute; top:-17px; left:10px; font-size: 11px;" class="font-weight-bold px-2 py-0">{{$t('product')}}</small>
+                    <small style="position:absolute; top:-17px; left:10px; font-size: 11px;" class="font-weight-bold px-2 py-0">{{$t('product')}}</small>
                 </div>
                 <div class="col-4 mt-3">
                   <mdb-input class="m-0 p-0 bg-white rounded" disabled v-model="product_real_qty_fix" size="md"   outline  group type="text" validate error="wrong" success="right"/>
-                      <small style="position:absolute; top:-17px; left:10px; font-size: 11px;" class="font-weight-bold px-2 py-0">{{$t('kg_ves')}}</small>
+                    <small style="position:absolute; top:-17px; left:10px; font-size: 11px;" class="font-weight-bold px-2 py-0">{{$t('kg_ves')}}</small>
                 </div>
                 <div class="col-4 mt-3">
                   <mdb-input class="m-0 p-0 bg-white rounded"  v-model="note" size="md" :rows="rowsNum"  outline  group type="textarea" validate error="wrong" success="right"/>
@@ -287,10 +302,10 @@
               <div class="card pt-2 pr-3" style="position:relative;" :style="{background : item.color }" :class="{'bg_red_color': item.auth_user_updator_id == 1}">
                 <div class="product_name_price text-right ">
                   <div class="d-flex justify-content-between">
-                    <div style="height:35px; overflow: hidden; ">
+                    <div style="height:35px; overflow: hidden;">
                       <h6 class="pro_name_color text-left ml-3" style="font-size: 13.5px;">{{item.product_name}}</h6>
                     </div>
-                    <h6 class="pro_name_color text-left ml-3" style="font-size: 13.5px;">{{item._real.toFixed(1)}}</h6>
+                    <!-- <h6 class="pro_name_color text-left ml-3" style="font-size: 13.5px;">{{item._real.toFixed(1)}}</h6> -->
                   </div>
                   <h4 class="mb-0 pb-0" style="font-size: 16px;">{{(parseFloat(product_real_qty_fix)/parseFloat(item.product_price)).toFixed(1)}} <small>{{item.measure}}</small></h4>
                 </div>
@@ -315,9 +330,9 @@
                     
                       <!-- <small style="position:absolute; top:-15px; right:5px; font-size: 12px;" class="bg-white px-2 py-0">сум</small> -->
                       <input class="m-0 p-0 px-3 form-control" size="md"
-                        v-model="item.product_priceString" 
+                        v-model="item.product_priceString"
                         @keyup="changeProductPriceSTR($event.target.value,index)"
-                        @blur="blurchangeProductPrice(index)" 
+                        @blur="blurchangeProductPrice(index)"
                         @click="enterchangeProductPrice(index)"
                         outline  group type="text" validate error="wrong" success="right"/>
                     </div>
@@ -325,8 +340,6 @@
                 </div>
               </div>
             </div>
-
-
 
             <div class="col-2  mt-4 px-3">
               <div class=" card pt-2 pr-3" style="position:relative;">
@@ -347,7 +360,7 @@
                     <div style="position: relative;" class="pb-2 mt-1">
                       <input class="m-0 p-0 px-3 form-control" v-model="product_price_buy_string" size="md" @keyup="changeSummaPrice1($event.target.value)"  @click="enterMoneyPrice1"  @blur="blurMoneyPrice1"  outline  group type="text" validate error="wrong" success="right"/>
                       <small style="position:absolute; top:-7px; left:10px; font-size: 11px;" class="bg-white px-2 py-0">{{$t('price')}}</small>
-                     </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -355,11 +368,13 @@
           </div>
         </div>
       </div>
+      <div>
+      </div>
       <div class="photo w-100 mt-4 d-flex justify-content-center " v-if="image_url_str">
-          <img :src="hostname + image_url_str" width="240" alt="" class="shadow border rounded">
-        </div>
+        <img :src="hostname + image_url_str" width="240" alt="" class="shadow border rounded">
+      </div>
         
-        <webcam  v-show="showPhoto" @getPhotosub="takePhoto"/>
+      <webcam  v-show="showPhoto" @getPhotosub="takePhoto"/>
 
       <hr class="mt-4 mb-3 gradint"/>
         <loaderFixed v-if="loading"/>
@@ -381,7 +396,8 @@
               floating
               @click="show_client_info_func"
               size="sm"
-              >{{ $t("info_client") }}</mdb-btn
+              >{{ $t("info_client") }}
+              </mdb-btn
             >
             <mdb-btn
               class="mr-1 px-3 py-2 text-white"
@@ -403,8 +419,8 @@
               darkWaves
               tag="a"
               floating
-              :disabled="product_real_qty_fix<-1"
-              @click="saveChanging"
+              :disabled="enoughStatus"
+              @click="payZaxira"
               size="sm"
               >{{ $t("save") }}</mdb-btn
             >
@@ -421,7 +437,7 @@
             <thead>
               <tr class="header py-3 info_client_header">
                 <th  width="40" class="text-left">№</th>
-                <th width="40" >{{$t('id')}}</th>
+                <th width="40">{{$t('id')}}</th>
                 <th>{{$t('client_name')}}</th>
                 <th>{{$t('passport_number')}}</th>
                 <th>{{$t('product')}}</th>
@@ -429,8 +445,8 @@
                 <th>{{$t('client_name')}}</th>
                 <th width="100">{{$t('photo')}}</th>
                 <th>{{$t('date')}}</th>
-                <th >{{$t('ostatka')}}</th>
-                <!-- <th width="80" class="text-center">{{$t('Action')}}</th> -->
+                <th width="100">{{$t('ostatka')}}</th>
+                <th width="70" class="text-center">{{$t('Action')}}</th>
               </tr>
             </thead>
             <tbody>
@@ -458,24 +474,29 @@
                   <small class="ml-2">{{row.updated_date_time.slice(11,16)}}</small> 
                 </td>
  
-                <td v-if="row.credit_sum"> <span class="text-success" >{{row.credit_sum.toFixed(1).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>  
-                <td  v-else> <span class="text-success">{{row.credit_sum.toFixed(1)}}</span> </td>  
+                <td v-if="row.credit_sum && hidden_page == false"> <span class="text-success" >{{row.credit_sum.toFixed(1).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</span> </td>  
+                <td  v-else-if="!row.credit_sum && hidden_page == false"> <span class="text-success">{{row.credit_sum.toFixed(1)}}</span> </td>  
+
+                <td  class="text-center"> 
+                  <i v-if="canEdit(row)" class="fas fa-pen editIcon mask waves-effect m-0 pr-2"  @click.stop="editRowInvoice(row)"></i>
+                </td>
+
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-      <modal-train  :show="davernist_show" headerbackColor="white"  titlecolor="black" :title="$t('add_davernis')" 
+      <modal-train  :show="davernist_show" headerbackColor="white"  titlecolor="black" :title="$t('add_davernis')"
         @close="davernist_show = false" width="60%">
           <template v-slot:body>
-            <add-davernis @close="davernist_show = false"  :client_id="client_id_for_davernist" >
+            <add-davernis @close="davernist_show = false"  :client_id="client_id_for_davernist">
             </add-davernis>
           </template>
       </modal-train>
-      <modal-train  :show="edit_davernost" headerbackColor="white"  titlecolor="black" :title="$t('add_davernis')" 
+      <modal-train  :show="edit_davernost" headerbackColor="white"  titlecolor="black" :title="$t('add_davernis')"
         @close="edit_davernost = false" width="60%">
           <template v-slot:body>
-            <edit-davernis @close="edit_davernost = false" ref="editDavRef"  >
+            <edit-davernis @close="edit_davernost = false" ref="editDavRef">
             </edit-davernis>
           </template>
       </modal-train>
@@ -532,6 +553,12 @@
       </mdb-modal>
       <Toast ref="message"></Toast>
     </div>
+
+    <pay v-show="payshow"  @close="closePay"
+    :summaString="(all_sum_zaxira || 0).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')"
+    :summa_default="(all_sum_zaxira || 0)" @closePayed="closePayed" :changeProduct="changeProduct" :check_id="check_id"/>
+
+
     <massage_box :hide="modal_status" :detail_info="modal_info"
     :m_text="$t('Failed_to_add')" @to_hide_modal="modal_status= false"/>
     <Alert ref="alert"></Alert> 
@@ -539,6 +566,7 @@
 </template>
 
 <script>
+import pay from './pay.vue'
 import checkzaxira from '../sell/checkzaxira.vue'
 import checkZaxiraInvoice from '../sell/checkzaxiraInvoice'
 import checkgetProduct from '../sell/checkGetProduct'
@@ -560,6 +588,7 @@ import sendOtherClientComp from './sendOtherClientComp.vue'
 export default {
 data(){
     return{
+      payshow: false,
       hostname: this.$store.state.server_ip,
       modal_info: '',
       modal_status: false,  
@@ -650,6 +679,13 @@ data(){
 
       send_other_client_show: false,
       send_data: {},
+      all_sum_zaxira: 0,
+      enoughStatus: false,
+      check_id: 0,
+      invoice_id: 0,
+      now: Date.now(),
+
+      hidden_page: false,
     }
   },
   components: {
@@ -660,7 +696,7 @@ data(){
     mdbBadge,mdbBtnGroup, mdbDropdown, mdbDropdownMenu, mdbDropdownItem,
     editDavernis, sendOtherClientComp,
     checkZaxiraInvoice,
-    inputSearchYear
+    inputSearchYear, pay
   },
   validations: {
       bugdoy_send: {
@@ -671,20 +707,61 @@ data(){
       }
     },
     async mounted() {
+      await this.update_close_page();
       await this.fetchClient();
     },
-   computed: mapGetters(['all_district_t', 'all_client_controler', 'allClient', 
+   computed: mapGetters(['all_district_t', 'all_client_controler', 'allClient',
     'all_contragent_t', 'allCompany', 'all_product_t', 'user_kassa_list']),
     
   methods: {
     ...mapActions(['fetch_district_t', 'fetch_client_controler', 'fetchClient', 
       'fetch_contragent_t', 'fetchCompany', 'fetch_product_t', 'fetchKassa_userId']),
     ...mapMutations(['zaxiraCheckList', 'get_ostatka_check', 'get_invoice_for_invoice','get_ostatka_check_for_get', 'check_invoice_zaxira']),
+    
+    async update_close_page(){
+      try{
+      this.loading = true;
+      const response = await fetch(this.$store.state.hostname + "/TegirmonClose/1");
+      const data = await response.json();
+      console.log('test uchun edi', response)
+
+      this.loading = false;
+      if(response.status == 201 || response.status == 200)
+      {
+        if(data.status ==  true){
+          this.hidden_page = true;
+        }
+        return true;
+      }
+      }
+      catch{
+          this.loading = false;
+          this.modal_info = this.$i18n.t('network_ne_connect'); 
+          this.modal_status = true;
+      }},
+    
+    canEdit(item) {
+      if(item.qty_real == 0) return false;
+      if (!item.updated_date_time) return false;
+
+      // ISO formatdagi vaqtni Date obyektiga aylantirish
+      const createdTime = new Date(item.updated_date_time).getTime();
+
+      // Agar sana yaroqsiz bo‘lsa — qaytmaydi
+      if (isNaN(createdTime)) return false;
+
+      const diff = this.now - createdTime;
+      const tenMinutes = 15 * 60 * 1000; // 15 minut
+
+      // faqat 10 minut ichida bo‘lsa true
+      return diff >= 0 && diff <= tenMinutes;
+    },
+
     async sendOtherClient(data){
-      console.log(data);
       this.send_other_client_show = true;
       this.send_data = data;
     },
+    
     show_client_info_func(){
       this.client_info_show = true;
     },
@@ -719,6 +796,154 @@ data(){
       catch{
         this.$refs.message.error('not_found')
         this.loading = false;
+      }
+    },
+    async funcSearchInvoiceId(id){
+      try{
+        this.loading = true;
+        const response = await fetch(this.$store.state.hostname + "/TegirmonInvoice/getAnyInvoiceFullInfoById?invoice_id=" + id);
+        const data = await response.json();
+        console.log('data')
+        console.log(data)
+        this.loading = false;
+        if(response.status == 201 || response.status == 200)
+        {
+          this.invoice_list = data;
+          console.log('data wdwdas asd ad')
+          console.log(data)
+          this.$refs.message.success('Added_successfully')
+          return true;
+        }
+        else{
+          this.$refs.message.error('not_found')
+          return false;
+        }
+      }
+      catch{
+        this.$refs.message.error('not_found')
+        this.loading = false;
+      }
+    },
+    async editRowInvoice(data){
+      console.log('edit', data);
+      if(data.status_inv_type_name == "INVOICE_BUGDOY_NARSALARGA_ALMASHTRISH_UCHUN_ZAXIRAGA_OLIB_QOLISH"){
+        return;
+      }
+      await this.funcSearchInvoiceId(data.id);
+      this.invoice_id = data.id;
+      if(data.kassa_check_id){
+        this.check_id = data.kassa_check_id;
+      }
+      this.image_url_str = data.image_str_url;
+      this.product_status = false;
+      this.showObyom = true;
+      this.product_name = data.product.name;
+      this.product_real_qty_fix = parseFloat(data.qty_real);
+      console.log('ostatka', this.product_real_qty_fix)
+      for(let i=0; i<this.OstatkaList.length; i++){
+        if(this.OstatkaList[i].TegirmonProductid == data.product.id){
+          this.product_real_qty_fix += parseFloat(this.OstatkaList[i].real_qty || 0);
+        }
+      }
+      this.ostatka_qty_real = this.product_real_qty_fix;
+
+      this.product_name_buy = data.product.name,
+      this.product_id_buy = data.product.id,
+      this.product_price_buy = data.product.price;
+      this.product_price_buy_string = data.product.price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      this.main_client_id = data.TegirmonClientid;
+      this.product_id = data.TegirmonProductid;
+      if(data.summ>0){
+        this.product_buy = data.dolg_summ;
+        this.summ_buy = data.summ;
+        this.summa_buy_string = this.summ_buy.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')
+        // this.ostatka_qty_real = this.product_real_qty_fix - parseFloat(data.dolg_summ);
+      }
+      else{
+        this.product_buy = 0;
+        this.summ_buy = 0;
+        this.summa_buy_string = '0';
+      }
+      // this.main_product_measure = data.product.unitMeasurment.name
+      try{
+        this.loading = true;
+        const response = await fetch(this.$store.state.hostname + "/TegirmonProductToProductPersentage/getPaginationByProductId?page=0&size=100&product_id=" + data.product.id + "&sklad_id=1");
+        const invoice_item = await response.json();
+        console.log('invoice_item productlar')
+        console.log(invoice_item)
+        this.loading = false;
+        if(response.status == 201 || response.status == 200)
+        {
+          if(invoice_item.items_list.length>0){
+            this.showObyom = true;
+            this.changeProduct = [];
+            for(let i=0; i<invoice_item.items_list[0].item_list.length; i++){
+              let temp = {
+                product_name: invoice_item.items_list[0].item_list[i].product_name,
+                product_id: invoice_item.items_list[0].item_list[i].TegirmonProductid,
+                qty: (invoice_item.items_list[0].item_list[i].persantage * this.ostatka_qty_real).toFixed(1),
+                persantage: invoice_item.items_list[0].item_list[i].persantage,
+                measure: invoice_item.items_list[0].item_list[i].sub_product.unitMeasurment.name,
+                product_price: invoice_item.items_list[0].item_list[i].sub_product.price,
+                product_priceString: invoice_item.items_list[0].item_list[i].sub_product.price.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 '),
+                _real: 0,
+                real_qty:0,
+                all_sum_str: '0',
+                all_sum: 0,
+                auth_user_updator_id: invoice_item.items_list[0].item_list[i].auth_user_updator_id,
+                color: invoice_item.items_list[0].item_list[i].sub_product.shitrix_code,
+                enoughQty: 0,
+                sum_status: false, // yetmaganiga pul olinsa true qilinadi
+              }
+              if(invoice_item.items_list[0].item_list[i].skladOstatka.length>0){
+                temp._real = invoice_item.items_list[0].item_list[i].skladOstatka[0].qty;
+              }
+              if(temp._real>0){
+                this.changeProduct.push(temp);
+              }
+              let currentProductId = invoice_item.items_list[0].item_list[i].TegirmonProductid;
+              // invoice_list ichidan shu productni qidiramiz
+              let found = this.invoice_list.item_list.find(x => x.tegirmonProductid === currentProductId);
+              if (found) {
+                temp.real_qty = found.real_qty;
+                temp.enoughQty = found.enough_qty;
+                temp.sum_status = found.for_money;
+              }
+              // this.invoice_list
+            }
+
+            this.product_name = data.product.name;
+            this.product_qty = this.ostatka_qty_real;
+            this.product_real_qty_fix = this.product_qty.toFixed(1)
+            this.product_real_qty = this.ostatka_qty_real - parseFloat(this.product_buy);
+            this.product_real_qty_buy = this.ostatka_qty_real;
+            this.changeRealQty(0);
+
+          }
+          else{
+            this.showObyom = false;
+            this.changeProduct = [];
+            this.product_qty = this.ostatka_qty_real;
+            this.product_real_qty_fix = this.product_qty.toFixed(1)
+            this.product_real_qty = this.ostatka_qty_real;
+            this.product_real_qty_buy = this.ostatka_qty_real;
+            this.product_name = data.product.name;
+          }
+          this.$refs.message.success('Added_successfully')
+          return true;
+        }
+        else{
+          // const invoice_item = await response.text();
+          this.modal_info = invoice_item;
+          this.modal_status = true;
+          return false;
+        }
+      }
+      catch(error){
+        this.loading = false;
+        console.log(error);
+        // this.modal_info = this.$i18n.t(error);
+        // this.modal_status = true;
       }
     },
     async selectInvoiceItem(data){
@@ -846,6 +1071,10 @@ data(){
       else{
         this.parol_tg = option.car_number;
       }
+      this.check_id = 0;
+      this.invoice_id = 0;
+      this.now = Date.now();
+
     },
     async selectClientPhone(option){
       this.client_info = option;
@@ -868,6 +1097,10 @@ data(){
       else{
         this.parol_tg = option.car_number;
       }
+      this.check_id = 0;
+      this.invoice_id = 0;
+      this.now = Date.now();
+
     },
     async selectClientBorn(option){
       this.client_info = option;
@@ -890,7 +1123,9 @@ data(){
       else{
         this.parol_tg = option.car_number;
       }
-
+      this.check_id = 0;
+      this.invoice_id = 0;
+      this.now = Date.now();
     },
 
     async selectOptionUser(option){
@@ -914,6 +1149,10 @@ data(){
       else{
         this.parol_tg = option.car_number;
       }
+      this.check_id = 0;
+      this.invoice_id = 0;
+      this.now = Date.now();
+
     },
     fetchPassword_client(length) {
       var result = '';
@@ -954,6 +1193,9 @@ data(){
           const tryjson = await response.json();
           this.parol_tg = tryjson.car_number;
           this.$refs.message.success('Added_successfully')
+          this.check_id = 0;
+          this.invoice_id = 0;
+          this.now = Date.now();
         }
         else{
           const data = await response.text();
@@ -1057,6 +1299,8 @@ data(){
                 all_sum: 0,
                 auth_user_updator_id: data.items_list[0].item_list[i].auth_user_updator_id,
                 color: data.items_list[0].item_list[i].sub_product.shitrix_code,
+                enoughQty: 0,
+                sum_status: false, // yetmaganiga pul olinsa true qilinadi
               }
               if(data.items_list[0].item_list[i].skladOstatka.length>0){
                 temp._real = data.items_list[0].item_list[i].skladOstatka[0].qty;
@@ -1348,22 +1592,175 @@ data(){
       
       this.fetchChangeSubPro(this.product_qty)
     },
-    changeRealQty(index){
-      console.log(this.changeProduct[index])
+    changeEnoughSum(index){
+      console.log(index)
+      this.enoughStatus = false;
+      this.changeProduct[index].sum_status = !this.changeProduct[index].sum_status;
       let test_qty = this.product_real_qty;
-
+      // bu pulga hisoblanmaydiganlardan birinchi bug'doyni hisoblab olamiz qanchasi ketadi
       for(let i=0; i<this.changeProduct.length; i++){
-        if(this.changeProduct[i].real_qty != ''){
-          test_qty = parseFloat(test_qty) - (parseFloat(this.changeProduct[i].real_qty) / parseFloat(this.changeProduct[i].persantage))
+        if(this.changeProduct[i].real_qty != '' && this.changeProduct[i].sum_status == false){
+          let bugdoy_qty = parseFloat(this.changeProduct[i].real_qty) / parseFloat(this.changeProduct[i].persantage) // qancha bug'doy ketishi
+          test_qty = parseFloat(test_qty) - (bugdoy_qty);
+          this.changeProduct[i].enoughQty = 0;
         }
-        else{
-          test_qty = parseFloat(test_qty) - (0 / parseFloat(this.changeProduct[i].persantage))
+        else if(this.changeProduct[i].sum_status == false){
+          test_qty = parseFloat(test_qty) - (0 / parseFloat(this.changeProduct[i].persantage));
+          this.changeProduct[i].enoughQty = 0;
         }
       }
+      if(test_qty<-1){
+        this.enoughStatus = true;
+      }
+      // bu yetmaganini pul berishi keraklari 
+      // testda uzi kam bug'doy qoldi 30 kg masalan 
+      this.all_sum_zaxira = 0;
+      for(let i=0; i<this.changeProduct.length; i++){
+        if(this.changeProduct[i].real_qty != '' && this.changeProduct[i].sum_status == true){
+          let bugdoy_qty = parseFloat(this.changeProduct[i].real_qty) / parseFloat(this.changeProduct[i].persantage) // qancha bug'doy ketishi
+          if(test_qty>bugdoy_qty){
+            test_qty = parseFloat(test_qty) - (bugdoy_qty);
+            this.changeProduct[i].enoughQty = 0;
+          }
+          else{
+            let yetmagan_bugdoy = 0;
+            let yetmagan_mahsulot = 0;
+            if(test_qty>0){
+              yetmagan_bugdoy = bugdoy_qty - test_qty;
+              yetmagan_mahsulot = yetmagan_bugdoy * parseFloat(this.changeProduct[i].persantage);
+            }
+            else{
+              yetmagan_mahsulot = bugdoy_qty * parseFloat(this.changeProduct[i].persantage);
+            }
+            test_qty = parseFloat(test_qty) - (bugdoy_qty);
+
+            this.changeProduct[i].enoughQty = yetmagan_mahsulot;
+            console.log(this.changeProduct[i]);
+            this.all_sum_zaxira += (yetmagan_mahsulot * this.changeProduct[i].product_price)
+            console.log('yetmagan_mahsulot', yetmagan_mahsulot);
+          }
+        }
+        else if(this.changeProduct[i].sum_status == true){
+          test_qty = parseFloat(test_qty) - (0 / parseFloat(this.changeProduct[i].persantage))
+          this.changeProduct[i].enoughQty = 0;
+        }
+      }
+      this.all_sum_zaxira = this.roundToHundreds(this.all_sum_zaxira);
       this.product_qty = test_qty;
       this.product_real_qty_fix = this.product_qty.toFixed(1)
-
+      console.log('this.product_qty', this.product_qty)
+      console.log('this.product_real_qty_fix', this.product_real_qty_fix)
+      // console.log('list', listPulBerishKerak)
       this.fetchChangeSubPro(this.product_qty)
+
+    },
+    changeRealQty(index){
+
+      console.log(index)
+      this.enoughStatus = false;
+      // this.changeProduct[index].sum_status = !this.changeProduct[index].sum_status;
+      let test_qty = this.product_real_qty;
+      // bu pulga hisoblanmaydiganlardan birinchi bug'doyni hisoblab olamiz qanchasi ketadi
+      for(let i=0; i<this.changeProduct.length; i++){
+        if(this.changeProduct[i].real_qty != '' && this.changeProduct[i].sum_status == false){
+          let bugdoy_qty = parseFloat(this.changeProduct[i].real_qty) / parseFloat(this.changeProduct[i].persantage) // qancha bug'doy ketishi
+          test_qty = parseFloat(test_qty) - (bugdoy_qty);
+          this.changeProduct[i].enoughQty = 0;
+        }
+        else if(this.changeProduct[i].sum_status == false){
+          test_qty = parseFloat(test_qty) - (0 / parseFloat(this.changeProduct[i].persantage));
+          this.changeProduct[i].enoughQty = 0;
+        }
+      }
+      if(test_qty<-1){
+        this.enoughStatus = true;
+      }
+      // bu yetmaganini pul berishi keraklari 
+      // testda uzi kam bug'doy qoldi 30 kg masalan 
+      this.all_sum_zaxira = 0;
+      for(let i=0; i<this.changeProduct.length; i++){
+        if(this.changeProduct[i].real_qty != '' && this.changeProduct[i].sum_status == true){
+          let bugdoy_qty = parseFloat(this.changeProduct[i].real_qty) / parseFloat(this.changeProduct[i].persantage) // qancha bug'doy ketishi
+          if(test_qty>bugdoy_qty){
+            test_qty = parseFloat(test_qty) - (bugdoy_qty);
+            this.changeProduct[i].enoughQty = 0;
+          }
+          else{
+            let yetmagan_bugdoy = 0;
+            let yetmagan_mahsulot = 0;
+            if(test_qty>0){
+              yetmagan_bugdoy = bugdoy_qty - test_qty;
+              yetmagan_mahsulot = yetmagan_bugdoy * parseFloat(this.changeProduct[i].persantage);
+            }
+            else{
+              yetmagan_mahsulot = bugdoy_qty * parseFloat(this.changeProduct[i].persantage);
+            }
+            test_qty = parseFloat(test_qty) - (bugdoy_qty);
+
+            this.changeProduct[i].enoughQty = yetmagan_mahsulot;
+            console.log(this.changeProduct[i]);
+            this.all_sum_zaxira += (yetmagan_mahsulot * this.changeProduct[i].product_price)
+            console.log(this.all_sum_zaxira);
+            console.log('yetmagan_mahsulot', yetmagan_mahsulot);
+          }
+        }
+        else if(this.changeProduct[i].sum_status == true){
+          test_qty = parseFloat(test_qty) - (0 / parseFloat(this.changeProduct[i].persantage))
+          this.changeProduct[i].enoughQty = 0;
+
+        }
+      }
+      this.all_sum_zaxira = this.roundToHundreds(this.all_sum_zaxira);
+      this.product_qty = test_qty;
+      this.product_real_qty_fix = this.product_qty.toFixed(1)
+      console.log('this.product_qty', this.product_qty)
+      console.log('this.product_real_qty_fix', this.product_real_qty_fix)
+      this.fetchChangeSubPro(this.product_qty)
+
+
+
+      // console.log(this.changeProduct[index])
+      // console.log('Haqiqiy qty', this.product_real_qty)
+      // let listPulBerishKerak = [];
+      // let test_qty = this.product_real_qty;
+
+      // for(let i=0; i<this.changeProduct.length; i++){
+      //   if(this.changeProduct[i].real_qty != ''){
+      //     let bugdoy_qty = parseFloat(this.changeProduct[i].real_qty) / parseFloat(this.changeProduct[i].persantage) // qancha bug'doy ketishi
+      //     test_qty = parseFloat(test_qty) - (bugdoy_qty);
+      //   }
+      //   else{
+      //     test_qty = parseFloat(test_qty) - (0 / parseFloat(this.changeProduct[i].persantage))
+      //   }
+      // }
+      
+      // this.product_qty = test_qty;
+      // this.product_real_qty_fix = this.product_qty.toFixed(1)
+      // console.log('this.product_qty', this.product_qty)
+      // console.log('this.product_real_qty_fix', this.product_real_qty_fix)
+      // console.log('list', listPulBerishKerak)
+      // this.fetchChangeSubPro(this.product_qty)
+    },
+    // roundToHundreds(value) {
+    //   let intValue = Math.floor(value);
+    //   let lastTwo = intValue % 100;
+
+    //   if (lastTwo >= 50) {
+    //     return intValue - lastTwo + 100;
+    //   } else {
+    //     return intValue - lastTwo;
+    //   }
+    // },
+
+    roundToHundreds(value) {
+      let intValue = Math.floor(value);
+      let lastTwo = intValue % 1000;
+
+      if (lastTwo >= 500) {
+        return intValue - lastTwo + 1000;
+      } else {
+        return intValue - lastTwo;
+      }
     },
 
     fetchChangeSubPro(qty){
@@ -1382,6 +1779,8 @@ data(){
           _real: this.changeProduct[i]._real,
           auth_user_updator_id: this.changeProduct[i].auth_user_updator_id,
           color: this.changeProduct[i].color,
+          enoughQty: this.changeProduct[i].enoughQty,
+          sum_status: this.changeProduct[i].sum_status, // yetmaganiga pul olinsa true qilinadi
           real_qty: 0,
         }
         if(this.changeProduct[i].real_qty == '' && this.changeProduct[i].real_qty != 0){
@@ -1396,11 +1795,21 @@ data(){
       this.zaxiraCheckList({list: this.changeProduct, product_name: this.product_name, buy_qty: this.product_buy, buy_sum: this.summ_buy, client_name: this.olib_ketuvchi, client: this.client_info, client_key: this.parol_tg, invoice_id: 0, measure_name: this.main_product_measure})
     },
     
-
-    async saveChanging(){
-      this.loading = true;
-
+    async closePay(){
+      this.payshow = false;
+    },
+    async closePayed(check){
+      console.log('check',check);
+      this.check_id = check.id;
+      this.payshow = false;
+      this.product_qty = 0;
+      await this.saveChanging();
+    },
+    async payZaxira(){
+      // this.check_id = 0;
       // agar pulli amalyot bajarilsa kassa biriktirilgan yoki yuqligini tekshiradi ==>
+      console.log(this.check_id)
+      // return;
       if(this.summ_buy>0){
         await this.fetchKassa_userId(localStorage.user_id);
         if(this.user_kassa_list.length){
@@ -1416,7 +1825,18 @@ data(){
         }
       }
       // agar pulli amalyot bajarilsa kassa biriktirilgan yoki yuqligini tekshiradi <==
+      if(this.all_sum_zaxira>0){
+        this.payshow = true;
+        this.$root.$refs.payedZaxira.changingEnter(1);
+      }
+      else{
+        // this.check_id = 0;
+        await this.saveChanging();
+      }
       
+    },
+
+    async saveChanging(){
       let sendList = []
       let sendQty = 0;
       this.TgString = '';
@@ -1433,6 +1853,7 @@ data(){
           }
         }
       }
+
       await this.get_ostatka_check(this.product_qty);
       sendQty = parseFloat(this.product_real_qty - this.product_qty);
       for(let i=0; i<this.changeProduct.length; i++){
@@ -1446,22 +1867,25 @@ data(){
             all_sum_str: this.changeProduct[i].all_sum_str,
             product_price: this.changeProduct[i].product_price,
             product_priceString: this.changeProduct[i].product_priceString,
+            for_money: this.changeProduct[i].sum_status,
+            enough_qty : this.changeProduct[i].enoughQty,
             inv_accepted_status: true,
             auth_user_creator_id: localStorage.AuthId,
             auth_user_updator_id: localStorage.kassa_id,
+            
           }
           this.TgString +=  ' %0A ' + this.changeProduct[i].product_name + ' = ' + this.changeProduct[i].real_qty + ' ' + this.changeProduct[i].measure + ' 🔄 ' + (parseFloat(this.changeProduct[i].real_qty)/parseFloat(this.changeProduct[i].persantage)).toFixed(2) + ' кг ' + this.product_name
           sendList.push(sendTemp)
         }
-        
       }
+      console.log('aniqlash uchu producs',sendList)
+      // return;
+
       this.TgStringSumma = '';
       if(this.product_buy >0){
         sendQty+=parseFloat(this.product_buy);
         this.TgStringSumma += ' %0A %0A Sotildi:' + ' %0A ' + this.product_name + '  ' + this.product_buy + ' кг ' + ' 💵 ' + parseFloat(this.product_buy)* this.summ_buy + ' сум'
       }
-
-      
       if(this.$v.$invalid)
       {
         this.$v.$touch();
@@ -1473,6 +1897,8 @@ data(){
         return false;
       }
       this.useQty = sendQty;
+      this.loading = true;
+
       const requestOptions = {
           method : "POST",
           headers: { "Content-Type" : "application/json" },
@@ -1493,7 +1919,9 @@ data(){
             "check_number": this.check_number,
             "kassa_id": localStorage.kassa_id,
             "tegirmonSkladid": 1,
-            "id" : 0,
+            "kassa_check_id": this.check_id,
+            "zaxira_extra_amount": this.all_sum_zaxira,
+            "id" : this.invoice_id,
           })
         };
         try{
@@ -1509,11 +1937,17 @@ data(){
             this.show_check = true;
             this.$refs.message.success('Added_successfully')
             if(parseFloat(this.product_qty)>= -1 && parseFloat(this.product_qty)< 1){
-              await this.fetch_Zero_done()
+              if(this.invoice_id == 0){
+                await this.fetch_Zero_done();
+              }
             }
             this.showObyom = false;
             this.image_url_str = '';
+            this.all_sum_zaxira = 0;
+            this.check_id = 0;
+            this.invoice_id = 0;
             this.loading = false;
+            this.now = Date.now();
             console.clear();
           }
           else{
@@ -1882,5 +2316,20 @@ data(){
   background-image: linear-gradient( 178deg,  rgba(201,234,252,0.85) 14.9%, rgba(139,192,216,0.8) 80% );
 
   // background-image: linear-gradient( 109.6deg,  rgba(75,153,245,1) 11.3%, rgba(177,226,254,1) 100.2% );
+}
+.pay_for_money{
+  position: absolute;
+  background: #b5ffb5;
+  right: 10px;
+  top: 120px;
+  display: flex;
+  justify-content: center;
+  span{
+    font-size: 17px;
+  }
+  z-index: 9999999 !important;
+}
+.my-colored-input {
+    color: rgb(255, 255, 255) !important;
 }
 </style>

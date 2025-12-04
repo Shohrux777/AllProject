@@ -10,7 +10,6 @@
         </div>
       </div>
     </div>
-
       <div>
         <div class="px-0">
           <loader v-if="loading"/>

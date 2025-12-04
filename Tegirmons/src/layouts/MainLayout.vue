@@ -20,7 +20,7 @@
           </div>
         </div>
         <div class="menu_list">
-          <div class="" v-for="(link,index) in links" :key="index" style="cursor: pointer;">
+          <div v-for="(link,index) in links" :key="index" style="cursor: pointer;" :class="{'block_show': !link.show}">
             <div @click="update_down(index)">
               <router-link
               tag="li" custom v-slot="{ navigate }"
@@ -87,7 +87,9 @@
     components: {
       mdbIcon,
     },
-    mounted() {
+    async mounted() {
+      await this.update_close_page()
+
       this.show_title = localStorage.sidebar;
       console.log(this.show_title)
       console.log(localStorage.sidebar)
@@ -117,30 +119,30 @@
         show_title: localStorage.sidebar,
         indexMain: -1,
         links: [
-            { title: "main", icon: 'home', url: '/getProduct', view: false, color: '#c4cbcb', down_list:[] },
-            { title: "product", icon: 'shopping-bag', url: '/product', view: false, color: '#c4cbcb', down_list:[] },
-            { title: "measurment", icon: 'balance-scale', url: '/measurment', view: false, color: '#c4cbcb', down_list:[] },
-            { title: "changing", icon: 'drafting-compass', url: '/changing', view: false, color: '#c4cbcb', down_list:[] },
-            { title: "client", icon: 'user-shield', url: '/client', view: false, color: '#c4cbcb', down_list:[] },
+            { title: "main", icon: 'home', url: '/getProduct', view: false, show:true, color: '#c4cbcb', down_list:[] },
+            { title: "product", icon: 'shopping-bag', url: '/product', view: false, show:true, color: '#c4cbcb', down_list:[] },
+            { title: "measurment", icon: 'balance-scale', url: '/measurment', view: false, show:true, color: '#c4cbcb', down_list:[] },
+            { title: "changing", icon: 'drafting-compass', url: '/changing', view: false, show:true, color: '#c4cbcb', down_list:[] },
+            { title: "client", icon: 'user-shield', url: '/client', view: false, show:true, color: '#c4cbcb', down_list:[] },
             // { title: "client_controler", icon: 'users', url: '/client_controler', view: false, color: '#c4cbcb', down_list:[] },
-            { title: "user", icon: 'user-tie', url: '/user', view: false, color: '#c4cbcb', down_list:[]},
-            { title: "kassa", icon: 'cash-register', url: '/kassa', view: false, color: '#c4cbcb', down_list:[]},    
-            { title: "hisob", icon: 'wallet', url: '/hisob', view: false, color: '#c4cbcb', down_list:[]},
+            { title: "user", icon: 'user-tie', url: '/user', view: false, show:true, color: '#c4cbcb', down_list:[]},
+            { title: "kassa", icon: 'cash-register', url: '/kassa', view: false, show:true, color: '#c4cbcb', down_list:[]},    
+            { title: "hisob", icon: 'wallet', url: '/hisob', view: false, show:true, color: '#c4cbcb', down_list:[]},
 
-            { title: "buy", icon: 'truck-loading', url: '', view: false, color: '#c4cbcb', down_list:[
+            { title: "buy", icon: 'truck-loading', url: '', view: false, show:true, color: '#c4cbcb', down_list:[
               { title: "buy", icon: 'truck-loading', url: '/buy', view: false, color: '#c4cbcb', down_list:[] },
               { title: "contragent_info", icon: '', url: '/contragent_info', view: false, color: '#c4cbcb', down_list:[] },
               { title: "contragent", icon: '', url: '/contragent', view: false, color: '#c4cbcb', down_list:[] },
             ] },
 
 
-            { title: "sklad", icon: 'calendar-plus', url: '', view: false, color: '#c4cbcb', down_list:[
+            { title: "sklad", icon: 'calendar-plus', url: '', view: false, show:true, color: '#c4cbcb', down_list:[
                { title: "dashboard", url: '/sklad_dashboard', dview: false, color: '#c4cbcb', down_list:[] },              
                { title: "new_sklad", url: '/sklad', dview: false, color: '#c4cbcb', down_list:[] },              
             ] },
 
 
-            { title: "report", icon: 'calendar-plus', url: '', view: false, color: '#c4cbcb', down_list:[
+            { title: "report", icon: 'calendar-plus', url: '', view: false, show:true, color: '#c4cbcb', down_list:[
                { title: "usedProductList", url: '/usedProductList', dview: false, color: '#c4cbcb', down_list:[] },
                { title: "getProduct", url: '/getProduct_report', dview: false, color: '#c4cbcb', down_list:[] },
 
@@ -151,19 +153,20 @@
                { title: "millUndo", url: '/millUndo', dview: false, color: '#c4cbcb', down_list:[] },
               
             ] },
-            { title: "worker_rasxods", icon: 'users', url: '', view: false, color: '#c4cbcb', down_list:[
+            { title: "worker_rasxods", icon: 'users', url: '', view: false, show:true, color: '#c4cbcb', down_list:[
               { title: "worker", url: '/worker', view: false, color: '#c4cbcb', down_list:[] },
               { title: "worker_rasxod", url: '/worker_rasxod', dview: false, color: '#c4cbcb', down_list:[] },
             ] },
-            { title: "setting", icon: 'cog', url: '', view: false, color: '#c4cbcb', down_list:[
+            { title: "setting", icon: 'cog', url: '', view: false, show:true, color: '#c4cbcb', down_list:[
               { title: "company", icon: 'landmark', url: '/company', view: false, color: '#c4cbcb', down_list:[] },
               { title: "department", icon: 'box', url: '/department', view: false, color: '#c4cbcb', down_list:[] },
               { title: "contragent", icon: 'bell', url: '/contragent', view: false, color: '#c4cbcb', down_list:[] },
               { title: "district", icon: 'crutch', url: '/district', view: false, color: '#c4cbcb', down_list:[] },
               { title: "category", icon: 'landmark', url: '/category', view: false, color: '#c4cbcb', down_list:[] },
+              { title: "dolg_user", icon: 'landmark', url: '/dolg_user', view: false, color: '#c4cbcb', down_list:[] },
 
             ] },
-            { title: "face_control", icon: 'users', url: '', view: false, color: '#c4cbcb', down_list:[
+            { title: "face_control", icon: 'users', url: '', view: false, show:true, color: '#c4cbcb', down_list:[
               { title: "Dashboard", url: '/dashboard', dview: false, color: '#c4cbcb', down_list:[] },
               { title: "salary_report", url: '/salary_report', dview: false, color: '#c4cbcb', down_list:[] },
               { title: "worker", url: '/userFace', dview: false, color: '#c4cbcb', down_list:[] },
@@ -173,10 +176,9 @@
               { title: "connect_salary_user", url: '/connect_salary_user', view: false, color: '#c4cbcb', down_list:[] },
               { title: "dept", url: '/dept', view: false, color: '#c4cbcb', down_list:[] },
               { title: "smena", url: '/smena', view: false, color: '#c4cbcb', down_list:[] },
-
               // { title: "user_calendar", url: '/user_calendar', view: false, color: '#c4cbcb', down_list:[] },
             ] },
-            { title: "logout", icon: 'sign-in-alt', url: '/', view: false, color: '#c4cbcb', down_list:[] },
+            { title: "logout", icon: 'sign-in-alt', url: '/', view: false, show: true, color: '#c4cbcb', down_list:[] },
         ],
       }
     },
@@ -184,6 +186,41 @@
         this.$root.$refs.sidebar = this;
     },
     methods: {
+      async update_close_page(){
+        console.log('uploadga kirayabdimi bu uzi')
+        try{
+        this.loading = true;
+        const response = await fetch(this.$store.state.hostname + "/TegirmonClose/1");
+        const data = await response.json();
+        console.log('test uchun edi', response)
+
+        this.loading = false;
+        if(response.status == 201 || response.status == 200)
+        {
+          if(data.status ==  true){
+            // this.links[0].show = false
+              // this.links[1].show = false
+              this.links[3].show = false
+              this.links[4].show = false
+              this.links[6].show = false
+              this.links[7].show = false
+              this.links[8].show = false
+              this.links[9].show = false;
+              this.links[10].show = false;
+              this.links[11].show = false;
+              // this.links[12].show = false;
+          }
+          console.log('test uchun mainLayout', this.links)
+
+          return true;
+        }
+        }
+        catch{
+            this.loading = false;
+            this.modal_info = this.$i18n.t('network_ne_connect'); 
+            this.modal_status = true;
+        }
+      },
       update_down: function (i) {
         this.indexMain = i;
         for (let j = 0; j < this.links.length; j++) {
@@ -221,10 +258,17 @@
 *{
   font-family: 'Montserrat', sans-serif;
 }
-.main{
-  background: #eee;
 
+.allContent{
+  min-height: 100vh;
+  background: #f7f8fc;
 }
+
+.main{
+  width: 100%;
+  background: #ffffff;
+}
+
 .leftmenu{
   width: 290px;
   position: sticky;
@@ -232,30 +276,26 @@
   height: 100vh;
   overflow: hidden;
   overflow-y: auto;
-  padding: 2px 0px;
-  background: #2F3C4E;
+  padding: 2px 0px 8px 0px;
+  background-image: linear-gradient(180deg, #263445 0%, #1f2937 45%, #111827 100%);
   font-size: 13px;
+  box-shadow: 2px 0 12px rgba(15, 23, 42, 0.4);
+  border-right: none !important;
 }
-.backleftmenu{
-  background: #2F3C4E;
 
+.backleftmenu{
+  background-image: linear-gradient(180deg, #263445 0%, #1f2937 45%, #111827 100%);
 }
 .smallleftmenu{
-  width: 50px;
+  width: 56px;
   position: sticky;
   top: 0px;
   height: 100vh;
   overflow: hidden;
   overflow-y: auto;
-  padding: 2px 0px;
-  background: #1B3446;
+  padding: 2px 0px 8px 0px;
+  background-image: linear-gradient(180deg, #263445 0%, #1f2937 45%, #111827 100%);
   font-size: 13px;
-}
-.main{
-  width: 100%;
-}
-.allContent{
-  min-height: 100vh;
 }
 .active_link{
   background: rgba(113, 184, 255, 0.3);
@@ -369,5 +409,8 @@
 }
 .main_left_shadow{
   box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+}
+.block_show{
+  display: none;
 }
 </style>

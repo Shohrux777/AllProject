@@ -15,7 +15,7 @@
                 </div>
               </div>
               <div class="col-3">
-                <div style="position: relative; margin-top: 25px;"> 
+                <div style="position: relative; margin-top: 25px;">
                   <!-- <small class="bg-white" style="position: absolute; z-index:1; left:10px; top: -10px; color: #757575;">
                     {{$t('end_time')}}
                   </small> -->
@@ -57,7 +57,7 @@
                 </div>
                 <small>{{hisob_name}}</small>
                 <div class="hisob_info_list">
-                  <p v-for="(item,i) in allHisob.rows" :key="i" @click="select_hisob_info(item)">
+                  <p v-for="(item,i) in hisob_list_access" :key="i" @click="select_hisob_info(item)">
                     {{ item.name }}
                   </p>
                 </div>
@@ -282,7 +282,9 @@
     <Toast ref="message"></Toast>
      <massage_box :hide="modal_status" :detail_info="modal_info"
       :m_text="$t('Failed_to_delete')" @to_hide_modal = "modal_status = false"/>
+      <block ref="blocked"></block>
   </div>
+  
 
 </template>
 
@@ -353,6 +355,8 @@
         rasxod_cash: 0,
         rasxod_dollor: 0,
 
+        hisob_list_access: [],
+
         json_fields: {
           'Сотрудник': 'worker_name',
           'Дата	': {
@@ -412,19 +416,26 @@
         let time1 = new Date();
         this.Start_time = time1.toISOString().slice(0,10);
         this.End_time = time1.toISOString().slice(0,10);
+        await this.fetchUserHisobAccess();
 
         this.loading = true;
-        await this.fetchHisob();
-        if(localStorage.hisob_Id){
-            this.hisob_name = localStorage.hisob_Name;
-            this.hisob_id = localStorage.hisob_Id;
+        // await this.fetchHisob();
+        let count_access = 0
+        for(let j=0; j<this.hisob_list_access.length; j++){
+          if(this.hisob_list_access[j].id == localStorage.hisob_Id){
+            count_access ++;
+          }
+        }
+        if(localStorage.hisob_Id && count_access>0){
+          this.hisob_name = localStorage.hisob_Name;
+          this.hisob_id = localStorage.hisob_Id;
         }
         else{
-          if(this.allHisob.rows.length>0){
-            this.hisob_name = this.allHisob.rows[0].name;
-            this.hisob_id = this.allHisob.rows[0].id;
-            localStorage.hisob_Name = this.allHisob.rows[0].name;
-            localStorage.hisob_Id = this.allHisob.rows[0].id;
+          if(this.hisob_list_access.length>0){
+            this.hisob_name = this.hisob_list_access[0].name;
+            this.hisob_id = this.hisob_list_access[0].id;
+            localStorage.hisob_Name = this.hisob_list_access[0].name;
+            localStorage.hisob_Id = this.hisob_list_access[0].id;
           }
         }
         await this.fetchHisob_info(this.hisob_id);
@@ -442,7 +453,22 @@
     methods: {
       ...mapActions(['fetch_contragent', 'fetchWorker', 'fetchHisob', 'fetchHisob_info']),
       ...mapMutations(['district_row_delete',]),
-
+      async fetchUserHisobAccess(){
+        try{
+            const res = await fetch(this.$store.state.hostname + '/TegirmonUserHisobAccess/GetHisoblarByUserId?user_id=' + localStorage.user_id);
+            const data = await res.json();
+            if(res.status == 200 || res.status == 201){
+                this.hisob_list_access = data;
+                if(data.length == 0){
+                  this.$refs.blocked.show_block();
+                }
+            }
+        }
+        catch(error){
+            console.log(error)
+            // this.$refs.blocked.show_block();
+        }
+      },
       async select_hisob_info(hisob_data){
         this.hisob_name = hisob_data.name;
         this.hisob_id = hisob_data.id;
@@ -898,7 +924,11 @@
 .mainKassaTable tr {
   border-bottom: 1px solid rgb(240, 240, 240);
 }
-
+.mainKassaTable tr {
+  &:hover{
+    background: #afd1fd !important;
+  }
+}
 .delIcon{
   color: rgb(251, 70, 70);
   font-size: 13px;

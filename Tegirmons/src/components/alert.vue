@@ -5,9 +5,9 @@
           <div class="alertColor card" :class="[`bg-${nam.color}`]" >
             <div class="card-header py-2 px-3">
               <div class="d-flex justify-content-between">
-                <div><span class="text-white">SMR of ExtremeSoft</span></div>
+                <div><span class="text-white">Oqqo'rg'on Tegirmon</span></div>
                 <div class="d-flex align-items-center">
-                  <span class="text-white mr-2" style="font-size: 12px;">5 mins ago</span>
+                  <span class="text-white mr-2" style="font-size: 12px;">5 min ago</span>
                    <svg @click="close(i)" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#fff" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <line x1="18" y1="6" x2="6" y2="18" />
@@ -109,21 +109,23 @@ export default {
 
 <style lang="scss" scoped>
 .alerList{
-  max-width: 500px;
+  max-width: 420px;
+  min-width: 320px;
   z-index: 1000000;
-  min-width: 350px;
   position: fixed;
-  right: 10px;
-  top: 10px;
+  right: 14px;
+  top: 14px;
 }
 .alertColor{
-  margin: 5px 0;
-  border-radius: 3px;
+  margin: 6px 0;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(15, 35, 52, 0.25);
+  overflow: hidden;
 }
 .sort{
   display: flex;
   align-items: center;
-  padding: 5px 10px;
+  padding: 6px 10px;
 }
 .notefication{
   display: flex;

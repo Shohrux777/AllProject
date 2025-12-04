@@ -5,7 +5,7 @@
       <div class="header_shafyor ">
         <div class="mx-3">
           <div class="row px-2 pt-3  main_header_bg_new"> 
-            <div class="col-3">
+            <div class="col-2">
               <input class="m-0 py-0 bg-white rounded form-control" v-model="header.shafyor_name"  outline  
                 style="height:34px; font-size: 14px;" type="text" validate error="wrong" success="right"/>
               <small
@@ -13,12 +13,21 @@
                 >{{ $t("shafyor_name") }}</small
               >
             </div>
-            <div class="col-3">
+            <div class="col-2">
               <input class="m-0 py-0 bg-white rounded form-control" v-model="header.car_number" size="md"   
                 style="height:34px; font-size: 14px;" outline   type="text" validate error="wrong" success="right"/>
               <small
                 class="font-weight-bold px-2 py-0 header_input_title"
                 >{{ $t("car_number") }}</small
+              >
+            </div>
+            <div class="col-2">
+              <input class="m-0 py-0 bg-white rounded form-control" placeholder="(99) ###-##-##" 
+                v-model="header.phone_number" size="md" v-mask="'(##) ###-##-##'"
+                style="height:34px; font-size: 14px;" outline type="text" validate error="wrong" success="right"/>
+              <small
+                class="font-weight-bold px-2 py-0 header_input_title"
+                >{{ $t("phone_number") }}</small
               >
             </div>
             <div class="col-3">
@@ -114,7 +123,7 @@
             class="bg-white px-2 py-0"
             >{{ $t("reason") }}</small>
         </div>
-        <div class="col-3 mt-3">
+        <div class="col-2 mt-3">
           <mdb-input class="m-0 p-0" disabled v-model="item.skidka" size="md"  outline  group type="number" validate error="wrong" success="right"/>
             <!-- <small class="invalid-text mt-0" style="margin-left:5px; "  v-if="$v.item.qty.$dirty && !$v.item.qty.required" >
               {{$t('name_invalid_text')}}
@@ -125,12 +134,26 @@
               >{{ $t("skidka") }}</small
             >
         </div>
-        <div class="col-6">
+        <div class="col-2 mt-3">
+          <input class="m-0 py-0 bg-white rounded form-control" placeholder="(99) ###-##-##" 
+                v-model="item.phone_number" size="md" v-mask="'(##) ###-##-##'"
+                style="height:34px; font-size: 14px;" outline type="text" validate error="wrong" success="right"/>
+              <small
+                class="font-weight-bold px-2 py-0 header_input_title"
+                >{{ $t("phone_number") }}</small
+              >
+        </div>
+        <div class="col-1  mt-1">
+          <div class="photo d-flex justify-content-center " v-if="item.image_url">
+            <img :src="hostname + item.image_url" width="100" alt="" @click="$imageModal.open(hostname + item.image_url)" class="shadow border rounded">
+          </div>
+        </div>
+        <div class="col-4">
           <div class="mt-4 text-right ">
             <!-- <mdb-btn   @click="Refresh" color="warning" m="r2" style="font-size: 10.5px"
               p="r4 l4 t2 b2"> <mdb-icon fas class="mr-2"  icon="sync"></mdb-icon>  {{$t('rasxod')}}
             </mdb-btn> -->
-            <mdb-btn   @click="saveAddRow(indexRow)" color="success" m="r2" style="font-size: 8.5px"
+            <mdb-btn   @click="showPhoto(indexRow)" color="success" m="r2" style="font-size: 8.5px"
               p="r3 l3 t2 b2"> <mdb-icon fas class="mr-1"  icon="plus"></mdb-icon>  {{$t('add')}}
             </mdb-btn>
             <mdb-btn    @click="deleteRowInvoice(item,indexRow)" color="danger" m="r2" style="font-size: 8.5px"
@@ -284,6 +307,8 @@
           </div>
         </template>
     </modal-train>
+        <webcam  v-show="showPhotos" @getPhotosub="takePhoto" ref="webCamera"/>
+
     <massage_box :hide="modal_status" :detail_info="modal_info"
       :m_text="$t('Failed_to_add')" @to_hide_modal="modal_status= false"/>
 
@@ -300,10 +325,12 @@ import erpSelectOnlyBugdoy from "../../components/erpSelectOnlyBugdoy";
 import { required } from "vuelidate/lib/validators";
 import {mapActions,mapGetters} from 'vuex'
 import {mdbInput, mdbRow, mdbCol, mdbBtn, mdbIcon} from 'mdbvue'
+import webcam from '../webcam/webcam_Add.vue'
+
 export default {
   components: {
     erpSelect,mdbInput,erpSelectFio, erpSelectOnlyBugdoy,
-     mdbRow, mdbCol, mdbBtn,mdbIcon,changeProduct
+     mdbRow, mdbCol, mdbBtn,mdbIcon,changeProduct, webcam
   },
   validations: {
     test: {required},
@@ -316,6 +343,8 @@ export default {
   data() {
     return {
       test: 'sdsad',
+      showPhotos: false,
+      hostname: this.$store.state.server_ip,
 
       modal_info: '',
       modal_status: false,
@@ -340,6 +369,7 @@ export default {
         note: '',
         qty: 0,
         real_qty: 0,
+        phone_number: '',
       },
       clients_info: [
         
@@ -420,7 +450,8 @@ export default {
     },
 
     async addClientRow(){
-      if(this.header.shafyor_name == '' || this.clients_info.length>=1){
+      if(this.header.shafyor_name == '' || this.header.phone_number == '' || this.clients_info.length>=1){
+        this.$refs.message.warning('Shafyor ismi yoki Telifon nomeri kiritilmagan')
         return false;
       }
       let info = {
@@ -438,6 +469,8 @@ export default {
         invoice_id: 0,
         group_detail_id: 0,
         skidka: 0,
+        phone_number: '',
+        image_url: '',
         changeProduct: [
         ]
       }
@@ -447,6 +480,8 @@ export default {
 
       this.clients_info.unshift(info);
       this.clients_info[0].client_new_name = this.header.shafyor_name;
+      this.clients_info[0].phone_number = this.header.phone_number;
+
       if(this.header.shafyor_name != ''  || this.header.car_number != ''){
         if(this.clients_info.length<2){
           const requestOptions = {
@@ -458,6 +493,7 @@ export default {
               "note": this.header.note,
               "name": '',
               'qabul_qilgan_user_name': localStorage.user_name,
+              "reverced_str": this.header.phone_number,
               "id": 0
             })
           };
@@ -491,6 +527,10 @@ export default {
     },
 
     async addRows(){
+      if(this.header.shafyor_name == '' || this.header.phone_number == ''){
+        this.$refs.message.warning('Shafyor ismi yoki Telifon nomeri kiritilmagan')
+        return false;
+      }
       console.log('this.only_product')
       console.log(this.only_product)
       if(this.header.shafyor_name == ''){
@@ -510,6 +550,8 @@ export default {
         real_qty: 0,
         invoice_id: 0,
         group_detail_id: 0,
+        phone_number: '',
+        image_url: '',
         changeProduct: [
         ]
       }
@@ -520,6 +562,7 @@ export default {
       //   info.product_price = this.all_product_t.rows[0].price;
       // }
       this.clients_info.unshift(info);
+
       if(this.header.shafyor_name != ''  || this.header.car_number != ''){
         if(this.clients_info.length<2){
           const requestOptions = {
@@ -531,6 +574,7 @@ export default {
               "note": this.header.note,
               "name": '',
               'qabul_qilgan_user_name': localStorage.user_name,
+              "reverced_str": this.header.phone_number,
               "id": 0
             })
           };
@@ -585,7 +629,20 @@ export default {
         this.clients_info.splice(i,1);
         this.$refs.message.success('Successfully_removed')
       }
-     
+    },
+    async showPhoto(i){
+      this.rowIndex = i;
+      if(this.clients_info[i].product_id == null ||  this.clients_info[i].qty<=0 || this.clients_info[i].client_new_name == ''){
+        this.$refs.message.warning('Klient nomi, Mahsulot turi yoki mahsulot miqdori kiritilmagan !!!')
+        return false;
+      }
+      this.showPhotos = true;
+      this.$refs.webCamera.funcAutoOpen();
+    },
+    async takePhoto(img){
+      this.clients_info[this.rowIndex].image_url = img;
+      this.showPhotos = false;
+      await this.saveAddRow(this.rowIndex);
     },
     async saveAddRow(i){
       this.rowIndex = i;
@@ -611,6 +668,8 @@ export default {
           "info": this.clients_info[i].note,
           "client_name": this.clients_info[i].client_new_name,
           "id": this.clients_info[i].ruyxat_id,
+          "phone_number": this.clients_info[i].phone_number,
+          "image_url": this.clients_info[i].image_url,
           
           // "auth_user_creator_id": localStorage.AuthId,
           // "auth_user_updator_id": localStorage.AuthId,
@@ -907,6 +966,7 @@ export default {
           "note": this.header.note,
           "real_qty": measure.toFixed(1),
           'qabul_qilgan_user_name': localStorage.user_name,
+          "reverced_str": this.header.phone_number,
           "id": this.shafyorGroup_id
         })
       };

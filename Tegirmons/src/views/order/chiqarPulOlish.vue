@@ -245,6 +245,11 @@ export default {
       this.hisob_dollor_str = '0';
     },
     async saveRasxod(){
+      if(this.hisob_sum == null || this.hisob_dollor == null)
+      {
+        this.$refs.message.warning('please_fill')
+        return;
+      }
       console.log(this.all_summ)
       console.log(this.hisob_all_sum)
       if(Math.abs(this.all_summ - this.hisob_all_sum) > 100){
@@ -340,7 +345,6 @@ export default {
         this.modal_status = true;
         return false;
       }
-      
     },
     async getQarzUserId(){
       try{

@@ -1,6 +1,6 @@
 <template>
   <div class="changeComponent p-2 pt-2">
-    <div class="row py-2 px-2 border-bottom bg-white shadow border-bottom" :class="{'bg-danger': product_qty_change<-1}" style="position: sticky; top:0; z-index: 99999;">
+    <div class="row py-2 px-2 border-bottom bg-white shadow border-bottom" :class="{'bg-danger': enoughStatus}" style="position: sticky; top:0; z-index: 99999;">
       <div class="col-4">
         <mdb-input class="m-0 p-0 bg_warning" v-model="product_name" disabled size="md"  outline  group type="text" validate error="wrong" success="right"/>
         <small style="position:absolute; top:-10px; left:22px; font-size: 11px;" class="bg-white px-2 py-0">{{$t('product')}}</small>
@@ -14,24 +14,34 @@
         <small style="position:absolute; top:-10px; left:22px; font-size: 11px;" class="bg-white px-2 py-0">{{$t('skidka')}}</small>
       </div>
     </div>
+
+    <div v-if="all_sum_zaxira>0" class="pay_for_money card p-3"> 
+      <small class="text-primary">Оплата за лишний товар</small>
+      <span class="mt-2">К оплате:  {{ all_sum_zaxira.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }} UZS</span>
+    </div>
     <!-- :class="{'bg_red_color': item.auth_user_updator_id == 1}" -->
     <div class="row px-2">
       <div class="col-3 mt-4 px-3" v-for="(item,index) in changeProduct" :key="index">
-        <div class=" card pt-2 pr-3" style="position:relative;" :style="{background : item.color }" >
+        <div class=" card pt-2 pr-3" style="position:relative;" :style="{background : item.color }">
           <div class="product_name_price text-right">
             <div class="d-flex justify-content-between">
               <div style="height:30px; overflow: hidden;">
                 <h6 class="pro_name_color text-left ml-3">{{item.product_name}}</h6>
               </div>
-              <h6 class="pro_name_color text-left ml-3">{{item.ostatka_qty.toFixed(1)}}</h6>
+              <h6 class="pro_name_color text-left ml-3" style="cursor: pointer;" @click="changeEnoughSum(index)">
+                <span v-if="item.sum_status">💵</span>
+                <span v-else>🧮</span>
+                <!-- ✅💰 -->
+              </h6>
+              <!-- <h6 class="pro_name_color text-left ml-3">{{item.ostatka_qty.toFixed(1)}}</h6> -->
             </div>
-            <h4 class="mt-2">{{item.qty}} <span>{{item.measure}}</span></h4>
+            <h4 class="mt-2"><span v-if="item.enoughQty != 0">{{item.enoughQty.toFixed(1)}} || </span> {{item.qty}} <span>{{item.measure}}</span></h4>
           </div>
           <div class="clickItem border-top mt-2 mx-2">
-            <div class="mt-2">
+            <div style="margin-top: 12px;">
               <div style="position: relative;">
-                <mdb-input class="m-0 p-0" v-model="item.real_qty" size="md" @input="changeRealQty(index)" @blur="blurchangeRealQty(index)" @click="enterchangeRealQty(index)"  outline  group type="text" validate error="wrong" success="right"/>
-                <small style="position:absolute; top:-7px; left:10px; font-size: 11px;" class="bg-white px-2 py-0">{{$t('kg_ves')}}</small>
+                <mdb-input class="m-0 p-0" v-model="item.real_qty" size="md" @input="changeRealQty(index)" @blur="blurchangeRealQty(index)" @click="enterchangeRealQty(index)" :class="{'bg-warning rounded my-colored-input': item.real_qty>0}" outline  group type="text" validate error="wrong" success="right"/>
+                <small style="position:absolute; top:-14px; left:0px; font-size: 11px; background: inherit !important; " class=" px-2 py-0">{{$t('kg_ves')}}</small>
               </div>
             </div>
           </div>
@@ -63,7 +73,7 @@
       </div>
     </div>
     <div class="text-right border-top mt-3">
-      <mdb-btn   @click="commitOut()" :disabled="product_qty_change<-1" color="success" m="r2 t2" style="font-size: 10.5px"
+      <mdb-btn   @click="commitOut()" :disabled="enoughStatus" color="success" m="r2 t2" style="font-size: 10.5px"
         p="r4 l4 t2 b2"> <mdb-icon fas class="mr-2"  icon="plus"></mdb-icon>  {{$t('changing')}}
       </mdb-btn>
     </div>
@@ -79,7 +89,6 @@ export default {
       product_qty_change: 0,
       product_real_qty: 0,
 
-
       product_name_buy: '',
       product_buy: 0,
       summ_buy: 0,
@@ -90,6 +99,8 @@ export default {
       product_real_qty_skidka: 0,
       skidka: 0,
       zaxira_qty: 0,
+      enoughStatus: false,
+      all_sum_zaxira: 0,
     }
   },
   components:{
@@ -165,6 +176,8 @@ export default {
       }
     },
     async updateChanger(list){
+      this.enoughStatus = false;
+      this.all_sum_zaxira = 0;
       // console.log('list')
       // console.log(list)
       if(list.zaxira_qty == '' || list.zaxira_qty == null){
@@ -198,8 +211,8 @@ export default {
         this.loading = true;
         const response = await fetch(this.$store.state.hostname + "/TegirmonProductToProductPersentage/getPaginationByProductId?page=0&size=100&product_id=" + id + "&sklad_id=1");
         const data = await response.json();
-        // console.log('data percented')
-        // console.log(data)
+        console.log('data percented buyicha malumotlar')
+        console.log(data)
         this.loading = false;
         if(response.status == 201 || response.status == 200)
         {
@@ -223,9 +236,12 @@ export default {
                 persantage: data.items_list[0].item_list[i].persantage,
                 measure: data.items_list[0].item_list[i].sub_product.unitMeasurment.name,
                 color: data.items_list[0].item_list[i].sub_product.shitrix_code,
+                product_price: data.items_list[0].item_list[i].sub_product.price,
                 real_qty:0,
                 ostatka_qty: ostatk,
                 auth_user_updator_id: data.items_list[0].item_list[i].auth_user_updator_id,
+                enoughQty: 0,
+                sum_status: false, // yetmaganiga pul olinsa true qilinadi
                 id: 0,
               }
               if(ostatk>0){
@@ -362,24 +378,7 @@ export default {
         this.changeProduct[i].real_qty = null;
       }
     },
-    changeRealQty(index){
-      console.log(index)
-      // console.log(this.changeProduct[index])
-      let test_qty = this.product_real_qty;
-      for(let i=0; i<this.changeProduct.length; i++){
-        if(this.changeProduct[i].real_qty != ''){
-          // console.log('this.changeProduct[index]')
-          test_qty = parseFloat(test_qty) - (parseFloat(this.changeProduct[i].real_qty) / parseFloat(this.changeProduct[i].persantage))
-        }
-        else{ 
-          // console.log('pustoy')
-          test_qty = parseFloat(test_qty) - (0 / parseFloat(this.changeProduct[i].persantage))
-        }
-      }
-      this.product_qty_change = test_qty.toFixed(2);
-      // console.log(this.product_qty_change);
-      this.fetchChangeSubPro(this.product_qty_change);
-    },
+    
     fetchChangeSubPro(qty){
       // console.log('qty')
       // console.log(qty)
@@ -396,6 +395,9 @@ export default {
           skidka: 0,
           summ:0,
           color: this.changeProduct[i].color,
+          product_price: this.changeProduct[i].product_price,
+          enoughQty: this.changeProduct[i].enoughQty,
+          sum_status: this.changeProduct[i].sum_status, // yetmaganiga pul olinsa true qilinadi
           id:this.changeProduct[i].id,
         }
         if(this.changeProduct[i].real_qty == '' && this.changeProduct[i].real_qty != 0){
@@ -423,6 +425,8 @@ export default {
           skidka: 0,
           color: '#ffffff',
           real_qty: this.product_buy,
+          enoughQty: 0,
+          sum_status: false, // yetmaganiga pul olinsa true qilinadi
           summ: this.summ_buy,
         }
         this.changeProduct.push(tempInvoice)
@@ -437,15 +441,171 @@ export default {
           skidka: this.skidka,
           real_qty: 0,
           color: '#ffffff',
+          enoughQty: 0,
+          sum_status: false, // yetmaganiga pul olinsa true qilinadi
           summ: 0,
         }
         this.changeProduct.push(tempSkidkaInV)
       }
       // console.log('ichidagi narsa')
       // console.log(this.changeProduct)
-      this.$emit('addNewData', {index:this.row, data: this.changeProduct})
+      this.$emit('addNewData', {index:this.row, data: this.changeProduct, all_sum_zaxira: this.all_sum_zaxira})
       this.skidka = 0;
-    }
+    },
+    changeRealQty(index){
+      console.log(index)
+      this.enoughStatus = false;
+      // this.changeProduct[index].sum_status = !this.changeProduct[index].sum_status;
+      let test_qty = this.product_real_qty;
+      console.log(this.changeProduct[index]);
+      console.log(test_qty);
+      // bu pulga hisoblanmaydiganlardan birinchi bug'doyni hisoblab olamiz qanchasi ketadi
+      for(let i=0; i<this.changeProduct.length; i++){
+        if(this.changeProduct[i].real_qty != '' && this.changeProduct[i].sum_status == false){
+          let bugdoy_qty = parseFloat(this.changeProduct[i].real_qty) / parseFloat(this.changeProduct[i].persantage) // qancha bug'doy ketishi
+          test_qty = parseFloat(test_qty) - (bugdoy_qty);
+          this.changeProduct[i].enoughQty = 0;
+        }
+        else if(this.changeProduct[i].sum_status == false){
+          test_qty = parseFloat(test_qty) - (0 / parseFloat(this.changeProduct[i].persantage));
+          this.changeProduct[i].enoughQty = 0;
+        }
+      }
+      console.log('test_qty', test_qty)
+      if(test_qty<-1){
+        this.enoughStatus = true;
+      }
+      console.log('enoughStatus', this.enoughStatus)
+
+      // bu yetmaganini pul berishi keraklari 
+      // testda uzi kam bug'doy qoldi 30 kg masalan 
+      this.all_sum_zaxira = 0;
+      for(let i=0; i<this.changeProduct.length; i++){
+        if(this.changeProduct[i].real_qty != '' && this.changeProduct[i].sum_status == true){
+          let bugdoy_qty = parseFloat(this.changeProduct[i].real_qty) / parseFloat(this.changeProduct[i].persantage) // qancha bug'doy ketishi
+          if(test_qty>bugdoy_qty){
+            test_qty = parseFloat(test_qty) - (bugdoy_qty);
+            this.changeProduct[i].enoughQty = 0;
+          }
+          else{
+            let yetmagan_bugdoy = 0;
+            let yetmagan_mahsulot = 0;
+            if(test_qty>0){
+              yetmagan_bugdoy = bugdoy_qty - test_qty;
+              yetmagan_mahsulot = yetmagan_bugdoy * parseFloat(this.changeProduct[i].persantage);
+            }
+            else{
+              yetmagan_mahsulot = bugdoy_qty * parseFloat(this.changeProduct[i].persantage);
+            }
+            test_qty = parseFloat(test_qty) - (bugdoy_qty);
+
+            this.changeProduct[i].enoughQty = yetmagan_mahsulot;
+            console.log(this.changeProduct[i]);
+            this.all_sum_zaxira += (yetmagan_mahsulot * this.changeProduct[i].product_price)
+            console.log('yetmagan_mahsulot', yetmagan_mahsulot);
+          }
+        }
+        else if(this.changeProduct[i].sum_status == true){
+          test_qty = parseFloat(test_qty) - (0 / parseFloat(this.changeProduct[i].persantage))
+          this.changeProduct[i].enoughQty = 0;
+        }
+      }
+      this.all_sum_zaxira = this.roundToHundreds(this.all_sum_zaxira);
+      this.product_qty_change = test_qty.toFixed(2);
+      // console.log('list', listPulBerishKerak)
+      this.fetchChangeSubPro(this.product_qty_change);
+
+
+
+
+      // console.log(index)
+      // // console.log(this.changeProduct[index])
+      // let test_qty = this.product_real_qty;
+      // for(let i=0; i<this.changeProduct.length; i++){
+      //   if(this.changeProduct[i].real_qty != ''){
+      //     // console.log('this.changeProduct[index]')
+      //     test_qty = parseFloat(test_qty) - (parseFloat(this.changeProduct[i].real_qty) / parseFloat(this.changeProduct[i].persantage))
+      //   }
+      //   else{ 
+      //     // console.log('pustoy')
+      //     test_qty = parseFloat(test_qty) - (0 / parseFloat(this.changeProduct[i].persantage))
+      //   }
+      // }
+      // this.product_qty_change = test_qty.toFixed(2);
+      // // console.log(this.product_qty_change);
+      // this.fetchChangeSubPro(this.product_qty_change);
+    },
+    changeEnoughSum(index){
+      console.log(index)
+      this.enoughStatus = false;
+      this.changeProduct[index].sum_status = !this.changeProduct[index].sum_status;
+      let test_qty = this.product_real_qty;
+      console.log(this.changeProduct[index]);
+      console.log(test_qty);
+      // bu pulga hisoblanmaydiganlardan birinchi bug'doyni hisoblab olamiz qanchasi ketadi
+      for(let i=0; i<this.changeProduct.length; i++){
+        if(this.changeProduct[i].real_qty != '' && this.changeProduct[i].sum_status == false){
+          let bugdoy_qty = parseFloat(this.changeProduct[i].real_qty) / parseFloat(this.changeProduct[i].persantage) // qancha bug'doy ketishi
+          test_qty = parseFloat(test_qty) - (bugdoy_qty);
+          this.changeProduct[i].enoughQty = 0;
+        }
+        else if(this.changeProduct[i].sum_status == false){
+          test_qty = parseFloat(test_qty) - (0 / parseFloat(this.changeProduct[i].persantage));
+          this.changeProduct[i].enoughQty = 0;
+        }
+      }
+      if(test_qty<-1){
+        this.enoughStatus = true;
+      }
+      // bu yetmaganini pul berishi keraklari 
+      // testda uzi kam bug'doy qoldi 30 kg masalan 
+      this.all_sum_zaxira = 0;
+      for(let i=0; i<this.changeProduct.length; i++){
+        if(this.changeProduct[i].real_qty != '' && this.changeProduct[i].sum_status == true){
+          let bugdoy_qty = parseFloat(this.changeProduct[i].real_qty) / parseFloat(this.changeProduct[i].persantage) // qancha bug'doy ketishi
+          if(test_qty>bugdoy_qty){
+            test_qty = parseFloat(test_qty) - (bugdoy_qty);
+            this.changeProduct[i].enoughQty = 0;
+          }
+          else{
+            let yetmagan_bugdoy = 0;
+            let yetmagan_mahsulot = 0;
+            if(test_qty>0){
+              yetmagan_bugdoy = bugdoy_qty - test_qty;
+              yetmagan_mahsulot = yetmagan_bugdoy * parseFloat(this.changeProduct[i].persantage);
+            }
+            else{
+              yetmagan_mahsulot = bugdoy_qty * parseFloat(this.changeProduct[i].persantage);
+            }
+            test_qty = parseFloat(test_qty) - (bugdoy_qty);
+
+            this.changeProduct[i].enoughQty = yetmagan_mahsulot;
+            console.log(this.changeProduct[i]);
+            this.all_sum_zaxira += (yetmagan_mahsulot * this.changeProduct[i].product_price)
+            console.log('yetmagan_mahsulot', yetmagan_mahsulot);
+          }
+        }
+        else if(this.changeProduct[i].sum_status == true){
+          test_qty = parseFloat(test_qty) - (0 / parseFloat(this.changeProduct[i].persantage))
+          this.changeProduct[i].enoughQty = 0;
+        }
+      }
+      this.all_sum_zaxira = this.roundToHundreds(this.all_sum_zaxira);
+      this.product_qty_change = test_qty.toFixed(2);
+      // console.log('list', listPulBerishKerak)
+      this.fetchChangeSubPro(this.product_qty_change);
+
+    },
+    roundToHundreds(value) {
+      let intValue = Math.floor(value);
+      let lastTwo = intValue % 1000;
+
+      if (lastTwo >= 500) {
+        return intValue - lastTwo + 1000;
+      } else {
+        return intValue - lastTwo;
+      }
+    },
   },
 }
 </script>
@@ -463,5 +623,17 @@ export default {
 }
 .bg_red_color{
   background: #ff937d !important;
+}
+.pay_for_money{
+  position: absolute;
+  background: #b5ffb5;
+  right: 10px;
+  top: 20px;
+  display: flex;
+  justify-content: center;
+  span{
+    font-size: 17px;
+  }
+  z-index: 9999999 !important;
 }
 </style>

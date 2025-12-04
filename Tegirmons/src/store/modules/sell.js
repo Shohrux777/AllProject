@@ -78,6 +78,15 @@ export default {
                 }
             }
         },
+        clear_zakaz_list(state, i){
+            state.page_savat = i;
+            state.zakaz_product_all_list = [];
+            let array = [];
+            state.zakaz_product_all_list.push(array);
+            state.skidka_summ[state.page_savat] = 0;
+            state.AllSummString[state.page_savat] = '0';
+            state.product_summ[state.page_savat] = 0;
+        },
 
 
 
@@ -106,7 +115,8 @@ export default {
                 posInvoiceid: 0,
                 invoiceItemId: data.invoice,
                 expired_date: data.expired_date,
-                contains_number_in_pack: data.contains_number_in_pack
+                contains_number_in_pack: data.contains_number_in_pack,
+                check_id: data.check_id
             }
             
             var s = 0;
@@ -157,9 +167,10 @@ export default {
 
 
         del_product(state, item) {
+            console.log('item', state.page_savat);
             console.log(item);
             state.skidka_summ[state.page_savat] -= parseFloat(item.data.skidka);
-            console.log(state.zakaz_product_all_list[state.page_savat])
+            console.log('template',state.zakaz_product_all_list[state.page_savat])
             state.zakaz_product_all_list[state.page_savat].splice(parseInt(item.index),1)
             state.product_summ[state.page_savat] -= parseFloat(item.data.summ);
             state.product_summ[state.page_savat] = parseFloat(state.product_summ[state.page_savat].toFixed(2))
