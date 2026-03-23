@@ -83,7 +83,7 @@
               <div class="col-2 p-1 " >
                 <div class="card py-1 pt-2 px-2 main_kassa_poluchit balance" >
                   <span style="font-size: 13.5px;">Balance UZS</span>
-                  <span class="text-right" style="font-size: 19px;">{{client_info.sum.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ') }}</span>
+                  <span class="text-right" style="font-size: 19px;">{{formatNumber(client_info.sum) }}</span>
                   <div  class="balance_btn w-100">
                     <div class="d-flex justify-content-end px-2">
                       <div class="main_kassa_btn_sml bg_col_blue" @click="pul_olib_qolish = !pul_olib_qolish">
@@ -101,7 +101,7 @@
               <div class="col-2 p-1 ">
                 <div class="card py-1 pt-2 px-2 main_kassa_bg balance">
                   <span style="font-size: 13.5px;">Balance USD</span>
-                  <span class="text-right" style="font-size: 19px;">{{client_info.dollor.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}💲</span>
+                  <span class="text-right" style="font-size: 19px;">{{formatNumber(client_info.dollor)}}💲</span>
                   
                   <div  class="balance_btn w-100">
                     <div class="d-flex justify-content-end px-2">
@@ -120,7 +120,7 @@
               <div class="col-2 p-1 " v-for="(item, index) in clientProducts" :key="index" v-show="item.qty>0">
                 <div class="card py-1 pt-2 px-2 main_kassa_bg balance" :style="{'background': item.product.shitrix_code}">
                   <span style="font-size: 13.5px;">{{item.product.name}}</span>
-                  <span class="text-right" style="font-size: 19px;">{{item.qty.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}} {{ item.product.unitMeasurment.name }}</span>
+                  <span class="text-right" style="font-size: 19px;">{{formatNumber(item.qty)}} {{ item.product.unitMeasurment.name }}</span>
                   
                   <div class="balance_btn w-100">
                     <div class="d-flex justify-content-end px-2">
@@ -361,11 +361,9 @@
                       <small v-if="row.created_date" class="ml-2">{{row.created_date.slice(11,16)}}</small>
                     </td>
                     <td class="truncate-text" :title="row.note"> <small  >{{row.note}}</small></td>
-                    <td> <small :class="{'text-danger': row.reserve_val_1>0}" >{{row.reserve_val_1.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small></td>
-                    <td> <small :class="{'text-danger': row.reserve_val_2>0}" >{{row.reserve_val_2.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ')}}</small></td>
-
+                    <td> <small :class="{'text-danger': row.reserve_val_1>0}" >{{formatNumber(row.reserve_val_1)}}</small></td>
+                    <td> <small :class="{'text-danger': row.reserve_val_2>0}" >{{formatNumber(row.reserve_val_2)}}</small></td>
                     <td> <small >{{row.addiotionala_information}}</small></td>
-
                   </tr>
                 </tbody>
               </table>
@@ -753,6 +751,7 @@ data(){
   methods: {
     ...mapActions(['fetch_user',]),
     ...mapMutations(['check_invoice_zaxira']),
+    
 
     async fetchUserAccess(id){
       try{
@@ -1010,8 +1009,19 @@ data(){
           
           this.order_list = data;
           if(localStorage.order_page == 0 && this.user_id == 0){
+            console.log("this.old_paid_not_deliver_cassa", this.old_paid_not_deliver_cassa)
             for(let i=0; i<this.old_paid_not_deliver_cassa.length; i++){
-              this.order_list.unshift(this.old_paid_not_deliver_cassa[i]);
+              // Agar pickUpDate choosen_day ga teng bo'lsa, qo'shilmaydi
+              if(this.old_paid_not_deliver_cassa[i].pickUpDate && this.choosen_day){
+                let pickUpDateStr = this.old_paid_not_deliver_cassa[i].pickUpDate.slice(0,10);
+                let choosenDayStr = this.choosen_day.slice(0,10);
+                if(pickUpDateStr !== choosenDayStr){
+                  this.order_list.unshift(this.old_paid_not_deliver_cassa[i]);
+                }
+              } else {
+                // Agar pickUpDate yoki choosen_day bo'sh bo'lsa, qo'shamiz
+                this.order_list.unshift(this.old_paid_not_deliver_cassa[i]);
+              }
             }
           }
           return true;
@@ -1433,6 +1443,18 @@ data(){
             this.modal_info = data;
             this.modal_status = true;
           }
+    },
+    formatNumber(value) {
+      if (value === null || value === undefined || isNaN(Number(value))) {
+        return '0';
+      }
+      const num = Number(value);
+      if (num % 1 === 0) {
+        // Butun son bo'lsa, o'zgartirmaymiz
+        return num.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
+      }
+      // 2 ta onlik raqamgacha kesamiz
+      return (Math.floor(num * 100) / 100).toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
     },
 
 

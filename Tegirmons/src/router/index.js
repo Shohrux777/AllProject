@@ -19,6 +19,13 @@ const routes = [{
             import ('../views/company/company.vue')
     },
     {
+        path: '/dashboard',
+        name: 'dashboard',
+        meta: { layout: 'navbar' },
+        component: () =>
+            import ('../views/dashboard/dashboard.vue')
+    },
+    {
         path: '/company_add/:id',
         name: 'company_add',
         meta: { layout: 'main' },
@@ -737,7 +744,7 @@ router.beforeEach(async (to, from, next) => {
     const isMaintenance = data.status; // status true/false
     console.log("Router malumot status haqida", data.status);
 
-    const allowed = ["/" ,"/tarozi", "/sell", "/product", "/user", "/user_salary", "/zaxiraniAlmashtirish"];
+    const allowed = ["/" ,"/tarozi", "/sell", "/product", "/user", "/user_salary", "/zaxiraniAlmashtirish", "/today_groups", "/showGroupDetail"];
 
     if (isMaintenance && !allowed.includes(to.path)) {
       // status true bo‘lsa va foydalanuvchi maintenance yoki login sahifada emas → redirect
@@ -750,6 +757,49 @@ router.beforeEach(async (to, from, next) => {
     return next();
   }
 });
+
+// router.beforeEach(async (to, from, next) => {
+//   try {
+//     console.log("Router malumot status haqida");
+    
+//     const response = await fetch(store.state.hostname + "/TegirmonClose/1");
+//     if (!response.ok) {
+//       return next(); // backend ishlamasa bloklanmaydi
+//     }
+
+//     const data = await response.json();
+//     const isMaintenance = data.status; // true / false
+
+//     console.log("Router malumot status haqida", data.status);
+
+//     // Ruxsat beriladigan yo‘llar
+//     const allowed = [
+//       "/",
+//       "/tarozi",
+//       "/sell",
+//       "/product",
+//       "/user",
+//       "/user_salary",
+//       "/zaxiraniAlmashtirish",
+//       "/today_groups",
+//       "/showGroupDetail" // dynamic route boshi
+//     ];
+
+//     // Dinamik routelarni tekshirish
+//     const isAllowed = allowed.some(a => to.path.startsWith(a));
+
+//     if (isMaintenance && !isAllowed) {
+//       return next("/tarozi");
+//     } else {
+//       return next();
+//     }
+
+//   } catch (err) {
+//     console.error("Router fetch xatolik:", err);
+//     return next(); // xatoda ham bloklamaslik kerak
+//   }
+// });
+
 
 // router.beforeEach((to, from, next) => {
 //     if (to.path != '/') {

@@ -81,6 +81,13 @@
   "userRasxod": "Расходь",
   "rasxod_zarplata": "Добавляет расходь и зарплата",
   "avto_rasxod": "Авто расходь",
-  "notes": "Заметка"
+  "notes": "Заметка",
+  "skud_face_logs": "Логи лицевых дверей",
+  "refresh": "Обновить",
+  "user_name": "Пользователь",
+  "userid": "Ид",
+  "door_name": "Дверь",
+  "check_date": "Дата",
+  "check_time": "Время"
 	
 }

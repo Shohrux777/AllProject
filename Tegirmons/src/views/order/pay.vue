@@ -634,8 +634,8 @@ export default {
     await this.fetchHisob();
   },
   computed:{
-    ...mapGetters(['allOrderList', 'get_skidka_summ', 'get_all_summa', 
-    'get_m_categoryIdProduct', 'get_zakaz_product_all_list','get_page_savat', 
+    ...mapGetters(['allOrderList', 'get_skidka_summ', 'get_all_summa',
+    'get_m_categoryIdProduct', 'get_zakaz_product_all_list','get_page_savat',
     'get_product_qty', 'AllSummString','user_kassa_list', 'allHisob','hisob_info', 'user_kassa_info']),
   },
   methods: {
@@ -1545,9 +1545,9 @@ export default {
       this.defaultSum = this.cashIn + this.uzcardIn + this.humoIn + this.clickIn + this.onlineIn + 
       this.dol_convert_Sum + this.paymeIn + this.clickedIn + this.paynetIn + this.uzumIn;
       this.clw_cl();
-      if(this.persantage_discount_diff != 0){
-        this.change_all_summa_skidka({skidka: this.persantage_discount, summa: parseFloat(this.summa)})
-      }
+      // if(this.persantage_discount_diff != 0){
+      //   this.change_all_summa_skidka({skidka: this.persantage_discount, summa: parseFloat(this.summa)})
+      // }
     },
 
     funcSkidkaBlue(){
@@ -1560,9 +1560,9 @@ export default {
         this.summ_str = this.summa.toString().replace(/(\d)(?=(\d{3})+(\.(\d){0,2})*$)/g, '$1 ');
       }
 
-      if(this.persantage_discount_diff != 0){
-        this.change_all_summa_skidka({skidka: this.persantage_discount, summa: parseFloat(this.summa)})
-      }
+      // if(this.persantage_discount_diff != 0){
+      //   this.change_all_summa_skidka({skidka: this.persantage_discount, summa: parseFloat(this.summa)})
+      // }
     },
 
     funcPersantege(n){
@@ -1607,9 +1607,9 @@ export default {
       this.paymeIn + this.clickedIn + this.paynetIn + this.uzumIn + this.dol_convert_Sum;
       this.clw_cl();
 
-      if(this.persantage_discount_diff != 0){
-        this.change_all_summa_skidka({skidka: this.persantage_discount, summa: parseFloat(this.summa)})
-      }
+      // if(this.persantage_discount_diff != 0){
+      //   this.change_all_summa_skidka({skidka: this.persantage_discount, summa: parseFloat(this.summa)})
+      // }
     },
 
 

@@ -87,6 +87,12 @@ const routes = [
     component: () => import( '../views/door/door.vue')
   },
   {
+          path: '/skud_face_logs',
+    name: 'skud_face_logs',
+    meta: { layout: 'main' },
+    component: () => import( '../views/door/skud_face_logs.vue')
+  },
+  {
     path: '/device',
     name: 'device',
     meta: { layout: 'main' },

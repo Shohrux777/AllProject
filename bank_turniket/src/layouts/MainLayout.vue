@@ -252,6 +252,7 @@
               { title: "report_qarovul", url: '/qarovulxona_salary', dview: false, color: '#ddd', down_list:[] },
               { title: "come_in_out", url: '/come_in_out', dview: false, color: '#ddd', down_list:[] },
               { title: "ComeInReport", url: '/ComeInReport', dview: false, color: '#ddd', down_list:[] },
+              { title: "skud_face_logs", url: '/skud_face_logs', dview: false, color: '#ddd', down_list:[] },
               { title: "notComeInReport", url: '/notComeInReport', dview: false, color: '#ddd', down_list:[] },
               { title: "blockedUsers", url: '/blockedUsers', dview: false, color: '#ddd', down_list:[] },
             ]},

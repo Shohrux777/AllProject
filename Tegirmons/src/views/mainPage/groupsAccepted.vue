@@ -164,7 +164,7 @@ methods: {
   async updateList(){ 
     let b_date  = this.Start_time + 'T00:00:35.000Z';
     let e_date  = this.End_time + 'T23:59:35.000Z';
-    localStorage.start = this.Start_time; 
+    localStorage.start = this.Start_time;
     localStorage.end = this.End_time;
     try{
       this.loading = true;

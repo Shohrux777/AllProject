@@ -60,7 +60,7 @@
           {name: 'Захира', url: '/zaxiraniAlmashtirish', active: false,  status: true},
           {name: 'Тароз', url: '/tarozi', active: false,  status: true},
           {name: 'Тароз список', url: '/today_groups', active: false,  status: true},
-          {name: 'Катта тарози', url: '/tarozi_list', active: false,  status: true},
+          // {name: 'Катта тарози', url: '/tarozi_list', active: false,  status: true},
           {name: 'Продажа', url: '/sell', active: false,  status: true},
           {name: 'Асосий касса', url: '/main_kassa', active: false,  status: true},
           {name: 'Счета', url: '/hisoblar', active: false,  status: true},
@@ -68,6 +68,7 @@
           {name: 'Журнал долгов', url: '/main_qarz', active: false,  status: true},
           {name: 'Склад', url: '/main_sklad', active: false,  status: true},
           {name: 'Оптом савдо', url: '/main_order', active: false,  status: true},
+          // {name: 'Dashboard', url: '/dashboard', active: false, status: true},
           {name: 'Выйти', url: '/', active: false,  status: true},
         ],
         user_access: localStorage.access_user,
@@ -100,7 +101,7 @@
           console.log('test uchun', data)
           if(data.status ==  true){
             this.option[0].status = false
-              this.option[3].status = false
+              // this.option[3].status = false
               this.option[4].status = false
               this.option[6].status = false
               this.option[7].status = false

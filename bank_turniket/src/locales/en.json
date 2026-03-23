@@ -18,7 +18,14 @@
   "name": "Name",
   "checktype": "Status",
   "date": "Date",
-  "time": "Time"
+  "time": "Time",
+  "skud_face_logs": "Face door logs",
+  "refresh": "Refresh",
+  "user_name": "User",
+  "userid": "User ID",
+  "door_name": "Door",
+  "check_date": "Date",
+  "check_time": "Time"
 
 
 }

@@ -18,6 +18,13 @@
   "name": "Nomi",
   "checktype": "Status",
   "date": "Kun",
-  "time": "Vaqt"
+  "time": "Vaqt",
+  "skud_face_logs": "Face loglari",
+  "refresh": "Yangilash",
+  "user_name": "Xodim",
+  "userid": "ID",
+  "door_name": "Eshik",
+  "check_date": "Sana",
+  "check_time": "Vaqt"
 
 }

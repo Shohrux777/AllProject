@@ -215,6 +215,25 @@
                   {{ item.create_date.slice(11,16) }}
                 </small>
               </div>
+
+              <!-- Payments jadvali -->
+              <div v-if="item.payments && item.payments.length > 0" class="mt-2 pt-2 border-top">
+                <table class="table table-sm table-bordered mb-0" style="font-size: 11px;">
+                  <thead>
+                    <tr style="background-color: #f8f9fa;">
+                      <th style="padding: 4px; font-size: 10px;">{{$t('product')}}</th>
+                      <th style="padding: 4px; font-size: 10px; text-align: right;">{{$t('measure')}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(payment, pIdx) in item.payments" :key="pIdx">
+                      <td style="padding: 4px; font-size: 10px;">{{ payment.product ? payment.product.name : '-' }}</td>
+                      <td style="padding: 4px; font-size: 10px; text-align: right;">{{ formatQty(payment.qty) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
               <div class="d-flex justify-content-end border-top">
                 <mdb-btn v-if="canEdit(item)"  class="m-0 mb-1 mt-2 mr-2"  size="sm" outline="success" style="font-size:9px; height:30px;" 
                   @click="editSellCheck(item)">
@@ -763,6 +782,24 @@
                   {{ item.create_date.slice(11,16) }}
                 </small>
               </div>
+
+              <!-- Payments jadvali -->
+              <div v-if="item.payments && item.payments.length > 0" class="mt-2 pt-2 border-top">
+                <table class="table table-sm table-bordered mb-0" style="font-size: 11px;">
+                  <thead>
+                    <tr style="background-color: #f8f9fa;">
+                      <th style="padding: 4px; font-size: 10px;">{{$t('product')}}</th>
+                      <th style="padding: 4px; font-size: 10px; text-align: right;">{{$t('measure')}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(payment, pIdx) in item.payments" :key="pIdx">
+                      <td style="padding: 4px; font-size: 10px;">{{ payment.product ? payment.product.name : '-' }}</td>
+                      <td style="padding: 4px; font-size: 10px; text-align: right;">{{ formatQty(payment.qty) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
           </div>
         </div>
       </div>
@@ -1083,6 +1120,20 @@ export default {
         console.log('invoice tarozi error', error)
         this.$refs.alert.error("Serverda uzilish bor. Qayta urinib ko'ring !");
         return false;
+      }
+    },
+    formatQty(value) {
+      if (value === null || value === undefined) return '0';
+      const num = parseFloat(value) || 0;
+      // Agar butun son bo'lsa
+      if (num % 1 === 0) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+      } else {
+        // Kasr son bo'lsa, 2 ta onlik raqamgacha kesamiz
+        let fixedNum = num.toFixed(2);
+        // Oxiridagi nollarni olib tashlaymiz (masalan, 1.50 -> 1.5)
+        fixedNum = fixedNum.replace(/\.?0+$/, '');
+        return fixedNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
       }
     }
   }
