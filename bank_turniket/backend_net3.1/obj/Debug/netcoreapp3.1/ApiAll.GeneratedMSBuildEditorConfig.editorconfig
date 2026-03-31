@@ -1,6 +1,6 @@
 is_global = true
 build_property.RootNamespace = ApiAll
-build_property.ProjectDir = C:\Github programm\Tegirmon_Full\Tegirmon_Full\backend_net3.1\
+build_property.ProjectDir = C:\Github programm\AllProject\bank_turniket\backend_net3.1\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.CsWinRTUseWindowsUIXamlProjections = false

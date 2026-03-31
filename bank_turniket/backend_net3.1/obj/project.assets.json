@@ -10599,11 +10599,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Github programm\\Tegirmon_Full\\Tegirmon_Full\\backend_net3.1\\ApiAll.csproj",
+      "projectUniqueName": "C:\\Github programm\\AllProject\\bank_turniket\\backend_net3.1\\ApiAll.csproj",
       "projectName": "ApiAll",
-      "projectPath": "C:\\Github programm\\Tegirmon_Full\\Tegirmon_Full\\backend_net3.1\\ApiAll.csproj",
+      "projectPath": "C:\\Github programm\\AllProject\\bank_turniket\\backend_net3.1\\ApiAll.csproj",
       "packagesPath": "C:\\Users\\Wеsolvе\\.nuget\\packages\\",
-      "outputPath": "C:\\Github programm\\Tegirmon_Full\\Tegirmon_Full\\backend_net3.1\\obj\\",
+      "outputPath": "C:\\Github programm\\AllProject\\bank_turniket\\backend_net3.1\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -10793,7 +10793,7 @@
       "code": "NU1902",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "У пакета \"Swashbuckle.AspNetCore.SwaggerUI\" 6.2.3 есть известная уязвимость https://github.com/advisories/GHSA-qrmm-w75w-3wpx (уровень серьезности: средний)",
+      "message": "Package 'Swashbuckle.AspNetCore.SwaggerUI' 6.2.3 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-qrmm-w75w-3wpx",
       "libraryId": "Swashbuckle.AspNetCore.SwaggerUI",
       "targetGraphs": [
         ".NETCoreApp,Version=v3.1"
@@ -10803,7 +10803,7 @@
       "code": "NU1904",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "У пакета \"System.Drawing.Common\" 5.0.2 есть известная уязвимость https://github.com/advisories/GHSA-rxg9-xrhp-64gj (уровень серьезности: критический)",
+      "message": "Package 'System.Drawing.Common' 5.0.2 has a known critical severity vulnerability, https://github.com/advisories/GHSA-rxg9-xrhp-64gj",
       "libraryId": "System.Drawing.Common",
       "targetGraphs": [
         ".NETCoreApp,Version=v3.1"
@@ -10813,7 +10813,7 @@
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Пакет \"EntityFramework 6.2.0\" был восстановлен с помощью \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\", а не целевой платформы проекта \".NETCoreApp,Version=v3.1\". Этот пакет может быть не полностью совместим с вашим проектом.",
+      "message": "Package 'EntityFramework 6.2.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework '.NETCoreApp,Version=v3.1'. This package may not be fully compatible with your project.",
       "libraryId": "EntityFramework",
       "targetGraphs": [
         ".NETCoreApp,Version=v3.1"
@@ -10823,7 +10823,7 @@
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Пакет \"System.Linq.Dynamic 1.0.8\" был восстановлен с помощью \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\", а не целевой платформы проекта \".NETCoreApp,Version=v3.1\". Этот пакет может быть не полностью совместим с вашим проектом.",
+      "message": "Package 'System.Linq.Dynamic 1.0.8' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework '.NETCoreApp,Version=v3.1'. This package may not be fully compatible with your project.",
       "libraryId": "System.Linq.Dynamic",
       "targetGraphs": [
         ".NETCoreApp,Version=v3.1"

@@ -214,17 +214,17 @@ namespace ApiAll
                 webBuilder.UseKestrel(opts =>
                 {
                     // Oddiy HTTP portlar
-                    opts.Listen(IPAddress.Loopback, port: 5002);
-                    opts.ListenAnyIP(5003);
+                    opts.Listen(IPAddress.Loopback, port: 5010);
+                    opts.ListenAnyIP(5011);
 
                     // HTTPS - localhost
-                    opts.ListenAnyIP(5004, listenOptions =>
+                    opts.ListenAnyIP(5012, listenOptions =>
                     {
                         listenOptions.UseHttps("tegirmon.pfx", "1234");
                     });
 
                     // HTTPS - boshqa IP (local tarmoqdan kiradiganlar uchun)
-                    opts.ListenAnyIP(5006, listenOptions =>
+                    opts.ListenAnyIP(5013, listenOptions =>
                     {
                         listenOptions.UseHttps("tegirmon.pfx", "1234");
                     });

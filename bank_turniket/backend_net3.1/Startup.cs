@@ -87,7 +87,7 @@ namespace ApiAll
 
 
             // Postgres Notification tinglovchi servisni qo‘shamiz
-            services.AddHostedService<ApiAll.Services.PostgresNotificationService>(); // bu Tegirmon uchun tabletsaga yangi yozilgan kirdi chiqdilarni eshitib kunlik ish haqqini hisoblash uchun
+            // services.AddHostedService<ApiAll.Services.PostgresNotificationService>(); // bu Tegirmon uchun tabletsaga yangi yozilgan kirdi chiqdilarni eshitib kunlik ish haqqini hisoblash uchun
 
             // services.AddHostedService<SkladSnapshotService>();
             services.AddHostedService<SkudDoorEventSnapshotService>();

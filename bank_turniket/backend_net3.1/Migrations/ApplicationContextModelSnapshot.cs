@@ -23080,6 +23080,54 @@ namespace ApiAll.Migrations
                     b.ToTable("skud_user_avto_rasxod");
                 });
 
+            modelBuilder.Entity("ApiAll.Model.skud.SkudUserBonus", b =>
+                {
+                    b.Property<long>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn);
+
+                    b.Property<bool?>("active_status")
+                        .HasColumnType("boolean");
+
+                    b.Property<double>("count")
+                        .HasColumnType("double precision");
+
+                    b.Property<DateTime?>("created_date_time")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("note")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("num_1")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("num_2")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("reg_date")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("str_1")
+                        .HasColumnType("text");
+
+                    b.Property<string>("str_2")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("updated_date_time")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("user_name")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("userid")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("id");
+
+                    b.ToTable("skud_user_bonus");
+                });
+
             modelBuilder.Entity("ApiAll.Model.skud.SkudUserDayAdd", b =>
                 {
                     b.Property<long>("id")
@@ -24078,10 +24126,10 @@ namespace ApiAll.Migrations
                             active_status = true,
                             auth_user_creator_id = 0L,
                             auth_user_updator_id = 0L,
-                            created_date_time = new DateTime(2026, 1, 26, 13, 42, 49, 72, DateTimeKind.Local).AddTicks(8159),
+                            created_date_time = new DateTime(2026, 3, 24, 16, 36, 31, 396, DateTimeKind.Local).AddTicks(7013),
                             inv_accepted_status = false,
                             status = false,
-                            updated_date_time = new DateTime(2026, 1, 26, 13, 42, 49, 73, DateTimeKind.Local).AddTicks(2383)
+                            updated_date_time = new DateTime(2026, 3, 24, 16, 36, 31, 397, DateTimeKind.Local).AddTicks(1420)
                         });
                 });
 
@@ -24621,6 +24669,48 @@ namespace ApiAll.Migrations
                     b.HasKey("id");
 
                     b.ToTable("tegirmon_distict");
+                });
+
+            modelBuilder.Entity("ApiAll.Model.tegirmon.TegirmonHikvisionCamera", b =>
+                {
+                    b.Property<long>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn);
+
+                    b.Property<bool>("active_status")
+                        .HasColumnType("boolean");
+
+                    b.Property<long?>("auth_user_creator_id")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("auth_user_updator_id")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("created_date_time")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("inv_accepted_status")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ip")
+                        .HasColumnType("text");
+
+                    b.Property<string>("name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("password")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("updated_date_time")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("username")
+                        .HasColumnType("text");
+
+                    b.HasKey("id");
+
+                    b.ToTable("tegirmon_hikvision_camera");
                 });
 
             modelBuilder.Entity("ApiAll.Model.tegirmon.TegirmonHisoblar", b =>

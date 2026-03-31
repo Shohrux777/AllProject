@@ -103,6 +103,7 @@ namespace ApiAll.Contex
         public DbSet<SkudMyDepartments> SkudMyDepartments { get; set; }
         public DbSet<SkudLk> SkudLk { get; set; }
         public DbSet<SkudMyCheckinout> SkudMyCheckinout { get; set; }
+        public DbSet<SkudUserBonus> SkudUserBonus { get; set; }
         public DbSet<SkudImages> SkudImages { get; set; }
         public DbSet<SkudGroupAccess> SkudGroupAccess { get; set; }
         public DbSet<SkudForTrenajor> SkudForTrenajor { get; set; }

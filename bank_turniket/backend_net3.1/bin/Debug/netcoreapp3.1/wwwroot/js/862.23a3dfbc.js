@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkExtresSS"]=self["webpackChunkExtresSS"]||[]).push([[862],{7862:function(n,r,t){t.r(r),t.d(r,{default:function(){return i}});var e=t(3396);const s={class:"about"};function u(n,r){return(0,e.wg)(),(0,e.iD)("div",s)}var c=t(89);const a={},f=(0,c.Z)(a,[["render",u]]);var i=f}}]);
+//# sourceMappingURL=862.23a3dfbc.js.map

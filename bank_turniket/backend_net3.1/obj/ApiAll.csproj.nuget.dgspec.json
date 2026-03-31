@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Github programm\\Tegirmon_Full\\Tegirmon_Full\\backend_net3.1\\ApiAll.csproj": {}
+    "C:\\Github programm\\AllProject\\bank_turniket\\backend_net3.1\\ApiAll.csproj": {}
   },
   "projects": {
-    "C:\\Github programm\\Tegirmon_Full\\Tegirmon_Full\\backend_net3.1\\ApiAll.csproj": {
+    "C:\\Github programm\\AllProject\\bank_turniket\\backend_net3.1\\ApiAll.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Github programm\\Tegirmon_Full\\Tegirmon_Full\\backend_net3.1\\ApiAll.csproj",
+        "projectUniqueName": "C:\\Github programm\\AllProject\\bank_turniket\\backend_net3.1\\ApiAll.csproj",
         "projectName": "ApiAll",
-        "projectPath": "C:\\Github programm\\Tegirmon_Full\\Tegirmon_Full\\backend_net3.1\\ApiAll.csproj",
+        "projectPath": "C:\\Github programm\\AllProject\\bank_turniket\\backend_net3.1\\ApiAll.csproj",
         "packagesPath": "C:\\Users\\Wеsolvе\\.nuget\\packages\\",
-        "outputPath": "C:\\Github programm\\Tegirmon_Full\\Tegirmon_Full\\backend_net3.1\\obj\\",
+        "outputPath": "C:\\Github programm\\AllProject\\bank_turniket\\backend_net3.1\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

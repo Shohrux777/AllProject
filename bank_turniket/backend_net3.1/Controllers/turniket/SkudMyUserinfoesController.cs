@@ -34,6 +34,23 @@ namespace ApiAll.Controllers.turniket
             _context = context;
         }
 
+        public class ReplaceIoRangeRequest
+        {
+            public long user_id { get; set; }
+            public DateTime first_in_datetime { get; set; }
+            public DateTime last_out_datetime { get; set; }
+            public string door_name { get; set; }
+        }
+
+        public class ReplaceIoRangeResponse
+        {
+            public bool success { get; set; }
+            public int deleted_count { get; set; }
+            public long user_id { get; set; }
+            public DateTime first_in_datetime { get; set; }
+            public DateTime last_out_datetime { get; set; }
+        }
+
         // GET: api/SkudMyUserinfoes
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SkudMyUserinfo>>> GetSkudMyUserinfo()
@@ -2197,7 +2214,7 @@ namespace ApiAll.Controllers.turniket
 
         [HttpGet("getReportWithoutSmenaPaginationByAllUserAndOylik0404Qorovulxona")]
         public async Task<ActionResult<TexPaginationModel>> getReportWithogetReportWithoutSmenaPaginationByAllUserAndOylik0404Qorovulxona([FromQuery] int page,
-[FromQuery] int size, [FromQuery] DateTime begin_date, [FromQuery] DateTime end_date)
+        [FromQuery] int size, [FromQuery] DateTime begin_date, [FromQuery] DateTime end_date)
         {
 
             TexPaginationModel paginationModel = new TexPaginationModel();
@@ -2490,6 +2507,496 @@ namespace ApiAll.Controllers.turniket
 
 
 
+
+
+
+
+
+
+
+        [HttpGet("getReportWithoutSmenaPaginationByAllUserAndOylik0404IchkiQorovulxona")]
+        public async Task<ActionResult<TexPaginationModel>> getReportWithogetReportWithoutSmenaPaginationByAllUserAndOylik0404IchkiQorovulxona([FromQuery] int page,
+        [FromQuery] int size, [FromQuery] DateTime begin_date, [FromQuery] DateTime end_date)
+        {
+
+            TexPaginationModel paginationModel = new TexPaginationModel();
+            List<SkudMyUserinfo> itemList = await _context.SkudMyUserinfo
+                .Include(p => p.skudOylik)
+                .OrderByDescending(p => p.badgenumber)
+                .Skip(size * page).Take(size)
+                .ToListAsync();
+
+
+            if (itemList == null)
+            {
+                itemList = new List<SkudMyUserinfo>();
+            }
+
+            foreach (SkudMyUserinfo it in itemList)
+            {
+                if (it == null)
+                {
+                    continue;
+                }
+
+                double worked_secunds_sm = 0.0;
+                for (var dt = begin_date; dt <= end_date; dt = dt.AddDays(1))
+                {
+
+                    String date_only = dt.Date.ToString("yyyy-MM-dd");
+                    Console.WriteLine(date_only);
+                    it.kun = date_only;
+
+                    if (it != null)
+                    {
+                        if (it.ishlagan_vaqtlar_ls == null)
+                        {
+                            it.ishlagan_vaqtlar_ls = new List<string>();
+                        }
+                        //Console.WriteLine("KIRDI");
+                        //osha kundagi kirdi chiqdilardi olndi
+                        List<SkudMyCheckinout> checkinouts = await _context.SkudMyCheckinout
+                                .FromSqlRaw("SELECT code, userid, sana, checktime, checktype, door_name, status,''::text as begona" +
+                                "\r\nFROM public.my_checkinout" +
+                                "\r\nWHERE (sana+checktime)   >= '" + dt.Date.AddHours(4).ToString("yyyy-MM-ddTHH:mm:ss")
+                                + "' and (sana+checktime) <= '" + dt.Date.AddHours(4).AddDays(1).ToString("yyyy-MM-ddTHH:mm:ss") + "'" +
+                                " \r\nand checktype != 'K' and checktype != 'C'" +
+                                "\r\nAND userid = " + it.userid + "" +
+                                "\r\nORDER BY sana , checktime")
+                        .ToListAsync();
+
+                        /*List<SkudMyCheckinout> checkinouts = await _context.SkudMyCheckinout
+                                .Where(p => p.userid == it.userid && (p.checktype != "K" && p.checktype != "C") && ((p.sana + p.checktime) >= dt.Date.AddHours(4) && (p.sana + p.checktime) <= dt.Date.AddHours(4).AddDays(1)))
+                        .OrderBy(p => p.sana)
+                        .OrderBy(p => p.checktime)
+                        .Skip(size * page).Take(size)
+                        .ToListAsync();*/
+                        // Console.WriteLine("TIME: " + dt.Date.AddHours(4) + " VA " + dt.Date.AddHours(4).AddDays(1));
+                        String ishlagan_vaqti = "0";
+                        String ishlagan_vaqti_formatted = "0";
+                        // Console.WriteLine("KIRDI 11111");
+                        //agar natija bolsa chiqaradi bolmasa 0 yozib qoyamiz
+                        if (checkinouts != null && checkinouts.Count() > 0)
+                        {
+                            // Console.WriteLine(checkinouts.Count());
+
+                            int counter = 0;
+                            double secunds = 0;
+                            bool _last_out = false;
+                            bool _last_in = false;
+                            TimeSpan _last_in_tm = TimeSpan.FromSeconds(0);
+                            TimeSpan _last_out_tm = TimeSpan.FromSeconds(0);
+                            foreach (SkudMyCheckinout itm_1 in checkinouts)
+                            {
+
+                                // Console.WriteLine("KIRDI 22222");
+                                //KECHASI ISHLADI BUNDA
+                                if (counter == 0 && itm_1.checktype == "O")
+                                {
+                                    // Console.WriteLine("Birinchi chiqish boldi qoshmadik sekund");
+                                    //secunds = secunds + itm_1.checktime.TotalSeconds;
+
+
+                                    _last_out = true;
+                                    counter++;
+                                    continue;
+                                }
+                                //KIRISH
+                                if (itm_1.checktype == "I")
+                                {
+
+                                    //bu eshigdi tagida turibdi qayta qayta olyapti shunchun torilab qoydik
+                                    _last_in_tm = itm_1.checktime;
+                                    _last_in = true;
+
+                                }
+                                //CHIQISH
+                                if (itm_1.checktype == "O")
+                                {
+                                    if (_last_in)
+                                    {
+                                        if (_last_in_tm.TotalSeconds < itm_1.checktime.TotalSeconds)
+                                        {
+                                            secunds = secunds + (itm_1.checktime.TotalSeconds - _last_in_tm.TotalSeconds);
+                                        }
+                                        else
+                                        {
+                                            secunds = secunds + (itm_1.checktime.TotalSeconds - _last_in_tm.TotalSeconds) + 86400;
+                                        }
+
+
+                                        _last_in = false;
+
+                                        //    Console.WriteLine(itm_1.checktime.ToString() + "  ---------   " + _last_in_tm.ToString());
+                                        //    Console.WriteLine(itm_1.checktime.TotalSeconds.ToString() + "  ---------   " + _last_in_tm.TotalSeconds.ToString());
+
+                                    }
+                                    else
+                                    {
+                                        counter++;
+                                        continue;
+                                    }
+
+                                }
+                                counter++;
+                            }
+
+                            if (_last_in)
+                            {
+                                // Console.WriteLine("CHIQSHI YOQ FAQAT KIRISH");
+                                // secunds = secunds + (86400 - _last_in_tm.TotalSeconds);
+
+                            }
+
+                            worked_secunds_sm = worked_secunds_sm + secunds;
+                            ishlagan_vaqti = secunds.ToString();
+
+                            ishlagan_vaqti_formatted = TimeSpan.FromSeconds(secunds).ToString("hh\\:mm\\:ss");
+
+
+                            it.ishlagan_vaqtlar_ls.Add(ishlagan_vaqti_formatted);
+
+                            if (it.vaqt_flag != 0 && it.vaqt_flag != 1 && it.vaqt_flag != 3) {
+                                if (secunds == 0)
+                                {
+                                    var start = dt.Date.AddHours(4);
+                                    var end   = start.AddDays(1);
+
+                                    var hasKirishYokiChiqish = (await _context.SkudMyCheckinout
+                                        .Where(x => x.userid == it.userid && 
+                                                    (x.checktype == "I" || x.checktype == "O"))
+                                        .Select(x => new { 
+                                            x.userid, 
+                                            x.checktype, 
+                                            FullDate = x.sana.Add(x.checktime)   // EF Core buni ko‘tarolmasa, keyin xotirada hisoblaymiz
+                                        })
+                                        .ToListAsync())
+                                        .Any(x => x.FullDate >= start && x.FullDate <= end);
+
+                                    if (hasKirishYokiChiqish)
+                                    {
+                                        it.vaqt_flag = 3; // Kirish yoki chiqish bor, lekin ishlagan vaqt 0
+                                        
+                                    }
+                                }
+                                else if ((secunds / 3600) <= 7 && (secunds / 3600) > 0)
+                                {
+                                    it.vaqt_flag = 0; // kam ishlagan kun
+                                   
+                                }
+                                else if ((secunds / 3600) > 13)
+                                {
+                                    it.vaqt_flag = 1; // juda ko‘p ishlagan kun
+                                    
+                                }
+                            }
+
+                        }
+                        it.ishlagan_vaqti_yangi = ishlagan_vaqti;
+                        it.ishlagan_vaqti_yangi_time_format = ishlagan_vaqti_formatted;
+                    }
+
+                }
+
+                //hamma vaqtlar boyicha olindi ishlaganlar endi uni secundan soatga otkazish kerak
+                it.worked_hours_itm = worked_secunds_sm / 3600;
+                it.worked_hours_itm_str = TimeSpan.FromSeconds(worked_secunds_sm).ToString("hh\\:mm\\:ss");
+
+                if (it.skudOylik != null)
+                {
+                    it.ishlagan_puli = it.worked_hours_itm * it.skudOylik.value;
+                }
+
+                // // Shu yerga qo‘shamiz
+                // var daysDiff = (end_date.Date - begin_date.Date).TotalDays;
+                // if (daysDiff == 0) // 1 kun tanlanganda
+                // {
+                //     if (it.worked_hours_itm == 0)
+                //     {
+                //         // Shu kun uchun kirish yoki chiqish yozuvi bo'lganmi?
+                //         bool hasKirishYokiChiqish = await _context.SkudMyCheckinout
+                //             .AnyAsync(x => x.userid == it.userid &&
+                //                         (x.checktype == "K" || x.checktype == "C") &&
+                //                         ((x.sana + x.checktime) >= begin_date.Date.AddHours(4) &&
+                //                             (x.sana + x.checktime) <= begin_date.Date.AddHours(4).AddDays(1)));
+
+                //         if (hasKirishYokiChiqish)
+                //         {
+                //             it.vaqt_flag = 3; // Kirish yoki chiqish bor, lekin ishlagan vaqt 0
+                //         }
+                //         else
+                //         {
+                //             it.vaqt_flag = null; // yoki hech narsa bermaslik
+                //         }
+                //     }
+                //     if (it.worked_hours_itm <= 7 && it.worked_hours_itm > 0)
+                //     {
+                //         it.vaqt_flag = 0;
+                //     }
+                //     else if (it.worked_hours_itm > 13)
+                //     {
+                //         it.vaqt_flag = 1;
+                //     }
+                // }
+                // else if (daysDiff > 0) // 1 kundan ko‘p
+                // {
+                //     it.vaqt_flag = 2;
+                // }
+                
+                
+                // Xodim eng birinchi kirgan/chiqqan vaqtini topish
+                var firstCheck = await _context.SkudMyCheckinout
+                    .Where(x => x.userid == it.userid && (x.checktype == "I" || x.checktype == "O"))
+                    .OrderBy(x => x.sana)
+                    .ThenBy(x => x.checktime)
+                    .FirstOrDefaultAsync();
+
+                if (firstCheck != null)
+                {
+                    DateTime firstDateTime = firstCheck.sana.Add(firstCheck.checktime);
+                    TimeSpan diff = DateTime.Now - firstDateTime;
+
+                    int years = diff.Days / 365;
+                    int days = diff.Days % 365;
+                    int hours = diff.Hours;
+
+                    it.kelganidan_beri = $"{years} yil {days} kun {hours} soat";
+                }
+                else
+                {
+                    it.kelganidan_beri = $"{0} yil {0} kun {0} soat";
+                }
+               // Console.WriteLine("FINISH");
+
+               // SkudUserNote jadvali mavjudligini tekshiramiz (agar jadval mavjud bo'lmasa, xatolikni boshqaramiz)
+               bool hasUserNote = false;
+               try
+               {
+                   hasUserNote = await _context.SkudUserNote
+                                .AnyAsync(x => x.userid == it.userid);
+               }
+               catch (PostgresException ex) when (ex.SqlState == "42P01") // Jadval mavjud emas
+               {
+                   // Jadval mavjud emas, hasUserNote = false qoldiramiz
+                   Console.WriteLine($"⚠️ SkudUserNote jadvali mavjud emas: {ex.Message}");
+               }
+               catch (Exception ex)
+               {
+                   // Boshqa xatoliklar
+                   Console.WriteLine($"⚠️ SkudUserNote tekshirishda xatolik: {ex.Message}");
+               }
+
+                if(hasUserNote){
+                    it.user_note = 1;
+                }
+
+
+            }
+
+
+            paginationModel.items_list = JArray.FromObject(
+                itemList
+                .OrderBy(it => it.vaqt_flag == 3 ? 0
+                   : it.vaqt_flag == 0 ? 1
+                   : it.vaqt_flag == 1 ? 2
+                   : 3)
+                );
+            paginationModel.items_count = await _context.SkudMyUserinfo.CountAsync();
+            paginationModel.current_item_count = itemList.Count();
+            paginationModel.current_page = page;
+            return paginationModel;
+        }
+
+        [HttpPost("replaceMyCheckinoutIoByRange")]
+        public async Task<ActionResult<ReplaceIoRangeResponse>> replaceMyCheckinoutIoByRange([FromBody] ReplaceIoRangeRequest req)
+        {
+            if (req == null)
+            {
+                return BadRequest("Request body is required.");
+            }
+
+            if (req.user_id <= 0)
+            {
+                return BadRequest("user_id is required.");
+            }
+
+            if (req.last_out_datetime <= req.first_in_datetime)
+            {
+                return BadRequest("last_out_datetime must be greater than first_in_datetime.");
+            }
+
+            DateTime rangeStart = req.first_in_datetime;
+            DateTime rangeEnd = req.last_out_datetime;
+
+            // We load a slightly wider date window then filter by full datetime in memory.
+            DateTime dateFrom = rangeStart.Date.AddDays(-1);
+            DateTime dateTo = rangeEnd.Date.AddDays(1);
+
+            using var trx = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                List<SkudMyCheckinout> existing = await _context.SkudMyCheckinout
+                    .Where(x => x.userid == req.user_id
+                                && (x.checktype == "I" || x.checktype == "O")
+                                && x.sana >= dateFrom
+                                && x.sana <= dateTo)
+                    .ToListAsync();
+
+                List<SkudMyCheckinout> toDelete = existing
+                    .Where(x =>
+                    {
+                        DateTime full = x.sana.Add(x.checktime);
+                        return full >= rangeStart && full <= rangeEnd;
+                    })
+                    .ToList();
+
+                if (toDelete.Count > 0)
+                {
+                    _context.SkudMyCheckinout.RemoveRange(toDelete);
+                }
+
+                string doorName = string.IsNullOrWhiteSpace(req.door_name) ? "Manual edit" : req.door_name;
+
+                SkudMyCheckinout firstIn = new SkudMyCheckinout
+                {
+                    userid = req.user_id,
+                    sana = req.first_in_datetime.Date,
+                    checktime = req.first_in_datetime.TimeOfDay,
+                    checktype = "I",
+                    door_name = doorName,
+                    status = false
+                };
+
+                SkudMyCheckinout lastOut = new SkudMyCheckinout
+                {
+                    userid = req.user_id,
+                    sana = req.last_out_datetime.Date,
+                    checktime = req.last_out_datetime.TimeOfDay,
+                    checktype = "O",
+                    door_name = doorName,
+                    status = false
+                };
+
+                _context.SkudMyCheckinout.Add(firstIn);
+                _context.SkudMyCheckinout.Add(lastOut);
+
+                await _context.SaveChangesAsync();
+                await trx.CommitAsync();
+
+                return Ok(new ReplaceIoRangeResponse
+                {
+                    success = true,
+                    deleted_count = toDelete.Count,
+                    user_id = req.user_id,
+                    first_in_datetime = req.first_in_datetime,
+                    last_out_datetime = req.last_out_datetime
+                });
+            }
+            catch (Exception ex)
+            {
+                await trx.RollbackAsync();
+                return BadRequest("Failed to replace checkinout range: " + ex.Message);
+            }
+        }
+
+
+
+
+
+        [HttpPost("replaceMyCheckinoutIoByRangeQorovulxona")]
+        public async Task<ActionResult<ReplaceIoRangeResponse>> replaceMyCheckinoutIoByRangeQorovulxona([FromBody] ReplaceIoRangeRequest req)
+        {
+            if (req == null)
+            {
+                return BadRequest("Request body is required.");
+            }
+
+            if (req.user_id <= 0)
+            {
+                return BadRequest("user_id is required.");
+            }
+
+            if (req.last_out_datetime <= req.first_in_datetime)
+            {
+                return BadRequest("last_out_datetime must be greater than first_in_datetime.");
+            }
+
+            DateTime rangeStart = req.first_in_datetime;
+            DateTime rangeEnd = req.last_out_datetime;
+
+            // We load a slightly wider date window then filter by full datetime in memory.
+            DateTime dateFrom = rangeStart.Date.AddDays(-1);
+            DateTime dateTo = rangeEnd.Date.AddDays(1);
+
+            using var trx = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                List<SkudMyCheckinout> existing = await _context.SkudMyCheckinout
+                    .Where(x => x.userid == req.user_id
+                                && (x.checktype == "K" || x.checktype == "C")
+                                && x.sana >= dateFrom
+                                && x.sana <= dateTo)
+                    .ToListAsync();
+
+                List<SkudMyCheckinout> toDelete = existing
+                    .Where(x =>
+                    {
+                        DateTime full = x.sana.Add(x.checktime);
+                        return full >= rangeStart && full <= rangeEnd;
+                    })
+                    .ToList();
+
+                if (toDelete.Count > 0)
+                {
+                    _context.SkudMyCheckinout.RemoveRange(toDelete);
+                }
+
+                string doorName = string.IsNullOrWhiteSpace(req.door_name) ? "Manual edit" : req.door_name;
+
+                SkudMyCheckinout firstIn = new SkudMyCheckinout
+                {
+                    userid = req.user_id,
+                    sana = req.first_in_datetime.Date,
+                    checktime = req.first_in_datetime.TimeOfDay,
+                    checktype = "K",
+                    door_name = doorName,
+                    status = false
+                };
+
+                SkudMyCheckinout lastOut = new SkudMyCheckinout
+                {
+                    userid = req.user_id,
+                    sana = req.last_out_datetime.Date,
+                    checktime = req.last_out_datetime.TimeOfDay,
+                    checktype = "C",
+                    door_name = doorName,
+                    status = false
+                };
+
+                _context.SkudMyCheckinout.Add(firstIn);
+                _context.SkudMyCheckinout.Add(lastOut);
+
+                await _context.SaveChangesAsync();
+                await trx.CommitAsync();
+
+                return Ok(new ReplaceIoRangeResponse
+                {
+                    success = true,
+                    deleted_count = toDelete.Count,
+                    user_id = req.user_id,
+                    first_in_datetime = req.first_in_datetime,
+                    last_out_datetime = req.last_out_datetime
+                });
+            }
+            catch (Exception ex)
+            {
+                await trx.RollbackAsync();
+                return BadRequest("Failed to replace checkinout range: " + ex.Message);
+            }
+        }
+
+
+
         [HttpGet("getReportWithoutSmenaPaginationByAllUserAndOylik0404WithUserId")]
         public async Task<ActionResult<TexPaginationModel>> getReportWithoutSmenaPaginationByAllUserAndOylik0404WithUserId([FromQuery] int page,
 [FromQuery] int size, [FromQuery] DateTime begin_date, [FromQuery] DateTime end_date, [FromQuery] long user_id)
@@ -2665,7 +3172,7 @@ namespace ApiAll.Controllers.turniket
         }
         [HttpGet("getReportWithoutSmenaPaginationByAllUserAndOylik0404QarovulWithUserId")]
         public async Task<ActionResult<TexPaginationModel>> getReportWithoutSmenaPaginationByAllUserAndOylik0404QarovulWithUserId([FromQuery] int page,
-[FromQuery] int size, [FromQuery] DateTime begin_date, [FromQuery] DateTime end_date, [FromQuery] long user_id)
+        [FromQuery] int size, [FromQuery] DateTime begin_date, [FromQuery] DateTime end_date, [FromQuery] long user_id)
         {
            
             TexPaginationModel paginationModel = new TexPaginationModel();
@@ -2762,6 +3269,181 @@ namespace ApiAll.Controllers.turniket
                                 }
                                 //CHIQISH
                                 if (itm_1.checktype == "C")
+                                {
+                                    if (_last_in)
+                                    {
+                                        if (_last_in_tm.TotalSeconds < itm_1.checktime.TotalSeconds)
+                                        {
+                                            secunds = secunds + (itm_1.checktime.TotalSeconds - _last_in_tm.TotalSeconds);
+                                        }
+                                        else {
+                                            secunds = secunds + (itm_1.checktime.TotalSeconds - _last_in_tm.TotalSeconds) + 86400;
+                                        }
+                                        
+
+                                        _last_in = false;
+
+                                        Console.WriteLine(itm_1.checktime.ToString() + "  ---------   "+ _last_in_tm.ToString());
+                                        Console.WriteLine(itm_1.checktime.TotalSeconds.ToString() + "  ---------   "+ _last_in_tm.TotalSeconds.ToString());
+
+                                    }
+                                    else
+                                    {
+                                        counter++;
+                                        continue;
+                                    }
+
+                                }
+
+
+
+                                counter++;
+                            }
+                            
+                            if (_last_in)
+                            {
+                                Console.WriteLine("CHIQSHI YOQ FAQAT KIRISH");
+                               // secunds = secunds + (86400 - _last_in_tm.TotalSeconds);
+
+                            }
+                            
+                            worked_secunds_sm = worked_secunds_sm + secunds;
+                            ishlagan_vaqti = secunds.ToString();
+
+                            ishlagan_vaqti_formatted = TimeSpan.FromSeconds(secunds).ToString("hh\\:mm\\:ss");
+
+
+                            it.ishlagan_vaqtlar_ls.Add(ishlagan_vaqti_formatted);
+                            
+                        }
+                        it.ishlagan_vaqti_yangi = ishlagan_vaqti;
+                        it.ishlagan_vaqti_yangi_time_format = ishlagan_vaqti_formatted;
+                        
+
+
+
+                    }
+
+                }
+
+                //hamma vaqtlar boyicha olindi ishlaganlar endi uni secundan soatga otkazish kerak
+                it.worked_hours_itm = worked_secunds_sm / 3600;
+                it.worked_hours_itm_str = TimeSpan.FromSeconds(worked_secunds_sm).ToString("hh\\:mm\\:ss");
+                if (it.skudOylik != null)
+                {
+                    it.ishlagan_puli = it.worked_hours_itm * it.skudOylik.value;
+                }
+
+                Console.WriteLine("FINISH");
+
+            }
+            paginationModel.items_list = JArray.FromObject(itemList);
+            paginationModel.items_count = await _context.SkudMyUserinfo.CountAsync();
+            paginationModel.current_item_count = itemList.Count();
+            paginationModel.current_page = page;
+            return paginationModel;
+        }
+
+
+        [HttpGet("getReportWithoutSmenaPaginationByAllUserAndOylik0404IchkiQarovulWithUserId")]
+        public async Task<ActionResult<TexPaginationModel>> getReportWithoutSmenaPaginationByAllUserAndOylik0404IchkiQarovulWithUserId([FromQuery] int page,
+        [FromQuery] int size, [FromQuery] DateTime begin_date, [FromQuery] DateTime end_date, [FromQuery] long user_id)
+        {
+           
+            TexPaginationModel paginationModel = new TexPaginationModel();
+            List<SkudMyUserinfo> itemList = await _context.SkudMyUserinfo
+                .Include(p => p.skudOylik)
+                .OrderByDescending(p => p.badgenumber)
+                .Where(p=>p.userid == user_id)
+                .Skip(size * page).Take(size)
+                .ToListAsync();
+
+          
+            if (itemList == null)
+            {
+                itemList = new List<SkudMyUserinfo>();
+            }
+
+            foreach (SkudMyUserinfo it in itemList)
+            {
+                if (it == null)
+                {
+                    continue;
+                }
+
+                double worked_secunds_sm = 0.0;
+                for (var dt = begin_date; dt <= end_date; dt = dt.AddDays(1))
+                {
+
+                    String date_only = dt.Date.ToString("yyyy-MM-dd");
+                    Console.WriteLine(date_only);
+                    it.kun = date_only;
+
+                    if (it != null)
+                    {
+                        if (it.ishlagan_vaqtlar_ls == null)
+                        {
+                            it.ishlagan_vaqtlar_ls = new List<string>();
+                        }
+                        //Console.WriteLine("KIRDI");
+                        //osha kundagi kirdi chiqdilardi olndi
+                        List<SkudMyCheckinout> checkinouts = await _context.SkudMyCheckinout
+                                .FromSqlRaw("SELECT code, userid, sana, checktime, checktype, door_name, status,''::text as begona" +
+                                "\r\nFROM public.my_checkinout" +
+                                "\r\nWHERE (sana+checktime)   >= '"+ dt.Date.AddHours(4).ToString("yyyy-MM-ddTHH:mm:ss") 
+                                + "' and (sana+checktime) <= '"+ dt.Date.AddHours(4).AddDays(1).ToString("yyyy-MM-ddTHH:mm:ss") + "'" +
+                                " \r\nand checktype != 'K' and checktype != 'C'" +
+                                "\r\nAND userid = "+user_id+"" +
+                                "\r\nORDER BY sana , checktime")
+                        .ToListAsync();
+
+                        /*List<SkudMyCheckinout> checkinouts = await _context.SkudMyCheckinout
+                                .Where(p => p.userid == it.userid && (p.checktype != "K" && p.checktype != "C") && ((p.sana + p.checktime) >= dt.Date.AddHours(4) && (p.sana + p.checktime) <= dt.Date.AddHours(4).AddDays(1)))
+                        .OrderBy(p => p.sana)
+                        .OrderBy(p => p.checktime)
+                        .Skip(size * page).Take(size)
+                        .ToListAsync();*/
+                        Console.WriteLine("TIME: "+dt.Date.AddHours(4) + " VA "+ dt.Date.AddHours(4).AddDays(1));
+                        String ishlagan_vaqti = "0";
+                        String ishlagan_vaqti_formatted = "0";
+                       // Console.WriteLine("KIRDI 11111");
+                        //agar natija bolsa chiqaradi bolmasa 0 yozib qoyamiz
+                        if (checkinouts != null && checkinouts.Count() > 0)
+                        {
+                            Console.WriteLine(checkinouts.Count());
+
+                            int counter = 0;
+                            double secunds = 0;
+                            bool _last_out = false;
+                            bool _last_in = false;
+                            TimeSpan _last_in_tm = TimeSpan.FromSeconds(0);
+                            TimeSpan _last_out_tm = TimeSpan.FromSeconds(0);
+                            foreach (SkudMyCheckinout itm_1 in checkinouts)
+                            {
+
+                               // Console.WriteLine("KIRDI 22222");
+                                //KECHASI ISHLADI BUNDA
+                                if (counter == 0 && itm_1.checktype == "O")
+                                {
+                                    Console.WriteLine("Birinchi chiqish boldi qoshmadik sekund");
+                                    //secunds = secunds + itm_1.checktime.TotalSeconds;
+                                    
+
+                                    _last_out = true;
+                                    counter++;
+                                    continue;
+                                }
+                                //KIRISH
+                                if (itm_1.checktype == "I")
+                                {
+
+                                    //bu eshigdi tagida turibdi qayta qayta olyapti shunchun torilab qoydik
+                                    _last_in_tm = itm_1.checktime;
+                                    _last_in = true;
+
+                                }
+                                //CHIQISH
+                                if (itm_1.checktype == "O")
                                 {
                                     if (_last_in)
                                     {
@@ -2954,6 +3636,39 @@ namespace ApiAll.Controllers.turniket
                 "\r\nFROM public.my_checkinout" +
                 "\r\nWHERE (sana+checktime)   >= '"+ date_b.Date.AddHours(4).ToString("yyyy-MM-ddTHH:mm:ss") + "' and (sana+checktime) <= '"+ date_b.Date.AddHours(4).AddDays(1).ToString("yyyy-MM-ddTHH:mm:ss") + "' " +
                 "\r\nand checktype != 'I' and checktype != 'O'" +
+                "\r\nAND userid = "+ user_id + "" +
+                "\r\nORDER BY sana , checktime")
+                .Skip(size * page).Take(size)
+                .ToListAsync();
+            if (itemList == null)
+            {
+                itemList = new List<SkudMyCheckinout>();
+            }
+
+            foreach (SkudMyCheckinout itm in itemList)
+            {
+                itm.userinfo = await _context.SkudMyUserinfo.FindAsync(itm.userid);
+
+            }
+
+
+            paginationModel.items_list = JArray.FromObject(itemList);
+            paginationModel.items_count = await _context.SkudMyCheckinout.CountAsync();
+            paginationModel.current_item_count = itemList.Count();
+            paginationModel.current_page = page;
+            return paginationModel;
+        }
+        [HttpGet("getPaginationBy0404IchkiQarovul")]
+        public async Task<ActionResult<TexPaginationModel>> getPaginationBy0404IchkiQarovul([FromQuery] int page,
+            [FromQuery] int size, [FromQuery] DateTime date_b, [FromQuery] long user_id)
+        {
+            TexPaginationModel paginationModel = new TexPaginationModel();
+            List<SkudMyCheckinout> itemList = await _context.SkudMyCheckinout
+                .FromSqlRaw("SELECT code, userid, sana, checktime, checktype, door_name, status,(SELECT  mu.ism\r\nFROM my_userinfo mu" +
+                "\r\nWHERE mu.userid = "+ user_id + " ) as begona" +
+                "\r\nFROM public.my_checkinout" +
+                "\r\nWHERE (sana+checktime)   >= '"+ date_b.Date.AddHours(4).ToString("yyyy-MM-ddTHH:mm:ss") + "' and (sana+checktime) <= '"+ date_b.Date.AddHours(4).AddDays(1).ToString("yyyy-MM-ddTHH:mm:ss") + "' " +
+                "\r\nand checktype != 'K' and checktype != 'C'" +
                 "\r\nAND userid = "+ user_id + "" +
                 "\r\nORDER BY sana , checktime")
                 .Skip(size * page).Take(size)
